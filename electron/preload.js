@@ -10,6 +10,16 @@ contextBridge.exposeInMainWorld("worksuite", {
 		saveExport: (args) => ipcRenderer.invoke("files:save-export", args),
 		show: (filePath) => ipcRenderer.invoke("files:show", filePath),
 	},
+	cloud: {
+		uploadAndShare: (args) => ipcRenderer.invoke("cloud:upload-share", args),
+		cancel: () => ipcRenderer.invoke("cloud:cancel"),
+		copy: (text) => ipcRenderer.invoke("clipboard:write", text),
+		onProgress: (listener) => {
+			const handler = (_event, progress) => listener(progress);
+			ipcRenderer.on("cloud:progress", handler);
+			return () => ipcRenderer.removeListener("cloud:progress", handler);
+		},
+	},
 	account: {
 		getState: () => ipcRenderer.invoke("account:get-state"),
 		signIn: () => ipcRenderer.invoke("account:sign-in", { signup: false }),

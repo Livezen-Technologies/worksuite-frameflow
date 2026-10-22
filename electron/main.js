@@ -1,12 +1,13 @@
 // Worksuite FrameFlow desktop shell: runs the bundled Next.js server on a
 // private loopback port and shows it in a window.
-const { app, BrowserWindow, shell, dialog, ipcMain } = require("electron");
+const { app, BrowserWindow, clipboard, shell, dialog, ipcMain } = require("electron");
 const { spawn } = require("node:child_process");
 const net = require("node:net");
 const http = require("node:http");
 const fs = require("node:fs");
 const path = require("node:path");
 const account = require("./account");
+const cloud = require("./cloud-upload");
 
 const HOST = "127.0.0.1";
 let server = null;
@@ -169,6 +170,27 @@ function registerAccountIpc() {
 		savedExports.add(result.filePath);
 		return { saved: true, path: result.filePath };
 	});
+	// Share links (CL-06): only files this session exported can be uploaded.
+	handle("cloud:upload-share", async ({ filePath, expiresInDays, allowDownload } = {}) => {
+		if (!savedExports.has(filePath)) return { ok: false, code: "denied", message: "Not allowed" };
+		try {
+			const share = await cloud.uploadAndShare({
+				filePath,
+				expiresInDays: Number(expiresInDays) || null,
+				allowDownload: !!allowDownload,
+				onProgress: (progress) => {
+					for (const win of BrowserWindow.getAllWindows()) {
+						win.webContents.send("cloud:progress", progress);
+					}
+				},
+			});
+			return { ok: true, ...share };
+		} catch (error) {
+			return { ok: false, code: error.code ?? "error", message: error.message };
+		}
+	});
+	handle("cloud:cancel", () => cloud.cancelUpload());
+	handle("clipboard:write", (text) => clipboard.writeText(String(text)));
 	// Only files this session exported can be revealed.
 	handle("files:show", (filePath) => {
 		if (savedExports.has(filePath)) shell.showItemInFolder(filePath);

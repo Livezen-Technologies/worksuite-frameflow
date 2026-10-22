@@ -427,4 +427,5 @@ module.exports = {
 	getAccessToken,
 	onChange,
 	openManageAccount,
+	apiBase: CONFIG.apiBase,
 };

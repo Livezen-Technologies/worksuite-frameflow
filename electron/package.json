@@ -38,6 +38,7 @@
     "files": [
       "main.js",
       "account.js",
+      "cloud-upload.js",
       "preload.js",
       "package.json"
     ],

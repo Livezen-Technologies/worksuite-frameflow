@@ -68,6 +68,39 @@ declare global {
 				}) => Promise<{ saved: boolean; path?: string }>;
 				show: (filePath: string) => Promise<void>;
 			};
+			cloud?: WorksuiteCloudBridge;
 		};
 	}
+}
+
+export type CloudUploadProgress = {
+	phase: "uploading" | "finishing";
+	progress: number;
+};
+
+export type CloudShareResult =
+	| { ok: true; url: string; expiresAt: string | null; assetId: string }
+	| {
+			ok: false;
+			code:
+				| "auth"
+				| "quota"
+				| "network"
+				| "cancelled"
+				| "busy"
+				| "denied"
+				| "http"
+				| "error";
+			message: string;
+	  };
+
+export interface WorksuiteCloudBridge {
+	uploadAndShare: (args: {
+		filePath: string;
+		expiresInDays: number | null;
+		allowDownload: boolean;
+	}) => Promise<CloudShareResult>;
+	cancel: () => Promise<void>;
+	copy: (text: string) => Promise<void>;
+	onProgress: (listener: (progress: CloudUploadProgress) => void) => () => void;
 }

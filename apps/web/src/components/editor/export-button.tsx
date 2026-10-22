@@ -38,6 +38,11 @@ import {
 	formatForCodec,
 } from "@/export/presets";
 import { useEditor } from "@/editor/use-editor";
+import {
+	ShareOptions,
+	ShareProgress,
+	type ShareSettings,
+} from "@/export/components/share-panel";
 import { floatToFrameRate, frameRateToFloat } from "@/fps/utils";
 import { TICKS_PER_SECOND } from "@/wasm";
 
@@ -201,6 +206,13 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 		vp9: true,
 	});
 	const [savedPath, setSavedPath] = useState<string | null>(null);
+	const [share, setShare] = useState<ShareSettings>({
+		enabled: false,
+		expiresInDays: 7,
+		allowDownload: true,
+	});
+	// Settings frozen at export time, so editing them doesn't restart an upload.
+	const [sharing, setSharing] = useState<ShareSettings | null>(null);
 
 	const size = evenSize(
 		preset === "project"
@@ -255,6 +267,7 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 
 	const handleExport = async () => {
 		setSavedPath(null);
+		setSharing(null);
 		const exportResult = await editor.project.export({
 			options: {
 				format,
@@ -288,6 +301,7 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 			editor.project.clearExportState();
 			if (saved.saved && saved.path) {
 				setSavedPath(saved.path);
+				if (share.enabled) setSharing({ ...share });
 				toast.success("Export saved");
 			}
 			return;
@@ -327,7 +341,7 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 			<DialogHeader className="py-4">
 				<DialogTitle>{isExporting ? "Exporting…" : "Export"}</DialogTitle>
 			</DialogHeader>
-			<DialogBody className="gap-3 py-4">
+			<DialogBody className="min-w-0 gap-3 py-4">
 				{isExporting ? (
 					<div className="flex flex-col gap-2 py-6">
 						<div className="text-muted-foreground flex justify-between text-sm">
@@ -510,9 +524,13 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 							</div>
 						)}
 
+						<ShareOptions settings={share} onChange={setShare} />
+
 						{savedPath && (
 							<div className="flex items-center justify-between gap-2 rounded-md border border-emerald-500/40 bg-emerald-500/10 p-2 text-xs">
-								<span className="truncate">Saved to {savedPath}</span>
+								<span className="min-w-0 truncate" title={savedPath}>
+									Saved to {savedPath}
+								</span>
 								<Button
 									variant="outline"
 									size="sm"
@@ -522,6 +540,9 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 									Show in folder
 								</Button>
 							</div>
+						)}
+						{savedPath && sharing && (
+							<ShareProgress filePath={savedPath} settings={sharing} />
 						)}
 					</>
 				)}
