@@ -13,7 +13,7 @@ import { MediaView } from "./views/assets";
 import { TemplatesView } from "@/templates/components/templates-view";
 import { SettingsView } from "./views/settings";
 import { SoundsView } from "@/sounds/components/assets-view";
-import { StickersView } from "@/stickers/components/assets-view";
+import { ElementsView } from "@/elements/components/elements-view";
 import { TextView } from "@/text/components/assets-view";
 import { EffectsView } from "@/effects/components/assets-view";
 
@@ -25,7 +25,7 @@ export function AssetsPanel() {
 		templates: <TemplatesView />,
 		sounds: <SoundsView />,
 		text: <TextView />,
-		stickers: <StickersView />,
+		stickers: <ElementsView />,
 		effects: <EffectsView />,
 		transitions: <TransitionsView />,
 		captions: <Captions />,

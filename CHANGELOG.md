@@ -8,6 +8,14 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 ## [Unreleased]
 
 ### Added
+- Elements sidebar: 30 ready-styled elements you add at the playhead with one click.
+  - Shapes: rectangle, rounded, circle, ring, triangle, hexagon, star, burst, heart
+  - Lines & arrows: arrows, lines, dashed line, animated underline
+  - Callouts: speech bubbles and a note
+  - Badges: NEW, SALE, LIVE, SUBSCRIBE, අලුත්, Follow
+  - Overlays: light leaks, colour wash, vignette, bottom fade, frame borders
+  - Stickers: the existing flags and shapes
+  New shape types (arrow, line, speech bubble, heart, gradient, frame) can be edited in Properties like the other shapes.
 - Templates sidebar: 8 ready-made video templates — Cinematic Intro, Travel Slideshow, Reel Hook (9:16), Product Promo (1:1), a Sinhala New Year greeting, Podcast Quote, YouTube End Screen and Business Announcement. Browse by category or search, with animated previews. "Use template" builds it at the playhead from your imported photos and videos (cropped to fill the frame), with titles, shapes, animations and transitions, and can switch the project to the template's shape. Without media, coloured cards hold the slots. It's one undo step.
 - Animation panel for video, image, sticker, graphic and text clips: In, Out and Combo tabs with live preview tiles. In and Out include fade, slides in four directions, zoom, pop, bounce, spin and drop (plus typewriter for text). Combo animations run for the whole clip: pulse, float, wobble, slow zoom, swing and heartbeat. Duration or speed is set with one slider.
 - Team sharing: in a team workspace, open the cloud button on a synced project and choose "Share with team…" to give teammates "Can view" or "Can edit" access, or take it away. Shared projects show who shared them and your access in the project list. Editors sync like the owner. Viewers get the owner's updates, but their own changes stay on their device, with an option to discard them and get the latest.
