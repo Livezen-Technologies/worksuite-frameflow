@@ -14,9 +14,11 @@ import {
 	ColorsIcon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon, type IconSvgElement } from "@hugeicons/react";
+import { LayoutTemplate } from "lucide-react";
 
 export const TAB_KEYS = [
 	"media",
+	"templates",
 	"sounds",
 	"text",
 	"stickers",
@@ -39,6 +41,12 @@ export const tabs = {
 	media: {
 		icon: createHugeiconsIcon({ icon: Folder03Icon }),
 		label: "Media",
+	},
+	templates: {
+		icon: ({ className }: { className?: string }) => (
+			<LayoutTemplate className={className} strokeWidth={1.75} />
+		),
+		label: "Templates",
 	},
 	sounds: {
 		icon: createHugeiconsIcon({ icon: HeadphonesIcon }),

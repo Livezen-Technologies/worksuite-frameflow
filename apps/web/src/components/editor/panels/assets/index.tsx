@@ -10,6 +10,7 @@ import { Captions } from "@/subtitles/components/assets-view";
 import { ColorPanel } from "@/color/components/color-panel";
 import { TransitionsView } from "@/transitions/components/transitions-view";
 import { MediaView } from "./views/assets";
+import { TemplatesView } from "@/templates/components/templates-view";
 import { SettingsView } from "./views/settings";
 import { SoundsView } from "@/sounds/components/assets-view";
 import { StickersView } from "@/stickers/components/assets-view";
@@ -21,6 +22,7 @@ export function AssetsPanel() {
 
 	const viewMap: Record<Tab, React.ReactNode> = {
 		media: <MediaView />,
+		templates: <TemplatesView />,
 		sounds: <SoundsView />,
 		text: <TextView />,
 		stickers: <StickersView />,
