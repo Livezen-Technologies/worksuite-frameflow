@@ -1,3 +1,4 @@
+import { TEXT_STYLE_PARAM_KEYS } from "@/text/style";
 import type { ReactNode } from "react";
 import type {
 	EffectElement,
@@ -57,7 +58,8 @@ const TEXT_PARAM_KEYS = [
 	"background.paddingY",
 	"background.offsetX",
 	"background.offsetY",
-] as const;
+	...TEXT_STYLE_PARAM_KEYS,
+];
 
 export type TabContentProps = {
 	trackId: string;

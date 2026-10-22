@@ -1,3 +1,4 @@
+import { TEXT_STYLE_PARAMS } from "@/text/style";
 import type {
 	ParamDefinition,
 	ParamValue,
@@ -338,7 +339,7 @@ elementParamRegistry.register({
 elementParamRegistry.register({ key: "image", definition: visualElementParams });
 elementParamRegistry.register({
 	key: "text",
-	definition: [...textElementParams, ...visualElementParams],
+	definition: [...textElementParams, ...TEXT_STYLE_PARAMS, ...visualElementParams],
 });
 elementParamRegistry.register({
 	key: "sticker",

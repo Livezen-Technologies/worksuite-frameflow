@@ -1,3 +1,4 @@
+import { graphemeCount, sliceGraphemes, type TextStyleEffects } from "./style";
 import type { TextCanvasContext, TextBlockMeasurement } from "@/text/layout";
 import { DEFAULTS } from "@/timeline/defaults";
 import { clamp } from "@/utils/math";
@@ -145,6 +146,7 @@ export function drawMeasuredTextLayout({
 	background,
 	backgroundColor,
 	textBaseline = "middle",
+	styleEffects,
 }: {
 	ctx: TextCanvasContext;
 	layout: MeasuredTextLayout;
@@ -152,6 +154,8 @@ export function drawMeasuredTextLayout({
 	background?: ResolvedTextBackgroundLike | null;
 	backgroundColor?: string;
 	textBaseline?: CanvasTextBaseline;
+	/** Stroke, shadow, glow and typewriter reveal (see text/style.ts). */
+	styleEffects?: TextStyleEffects;
 }): void {
 	ctx.font = layout.fontString;
 	ctx.textAlign = layout.textAlign;
@@ -197,9 +201,30 @@ export function drawMeasuredTextLayout({
 		}
 	}
 
+	let graphemesLeft = styleEffects?.revealGraphemes ?? Number.POSITIVE_INFINITY;
 	for (let index = 0; index < layout.lines.length; index++) {
 		const lineY = index * layout.lineHeightPx - layout.block.visualCenterOffset;
-		ctx.fillText(layout.lines[index], 0, lineY);
+		const line = layout.lines[index];
+		const lineGraphemes = graphemeCount(line);
+		const visible = Math.min(lineGraphemes, Math.max(0, graphemesLeft));
+		graphemesLeft -= lineGraphemes;
+		if (visible === 0) continue;
+
+		ctx.save();
+		if (visible < lineGraphemes) {
+			// Clip instead of drawing a shorter string, so the line keeps the
+			// position it will have once fully typed.
+			const lineWidth = layout.lineMetrics[index].width;
+			const startX =
+				layout.textAlign === "center" ? -lineWidth / 2 : layout.textAlign === "right" ? -lineWidth : 0;
+			const visibleWidth = ctx.measureText(sliceGraphemes({ text: line, count: visible })).width;
+			const reach = layout.scaledFontSize * 2;
+			ctx.beginPath();
+			ctx.rect(startX - reach, lineY - reach, visibleWidth + reach, reach * 2);
+			ctx.clip();
+		}
+		drawStyledLine({ ctx, text: line, y: lineY, textColor, styleEffects });
+		ctx.restore();
 		drawTextDecoration({
 			ctx,
 			textDecoration: layout.textDecoration,
@@ -210,6 +235,63 @@ export function drawMeasuredTextLayout({
 			textAlign: layout.textAlign,
 		});
 	}
+}
+
+function drawStyledLine({
+	ctx,
+	text,
+	y,
+	textColor,
+	styleEffects,
+}: {
+	ctx: TextCanvasContext;
+	text: string;
+	y: number;
+	textColor: string;
+	styleEffects?: TextStyleEffects;
+}): void {
+	const { stroke, shadow, glow } = styleEffects ?? {};
+	const applyShadow = () => {
+		if (!shadow) return;
+		ctx.shadowColor = shadow.color;
+		ctx.shadowBlur = shadow.blurPx;
+		ctx.shadowOffsetX = shadow.offsetXPx;
+		ctx.shadowOffsetY = shadow.offsetYPx;
+	};
+	const clearShadow = () => {
+		ctx.shadowColor = "transparent";
+		ctx.shadowBlur = 0;
+		ctx.shadowOffsetX = 0;
+		ctx.shadowOffsetY = 0;
+	};
+
+	if (glow && glow.sizePx > 0) {
+		ctx.save();
+		ctx.shadowColor = glow.color;
+		ctx.shadowBlur = glow.sizePx;
+		ctx.fillStyle = glow.color;
+		ctx.fillText(text, 0, y);
+		ctx.fillText(text, 0, y);
+		ctx.restore();
+	}
+	if (stroke && stroke.widthPx > 0) {
+		ctx.save();
+		applyShadow();
+		ctx.strokeStyle = stroke.color;
+		// Text strokes are centred on the outline; double it so the visible
+		// part outside the fill matches the width asked for.
+		ctx.lineWidth = stroke.widthPx * 2;
+		ctx.lineJoin = "round";
+		ctx.lineCap = "round";
+		ctx.strokeText(text, 0, y);
+		ctx.restore();
+	}
+	ctx.save();
+	if (stroke) clearShadow();
+	else applyShadow();
+	ctx.fillStyle = textColor;
+	ctx.fillText(text, 0, y);
+	ctx.restore();
 }
 
 export function strokeMeasuredTextLayout({

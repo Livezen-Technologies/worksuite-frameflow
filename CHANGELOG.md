@@ -8,6 +8,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 ## [Unreleased]
 
 ### Added
+- Text templates (Text workspace): 10 ready-made styles, including Sinhala, neon, lower third, poster and subscribe badge. Search and filter them by category, add one at the playhead, apply a template's style to selected text or caption clips, and save your own under My templates.
+- Text stroke, shadow and glow, plus in/out animations: fade, slide, pop, bounce and a typewriter that reveals Sinhala letter by letter without breaking characters.
 
 - 13 new effects, rendered on the GPU: Sharpen; Vignette, Posterize, Invert, Edge detect; Pixelate, Mirror, Wave; Glow; Film grain, VHS, RGB split and Sepia. Film grain, VHS and Wave move over time.
 - Effects browser: categories (Blur, Stylise, Distort, Light, Retro, Color), search, favourites (star an effect), and double-click to add an effect to the selected clips. Dragging onto a clip or an empty track works as before.

@@ -1,4 +1,9 @@
 import { mediaTimeToSeconds, roundMediaTime, TICKS_PER_SECOND } from "@/wasm";
+import {
+	graphemeCount,
+	readTextStyleEffects,
+	textAnimationState,
+} from "@/text/style";
 import { getElementLocalTime } from "@/animation";
 import { resolveEffectParamsAtTime } from "@/animation/effect-param-channel";
 import {
@@ -465,18 +470,51 @@ function resolveTextNode({
 		elementDuration: node.params.duration,
 	});
 	const background = buildTextBackgroundFromElement({ element: node.params });
+	const measuredText = measureTextElement({
+		element: node.params,
+		canvasHeight: node.params.canvasHeight,
+		localTime,
+		ctx: getTextMeasurementContext(),
+	});
+	const animation = textAnimationState({
+		params: node.params.params,
+		localSeconds: localTime / TICKS_PER_SECOND,
+		durationSeconds: node.params.duration / TICKS_PER_SECOND,
+	});
+	const styleEffects = readTextStyleEffects({
+		params: node.params.params,
+		fontSizePx: measuredText.scaledFontSize,
+	});
+	if (animation.reveal < 1) {
+		const content = String(node.params.params.content ?? "");
+		styleEffects.revealGraphemes = Math.round(
+			animation.reveal * graphemeCount(content),
+		);
+	}
+	const transform = resolveTransformAtTime({
+		baseTransform: node.params.transform,
+		animations: node.params.animations,
+		localTime,
+	});
 
 	return {
-		transform: resolveTransformAtTime({
-			baseTransform: node.params.transform,
-			animations: node.params.animations,
-			localTime,
-		}),
-		opacity: resolveOpacityAtTime({
-			baseOpacity: node.params.opacity,
-			animations: node.params.animations,
-			localTime,
-		}),
+		transform: {
+			...transform,
+			scaleX: transform.scaleX * animation.scale,
+			scaleY: transform.scaleY * animation.scale,
+			position: {
+				x: transform.position.x,
+				y:
+					transform.position.y +
+					animation.offsetY * measuredText.scaledFontSize * transform.scaleY,
+			},
+		},
+		opacity:
+			resolveOpacityAtTime({
+				baseOpacity: node.params.opacity,
+				animations: node.params.animations,
+				localTime,
+			}) * animation.opacity,
 		textColor: resolveColorAtTime({
 			baseColor:
 				typeof node.params.params.color === "string"
@@ -499,12 +537,8 @@ function resolveTextNode({
 			width: context.renderer.width,
 			height: context.renderer.height,
 		}),
-		measuredText: measureTextElement({
-			element: node.params,
-			canvasHeight: node.params.canvasHeight,
-			localTime,
-			ctx: getTextMeasurementContext(),
-		}),
+		measuredText,
+		styleEffects,
 	};
 }
 
