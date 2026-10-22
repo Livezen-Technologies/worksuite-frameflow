@@ -6,13 +6,13 @@ import { getPosts } from "@/blog/query";
 import type { Post } from "@/blog/types";
 
 export const metadata: Metadata = {
-	title: "Blog - Worksuite Video Editor",
+	title: "Blog - Worksuite FrameFlow",
 	description:
-		"Read the latest news and updates about Worksuite Video Editor, the free and open-source video editor.",
+		"Read the latest news and updates about Worksuite FrameFlow, the free and open-source video editor.",
 	openGraph: {
-		title: "Blog - Worksuite Video Editor",
+		title: "Blog - Worksuite FrameFlow",
 		description:
-			"Read the latest news and updates about Worksuite Video Editor, the free and open-source video editor.",
+			"Read the latest news and updates about Worksuite FrameFlow, the free and open-source video editor.",
 		type: "website",
 	},
 };
@@ -24,7 +24,7 @@ export default async function BlogPage() {
 	return (
 		<BasePage
 			title="Blog"
-			description="Read the latest news and updates about Worksuite Video Editor, the free and open-source video editor."
+			description="Read the latest news and updates about Worksuite FrameFlow, the free and open-source video editor."
 		>
 			<div className="flex flex-col">
 				{data.posts.map((post) => (

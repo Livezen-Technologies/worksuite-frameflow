@@ -167,7 +167,7 @@ function AccountSection() {
 					<p className="text-muted-foreground m-0 leading-relaxed">
 						{state.status === "expired"
 							? "Your session expired. Sign in again to use Worksuite Cloud. Your local projects are unaffected."
-							: "You're using Worksuite Video Editor without an account. Editing and export work on this computer; sign in to use Worksuite Cloud."}
+							: "You're using Worksuite FrameFlow without an account. Editing and export work on this computer; sign in to use Worksuite Cloud."}
 					</p>
 					<div className="flex flex-wrap gap-3">
 						<Button onClick={() => bridge.signIn()}>Sign in</Button>
@@ -199,7 +199,7 @@ function AboutSection() {
 				<div className="flex items-center gap-3">
 					<BrandMark className="size-10 rounded-[10px]" />
 					<div>
-						<div className="font-semibold">Worksuite Video Editor</div>
+						<div className="font-semibold">Worksuite FrameFlow</div>
 						<div className="text-muted-foreground text-sm">
 							{version ? `Version ${version} · ` : ""}Livezen Technologies
 						</div>

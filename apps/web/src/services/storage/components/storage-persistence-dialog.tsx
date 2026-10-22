@@ -26,7 +26,7 @@ export function StoragePersistenceDialog() {
 						runs low.
 					</p>
 					<p className="text-base text-muted-foreground">
-						Allow Worksuite Video Editor to protect them?
+						Allow Worksuite FrameFlow to protect them?
 					</p>
 				</DialogBody>
 				<DialogFooter>

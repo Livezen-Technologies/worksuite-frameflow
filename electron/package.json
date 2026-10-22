@@ -1,8 +1,8 @@
 {
-  "name": "worksuite-video-editor",
-  "productName": "Worksuite Video Editor",
+  "name": "worksuite-frameflow",
+  "productName": "Worksuite FrameFlow",
   "version": "1.0.0",
-  "description": "Worksuite Video Editor \u2014 desktop app (based on OpenCut)",
+  "description": "Worksuite FrameFlow \u2014 desktop app (based on OpenCut)",
   "author": {
     "name": "Livezen Technologies",
     "email": "support@worksuitecloud.com"
@@ -28,8 +28,8 @@
     "electron-builder": "26.0.12"
   },
   "build": {
-    "appId": "com.worksuitecloud.video",
-    "productName": "Worksuite Video Editor",
+    "appId": "com.worksuitecloud.frameflow",
+    "productName": "Worksuite FrameFlow",
     "copyright": "Copyright \u00a9 2026 Livezen Technologies. Based on OpenCut (MIT).",
     "directories": {
       "output": "dist",
@@ -59,7 +59,7 @@
           ]
         }
       ],
-      "artifactName": "Worksuite-Video-Editor-${version}-mac-${arch}.${ext}",
+      "artifactName": "Worksuite-FrameFlow-${version}-mac-${arch}.${ext}",
       "identity": "-",
       "hardenedRuntime": false,
       "gatekeeperAssess": false
@@ -73,7 +73,7 @@
           ]
         }
       ],
-      "artifactName": "Worksuite-Video-Editor-${version}-win-${arch}-setup.${ext}"
+      "artifactName": "Worksuite-FrameFlow-${version}-win-${arch}-setup.${ext}"
     },
     "nsis": {
       "oneClick": false,
@@ -85,9 +85,9 @@
         "deb"
       ],
       "category": "AudioVideo",
-      "executableName": "worksuite-video",
+      "executableName": "worksuite-frameflow",
       "maintainer": "Livezen Technologies",
-      "artifactName": "Worksuite-Video-Editor-${version}-linux-${arch}.${ext}"
+      "artifactName": "Worksuite-FrameFlow-${version}-linux-${arch}.${ext}"
     }
   }
 }

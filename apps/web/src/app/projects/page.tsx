@@ -147,7 +147,7 @@ function ProjectsHeader() {
 		<header className="bg-background sticky top-0 z-20 flex h-[60px] shrink-0 items-center gap-4 border-b px-6">
 			<Link href="/projects" className="flex items-center gap-2.5 font-bold">
 				<BrandMark />
-				Worksuite Video
+				FrameFlow
 			</Link>
 			<div className="flex-1" />
 			<SearchBar className="hidden w-[280px] md:block" />

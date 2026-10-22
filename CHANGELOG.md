@@ -1,13 +1,19 @@
 # Changelog
 
-All notable changes to Worksuite Video Editor are recorded here.
+All notable changes to Worksuite FrameFlow are recorded here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions follow [Semantic Versioning](https://semver.org/).
 
 Every change merged into the project adds a line under **Unreleased**. `node scripts/release.mjs <patch|minor|major|x.y.z>` turns Unreleased into a numbered release and bumps the app version.
 
 ## [Unreleased]
 
+### Changed
+
+- Renamed the app to Worksuite FrameFlow (short name FrameFlow). The bundle ID is now `com.worksuitecloud.frameflow`, the Linux command `worksuite-frameflow`, and the Worksuite Cloud client ID `worksuite-frameflow`. It installs as a new app, so earlier test installs need to sign in again.
+
 ### Fixed
+
+- The website footer credits OpenCut again; the rebrand had renamed the credit itself.
 
 - macOS no longer says the app "is damaged and can't be opened": the Mac app is now ad-hoc code-signed, and the build checks the signature.
 

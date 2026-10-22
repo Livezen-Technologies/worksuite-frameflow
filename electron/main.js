@@ -1,4 +1,4 @@
-// Worksuite Video Editor desktop shell: runs the bundled Next.js server on a
+// Worksuite FrameFlow desktop shell: runs the bundled Next.js server on a
 // private loopback port and shows it in a window.
 const { app, BrowserWindow, shell, dialog, ipcMain } = require("electron");
 const { spawn } = require("node:child_process");
@@ -74,7 +74,7 @@ async function startServer() {
 	});
 	server.on("exit", (code) => {
 		if (code && !app.isQuitting) {
-			dialog.showErrorBox("Worksuite Video Editor", `The editor server stopped (code ${code}).`);
+			dialog.showErrorBox("Worksuite FrameFlow", `The editor server stopped (code ${code}).`);
 			app.quit();
 		}
 	});
@@ -91,7 +91,7 @@ async function createWindow() {
 		height: 900,
 		minWidth: 1024,
 		minHeight: 640,
-		title: "Worksuite Video Editor",
+		title: "Worksuite FrameFlow",
 		backgroundColor: "#0F172A",
 		icon: path.join(__dirname, "build", "icon.png"),
 		autoHideMenuBar: true,
@@ -169,7 +169,7 @@ if (!app.requestSingleInstanceLock()) {
 			return createWindow();
 		})
 		.catch((err) => {
-			dialog.showErrorBox("Worksuite Video Editor", String(err));
+			dialog.showErrorBox("Worksuite FrameFlow", String(err));
 			app.quit();
 		});
 }

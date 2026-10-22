@@ -41,12 +41,12 @@ export function Footer() {
 						<div className="mb-4 flex items-center justify-start gap-2">
 							<Image
 								src={DEFAULT_LOGO_URL}
-								alt="Worksuite Video Editor"
+								alt="Worksuite FrameFlow"
 								width={24}
 								height={24}
 								className="invert dark:invert-0"
 							/>
-							<span className="text-lg font-bold">Worksuite Video Editor</span>
+							<span className="text-lg font-bold">Worksuite FrameFlow</span>
 						</div>
 						<p className="text-muted-foreground mb-5 text-sm md:text-left">
 							The privacy-first video editor that feels simple to use.
@@ -114,7 +114,7 @@ export function Footer() {
 				<div className="flex flex-col items-start justify-between gap-4 pt-2 md:flex-row">
 					<div className="text-muted-foreground flex items-center gap-4 text-sm">
 						<span>
-							© {new Date().getFullYear()} Livezen Technologies · Based on Worksuite Video Editor (MIT)
+							© {new Date().getFullYear()} Livezen Technologies · Based on OpenCut (MIT)
 						</span>
 					</div>
 				</div>

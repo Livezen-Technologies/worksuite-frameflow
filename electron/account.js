@@ -11,7 +11,7 @@ const path = require("node:path");
 
 const CONFIG = {
 	issuer: process.env.WSC_ISSUER || "https://accounts.worksuitecloud.com",
-	clientId: process.env.WSC_CLIENT_ID || "worksuite-video",
+	clientId: process.env.WSC_CLIENT_ID || "worksuite-frameflow",
 	apiBase: process.env.WSC_API_BASE || "https://api.worksuitecloud.com",
 	manageUrl: process.env.WSC_MANAGE_URL || "https://worksuitecloud.com/account",
 	scope: "openid profile email offline_access wve.projects wve.assets",
@@ -177,8 +177,8 @@ function waitForCode({ authorizationEndpoint, params }) {
 			res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
 			res.end(
 				ok
-					? callbackPage("You're signed in", "You can close this tab and return to Worksuite Video Editor.")
-					: callbackPage("Sign-in didn't finish", "Return to Worksuite Video Editor and try again."),
+					? callbackPage("You're signed in", "You can close this tab and return to Worksuite FrameFlow.")
+					: callbackPage("Sign-in didn't finish", "Return to Worksuite FrameFlow and try again."),
 			);
 			finish();
 			if (ok) resolve({ code, redirectUri });

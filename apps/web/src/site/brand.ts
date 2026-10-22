@@ -1,7 +1,7 @@
 export const SITE_URL = "https://worksuitecloud.com";
 
 export const SITE_INFO = {
-	title: "Worksuite Video Editor",
+	title: "Worksuite FrameFlow",
 	description:
 		"A simple but powerful video editor from the Worksuite family. Based on OpenCut.",
 	url: SITE_URL,

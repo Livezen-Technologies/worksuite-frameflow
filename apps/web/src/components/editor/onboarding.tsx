@@ -28,13 +28,13 @@ export function Onboarding() {
 	const getStepTitle = () => {
 		switch (step) {
 			case 0:
-				return "Welcome to Worksuite Video Editor! 🎉";
+				return "Welcome to Worksuite FrameFlow! 🎉";
 			case 1:
 				return "⚠️ This is a super early beta!";
 			case 2:
 				return "🦋 Have fun testing!";
 			default:
-				return "Worksuite Video Editor";
+				return "Worksuite FrameFlow";
 		}
 	};
 
@@ -44,8 +44,8 @@ export function Onboarding() {
 				return (
 					<div className="space-y-5">
 						<div className="space-y-3">
-							<Title title="Welcome to Worksuite Video Editor! 🎉" />
-							<Description description="You're among the first to try Worksuite Video Editor, part of the Worksuite family." />
+							<Title title="Welcome to Worksuite FrameFlow! 🎉" />
+							<Description description="You're among the first to try Worksuite FrameFlow, part of the Worksuite family." />
 						</div>
 						<NextButton onClick={handleNext}>Next</NextButton>
 					</div>
@@ -68,7 +68,7 @@ export function Onboarding() {
 						<div className="space-y-3">
 							<Title title={getStepTitle()} />
 							<Description
-								description={`Join our [Discord](${SOCIAL_LINKS.discord}), chat with cool people and share feedback to help make Worksuite Video Editor the best editor ever.`}
+								description={`Join our [Discord](${SOCIAL_LINKS.discord}), chat with cool people and share feedback to help make Worksuite FrameFlow the best editor ever.`}
 							/>
 						</div>
 						<NextButton onClick={handleClose}>Finish</NextButton>

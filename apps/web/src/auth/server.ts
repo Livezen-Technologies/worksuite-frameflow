@@ -36,7 +36,7 @@ export const auth = betterAuth({
 		},
 	},
 	baseURL: webEnv.NEXT_PUBLIC_SITE_URL,
-	appName: "Worksuite Video Editor",
+	appName: "Worksuite FrameFlow",
 	trustedOrigins: [webEnv.NEXT_PUBLIC_SITE_URL],
 });
 

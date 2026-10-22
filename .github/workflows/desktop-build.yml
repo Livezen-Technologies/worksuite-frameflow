@@ -91,7 +91,7 @@ jobs:
       - name: Upload installers
         uses: actions/upload-artifact@v4
         with:
-          name: Worksuite-Video-Editor-${{ matrix.name }}
+          name: Worksuite-FrameFlow-${{ matrix.name }}
           path: |
             electron/dist/*.dmg
             electron/dist/*.exe

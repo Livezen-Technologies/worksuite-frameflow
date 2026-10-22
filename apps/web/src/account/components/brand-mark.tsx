@@ -1,6 +1,6 @@
 import { cn } from "@/utils/ui";
 
-/** Worksuite Video play mark: a dark play triangle on an accent tile. */
+/** FrameFlow play mark: a dark play triangle on an accent tile. */
 export function BrandMark({ className }: { className?: string }) {
 	return (
 		<span

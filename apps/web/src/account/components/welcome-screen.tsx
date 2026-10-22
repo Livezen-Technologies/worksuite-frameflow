@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { getAccountBridge } from "../use-worksuite-account";
 import { BrandMark } from "./brand-mark";
 
-const WELCOME_SEEN_KEY = "wve-welcome-seen";
+const WELCOME_SEEN_KEY = "frameflow-welcome-seen";
 
 const FEATURES = [
 	"Timeline editing",
@@ -63,7 +63,7 @@ export function WelcomeScreen() {
 					<div className="text-lg font-bold">
 						Worksuite{" "}
 						<span className="text-muted-foreground font-medium">
-							Video Editor
+							FrameFlow
 						</span>
 					</div>
 				</div>

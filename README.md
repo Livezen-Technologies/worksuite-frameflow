@@ -1,4 +1,4 @@
-# Worksuite Video Editor
+# Worksuite FrameFlow
 
 A free video editor from the Worksuite family (Worksuite OS, Cloud, Desktop, CMS) by Livezen Technologies.
 It runs on macOS, Windows and Linux, and editing and export happen entirely on your device.
@@ -11,8 +11,8 @@ Installers are built by the **Desktop Build** GitHub Actions workflow on every p
 
 | Platform | File |
 | --- | --- |
-| macOS (Apple Silicon and Intel) | `Worksuite-Video-Editor-<version>-mac-arm64.dmg`, `…-mac-x64.dmg` |
-| Windows (x64) | `Worksuite-Video-Editor-<version>-win-x64-setup.exe` |
+| macOS (Apple Silicon and Intel) | `Worksuite-FrameFlow-<version>-mac-arm64.dmg`, `…-mac-x64.dmg` |
+| Windows (x64) | `Worksuite-FrameFlow-<version>-win-x64-setup.exe` |
 | Linux (x64) | `…-linux-x86_64.AppImage`, `…-linux-amd64.deb` |
 
 Open the latest run under **Actions → Desktop Build** and download the artifact for your platform.
@@ -20,7 +20,7 @@ Pushing a tag such as `v1.0.0` also attaches the installers to a GitHub Release.
 
 The builds are not code-signed yet:
 
-- **macOS**: the app is ad-hoc signed but not notarised. Open it once, then go to **System Settings → Privacy & Security** and click **Open Anyway**. If macOS still says the app is damaged, run `xattr -cr "/Applications/Worksuite Video Editor.app"` in Terminal.
+- **macOS**: the app is ad-hoc signed but not notarised. Open it once, then go to **System Settings → Privacy & Security** and click **Open Anyway**. If macOS still says the app is damaged, run `xattr -cr "/Applications/Worksuite FrameFlow.app"` in Terminal.
 - **Windows**: in SmartScreen, click **More info**, then **Run anyway**.
 
 ## Build locally
@@ -58,7 +58,7 @@ The identity server must provide:
 | Setting | Default | Override |
 | --- | --- | --- |
 | Issuer (OIDC discovery) | `https://accounts.worksuitecloud.com` | `WSC_ISSUER` |
-| Client ID (public, no secret) | `worksuite-video` | `WSC_CLIENT_ID` |
+| Client ID (public, no secret) | `worksuite-frameflow` | `WSC_CLIENT_ID` |
 | API (`GET /v1/me`) | `https://api.worksuitecloud.com` | `WSC_API_BASE` |
 | Manage account page | `https://worksuitecloud.com/account` | `WSC_MANAGE_URL` |
 
