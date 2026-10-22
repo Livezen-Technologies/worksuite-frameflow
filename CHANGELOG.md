@@ -8,6 +8,11 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 ## [Unreleased]
 
 ### Added
+- Brand kit sidebar: keep your brand's name, logos (up to 6), colours and heading/body fonts on this computer, ready in every project.
+  - Add a logo as a watermark across the whole video: choose the corner, size and opacity.
+  - Add a heading, body text or a lower third already in your brand fonts and colours.
+  - Click a brand colour to recolour selected text and shapes.
+  - Apply the brand fonts to selected text in one click.
 - Filters sidebar: 19 one-click looks for video and photo clips, in six groups: Portrait, Vivid, Film, Cinematic, Mono and Mood. Examples include Soft Skin, Ceylon Tea, Kodak 200, Teal & Orange, B&W Classic and Night Blue. Each tile previews the look. A strength slider fades a filter in or out, and None removes it. Filters apply to every selected clip in one step and stay editable in the clip's Effects tab.
 - Elements sidebar: 30 ready-styled elements you add at the playhead with one click.
   - Shapes: rectangle, rounded, circle, ring, triangle, hexagon, star, burst, heart

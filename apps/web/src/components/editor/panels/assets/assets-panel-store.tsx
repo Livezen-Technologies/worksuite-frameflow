@@ -14,7 +14,7 @@ import {
 	ColorsIcon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon, type IconSvgElement } from "@hugeicons/react";
-import { Blend, LayoutTemplate } from "lucide-react";
+import { Blend, BriefcaseBusiness, LayoutTemplate } from "lucide-react";
 
 export const TAB_KEYS = [
 	"media",
@@ -26,6 +26,7 @@ export const TAB_KEYS = [
 	"transitions",
 	"filters",
 	"captions",
+	"brand",
 	"adjustment",
 	"settings",
 ] as const;
@@ -78,6 +79,12 @@ export const tabs = {
 	captions: {
 		icon: createHugeiconsIcon({ icon: ClosedCaptionIcon }),
 		label: "Captions",
+	},
+	brand: {
+		icon: ({ className }: { className?: string }) => (
+			<BriefcaseBusiness className={className} strokeWidth={1.75} />
+		),
+		label: "Brand kit",
 	},
 	adjustment: {
 		icon: createHugeiconsIcon({ icon: SlidersHorizontalIcon }),
