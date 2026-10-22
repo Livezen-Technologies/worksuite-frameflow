@@ -15,7 +15,7 @@
   --popover: hsl(0, 0%, 100%);
   --popover-hover: hsl(0, 0%, 96%);
   --popover-foreground: hsl(0 0% 2%);
-  --primary: hsl(200, 90%, 52%);
+  --primary: hsl(218, 73%, 53%); /* #2F6FE0 */
   --primary-foreground: hsl(0, 0%, 100%);
   --secondary: hsl(204, 100%, 97%);
   --secondary-border: hsl(204, 100%, 94%);
@@ -70,49 +70,54 @@
 }
 
 .dark {
-  --background: hsl(0, 0%, 5%);
-  --foreground: hsl(0 0% 87%);
-  --card: hsl(0, 0%, 5%);
-  --card-foreground: hsl(0 0% 87%);
-  --popover: hsl(0, 0%, 5%);
-  --popover-hover: hsl(0, 0%, 13%);
-  --popover-foreground: hsl(0 0% 95%);
-  --secondary: hsl(204, 100%, 12%);
-  --secondary-border: hsl(204, 100%, 15%);
-  --secondary-foreground: hsl(200, 98%, 61%);
-  --muted: hsl(0 0% 20%);
-  --accent: hsl(0, 0%, 14%);
-  --accent-foreground: hsl(0 0% 95%);
-  --border: hsl(0 0% 16%);
-  --input: hsl(0 0% 5%);
-  --ring: hsl(0, 0%, 50%);
-  --caution: hsl(38, 92%, 60%);
+  /* Worksuite palette (see the "Worksuite Video Editor — Screens" design canvas) */
+  --background: hsl(225, 17%, 7%); /* #0F1115 */
+  --foreground: hsl(220, 15%, 92%); /* #E8EAEE */
+  --card: hsl(222, 18%, 9%); /* #13161C */
+  --card-foreground: hsl(220, 15%, 92%);
+  --popover: hsl(222, 18%, 11%); /* #171A21 */
+  --popover-hover: hsl(222, 19%, 14%);
+  --popover-foreground: hsl(220, 15%, 95%);
+  --primary: hsl(218, 100%, 65%); /* #4C8DFF */
+  --primary-foreground: hsl(225, 17%, 7%);
+  --secondary: hsl(219, 29%, 15%); /* #1C2433 */
+  --secondary-border: hsl(219, 29%, 22%);
+  --secondary-foreground: hsl(219, 70%, 87%);
+  --muted: hsl(222, 15%, 20%);
+  --muted-foreground: hsl(218, 13%, 65%); /* #9AA3B2 */
+  --accent: hsl(222, 19%, 14%); /* #1C2029 */
+  --accent-foreground: hsl(220, 15%, 95%);
+  --constructive: hsl(174, 62%, 47%); /* #2EC4B6 */
+  --border: hsl(222, 15%, 17%); /* #262A33 */
+  --input: hsl(222, 18%, 11%);
+  --ring: hsl(218, 100%, 65%);
+  --caution: hsl(38, 91%, 55%); /* #F5A524 */
   --caution-foreground: hsl(0, 0%, 10%);
-  --sidebar-background: hsl(0 0% 8%);
-  --sidebar-foreground: hsl(0 0% 95%);
-  --sidebar-primary: hsl(0 0% 95%);
-  --sidebar-primary-foreground: hsl(0 0% 15%);
-  --sidebar-accent: hsl(0 0% 20%);
-  --sidebar-accent-foreground: hsl(0 0% 95%);
-  --sidebar-border: hsl(0 0% 20%);
-  --sidebar-ring: hsl(0 0% 83.1%);
-  --sidebar: hsl(0 0% 6%);
+  --sidebar-background: hsl(222, 20%, 9%);
+  --sidebar-foreground: hsl(220, 15%, 92%);
+  --sidebar-primary: hsl(218, 100%, 65%);
+  --sidebar-primary-foreground: hsl(225, 17%, 7%);
+  --sidebar-accent: hsl(219, 29%, 15%);
+  --sidebar-accent-foreground: hsl(220, 15%, 95%);
+  --sidebar-border: hsl(222, 15%, 17%);
+  --sidebar-ring: hsl(218, 100%, 65%);
+  --sidebar: hsl(222, 20%, 9%); /* #12151B */
 }
 
 .dark .panel {
-  --background: hsl(0 0% 10%);
-  --foreground: hsl(0 0% 85%);
-  --card: hsl(0, 0%, 10%);
-  --card-foreground: hsl(0 0% 85%);
-  --secondary: hsl(204, 67%, 9%);
-  --secondary-border: hsl(204, 100%, 14%);
-  --secondary-foreground: hsl(200, 98%, 63%);
-  --muted: hsl(0 0% 22%);
-  --accent: hsl(0, 0%, 15%);
-  --accent-foreground: hsl(0 0% 93%);
-  --border: hsl(0 0% 18%);
-  --input: hsl(0 0% 22%);
-  --ring: hsl(0, 0%, 52%);
+  --background: hsl(222, 20%, 9%); /* #12151B */
+  --foreground: hsl(220, 15%, 90%);
+  --card: hsl(222, 18%, 9%);
+  --card-foreground: hsl(220, 15%, 90%);
+  --secondary: hsl(219, 29%, 15%);
+  --secondary-border: hsl(219, 29%, 22%);
+  --secondary-foreground: hsl(219, 70%, 87%);
+  --muted: hsl(222, 15%, 22%);
+  --accent: hsl(222, 19%, 15%);
+  --accent-foreground: hsl(220, 15%, 93%);
+  --border: hsl(222, 15%, 17%);
+  --input: hsl(222, 15%, 21%); /* #2E3440 */
+  --ring: hsl(218, 100%, 65%);
 }
 
 @layer base {

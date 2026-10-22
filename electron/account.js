@@ -27,11 +27,12 @@ let discovery = null;
 let accessToken = null;
 let accessTokenExpiresAt = 0;
 let pending = null;
-let state = { status: "signed-out", profile: null, error: null };
+let state = { status: "signed-out", profile: null, error: null, signIn: null };
 const listeners = new Set();
 
 function setState(next) {
 	state = { ...state, ...next };
+	if (state.status !== "signing-in") state.signIn = null;
 	for (const listener of listeners) listener(state);
 }
 
@@ -206,6 +207,15 @@ function waitForCode({ authorizationEndpoint, params }) {
 				authUrl.searchParams.set(key, value);
 			}
 			pending.url = authUrl.toString();
+			// The authorize URL holds no secret (PKCE keeps the verifier here),
+			// so the UI may show it for "Copy sign-in link".
+			setState({
+				signIn: {
+					url: pending.url,
+					startedAt: Date.now(),
+					expiresAt: Date.now() + SIGN_IN_TIMEOUT_MS,
+				},
+			});
 			shell.openExternal(pending.url);
 		});
 	});
@@ -263,6 +273,10 @@ async function signIn({ signup = false } = {}) {
 
 function cancelSignIn() {
 	pending?.cancel();
+}
+
+function reopenSignIn() {
+	if (pending?.url) shell.openExternal(pending.url);
 }
 
 async function refresh() {
@@ -333,6 +347,7 @@ module.exports = {
 	init,
 	signIn,
 	cancelSignIn,
+	reopenSignIn,
 	signOut,
 	getState,
 	getAccessToken,

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import Link from "next/link";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -24,7 +25,7 @@ function initials(name: string) {
 		.join("");
 }
 
-function formatBytes(bytes: number) {
+export function formatBytes(bytes: number) {
 	const units = ["B", "KB", "MB", "GB", "TB"];
 	let value = bytes;
 	let unit = 0;
@@ -49,19 +50,6 @@ export function AccountMenu() {
 	}, [state?.error]);
 
 	if (!bridge || !state) return null;
-
-	if (state.status === "signing-in") {
-		return (
-			<div className="flex items-center gap-2">
-				<span className="hidden text-sm text-muted-foreground lg:inline">
-					Finish signing in in your browser…
-				</span>
-				<Button variant="outline" onClick={() => bridge.cancelSignIn()}>
-					Cancel
-				</Button>
-			</div>
-		);
-	}
 
 	if (state.status !== "signed-in" || !state.profile) {
 		return (
@@ -124,6 +112,9 @@ export function AccountMenu() {
 					</DropdownMenuLabel>
 				)}
 				<DropdownMenuSeparator />
+				<DropdownMenuItem asChild>
+					<Link href="/settings">Account settings</Link>
+				</DropdownMenuItem>
 				<DropdownMenuItem onClick={() => bridge.manage()}>
 					Manage account
 				</DropdownMenuItem>

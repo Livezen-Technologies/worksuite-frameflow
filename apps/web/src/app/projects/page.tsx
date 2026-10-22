@@ -25,14 +25,6 @@ import { formatTimecode, mediaTimeToSeconds } from "opencut-wasm";
 import { formatDate } from "@/utils/date";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
-	Breadcrumb,
-	BreadcrumbItem,
-	BreadcrumbLink,
-	BreadcrumbList,
-	BreadcrumbPage,
-	BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import {
 	Calendar04Icon,
 	GridViewIcon,
 	LeftToRightListDashIcon,
@@ -68,7 +60,10 @@ import { RenameProjectDialog } from "@/project/components/rename-project-dialog"
 import { cn } from "@/utils/ui";
 import { ChangelogNotification } from "@/changelog/components/changelog-notification";
 import { AccountMenu } from "@/account/components/account-menu";
-import { WelcomeDialog } from "@/account/components/welcome-dialog";
+import { WelcomeScreen } from "@/account/components/welcome-screen";
+import { SignInHandoff } from "@/account/components/sign-in-handoff";
+import { StorageCard } from "@/account/components/storage-card";
+import { BrandMark } from "@/account/components/brand-mark";
 const formatProjectDuration = ({
 	duration,
 }: {
@@ -110,89 +105,111 @@ export default function ProjectsPage() {
 			<MigrationDialog />
 			<StoragePersistenceDialog />
 			<ChangelogNotification />
-			<WelcomeDialog />
+			<WelcomeScreen />
+			<SignInHandoff />
 			<ProjectsHeader />
-			<ProjectsToolbar projectIds={projectsToDisplay.map((p) => p.id)} />
-			<main className="mx-auto px-4 pt-2 pb-6 flex flex-col gap-4">
-				{isLoading || !isInitialized ? (
-					<ProjectsSkeleton />
-				) : projectsToDisplay.length === 0 ? (
-					<EmptyState />
-				) : (
-					<div
-						className={
-							viewMode === "grid"
-								? "xs:grid-cols-2 grid grid-cols-1 gap-6 sm:grid-cols-3 lg:grid-cols-4 px-4"
-								: "flex flex-col"
-						}
-					>
-						{projectsToDisplay.map((project) => (
-							<ProjectItem
-								key={project.id}
-								project={project}
-								allProjectIds={projectsToDisplay.map((p) => p.id)}
-							/>
-						))}
-					</div>
-				)}
-			</main>
+			<div className="flex">
+				<ProjectsSidebar />
+				<div className="min-w-0 flex-1">
+					<ProjectsTitleBar />
+					<ProjectsToolbar projectIds={projectsToDisplay.map((p) => p.id)} />
+					<main className="mx-auto px-4 pt-2 pb-6 flex flex-col gap-4">
+						{isLoading || !isInitialized ? (
+							<ProjectsSkeleton />
+						) : projectsToDisplay.length === 0 ? (
+							<EmptyState />
+						) : (
+							<div
+								className={
+									viewMode === "grid"
+										? "xs:grid-cols-2 grid grid-cols-1 gap-6 sm:grid-cols-3 lg:grid-cols-4 px-4"
+										: "flex flex-col"
+								}
+							>
+								{projectsToDisplay.map((project) => (
+									<ProjectItem
+										key={project.id}
+										project={project}
+										allProjectIds={projectsToDisplay.map((p) => p.id)}
+									/>
+								))}
+							</div>
+						)}
+					</main>
+				</div>
+			</div>
 		</div>
 	);
 }
 
 function ProjectsHeader() {
+	return (
+		<header className="bg-background sticky top-0 z-20 flex h-[60px] shrink-0 items-center gap-4 border-b px-6">
+			<Link href="/projects" className="flex items-center gap-2.5 font-bold">
+				<BrandMark />
+				Worksuite Video
+			</Link>
+			<div className="flex-1" />
+			<SearchBar className="hidden w-[280px] md:block" />
+			<AccountMenu />
+		</header>
+	);
+}
+
+function ProjectsSidebar() {
+	return (
+		<nav
+			aria-label="Projects"
+			className="bg-sidebar sticky top-[60px] hidden h-[calc(100vh-60px)] w-[220px] shrink-0 flex-col gap-1 border-r px-3 py-5 text-sm md:flex"
+		>
+			<Link
+				href="/projects"
+				aria-current="page"
+				className="bg-secondary text-foreground rounded-lg px-3 py-2.5"
+			>
+				Recent projects
+			</Link>
+			<div className="flex-1" />
+			<StorageCard />
+			<Link
+				href="/settings"
+				className="text-muted-foreground hover:bg-accent rounded-lg px-3 py-2.5"
+			>
+				Settings
+			</Link>
+		</nav>
+	);
+}
+
+function ProjectsTitleBar() {
 	const { viewMode, isHydrated, setViewMode } = useProjectsStore();
 
 	return (
-		<header className="sticky top-0 z-20 px-8 bg-background flex flex-col gap-2">
-			<div className="flex items-center justify-between h-16 pt-2">
-				<div className="flex items-center gap-5">
-					<Breadcrumb>
-						<BreadcrumbList>
-							<BreadcrumbItem>
-								<BreadcrumbLink asChild>
-									<Link href="/" className="text-sm sm:text-base">
-										Home
-									</Link>
-								</BreadcrumbLink>
-							</BreadcrumbItem>
-							<BreadcrumbSeparator />
-							<BreadcrumbItem>
-								<BreadcrumbPage className="text-sm sm:text-base font-medium">
-									All projects
-								</BreadcrumbPage>
-							</BreadcrumbItem>
-						</BreadcrumbList>
-					</Breadcrumb>
-
-					<div className="hidden md:flex items-center rounded-md border p-1 px-1.5 h-10">
-						{VIEW_MODE_OPTIONS.map(({ mode, icon, label }) => (
-							<Button
-								key={mode}
-								variant="ghost"
-								size="icon"
-								className={cn(
-									"rounded-sm hover:bg-background",
-									isHydrated && viewMode === mode && "!bg-accent",
-								)}
-								onClick={() => setViewMode({ viewMode: mode })}
-								aria-label={label}
-								aria-pressed={isHydrated && viewMode === mode}
-							>
-								<HugeiconsIcon icon={icon} className="size-4" />
-							</Button>
-						))}
-					</div>
+		<div className="flex flex-col gap-3 px-8 pt-7">
+			<div className="flex flex-wrap items-center gap-3">
+				<h1 className="m-0 flex-1 text-2xl font-bold">Recent projects</h1>
+				<div className="hidden h-10 items-center rounded-[10px] border p-1 px-1.5 md:flex">
+					{VIEW_MODE_OPTIONS.map(({ mode, icon, label }) => (
+						<Button
+							key={mode}
+							variant="ghost"
+							size="icon"
+							className={cn(
+								"rounded-sm",
+								isHydrated && viewMode === mode && "!bg-secondary",
+							)}
+							onClick={() => setViewMode({ viewMode: mode })}
+							aria-label={label}
+							aria-pressed={isHydrated && viewMode === mode}
+						>
+							<HugeiconsIcon icon={icon} className="size-4" />
+						</Button>
+					))}
 				</div>
-
-				<div className="flex items-center gap-3 md:gap-4">
-					<SearchBar className="hidden md:block" />
-					<NewProjectButton />
-					<AccountMenu />
-				</div>
+				<NewProjectButton />
 			</div>
-			<SearchBar className="block md:hidden mb-4" />
-		</header>
+			<SearchBar className="block md:hidden" />
+		</div>
 	);
 }
 
@@ -230,7 +247,7 @@ function ProjectsToolbar({ projectIds }: { projectIds: string[] }) {
 	};
 
 	return (
-		<div className="sticky top-16 z-10 flex items-center justify-between px-6 h-14 pt-2 bg-background">
+		<div className="sticky top-[60px] z-10 flex items-center justify-between px-6 h-14 pt-2 bg-background">
 			<div className="flex items-center gap-2">
 				<Label
 					className="flex items-center gap-3 cursor-pointer px-2"

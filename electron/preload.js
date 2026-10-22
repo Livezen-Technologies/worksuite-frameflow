@@ -3,11 +3,15 @@
 const { contextBridge, ipcRenderer } = require("electron");
 
 contextBridge.exposeInMainWorld("worksuite", {
+	app: {
+		getVersion: () => ipcRenderer.invoke("app:version"),
+	},
 	account: {
 		getState: () => ipcRenderer.invoke("account:get-state"),
 		signIn: () => ipcRenderer.invoke("account:sign-in", { signup: false }),
 		signUp: () => ipcRenderer.invoke("account:sign-in", { signup: true }),
 		cancelSignIn: () => ipcRenderer.invoke("account:cancel"),
+		reopenSignIn: () => ipcRenderer.invoke("account:reopen"),
 		signOut: () => ipcRenderer.invoke("account:sign-out"),
 		manage: () => ipcRenderer.invoke("account:manage"),
 		onChange: (listener) => {

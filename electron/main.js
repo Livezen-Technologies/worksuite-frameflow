@@ -126,6 +126,7 @@ function registerAccountIpc() {
 			return fn(...args);
 		});
 
+	handle("app:version", () => app.getVersion());
 	handle("account:get-state", () => account.getState());
 	handle("account:sign-in", async ({ signup } = {}) => {
 		const result = await account.signIn({ signup });
@@ -139,6 +140,7 @@ function registerAccountIpc() {
 		return result;
 	});
 	handle("account:cancel", () => account.cancelSignIn());
+	handle("account:reopen", () => account.reopenSignIn());
 	handle("account:sign-out", () => account.signOut());
 	handle("account:manage", () => account.openManageAccount());
 

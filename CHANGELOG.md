@@ -10,6 +10,15 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 ### Added
 
 - Changelog and versioning: `CHANGELOG.md`, `scripts/release.mjs` and a CI check that each change updates this file.
+- Full-screen welcome screen on first launch: create a Worksuite account, sign in, or continue without one.
+- "Finish in your browser" screen while signing in, with a countdown, Copy sign-in link, Open browser again and Cancel.
+- Settings page with Account & cloud (profile, plan, cloud storage, manage account, sign out) and About (app version, source code, OpenCut credit).
+- Cloud storage meter in the projects sidebar when signed in.
+
+### Changed
+
+- New dark Worksuite look across the app, matching the "Worksuite Video Editor — Screens" designs. Dark is now the default theme and primary buttons are Worksuite blue.
+- Projects page redesigned: Worksuite Video header with search and account, a sidebar, and a "Recent projects" title bar.
 
 ## [1.0.0] - 2026-10-22
 
