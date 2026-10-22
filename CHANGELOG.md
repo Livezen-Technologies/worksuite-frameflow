@@ -8,6 +8,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 ## [Unreleased]
 
 ### Added
+- Automatic updates from the Worksuite download center. Windows and Linux (AppImage) download new versions in the background and offer "Restart to update". macOS and .deb builds show the new version and open the download center. Settings › Updates has Check for updates, a Stable or Beta channel, and automatic checks you can turn off.
 - LUTs in the Color workspace.
   - Import .cube 3D LUTs one by one, as a ZIP, or as a folder. They run on the GPU with smooth (trilinear) interpolation.
   - Camera LUT library for DJI (Mavic/Air/Mini, Avata, Osmo Action, Osmo Pocket, Ronin), GoPro and Insta360, with D-Log, D-Log M, HLG, GP-Log, Protune Flat and I-Log profiles. Imported vendor LUTs are filed under the right camera from their file name.

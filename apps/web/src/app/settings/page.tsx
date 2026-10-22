@@ -11,9 +11,11 @@ import { formatBytes } from "@/account/components/account-menu";
 import { SignInHandoff } from "@/account/components/sign-in-handoff";
 import { BrandMark } from "@/account/components/brand-mark";
 import { WorkspaceList } from "@/account/components/workspace-switcher";
+import { UpdatesSection } from "@/updates/components/updates-section";
 
 const SECTIONS = [
 	{ id: "account", label: "Account & cloud" },
+	{ id: "updates", label: "Updates" },
 	{ id: "about", label: "About" },
 ] as const;
 
@@ -65,7 +67,15 @@ export default function SettingsPage() {
 				))}
 			</nav>
 			<main className="flex min-w-0 flex-[999_1_560px] flex-col gap-6 p-8 md:px-12">
-				{section === "account" ? <AccountSection /> : <AboutSection />}
+				{section === "account" ? (
+					<AccountSection />
+				) : section === "updates" ? (
+					<Section title="Updates">
+						<UpdatesSection />
+					</Section>
+				) : (
+					<AboutSection />
+				)}
 			</main>
 		</div>
 	);

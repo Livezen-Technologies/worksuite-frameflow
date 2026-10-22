@@ -69,6 +69,7 @@ declare global {
 				show: (filePath: string) => Promise<void>;
 			};
 			cloud?: WorksuiteCloudBridge;
+			updates?: WorksuiteUpdatesBridge;
 		};
 	}
 }
@@ -173,4 +174,39 @@ export interface CloudSyncOperations {
 		args: { assetId: string };
 		value: Uint8Array<ArrayBuffer>;
 	};
+}
+
+export interface UpdateState {
+	status:
+		| "idle"
+		| "checking"
+		| "available"
+		| "downloading"
+		| "ready"
+		| "up-to-date"
+		| "error"
+		| "unsupported";
+	currentVersion: string;
+	version: string | null;
+	notes: string | null;
+	progress: number;
+	error: string | null;
+	/** False on ad-hoc-signed macOS and .deb: updates come from the download center. */
+	selfInstall: boolean;
+	channel: "stable" | "beta";
+	auto: boolean;
+	downloadPage: string;
+	checkedAt: number | null;
+}
+
+export interface WorksuiteUpdatesBridge {
+	getState: () => Promise<UpdateState>;
+	check: () => Promise<UpdateState>;
+	download: () => Promise<UpdateState>;
+	install: () => Promise<void>;
+	configure: (settings: {
+		channel?: UpdateState["channel"];
+		auto?: boolean;
+	}) => Promise<UpdateState>;
+	onChange: (listener: (state: UpdateState) => void) => () => void;
 }

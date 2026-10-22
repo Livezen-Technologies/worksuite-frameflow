@@ -9,6 +9,7 @@ const path = require("node:path");
 const account = require("./account");
 const cloud = require("./cloud-upload");
 const cloudSync = require("./cloud-sync");
+const updates = require("./updater");
 
 const HOST = "127.0.0.1";
 let server = null;
@@ -216,6 +217,11 @@ function registerAccountIpc() {
 		}
 	});
 	handle("cloud:cancel", () => cloud.cancelUpload());
+	handle("updates:get-state", () => updates.getState());
+	handle("updates:check", () => updates.check());
+	handle("updates:download", () => updates.download());
+	handle("updates:install", () => updates.install());
+	handle("updates:configure", (settings) => updates.configure(settings ?? {}));
 	handle("cloud:sync", (operation, args) => cloudSync.run(String(operation), args));
 	handle("clipboard:write", (text) => clipboard.writeText(String(text)));
 	// Only files this session exported can be revealed.
@@ -245,6 +251,7 @@ if (!app.requestSingleInstanceLock()) {
 		.then(() => {
 			registerAccountIpc();
 			account.init();
+			updates.init();
 			return createWindow();
 		})
 		.catch((err) => {

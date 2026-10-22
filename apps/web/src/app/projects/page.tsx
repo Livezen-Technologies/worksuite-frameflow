@@ -70,6 +70,7 @@ import {
 	ProjectCloudBadge,
 } from "@/cloud/components/project-badges";
 import { CloudSyncRunner } from "@/cloud/components/cloud-sync-runner";
+import { UpdatePrompt } from "@/updates/components/update-prompt";
 const formatProjectDuration = ({
 	duration,
 }: {
@@ -159,6 +160,7 @@ function ProjectsHeader() {
 			</Link>
 			<div className="flex-1" />
 			<SearchBar className="hidden w-[280px] md:block" />
+			<UpdatePrompt />
 			<AccountMenu />
 		</header>
 	);

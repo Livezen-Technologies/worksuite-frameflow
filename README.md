@@ -77,3 +77,20 @@ The client must allow loopback redirect URIs (`http://127.0.0.1:<any port>/callb
 Changes are listed in [CHANGELOG.md](CHANGELOG.md). Every change adds a line under **Unreleased**, and CI fails a pull request that doesn't (label it `skip-changelog` for changes with nothing user-facing).
 
 To release, run `node scripts/release.mjs patch` (or `minor`, `major`, or an exact `x.y.z`). It moves the Unreleased notes under the new version and sets the app version in `electron/package.json`. Then commit and push a `v<version>` tag; the Desktop Build workflow attaches the installers to a GitHub Release.
+
+## Auto-update and the download center
+
+The desktop app updates from the Worksuite download center. Each channel is a folder:
+
+```
+https://download.worksuitecloud.com/frameflow/<stable|beta>/
+  latest.yml        Windows feed      Worksuite-FrameFlow-<v>-win-x64-setup.exe (+ .blockmap)
+  latest-linux.yml  Linux feed        Worksuite-FrameFlow-<v>-linux-x86_64.AppImage, .deb
+  latest-mac.yml    macOS feed        Worksuite-FrameFlow-<v>-mac-<arch>.zip / .dmg
+```
+
+- Windows (NSIS) and Linux AppImage download updates in the background and install on restart.
+- macOS builds are ad-hoc signed, so they can't replace themselves. They show the new version and open the download page (`WSC_DOWNLOAD_PAGE`). The same applies to `.deb` installs. Self-updating on macOS needs a Developer ID certificate.
+- Users choose Stable or Beta and turn automatic checks on or off in Settings › Updates.
+- Release tags publish installers and feeds there from CI when these repository secrets are set: `DOWNLOAD_CENTER_BUCKET`, `DOWNLOAD_CENTER_ENDPOINT` (S3/R2 endpoint), `DOWNLOAD_CENTER_KEY_ID` and `DOWNLOAD_CENTER_SECRET`. Tags containing `-beta` go to the beta channel. Feeds are uploaded after the installers.
+- `WSC_UPDATE_URL` overrides the feed base URL, for testing.

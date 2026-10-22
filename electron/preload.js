@@ -21,6 +21,18 @@ contextBridge.exposeInMainWorld("worksuite", {
 			return () => ipcRenderer.removeListener("cloud:progress", handler);
 		},
 	},
+	updates: {
+		getState: () => ipcRenderer.invoke("updates:get-state"),
+		check: () => ipcRenderer.invoke("updates:check"),
+		download: () => ipcRenderer.invoke("updates:download"),
+		install: () => ipcRenderer.invoke("updates:install"),
+		configure: (settings) => ipcRenderer.invoke("updates:configure", settings),
+		onChange: (listener) => {
+			const handler = (_event, state) => listener(state);
+			ipcRenderer.on("updates:changed", handler);
+			return () => ipcRenderer.removeListener("updates:changed", handler);
+		},
+	},
 	account: {
 		getState: () => ipcRenderer.invoke("account:get-state"),
 		signIn: () => ipcRenderer.invoke("account:sign-in", { signup: false }),
