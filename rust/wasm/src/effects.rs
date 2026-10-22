@@ -32,6 +32,19 @@ struct EffectUniformInput {
     value: Vec<f32>,
 }
 
+/// Uploads a 3D LUT (size³ RGBA8 texels in .cube order) for `lut3d:<id>`
+/// passes, both for previews and for the compositor.
+#[wasm_bindgen(js_name = uploadLut)]
+pub fn upload_lut(id: String, size: u32, rgba: Vec<u8>) -> Result<(), JsValue> {
+    crate::gpu::with_gpu_runtime_mut(|runtime| {
+        runtime
+            .effects
+            .upsert_lut(&runtime.context, &id, size, &rgba)
+            .map_err(|error| JsValue::from_str(&error.to_string()))?;
+        crate::compositor::upload_lut_to_compositor(&runtime.context, &id, size, &rgba)
+    })
+}
+
 #[wasm_bindgen(js_name = applyEffectPasses)]
 pub fn apply_effect_passes(options: JsValue) -> Result<wgpu::web_sys::OffscreenCanvas, JsValue> {
     let ApplyEffectPassesOptions {

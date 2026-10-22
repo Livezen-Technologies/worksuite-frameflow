@@ -28,6 +28,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { Button } from "@/components/ui/button";
 import { ChangelogNotification } from "@/changelog/components/changelog-notification";
 import { CloudSyncRunner } from "@/cloud/components/cloud-sync-runner";
+import { FootageWatcher } from "@/lut/components/footage-watcher";
 import {
 	createPreviewOverlayControl,
 	isPreviewOverlayVisible,
@@ -58,6 +59,7 @@ export default function Editor() {
 					<MigrationDialog />
 					<ChangelogNotification />
 					<CloudSyncRunner openProjectId={projectId} />
+					<FootageWatcher />
 				</div>
 			</EditorProvider>
 		</MobileGate>

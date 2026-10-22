@@ -12,6 +12,8 @@ import {
 	intensityToSigma,
 } from "@/effects/definitions/blur";
 import { effectsRegistry, resolveEffectPasses } from "@/effects";
+import { LUT_EFFECT_TYPE } from "@/effects/definitions/lut";
+import { ensureLutUploaded } from "@/lut/library";
 import type { Effect, EffectPass } from "@/effects/types";
 import { getSourceTimeAtClipTime } from "@/retime";
 import {
@@ -133,6 +135,9 @@ function resolveEffectPassGroups({
 				localTime,
 			});
 			const definition = effectsRegistry.get(effect.type);
+			if (effect.type === LUT_EFFECT_TYPE) {
+				ensureLutUploaded(String(resolvedParams.lutId ?? ""));
+			}
 			return resolveEffectPasses({
 				definition,
 				effectParams: resolvedParams,

@@ -326,6 +326,9 @@ export function withFilter({
 }): Effect[] {
 	const rest = (effects ?? []).filter((e) => !isFilterEffect(e));
 	if (!preset) return rest;
+	// A camera LUT is an input transform: it stays ahead of the filter.
+	const cameraLuts = rest.filter((e) => e.id.startsWith("camlut-"));
+	const others = rest.filter((e) => !e.id.startsWith("camlut-"));
 	const factor = strength / 100;
 	const filter: Effect[] = [
 		{
@@ -345,5 +348,5 @@ export function withFilter({
 			params: scale({ params: extra.params, factor }),
 		})),
 	];
-	return [...filter, ...rest];
+	return [...cameraLuts, ...filter, ...others];
 }

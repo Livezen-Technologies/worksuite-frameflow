@@ -62,6 +62,21 @@ pub async fn initialize_gpu() -> Result<(), JsValue> {
     Ok(())
 }
 
+/// Like `with_gpu_runtime`, for actions that change the runtime (e.g. LUTs).
+pub(crate) fn with_gpu_runtime_mut<T>(
+    action: impl FnOnce(&mut GpuRuntime) -> Result<T, JsValue>,
+) -> Result<T, JsValue> {
+    GPU_RUNTIME.with(|runtime| {
+        let mut borrow = runtime.borrow_mut();
+        let Some(gpu_runtime) = borrow.as_mut() else {
+            return Err(JsValue::from_str(
+                "GPU context not initialized. Call initializeGpu() first.",
+            ));
+        };
+        action(gpu_runtime)
+    })
+}
+
 pub(crate) fn with_gpu_runtime<T>(
     action: impl FnOnce(&GpuRuntime) -> Result<T, JsValue>,
 ) -> Result<T, JsValue> {

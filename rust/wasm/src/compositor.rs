@@ -137,6 +137,25 @@ pub fn upload_texture(options: JsValue) -> Result<(), JsValue> {
     })
 }
 
+/// Called by `uploadLut`; a compositor that isn't created yet gets the LUT
+/// when the editor uploads it again on its next use.
+pub(crate) fn upload_lut_to_compositor(
+    context: &gpu::GpuContext,
+    id: &str,
+    size: u32,
+    rgba: &[u8],
+) -> Result<(), JsValue> {
+    COMPOSITOR_RUNTIME.with(|runtime| {
+        if let Some(runtime) = runtime.borrow_mut().as_mut() {
+            runtime
+                .compositor
+                .upsert_lut(context, id, size, rgba)
+                .map_err(|error| JsValue::from_str(&error.to_string()))?;
+        }
+        Ok(())
+    })
+}
+
 #[wasm_bindgen(js_name = releaseTexture)]
 pub fn release_texture(id: String) -> Result<(), JsValue> {
     COMPOSITOR_RUNTIME.with(|runtime| {

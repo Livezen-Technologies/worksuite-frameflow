@@ -288,6 +288,17 @@ impl Compositor {
         self.textures.remove(id);
     }
 
+    /// Makes a 3D LUT available to `lut3d:<id>` effect passes.
+    pub fn upsert_lut(
+        &mut self,
+        context: &GpuContext,
+        id: &str,
+        size: u32,
+        rgba: &[u8],
+    ) -> Result<(), effects::LutError> {
+        self.effects.upsert_lut(context, id, size, rgba)
+    }
+
     /// Composites all frame items into a texture and returns it.
     /// Used on backends that cannot surface-render to an arbitrary canvas (e.g. WebGL).
     pub fn render_frame_to_texture(

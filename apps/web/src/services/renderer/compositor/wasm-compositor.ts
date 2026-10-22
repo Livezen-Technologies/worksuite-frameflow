@@ -7,6 +7,7 @@ import {
 	resizeCompositor,
 	uploadTexture,
 } from "opencut-wasm";
+import { forgetUploadedLuts } from "@/lut/library";
 import {
 	incrementCounter,
 	isRenderPerfEnabled,
@@ -47,6 +48,8 @@ class WasmCompositor {
 	ensureInitialized({ width, height }: { width: number; height: number }) {
 		if (!this.canvas) {
 			initCompositor(width, height);
+			// A new compositor has none of the LUTs uploaded so far.
+			forgetUploadedLuts();
 			this.canvas = getCompositorCanvas();
 			this.initializedSize = { width, height };
 			return;

@@ -24,6 +24,7 @@ import { cn } from "@/utils/ui";
 import { COLOR_LOOKS } from "../looks";
 import { ColorWheel } from "./color-wheel";
 import { ScopesView } from "./scopes-view";
+import { LutSection } from "@/lut/components/lut-section";
 
 const NEUTRAL: ParamValues = Object.fromEntries(
 	colorGradeEffectDefinition.params.map((param) => [param.key, param.default]),
@@ -63,6 +64,7 @@ export function ColorPanel() {
 		return (
 			<PanelView title="Color" actions={actions}>
 				<ScopesIfShown />
+				<LutSection />
 				<p className="text-muted-foreground p-1 text-sm leading-relaxed">
 					Select a video or image clip on the timeline to grade it.
 				</p>
@@ -77,6 +79,7 @@ export function ColorPanel() {
 	return (
 		<PanelView title="Color" actions={actions}>
 			<ScopesIfShown />
+			<LutSection />
 			{grade ? (
 				<GradeControls
 					key={`${track.id}:${element.id}`}

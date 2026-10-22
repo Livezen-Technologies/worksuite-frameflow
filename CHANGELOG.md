@@ -8,6 +8,13 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 ## [Unreleased]
 
 ### Added
+- LUTs in the Color workspace.
+  - Import .cube 3D LUTs one by one, as a ZIP, or as a folder. They run on the GPU with smooth (trilinear) interpolation.
+  - Camera LUT library for DJI (Mavic/Air/Mini, Avata, Osmo Action, Osmo Pocket, Ronin), GoPro and Insta360, with D-Log, D-Log M, HLG, GP-Log, Protune Flat and I-Log profiles. Imported vendor LUTs are filed under the right camera from their file name.
+  - A camera LUT is applied before your grade and filters, with an intensity slider, per clip or for all clips from the same camera.
+  - FrameFlow recognises DJI, GoPro and Insta360 footage when you import it. If the colour profile isn't in the file, it asks once per camera and remembers.
+  - An option applies the matching LUT automatically.
+  - "Get official LUTs" links go to each maker's download page. FrameFlow doesn't include vendor LUT files.
 - Brand kit sidebar: keep your brand's name, logos (up to 6), colours and heading/body fonts on this computer, ready in every project.
   - Add a logo as a watermark across the whole video: choose the corner, size and opacity.
   - Add a heading, body text or a lower third already in your brand fonts and colours.
