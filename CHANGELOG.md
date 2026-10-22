@@ -27,7 +27,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 - The website footer credits OpenCut again; the rebrand had renamed the credit itself.
 
-- macOS no longer says the app "is damaged and can't be opened": the Mac app is now ad-hoc code-signed, and the build checks the signature.
+- macOS no longer says the app "is damaged and can't be opened": the Mac app is now ad-hoc code-signed after packaging, and the build checks the signature. (A first attempt left the app unsigned and failed that check.)
 
 ### Added
 
