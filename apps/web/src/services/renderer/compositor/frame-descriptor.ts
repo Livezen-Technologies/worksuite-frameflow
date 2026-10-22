@@ -385,7 +385,7 @@ function buildMaskArtifacts({
 	mask: LayerMaskDescriptor | null;
 	strokeLayer: FrameItemDescriptor | null;
 } {
-	const mask = node.params.masks?.[0];
+	const mask = node.resolved?.maskOverride ?? node.params.masks?.[0];
 	if (!mask) {
 		return { mask: null, strokeLayer: null };
 	}

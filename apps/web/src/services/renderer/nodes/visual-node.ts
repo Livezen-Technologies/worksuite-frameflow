@@ -1,8 +1,16 @@
+import type { ClipTransitionTiming } from "@/transitions/windows";
 import { BaseNode } from "./base-node";
 import type { Effect, EffectPass } from "@/effects/types";
 import type { Mask } from "@/masks/types";
 import type { BlendMode, Transform } from "@/rendering";
 import type { RetimeConfig, VisualElement } from "@/timeline";
+
+/** A clip's part in the transitions at its edges (see scene-builder). */
+export interface NodeTransitions {
+	timing: ClipTransitionTiming;
+	canvasWidth: number;
+	canvasHeight: number;
+}
 
 export interface VisualNodeParams {
 	duration: number;
@@ -16,6 +24,7 @@ export interface VisualNodeParams {
 	blendMode?: BlendMode;
 	effects?: Effect[];
 	masks?: Mask[];
+	transitions?: NodeTransitions;
 }
 
 export interface ResolvedVisualNodeState {
@@ -23,6 +32,8 @@ export interface ResolvedVisualNodeState {
 	transform: Transform;
 	opacity: number;
 	effectPasses: EffectPass[][];
+	/** Replaces the clip's own mask while a transition reveals it. */
+	maskOverride?: Mask;
 }
 
 export interface ResolvedVisualSourceNodeState extends ResolvedVisualNodeState {

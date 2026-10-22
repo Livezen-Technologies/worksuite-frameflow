@@ -1,5 +1,7 @@
 import type { SceneTracks, TimelineTrack } from "@/timeline";
 import type { MediaAsset } from "@/media/types";
+import { TICKS_PER_SECOND } from "@/wasm";
+import { computeTransitionTimings } from "@/transitions/windows";
 import { RootNode } from "./nodes/root-node";
 import { VideoNode } from "./nodes/video-node";
 import { ImageNode } from "./nodes/image-node";
@@ -45,6 +47,23 @@ function buildTrackNodes({
 
 	for (const track of tracks) {
 		const elements = getVisibleSortedElements({ track });
+		// Transitions join touching video/image clips on the same track.
+		const transitionTimings = computeTransitionTimings({
+			clips: elements.filter(
+				(element) => element.type === "video" || element.type === "image",
+			),
+			ticksPerSecond: TICKS_PER_SECOND,
+		});
+		const transitionsFor = (elementId: string) => {
+			const timing = transitionTimings.get(elementId);
+			return timing && (timing.in || timing.out)
+				? {
+						timing,
+						canvasWidth: canvasSize.width,
+						canvasHeight: canvasSize.height,
+					}
+				: undefined;
+		};
 
 		for (const element of elements) {
 			if (element.type === "effect") {
@@ -82,6 +101,7 @@ function buildTrackNodes({
 							blendMode: readBlendModeFromParams({ params: element.params }),
 							effects: element.effects ?? [],
 							masks: element.masks ?? [],
+							transitions: transitionsFor(element.id),
 						}),
 					);
 				}
@@ -99,6 +119,7 @@ function buildTrackNodes({
 							blendMode: readBlendModeFromParams({ params: element.params }),
 							effects: element.effects ?? [],
 							masks: element.masks ?? [],
+							transitions: transitionsFor(element.id),
 							...(isPreview && {
 								maxSourceSize: PREVIEW_MAX_IMAGE_SIZE,
 							}),

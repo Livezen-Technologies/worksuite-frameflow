@@ -20,6 +20,14 @@ import {
 import { resolveColorAtTime, resolveOpacityAtTime } from "@/animation/values";
 import { resolveTransformAtTime } from "@/rendering/animation-values";
 import { videoCache } from "@/services/video-cache/service";
+import type { Transform } from "@/rendering";
+import type { Mask } from "@/masks/types";
+import { getDefaultBaseMaskParams } from "@/masks/builtin/box-like";
+import {
+	ease,
+	transitionFrame,
+	type TransitionMask,
+} from "@/transitions/frame";
 import type { CanvasRenderer } from "./canvas-renderer";
 import type { AnyBaseNode } from "./nodes/base-node";
 import {
@@ -139,26 +147,34 @@ function resolveVisualState({
 	sourceWidth: number;
 	sourceHeight: number;
 }): ResolvedVisualNodeState | null {
-	const clipTime = context.time - params.timeOffset;
-	if (clipTime < 0 || clipTime >= params.duration) {
+	const sampleTime = getTransitionSampleTime({ params, time: context.time });
+	if (sampleTime === null) {
 		return null;
 	}
 
 	const localTime = getElementLocalTime({
-		timelineTime: context.time,
+		timelineTime: sampleTime,
 		elementStartTime: params.timeOffset,
 		elementDuration: params.duration,
 	});
-	const transform = resolveTransformAtTime({
+	const baseTransform = resolveTransformAtTime({
 		baseTransform: params.transform,
 		animations: params.animations,
 		localTime,
 	});
-	const opacity = resolveOpacityAtTime({
+	const baseOpacity = resolveOpacityAtTime({
 		baseOpacity: params.opacity,
 		animations: params.animations,
 		localTime,
 	});
+	const transition = applyTransitions({
+		params,
+		time: context.time,
+		transform: baseTransform,
+		opacity: baseOpacity,
+		aspect: sourceWidth / Math.max(1, sourceHeight),
+	});
+	const { transform, opacity } = transition;
 	const containScale = Math.min(
 		context.renderer.width / sourceWidth,
 		context.renderer.height / sourceHeight,
@@ -170,18 +186,128 @@ function resolveVisualState({
 		Math.abs(sourceHeight * containScale * transform.scaleY),
 	);
 
+	const effectPasses = resolveEffectPassGroups({
+		effects: params.effects,
+		animations: params.animations,
+		localTime,
+		width: effectWidth,
+		height: effectHeight,
+	});
+	if (transition.blur > 0) {
+		effectPasses.push(
+			buildGaussianBlurPasses({
+				sigmaX: intensityToSigma({
+					intensity: transition.blur,
+					resolution: effectWidth,
+					reference: 1920,
+				}),
+				sigmaY: intensityToSigma({
+					intensity: transition.blur,
+					resolution: effectHeight,
+					reference: 1080,
+				}),
+			}),
+		);
+	}
+
 	return {
 		localTime,
 		transform,
 		opacity,
-		effectPasses: resolveEffectPassGroups({
-			effects: params.effects,
-			animations: params.animations,
-			localTime,
-			width: effectWidth,
-			height: effectHeight,
-		}),
+		effectPasses,
+		...(transition.mask ? { maskOverride: transition.mask } : {}),
 	};
+}
+
+/**
+ * The time to draw a clip at, or null when it isn't on screen. Around a
+ * transition a clip shows past its own edges, holding its first or last
+ * frame (SRS WS-19), so the time is clamped into the clip.
+ */
+function getTransitionSampleTime({
+	params,
+	time,
+}: {
+	params: VisualNodeParams;
+	time: number;
+}): number | null {
+	const start = params.timeOffset;
+	const end = params.timeOffset + params.duration;
+	const timing = params.transitions?.timing;
+	if (
+		time < start - (timing?.holdBefore ?? 0) ||
+		time >= end + (timing?.holdAfter ?? 0)
+	) {
+		return null;
+	}
+	return Math.min(Math.max(time, start), Math.max(start, end - 1));
+}
+
+function applyTransitions({
+	params,
+	time,
+	transform,
+	opacity,
+	aspect,
+}: {
+	params: VisualNodeParams;
+	time: number;
+	transform: Transform;
+	opacity: number;
+	aspect: number;
+}): { transform: Transform; opacity: number; blur: number; mask: Mask | null } {
+	const result = { transform, opacity, blur: 0, mask: null as Mask | null };
+	const transitions = params.transitions;
+	if (!transitions) return result;
+
+	const roles = [
+		["in", transitions.timing.in],
+		["out", transitions.timing.out],
+	] as const;
+	for (const [role, window] of roles) {
+		if (!window || time < window.start || time >= window.end) continue;
+		const { transition } = window;
+		const progress = ease({
+			easing: transition.easing,
+			t: (time - window.start) / Math.max(1, window.end - window.start),
+		});
+		const frame = transitionFrame({
+			type: transition.type,
+			role,
+			progress,
+			direction: transition.direction,
+			aspect,
+		});
+		result.transform = {
+			scaleX: result.transform.scaleX * frame.scale,
+			scaleY: result.transform.scaleY * frame.scale,
+			position: {
+				x:
+					result.transform.position.x + frame.offsetX * transitions.canvasWidth,
+				y:
+					result.transform.position.y +
+					frame.offsetY * transitions.canvasHeight,
+			},
+			rotate: result.transform.rotate + frame.rotate,
+		};
+		result.opacity *= frame.opacity;
+		result.blur = Math.max(result.blur, frame.blur);
+		if (frame.mask) result.mask = transitionMaskToMask(frame.mask);
+	}
+	return result;
+}
+
+function transitionMaskToMask(mask: TransitionMask): Mask {
+	const params = {
+		...getDefaultBaseMaskParams(),
+		centerX: mask.shape === "rectangle" ? mask.centerX : 0,
+		centerY: mask.shape === "rectangle" ? mask.centerY : 0,
+		width: Math.max(mask.width, 0.0001),
+		height: Math.max(mask.height, 0.0001),
+		rotation: 0,
+		scale: 1,
+	};
+	return { id: "transition", type: mask.shape, params };
 }
 
 async function resolveVideoNode({
@@ -191,10 +317,14 @@ async function resolveVideoNode({
 	node: VideoNode;
 	context: ResolveContext;
 }): Promise<ResolvedVisualSourceNodeState | null> {
-	const clipTime = context.time - node.params.timeOffset;
-	if (clipTime < 0 || clipTime >= node.params.duration) {
+	const sampleTime = getTransitionSampleTime({
+		params: node.params,
+		time: context.time,
+	});
+	if (sampleTime === null) {
 		return null;
 	}
+	const clipTime = sampleTime - node.params.timeOffset;
 
 	const sourceTimeTicks =
 		node.params.trimStart +
@@ -205,7 +335,9 @@ async function resolveVideoNode({
 	const frame = await videoCache.getFrameAt({
 		mediaId: node.params.mediaId,
 		file: node.params.file,
-		time: mediaTimeToSeconds({ time: roundMediaTime({ time: sourceTimeTicks }) }),
+		time: mediaTimeToSeconds({
+			time: roundMediaTime({ time: sourceTimeTicks }),
+		}),
 	});
 	if (!frame) {
 		return null;
@@ -426,7 +558,9 @@ async function resolveBackdropSource({
 		const frame = await videoCache.getFrameAt({
 			mediaId: node.params.mediaId,
 			file: node.params.file,
-			time: mediaTimeToSeconds({ time: roundMediaTime({ time: sourceTimeTicks }) }),
+			time: mediaTimeToSeconds({
+				time: roundMediaTime({ time: sourceTimeTicks }),
+			}),
 		});
 		if (!frame) {
 			return null;

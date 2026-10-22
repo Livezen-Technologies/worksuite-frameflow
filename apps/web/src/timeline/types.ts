@@ -1,3 +1,4 @@
+import type { ClipTransition } from "@/transitions/types";
 import type { ElementAnimations } from "@/animation/types";
 import type { Effect } from "@/effects/types";
 import type { Mask } from "@/masks/types";
@@ -122,6 +123,8 @@ export interface VideoElement extends BaseTimelineElement {
 	retime?: RetimeConfig;
 	effects?: Effect[];
 	masks?: Mask[];
+	/** Transition on the cut into this clip from the clip before it. */
+	transitionIn?: ClipTransition;
 }
 
 export interface ImageElement extends BaseTimelineElement {
@@ -130,6 +133,8 @@ export interface ImageElement extends BaseTimelineElement {
 	hidden?: boolean;
 	effects?: Effect[];
 	masks?: Mask[];
+	/** Transition on the cut into this clip from the clip before it. */
+	transitionIn?: ClipTransition;
 }
 
 export interface TextElement extends BaseTimelineElement {
