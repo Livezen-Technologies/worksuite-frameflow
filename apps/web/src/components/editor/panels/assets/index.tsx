@@ -10,6 +10,7 @@ import { Captions } from "@/subtitles/components/assets-view";
 import { ColorPanel } from "@/color/components/color-panel";
 import { TransitionsView } from "@/transitions/components/transitions-view";
 import { MediaView } from "./views/assets";
+import { FiltersView } from "@/filters/components/filters-view";
 import { TemplatesView } from "@/templates/components/templates-view";
 import { SettingsView } from "./views/settings";
 import { SoundsView } from "@/sounds/components/assets-view";
@@ -28,6 +29,7 @@ export function AssetsPanel() {
 		stickers: <ElementsView />,
 		effects: <EffectsView />,
 		transitions: <TransitionsView />,
+		filters: <FiltersView />,
 		captions: <Captions />,
 		adjustment: <ColorPanel />,
 		settings: <SettingsView />,

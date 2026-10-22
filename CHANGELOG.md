@@ -8,6 +8,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 ## [Unreleased]
 
 ### Added
+- Filters sidebar: 19 one-click looks for video and photo clips, in six groups: Portrait, Vivid, Film, Cinematic, Mono and Mood. Examples include Soft Skin, Ceylon Tea, Kodak 200, Teal & Orange, B&W Classic and Night Blue. Each tile previews the look. A strength slider fades a filter in or out, and None removes it. Filters apply to every selected clip in one step and stay editable in the clip's Effects tab.
 - Elements sidebar: 30 ready-styled elements you add at the playhead with one click.
   - Shapes: rectangle, rounded, circle, ring, triangle, hexagon, star, burst, heart
   - Lines & arrows: arrows, lines, dashed line, animated underline

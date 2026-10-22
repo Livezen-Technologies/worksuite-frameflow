@@ -14,7 +14,7 @@ import {
 	ColorsIcon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon, type IconSvgElement } from "@hugeicons/react";
-import { LayoutTemplate } from "lucide-react";
+import { Blend, LayoutTemplate } from "lucide-react";
 
 export const TAB_KEYS = [
 	"media",
@@ -24,6 +24,7 @@ export const TAB_KEYS = [
 	"stickers",
 	"effects",
 	"transitions",
+	"filters",
 	"captions",
 	"adjustment",
 	"settings",
@@ -67,6 +68,12 @@ export const tabs = {
 	transitions: {
 		icon: createHugeiconsIcon({ icon: ArrowRightDoubleIcon }),
 		label: "Transitions",
+	},
+	filters: {
+		icon: ({ className }: { className?: string }) => (
+			<Blend className={className} strokeWidth={1.75} />
+		),
+		label: "Filters",
 	},
 	captions: {
 		icon: createHugeiconsIcon({ icon: ClosedCaptionIcon }),
