@@ -44,7 +44,8 @@ jobs:
       MARBLE_WORKSPACE_KEY: "placeholder"
       FREESOUND_CLIENT_ID: "placeholder"
       FREESOUND_API_KEY: "placeholder"
-      # Unsigned builds until Livezen signing certificates are added as secrets.
+      # No Livezen certificates yet: macOS builds are ad-hoc signed
+      # (electron/package.json "identity": "-"), Windows builds are unsigned.
       CSC_IDENTITY_AUTO_DISCOVERY: "false"
 
     steps:
@@ -77,6 +78,15 @@ jobs:
       - name: Package installers
         working-directory: electron
         run: npm run ${{ matrix.target }}
+
+      - name: Verify macOS signature
+        if: runner.os == 'macOS'
+        working-directory: electron
+        run: |
+          for app in dist/mac*/*.app; do
+            codesign --verify --deep --strict --verbose=2 "$app"
+            codesign -dv "$app" 2>&1 | grep -E "Signature|Identifier"
+          done
 
       - name: Upload installers
         uses: actions/upload-artifact@v4

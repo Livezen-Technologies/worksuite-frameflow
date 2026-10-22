@@ -7,6 +7,10 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+### Fixed
+
+- macOS no longer says the app "is damaged and can't be opened": the Mac app is now ad-hoc code-signed, and the build checks the signature.
+
 ### Added
 
 - Changelog and versioning: `CHANGELOG.md`, `scripts/release.mjs` and a CI check that each change updates this file.

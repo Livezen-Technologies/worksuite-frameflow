@@ -20,7 +20,7 @@ Pushing a tag such as `v1.0.0` also attaches the installers to a GitHub Release.
 
 The builds are not code-signed yet:
 
-- **macOS**: right-click the app, choose **Open**, then confirm.
+- **macOS**: the app is ad-hoc signed but not notarised. Open it once, then go to **System Settings → Privacy & Security** and click **Open Anyway**. If macOS still says the app is damaged, run `xattr -cr "/Applications/Worksuite Video Editor.app"` in Terminal.
 - **Windows**: in SmartScreen, click **More info**, then **Run anyway**.
 
 ## Build locally
