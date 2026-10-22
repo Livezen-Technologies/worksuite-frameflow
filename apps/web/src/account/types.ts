@@ -60,6 +60,14 @@ declare global {
 		worksuite?: {
 			app: { getVersion: () => Promise<string> };
 			account: WorksuiteAccountBridge;
+			files?: {
+				saveExport: (args: {
+					suggestedName: string;
+					data: ArrayBuffer;
+					sideFiles?: { suffix: string; content: string }[];
+				}) => Promise<{ saved: boolean; path?: string }>;
+				show: (filePath: string) => Promise<void>;
+			};
 		};
 	}
 }

@@ -1,291 +1,552 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { TransitionTopIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
+import { canEncodeVideo } from "mediabunny";
+import { Check, Copy, Download, FolderOpen, RotateCcw } from "lucide-react";
+import { toast } from "sonner";
 import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from "@/components/ui/popover";
+	Dialog,
+	DialogBody,
+	DialogContent,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 import { cn } from "@/utils/ui";
 import {
-	getExportMimeType,
-	getExportFileExtension,
 	downloadBuffer,
-} from "@/export";
-import { Check, Copy, Download, RotateCcw } from "lucide-react";
-import {
-	EXPORT_FORMAT_VALUES,
-	EXPORT_QUALITY_VALUES,
-	type ExportFormat,
+	getExportFileExtension,
+	getExportMimeType,
+	EXPORT_CODEC_VALUES,
+	type ExportCodec,
 	type ExportQuality,
 } from "@/export";
+import { captionTracksToCues, cuesToSrt } from "@/export/captions";
 import {
-	Section,
-	SectionContent,
-	SectionHeader,
-	SectionTitle,
-} from "@/components/section";
+	EXPORT_CODEC_LABELS,
+	EXPORT_PRESETS,
+	estimateExportBytes,
+	evenSize,
+	formatBytes,
+	formatForCodec,
+} from "@/export/presets";
 import { useEditor } from "@/editor/use-editor";
-import { DEFAULT_EXPORT_OPTIONS } from "@/export/defaults";
-
-function isExportFormat(value: string): value is ExportFormat {
-	return EXPORT_FORMAT_VALUES.some((formatValue) => formatValue === value);
-}
-
-function isExportQuality(value: string): value is ExportQuality {
-	return EXPORT_QUALITY_VALUES.some((qualityValue) => qualityValue === value);
-}
+import { floatToFrameRate, frameRateToFloat } from "@/fps/utils";
+import { TICKS_PER_SECOND } from "@/wasm";
 
 export function ExportButton() {
-	const [isExportPopoverOpen, setIsExportPopoverOpen] = useState(false);
+	const [open, setOpen] = useState(false);
 	const editor = useEditor();
 	const activeProject = useEditor((e) => e.project.getActiveOrNull());
 	const hasProject = !!activeProject;
 
-	const handlePopoverOpenChange = ({ open }: { open: boolean }) => {
-		if (!open) {
+	const handleOpenChange = (next: boolean) => {
+		if (!next) {
 			editor.project.cancelExport();
 			editor.project.clearExportState();
 		}
-		setIsExportPopoverOpen(open);
+		setOpen(next);
 	};
 
 	return (
-		<Popover
-			open={isExportPopoverOpen}
-			onOpenChange={(open) => handlePopoverOpenChange({ open })}
-		>
-			<PopoverTrigger asChild>
-				<button
-					type="button"
-					className={cn(
-						"flex items-center gap-1.5 rounded-md bg-[#38BDF8] px-[0.12rem] py-[0.12rem] text-white",
-						hasProject ? "cursor-pointer" : "cursor-not-allowed opacity-50",
-					)}
-					onClick={hasProject ? () => setIsExportPopoverOpen(true) : undefined}
-					disabled={!hasProject}
-					onKeyDown={(event) => {
-						if (hasProject && (event.key === "Enter" || event.key === " ")) {
-							event.preventDefault();
-							setIsExportPopoverOpen(true);
-						}
-					}}
-				>
-					<div className="relative flex items-center gap-1.5 rounded-[0.6rem] bg-linear-270 from-[#2567EC] to-[#37B6F7] px-4 py-1 shadow-[0_1px_3px_0px_rgba(0,0,0,0.65)]">
-						<HugeiconsIcon icon={TransitionTopIcon} className="z-50 size-3.5" />
-						<span className="z-50 text-[0.875rem]">Export</span>
-						<div className="absolute top-0 left-0 z-10 flex size-full items-center justify-center rounded-[0.6rem] bg-linear-to-t from-white/0 to-white/50">
-							<div className="absolute top-[0.08rem] z-50 h-[calc(100%-2px)] w-[calc(100%-2px)] rounded-[0.6rem] bg-linear-270 from-[#2567EC] to-[#37B6F7]"></div>
-						</div>
+		<Dialog open={open} onOpenChange={handleOpenChange}>
+			<button
+				type="button"
+				className={cn(
+					"flex items-center gap-1.5 rounded-md bg-[#38BDF8] px-[0.12rem] py-[0.12rem] text-white",
+					hasProject ? "cursor-pointer" : "cursor-not-allowed opacity-50",
+				)}
+				onClick={hasProject ? () => setOpen(true) : undefined}
+				disabled={!hasProject}
+			>
+				<div className="relative flex items-center gap-1.5 rounded-[0.6rem] bg-linear-270 from-[#2567EC] to-[#37B6F7] px-4 py-1 shadow-[0_1px_3px_0px_rgba(0,0,0,0.65)]">
+					<HugeiconsIcon icon={TransitionTopIcon} className="z-50 size-3.5" />
+					<span className="z-50 text-[0.875rem]">Export</span>
+					<div className="absolute top-0 left-0 z-10 flex size-full items-center justify-center rounded-[0.6rem] bg-linear-to-t from-white/0 to-white/50">
+						<div className="absolute top-[0.08rem] z-50 h-[calc(100%-2px)] w-[calc(100%-2px)] rounded-[0.6rem] bg-linear-270 from-[#2567EC] to-[#37B6F7]"></div>
 					</div>
-				</button>
-			</PopoverTrigger>
-			{hasProject && <ExportPopover onOpenChange={setIsExportPopoverOpen} />}
-		</Popover>
+				</div>
+			</button>
+			{hasProject && open && (
+				<ExportDialog onClose={() => handleOpenChange(false)} />
+			)}
+		</Dialog>
 	);
 }
 
-function ExportPopover({
-	onOpenChange,
+function Pill({
+	active,
+	disabled,
+	title,
+	onClick,
+	children,
 }: {
-	onOpenChange: (open: boolean) => void;
+	active: boolean;
+	disabled?: boolean;
+	title?: string;
+	onClick: () => void;
+	children: ReactNode;
 }) {
+	return (
+		<button
+			type="button"
+			disabled={disabled}
+			title={title}
+			onClick={onClick}
+			className={cn(
+				"rounded-md border px-3 py-1 text-xs",
+				active
+					? "border-primary bg-primary/15 text-foreground"
+					: "text-muted-foreground hover:bg-accent",
+				disabled && "cursor-not-allowed opacity-40 hover:bg-transparent",
+			)}
+		>
+			{children}
+		</button>
+	);
+}
+
+function Row({ label, children }: { label: string; children: ReactNode }) {
+	return (
+		<div className="grid grid-cols-[6.5rem_1fr] items-center gap-2">
+			<span className="text-muted-foreground text-xs">{label}</span>
+			<div className="flex flex-wrap items-center gap-1.5">{children}</div>
+		</div>
+	);
+}
+
+const supportedNone: Record<ExportCodec, boolean> = {
+	avc: false,
+	hevc: false,
+	av1: false,
+	vp9: false,
+};
+
+function CheckRow({
+	id,
+	checked,
+	onChange,
+	children,
+}: {
+	id: string;
+	checked: boolean;
+	onChange: (checked: boolean) => void;
+	children: ReactNode;
+}) {
+	return (
+		<div className="flex items-center gap-2">
+			<Checkbox
+				id={id}
+				checked={checked}
+				onCheckedChange={(v) => onChange(!!v)}
+			/>
+			<Label htmlFor={id} className="text-xs font-normal">
+				{children}
+			</Label>
+		</div>
+	);
+}
+
+function formatDuration(seconds: number) {
+	const total = Math.round(seconds);
+	const m = Math.floor(total / 60);
+	const s = total % 60;
+	return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+}
+
+const QUALITY_CHOICES: { value: ExportQuality; label: string }[] = [
+	{ value: "medium", label: "Medium" },
+	{ value: "high", label: "High" },
+	{ value: "very_high", label: "Very high" },
+];
+
+function ExportDialog({ onClose }: { onClose: () => void }) {
 	const editor = useEditor();
-	const activeProject = useEditor((e) => e.project.getActive());
+	const project = useEditor((e) => e.project.getActive());
 	const exportState = useEditor((e) => e.project.getExportState());
-	const { isExporting, progress, result: exportResult } = exportState;
-	const [format, setFormat] = useState<ExportFormat>(
-		DEFAULT_EXPORT_OPTIONS.format,
+	const tracks = useEditor((e) => e.scenes.getActiveScene().tracks);
+	const { isExporting, progress, result } = exportState;
+
+	const projectSize = project.settings.canvasSize;
+	const projectFps = frameRateToFloat(project.settings.fps);
+	const durationSeconds = editor.timeline.getTotalDuration() / TICKS_PER_SECOND;
+	const captionCount = useMemo(
+		() =>
+			captionTracksToCues([...tracks.overlay, tracks.main, ...tracks.audio])
+				.length,
+		[tracks],
 	);
-	const [quality, setQuality] = useState<ExportQuality>(
-		DEFAULT_EXPORT_OPTIONS.quality,
+
+	const [fileName, setFileName] = useState(project.metadata.name);
+	const [preset, setPreset] = useState<string>("project");
+	const [custom, setCustom] = useState({ ...projectSize });
+	const [fps, setFps] = useState(projectFps);
+	const [codec, setCodec] = useState<ExportCodec>("avc");
+	const [quality, setQuality] = useState<ExportQuality>("high");
+	const [includeAudio, setIncludeAudio] = useState(true);
+	const [burnIn, setBurnIn] = useState(true);
+	const [embed, setEmbed] = useState(false);
+	const [saveSrt, setSaveSrt] = useState(false);
+	const [supported, setSupported] = useState<Record<ExportCodec, boolean>>({
+		avc: true,
+		hevc: true,
+		av1: true,
+		vp9: true,
+	});
+	const [savedPath, setSavedPath] = useState<string | null>(null);
+
+	const size = evenSize(
+		preset === "project"
+			? projectSize
+			: preset === "custom"
+				? custom
+				: (EXPORT_PRESETS.find((p) => p.id === preset) ?? projectSize),
 	);
-	const [shouldIncludeAudio, setShouldIncludeAudio] = useState<boolean>(
-		DEFAULT_EXPORT_OPTIONS.includeAudio ?? true,
-	);
+	const format = formatForCodec(codec);
+	const aspectDiffers =
+		Math.abs(
+			size.width / size.height - projectSize.width / projectSize.height,
+		) > 0.01;
+
+	// Not every machine can encode every codec at every size (SRS ED-09).
+	useEffect(() => {
+		let cancelled = false;
+		Promise.all(
+			EXPORT_CODEC_VALUES.map(async (c) => {
+				try {
+					return [c, await canEncodeVideo(c, size)] as const;
+				} catch {
+					return [c, false] as const;
+				}
+			}),
+		).then((entries) => {
+			if (cancelled) return;
+			const next = { ...supportedNone };
+			for (const [c, ok] of entries) next[c] = ok;
+			setSupported(next);
+			setCodec((current) =>
+				next[current]
+					? current
+					: (EXPORT_CODEC_VALUES.find((c) => next[c]) ?? "avc"),
+			);
+		});
+		return () => {
+			cancelled = true;
+		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps -- size is rebuilt each render
+	}, [size.width, size.height]);
+
+	const estimate = estimateExportBytes({
+		...size,
+		fps,
+		seconds: durationSeconds,
+		quality,
+		codec,
+		includeAudio,
+	});
+	const isDesktop = typeof window !== "undefined" && !!window.worksuite?.files;
 
 	const handleExport = async () => {
-		if (!activeProject) return;
-
-		const result = await editor.project.export({
+		setSavedPath(null);
+		const exportResult = await editor.project.export({
 			options: {
 				format,
+				codec,
 				quality,
-				fps: activeProject.settings.fps,
-				includeAudio: shouldIncludeAudio,
+				fps: fps === projectFps ? project.settings.fps : floatToFrameRate(fps),
+				includeAudio,
+				resolution: size,
+				burnInCaptions: burnIn,
+				embedCaptions: embed,
 			},
 		});
-
-		if (result.cancelled) {
+		if (exportResult.cancelled) {
 			editor.project.clearExportState();
 			return;
 		}
+		if (!exportResult.success || !exportResult.buffer) return;
 
-		if (result.success && result.buffer) {
-			downloadBuffer({
-				buffer: result.buffer,
-				filename: `${activeProject.metadata.name}${getExportFileExtension({ format })}`,
-				mimeType: getExportMimeType({ format }),
+		const name = `${fileName.trim() || project.metadata.name}${getExportFileExtension({ format })}`;
+		const srt =
+			saveSrt && exportResult.captions?.length
+				? cuesToSrt(exportResult.captions)
+				: null;
+		const files = window.worksuite?.files;
+		if (files) {
+			const saved = await files.saveExport({
+				suggestedName: name,
+				data: exportResult.buffer,
+				sideFiles: srt ? [{ suffix: ".srt", content: srt }] : [],
 			});
-
 			editor.project.clearExportState();
-			onOpenChange(false);
+			if (saved.saved && saved.path) {
+				setSavedPath(saved.path);
+				toast.success("Export saved");
+			}
+			return;
 		}
+		downloadBuffer({
+			buffer: exportResult.buffer,
+			filename: name,
+			mimeType: getExportMimeType({ format }),
+		});
+		if (srt) {
+			downloadBuffer({
+				buffer: new TextEncoder().encode(srt).buffer,
+				filename: name.replace(/\.[^.]+$/, ".srt"),
+				mimeType: "application/x-subrip",
+			});
+		}
+		editor.project.clearExportState();
+		onClose();
 	};
 
-	const handleCancel = () => {
-		editor.project.cancelExport();
-	};
-
-	return (
-		<PopoverContent className="bg-background mr-4 flex w-80 flex-col p-0">
-			{exportResult && !exportResult.success ? (
+	if (result && !result.success && !result.cancelled) {
+		return (
+			<DialogContent className="max-w-md">
+				<DialogHeader>
+					<DialogTitle>Export failed</DialogTitle>
+				</DialogHeader>
 				<ExportError
-					error={exportResult.error || "Unknown error occurred"}
+					error={result.error || "Unknown error occurred"}
 					onRetry={handleExport}
 				/>
-			) : (
-				<>
-					<div className="flex items-center justify-between p-3 border-b">
-						<h3 className="font-medium text-sm">
-							{isExporting ? "Exporting project" : "Export project"}
-						</h3>
+			</DialogContent>
+		);
+	}
+
+	return (
+		<DialogContent className="max-w-2xl" aria-describedby={undefined}>
+			<DialogHeader className="py-4">
+				<DialogTitle>{isExporting ? "Exporting…" : "Export"}</DialogTitle>
+			</DialogHeader>
+			<DialogBody className="gap-3 py-4">
+				{isExporting ? (
+					<div className="flex flex-col gap-2 py-6">
+						<div className="text-muted-foreground flex justify-between text-sm">
+							<span>
+								{size.width} × {size.height} · {EXPORT_CODEC_LABELS[codec]} ·{" "}
+								{fps} fps
+							</span>
+							<span>{Math.round(progress * 100)}%</span>
+						</div>
+						<Progress value={progress * 100} />
 					</div>
+				) : (
+					<>
+						<div className="flex flex-col gap-1">
+							<Label htmlFor="export-name" className="text-xs">
+								File name
+							</Label>
+							<Input
+								id="export-name"
+								value={fileName}
+								onChange={(e) => setFileName(e.target.value)}
+							/>
+							<p className="text-muted-foreground text-xs" data-export-summary>
+								Duration {formatDuration(durationSeconds)} · Estimated size{" "}
+								{formatBytes(estimate)}
+								{isDesktop ? " · Saving to Videos/Worksuite" : ""}
+							</p>
+						</div>
 
-					<div className="flex flex-col gap-4">
-						{!isExporting && (
-							<>
-								<div className="flex flex-col">
-									<Section
-										collapsible
-										defaultOpen={false}
-										showTopBorder={false}
+						<div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
+							{[
+								{
+									id: "project",
+									label: "Project",
+									detail: `${projectSize.width} × ${projectSize.height}`,
+								},
+								...EXPORT_PRESETS.map((p) => ({
+									id: p.id,
+									label: p.label,
+									detail: `${p.width} × ${p.height}`,
+								})),
+								{ id: "custom", label: "Custom", detail: "Any size" },
+							].map((p) => (
+								<button
+									key={p.id}
+									type="button"
+									onClick={() => setPreset(p.id)}
+									className={cn(
+										"flex flex-col items-start rounded-md border p-2 text-left",
+										preset === p.id
+											? "border-primary bg-primary/10"
+											: "hover:bg-accent",
+									)}
+								>
+									<span className="text-xs font-medium">{p.label}</span>
+									<span className="text-muted-foreground text-[11px]">
+										{p.detail}
+									</span>
+								</button>
+							))}
+						</div>
+
+						<Row label="Resolution">
+							{preset === "custom" ? (
+								<>
+									<Input
+										type="number"
+										className="h-7 w-24"
+										value={custom.width}
+										onChange={(e) =>
+											setCustom((c) => ({
+												...c,
+												width: Math.min(
+													7680,
+													Math.max(2, Number(e.target.value) || 2),
+												),
+											}))
+										}
+									/>
+									<span className="text-muted-foreground text-xs">×</span>
+									<Input
+										type="number"
+										className="h-7 w-24"
+										value={custom.height}
+										onChange={(e) =>
+											setCustom((c) => ({
+												...c,
+												height: Math.min(
+													4320,
+													Math.max(2, Number(e.target.value) || 2),
+												),
+											}))
+										}
+									/>
+								</>
+							) : (
+								<span className="text-xs">
+									{size.width} × {size.height}
+								</span>
+							)}
+							{aspectDiffers && (
+								<span className="text-muted-foreground text-[11px]">
+									Different shape from the project — it will be letterboxed.
+								</span>
+							)}
+						</Row>
+						<Row label="Frame rate">
+							{[...new Set([projectFps, 24, 30, 60])]
+								.sort((a, b) => a - b)
+								.map((value) => (
+									<Pill
+										key={value}
+										active={fps === value}
+										onClick={() => setFps(value)}
 									>
-										<SectionHeader>
-											<SectionTitle>Format</SectionTitle>
-										</SectionHeader>
-										<SectionContent>
-											<RadioGroup
-												value={format}
-												onValueChange={(value) => {
-													if (isExportFormat(value)) {
-														setFormat(value);
-													}
-												}}
-											>
-												<div className="flex items-center space-x-2">
-													<RadioGroupItem value="mp4" id="mp4" />
-													<Label htmlFor="mp4">
-														MP4 (H.264) - Better compatibility
-													</Label>
-												</div>
-												<div className="flex items-center space-x-2">
-													<RadioGroupItem value="webm" id="webm" />
-													<Label htmlFor="webm">
-														WebM (VP9) - Smaller file size
-													</Label>
-												</div>
-											</RadioGroup>
-										</SectionContent>
-									</Section>
+										{Number(value.toFixed(3))} fps
+										{value === projectFps ? " (project)" : ""}
+									</Pill>
+								))}
+						</Row>
+						<Row label="Codec">
+							{EXPORT_CODEC_VALUES.map((c) => (
+								<Pill
+									key={c}
+									active={codec === c}
+									disabled={!supported[c]}
+									title={
+										supported[c]
+											? `${EXPORT_CODEC_LABELS[c]} in ${formatForCodec(c).toUpperCase()}`
+											: `This computer can't encode ${EXPORT_CODEC_LABELS[c]} at ${size.width} × ${size.height}`
+									}
+									onClick={() => setCodec(c)}
+								>
+									{EXPORT_CODEC_LABELS[c]}
+								</Pill>
+							))}
+						</Row>
+						<Row label="Quality">
+							{QUALITY_CHOICES.map((q) => (
+								<Pill
+									key={q.value}
+									active={quality === q.value}
+									onClick={() => setQuality(q.value)}
+								>
+									{q.label}
+								</Pill>
+							))}
+						</Row>
+						<Row label="Audio">
+							<CheckRow
+								id="export-includeAudio"
+								checked={includeAudio}
+								onChange={setIncludeAudio}
+							>
+								Include audio
+							</CheckRow>
+						</Row>
 
-									<Section collapsible defaultOpen={false}>
-										<SectionHeader>
-											<SectionTitle>Quality</SectionTitle>
-										</SectionHeader>
-										<SectionContent>
-											<RadioGroup
-												value={quality}
-												onValueChange={(value) => {
-													if (isExportQuality(value)) {
-														setQuality(value);
-													}
-												}}
-											>
-												<div className="flex items-center space-x-2">
-													<RadioGroupItem value="low" id="low" />
-													<Label htmlFor="low">Low - Smallest file size</Label>
-												</div>
-												<div className="flex items-center space-x-2">
-													<RadioGroupItem value="medium" id="medium" />
-													<Label htmlFor="medium">Medium - Balanced</Label>
-												</div>
-												<div className="flex items-center space-x-2">
-													<RadioGroupItem value="high" id="high" />
-													<Label htmlFor="high">High - Recommended</Label>
-												</div>
-												<div className="flex items-center space-x-2">
-													<RadioGroupItem value="very_high" id="very_high" />
-													<Label htmlFor="very_high">
-														Very high - Largest file size
-													</Label>
-												</div>
-											</RadioGroup>
-										</SectionContent>
-									</Section>
-
-									<Section collapsible defaultOpen={false}>
-										<SectionHeader>
-											<SectionTitle>Audio</SectionTitle>
-										</SectionHeader>
-										<SectionContent>
-											<div className="flex items-center space-x-2">
-												<Checkbox
-													id="include-audio"
-													checked={shouldIncludeAudio}
-													onCheckedChange={(checked) =>
-														setShouldIncludeAudio(!!checked)
-													}
-												/>
-												<Label htmlFor="include-audio">
-													Include audio in export
-												</Label>
-											</div>
-										</SectionContent>
-									</Section>
-								</div>
-
-								<div className="p-3 pt-0">
-									<Button onClick={handleExport} className="w-full gap-2">
-										<Download className="size-4" />
-										Export
-									</Button>
-								</div>
-							</>
+						{captionCount > 0 && (
+							<div className="flex flex-col gap-1.5 rounded-md border p-3">
+								<span className="text-xs font-medium">Subtitles</span>
+								<CheckRow
+									id="export-burnIn"
+									checked={burnIn}
+									onChange={setBurnIn}
+								>
+									Burn in ({captionCount} caption track
+									{captionCount === 1 ? "" : "s"})
+								</CheckRow>
+								<CheckRow id="export-embed" checked={embed} onChange={setEmbed}>
+									Separate track in the video file
+								</CheckRow>
+								<CheckRow
+									id="export-saveSrt"
+									checked={saveSrt}
+									onChange={setSaveSrt}
+								>
+									Also save .srt file (UTF-8)
+								</CheckRow>
+							</div>
 						)}
 
-						{isExporting && (
-							<div className="space-y-4 p-3">
-								<div className="flex flex-col gap-2">
-									<div className="flex items-center justify-between text-center">
-										<p className="text-muted-foreground text-sm">
-											{Math.round(progress * 100)}%
-										</p>
-										<p className="text-muted-foreground text-sm">100%</p>
-									</div>
-									<Progress value={progress * 100} className="w-full" />
-								</div>
-
+						{savedPath && (
+							<div className="flex items-center justify-between gap-2 rounded-md border border-emerald-500/40 bg-emerald-500/10 p-2 text-xs">
+								<span className="truncate">Saved to {savedPath}</span>
 								<Button
 									variant="outline"
-									className="w-full rounded-md"
-									onClick={handleCancel}
+									size="sm"
+									onClick={() => window.worksuite?.files?.show(savedPath)}
 								>
-									Cancel
+									<FolderOpen />
+									Show in folder
 								</Button>
 							</div>
 						)}
-					</div>
-				</>
-			)}
-		</PopoverContent>
+					</>
+				)}
+			</DialogBody>
+			<DialogFooter className="gap-2 py-4">
+				{isExporting ? (
+					<Button
+						variant="outline"
+						onClick={() => editor.project.cancelExport()}
+					>
+						Cancel export
+					</Button>
+				) : (
+					<>
+						<Button variant="outline" onClick={onClose}>
+							{savedPath ? "Close" : "Cancel"}
+						</Button>
+						<Button onClick={handleExport} className="gap-2">
+							<Download className="size-4" />
+							Export video
+						</Button>
+					</>
+				)}
+			</DialogFooter>
+		</DialogContent>
 	);
 }
 

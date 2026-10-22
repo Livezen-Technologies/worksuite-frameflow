@@ -7,6 +7,7 @@ import {
 	BufferTarget,
 	CanvasSource,
 	AudioBufferSource,
+	TextSubtitleSource,
 	QUALITY_LOW,
 	QUALITY_MEDIUM,
 	QUALITY_HIGH,
@@ -17,7 +18,8 @@ import { mediaTimeToSeconds } from "opencut-wasm";
 import { TICKS_PER_SECOND } from "@/wasm";
 import { frameRateToFloat } from "@/fps/utils";
 import type { RootNode } from "./nodes/root-node";
-import type { ExportFormat, ExportQuality } from "@/export";
+import type { ExportCodec, ExportFormat, ExportQuality } from "@/export";
+import { evenSize, fitRect } from "@/export/presets";
 import { CanvasRenderer } from "./canvas-renderer";
 
 type ExportParams = {
@@ -28,6 +30,11 @@ type ExportParams = {
 	quality: ExportQuality;
 	shouldIncludeAudio?: boolean;
 	audioBuffer?: AudioBuffer;
+	codec?: ExportCodec;
+	/** Output size when it differs from the project frame. */
+	outputSize?: { width: number; height: number };
+	/** WebVTT text to embed as a subtitle track. */
+	subtitlesVtt?: string;
 };
 
 const qualityMap = {
@@ -50,6 +57,9 @@ export class SceneExporter extends EventEmitter<SceneExporterEvents> {
 	private quality: ExportQuality;
 	private shouldIncludeAudio: boolean;
 	private audioBuffer?: AudioBuffer;
+	private codec: ExportCodec;
+	private outputSize: { width: number; height: number };
+	private subtitlesVtt?: string;
 
 	private isCancelled = false;
 
@@ -61,6 +71,9 @@ export class SceneExporter extends EventEmitter<SceneExporterEvents> {
 		quality,
 		shouldIncludeAudio,
 		audioBuffer,
+		codec,
+		outputSize,
+		subtitlesVtt,
 	}: ExportParams) {
 		super();
 		this.renderer = new CanvasRenderer({
@@ -73,6 +86,42 @@ export class SceneExporter extends EventEmitter<SceneExporterEvents> {
 		this.quality = quality;
 		this.shouldIncludeAudio = shouldIncludeAudio ?? false;
 		this.audioBuffer = audioBuffer;
+		this.codec = codec ?? (format === "webm" ? "vp9" : "avc");
+		this.outputSize = evenSize(outputSize ?? { width, height });
+		this.subtitlesVtt = subtitlesVtt;
+	}
+
+	/**
+	 * The canvas the encoder reads. When the output size differs from the
+	 * project, each frame is scaled onto a canvas of that size, letterboxed.
+	 */
+	private createEncodeSurface(): {
+		canvas: HTMLCanvasElement;
+		copyFrame: () => void;
+	} {
+		const source = this.renderer.getOutputCanvas();
+		const { width, height } = this.outputSize;
+		if (width === this.renderer.width && height === this.renderer.height) {
+			return { canvas: source, copyFrame: () => {} };
+		}
+		const canvas = document.createElement("canvas");
+		canvas.width = width;
+		canvas.height = height;
+		const ctx = canvas.getContext("2d");
+		if (!ctx) throw new Error("Could not create the export canvas");
+		ctx.imageSmoothingQuality = "high";
+		const rect = fitRect({
+			source: { width: this.renderer.width, height: this.renderer.height },
+			target: { width, height },
+		});
+		return {
+			canvas,
+			copyFrame: () => {
+				ctx.fillStyle = "#000000";
+				ctx.fillRect(0, 0, width, height);
+				ctx.drawImage(source, rect.x, rect.y, rect.width, rect.height);
+			},
+		};
 	}
 
 	cancel(): void {
@@ -99,12 +148,22 @@ export class SceneExporter extends EventEmitter<SceneExporterEvents> {
 			target: new BufferTarget(),
 		});
 
-		const videoSource = new CanvasSource(this.renderer.getOutputCanvas(), {
-			codec: this.format === "webm" ? "vp9" : "avc",
+		const surface = this.createEncodeSurface();
+		const videoSource = new CanvasSource(surface.canvas, {
+			codec: this.codec,
 			bitrate: qualityMap[this.quality],
 		});
 
 		output.addVideoTrack(videoSource, { frameRate: fpsFloat });
+
+		let subtitleSource: TextSubtitleSource | null = null;
+		if (
+			this.subtitlesVtt &&
+			outputFormat.getSupportedSubtitleCodecs().includes("webvtt")
+		) {
+			subtitleSource = new TextSubtitleSource("webvtt");
+			output.addSubtitleTrack(subtitleSource);
+		}
 
 		let audioSource: AudioBufferSource | null = null;
 		if (this.shouldIncludeAudio && this.audioBuffer) {
@@ -134,6 +193,11 @@ export class SceneExporter extends EventEmitter<SceneExporterEvents> {
 			audioSource.close();
 		}
 
+		if (subtitleSource && this.subtitlesVtt) {
+			await subtitleSource.add(this.subtitlesVtt);
+			subtitleSource.close();
+		}
+
 		for (let i = 0; i < frameCount; i++) {
 			if (this.isCancelled) {
 				await output.cancel();
@@ -144,6 +208,7 @@ export class SceneExporter extends EventEmitter<SceneExporterEvents> {
 			const timeTicks = i * ticksPerFrame;
 			const timeSeconds = mediaTimeToSeconds({ time: timeTicks });
 			await this.renderer.render({ node: rootNode, time: timeTicks });
+			surface.copyFrame();
 			await videoSource.add(timeSeconds, 1 / fpsFloat);
 
 			this.emit("progress", i / frameCount);

@@ -4,6 +4,7 @@ const { app, BrowserWindow, shell, dialog, ipcMain } = require("electron");
 const { spawn } = require("node:child_process");
 const net = require("node:net");
 const http = require("node:http");
+const fs = require("node:fs");
 const path = require("node:path");
 const account = require("./account");
 
@@ -117,6 +118,8 @@ async function createWindow() {
 	await win.loadURL(`${origin}/projects`);
 }
 
+const savedExports = new Set();
+
 function registerAccountIpc() {
 	// Only the editor's own origin may drive the account.
 	const fromApp = (event) => event.senderFrame?.url.startsWith(appOrigin);
@@ -144,6 +147,32 @@ function registerAccountIpc() {
 	handle("account:switch-workspace", (id) => account.switchWorkspace(String(id)));
 	handle("account:sign-out", () => account.signOut());
 	handle("account:manage", () => account.openManageAccount());
+
+	// Exports: a native Save dialog, defaulting to Videos/Worksuite. Side files
+	// (e.g. captions .srt) are written next to the video with the same name.
+	handle("files:save-export", async ({ suggestedName, data, sideFiles = [] }) => {
+		const folder = path.join(app.getPath("videos"), "Worksuite");
+		await fs.promises.mkdir(folder, { recursive: true }).catch(() => {});
+		const [win] = BrowserWindow.getAllWindows();
+		const ext = path.extname(String(suggestedName)).slice(1) || "mp4";
+		const result = await dialog.showSaveDialog(win, {
+			defaultPath: path.join(folder, path.basename(String(suggestedName))),
+			filters: [{ name: ext.toUpperCase(), extensions: [ext] }],
+		});
+		if (result.canceled || !result.filePath) return { saved: false };
+		await fs.promises.writeFile(result.filePath, Buffer.from(data));
+		const base = result.filePath.slice(0, -path.extname(result.filePath).length);
+		for (const side of sideFiles) {
+			const suffix = String(side.suffix).replace(/[\\/]/g, "");
+			await fs.promises.writeFile(`${base}${suffix}`, String(side.content), "utf8");
+		}
+		savedExports.add(result.filePath);
+		return { saved: true, path: result.filePath };
+	});
+	// Only files this session exported can be revealed.
+	handle("files:show", (filePath) => {
+		if (savedExports.has(filePath)) shell.showItemInFolder(filePath);
+	});
 
 	account.onChange((state) => {
 		for (const win of BrowserWindow.getAllWindows()) {

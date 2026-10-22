@@ -6,6 +6,10 @@ contextBridge.exposeInMainWorld("worksuite", {
 	app: {
 		getVersion: () => ipcRenderer.invoke("app:version"),
 	},
+	files: {
+		saveExport: (args) => ipcRenderer.invoke("files:save-export", args),
+		show: (filePath) => ipcRenderer.invoke("files:show", filePath),
+	},
 	account: {
 		getState: () => ipcRenderer.invoke("account:get-state"),
 		signIn: () => ipcRenderer.invoke("account:sign-in", { signup: false }),

@@ -1,6 +1,11 @@
 import type { EditorCore } from "@/core";
 import type { RootNode } from "@/services/renderer/nodes/root-node";
 import type { ExportOptions, ExportResult } from "@/export";
+import {
+	captionTracksToCues,
+	cuesToVtt,
+	isCaptionTrack,
+} from "@/export/captions";
 import { CanvasRenderer } from "@/services/renderer/canvas-renderer";
 import { SceneExporter } from "@/services/renderer/scene-exporter";
 import { buildScene } from "@/services/renderer/scene-builder";
@@ -122,7 +127,10 @@ export class RendererManager {
 				return { success: false, error: "Failed to create image" };
 			}
 
-			const timecode = formatTimecode({ time: renderTime, rate: fps })!.replace(/:/g, "-");
+			const timecode = formatTimecode({ time: renderTime, rate: fps })!.replace(
+				/:/g,
+				"-",
+			);
 			const safeName =
 				activeProject.metadata.name.replace(/[<>:"/\\|?*]/g, "-").trim() ||
 				"snapshot";
@@ -147,10 +155,32 @@ export class RendererManager {
 		onProgress?: ({ progress }: { progress: number }) => void;
 		onCancel?: () => boolean;
 	}): Promise<ExportResult> {
-		const { format, quality, fps, includeAudio } = options;
+		const {
+			format,
+			quality,
+			fps,
+			includeAudio,
+			codec,
+			resolution,
+			burnInCaptions = true,
+			embedCaptions = false,
+		} = options;
 
 		try {
-			const tracks = this.editor.scenes.getActiveScene().tracks;
+			const allTracks = this.editor.scenes.getActiveScene().tracks;
+			const captionCues = captionTracksToCues([
+				...allTracks.overlay,
+				allTracks.main,
+				...allTracks.audio,
+			]);
+			const tracks = burnInCaptions
+				? allTracks
+				: {
+						...allTracks,
+						overlay: allTracks.overlay.filter(
+							(track) => !isCaptionTrack(track),
+						),
+					};
 			const mediaAssets = this.editor.media.getAssets();
 			const activeProject = this.editor.project.getActive();
 
@@ -192,6 +222,12 @@ export class RendererManager {
 				quality,
 				shouldIncludeAudio: !!includeAudio,
 				audioBuffer: audioBuffer || undefined,
+				codec,
+				outputSize: resolution,
+				subtitlesVtt:
+					embedCaptions && captionCues[0]?.length
+						? cuesToVtt(captionCues[0])
+						: undefined,
 			});
 
 			exporter.on("progress", (progress) => {
@@ -226,6 +262,7 @@ export class RendererManager {
 				return {
 					success: true,
 					buffer,
+					captions: captionCues.flat().sort((a, b) => a.start - b.start),
 				};
 			} finally {
 				clearInterval(cancelInterval);
