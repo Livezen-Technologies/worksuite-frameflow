@@ -44,4 +44,22 @@ Run `npm start` in `electron/` to open the app without packaging it.
 
 `electron/main.js` starts the bundled Next.js server from `apps/web` on a random `127.0.0.1` port and opens the editor in a window.
 Projects are stored in the app's local IndexedDB. The cloud-backed parts of the upstream website (accounts, feedback, sound search) are offline in the desktop app.
-Worksuite Cloud sign-in is specified in the SRS and is not implemented yet.
+
+## Worksuite Cloud sign-in
+
+The desktop app signs in with Worksuite Cloud using OpenID Connect (Authorization Code + PKCE) in the system browser, with a one-time `127.0.0.1` redirect. An account is optional: editing and export always work without one.
+
+- On first launch the app offers **Create Worksuite account**, **Sign in**, or **Continue without account**. After that, sign-in lives in the top-right of the projects page.
+- The refresh token is encrypted with a key held in the OS keychain (Electron `safeStorage`). The access token stays in memory. Neither is ever passed to the web UI. On a Linux system with no keyring, the session lasts until the app quits.
+- Sign-out revokes the refresh token at Worksuite Cloud and deletes local account data. Projects are not touched.
+
+The identity server must provide:
+
+| Setting | Default | Override |
+| --- | --- | --- |
+| Issuer (OIDC discovery) | `https://accounts.worksuitecloud.com` | `WSC_ISSUER` |
+| Client ID (public, no secret) | `worksuite-video` | `WSC_CLIENT_ID` |
+| API (`GET /v1/me`) | `https://api.worksuitecloud.com` | `WSC_API_BASE` |
+| Manage account page | `https://worksuitecloud.com/account` | `WSC_MANAGE_URL` |
+
+The client must allow loopback redirect URIs (`http://127.0.0.1:<any port>/callback`) and the `authorization_code` and `refresh_token` grants. Sign-up opens with `prompt=create`. Until `/v1/me` exists, the profile comes from the OIDC userinfo endpoint.

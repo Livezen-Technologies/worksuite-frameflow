@@ -67,6 +67,8 @@ import { ProjectInfoDialog } from "@/project/components/project-info-dialog";
 import { RenameProjectDialog } from "@/project/components/rename-project-dialog";
 import { cn } from "@/utils/ui";
 import { ChangelogNotification } from "@/changelog/components/changelog-notification";
+import { AccountMenu } from "@/account/components/account-menu";
+import { WelcomeDialog } from "@/account/components/welcome-dialog";
 const formatProjectDuration = ({
 	duration,
 }: {
@@ -108,6 +110,7 @@ export default function ProjectsPage() {
 			<MigrationDialog />
 			<StoragePersistenceDialog />
 			<ChangelogNotification />
+			<WelcomeDialog />
 			<ProjectsHeader />
 			<ProjectsToolbar projectIds={projectsToDisplay.map((p) => p.id)} />
 			<main className="mx-auto px-4 pt-2 pb-6 flex flex-col gap-4">
@@ -185,6 +188,7 @@ function ProjectsHeader() {
 				<div className="flex items-center gap-3 md:gap-4">
 					<SearchBar className="hidden md:block" />
 					<NewProjectButton />
+					<AccountMenu />
 				</div>
 			</div>
 			<SearchBar className="block md:hidden mb-4" />

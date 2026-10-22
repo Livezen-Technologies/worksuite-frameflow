@@ -1,13 +1,15 @@
 // Worksuite Video Editor desktop shell: runs the bundled Next.js server on a
 // private loopback port and shows it in a window.
-const { app, BrowserWindow, shell, dialog } = require("electron");
+const { app, BrowserWindow, shell, dialog, ipcMain } = require("electron");
 const { spawn } = require("node:child_process");
 const net = require("node:net");
 const http = require("node:http");
 const path = require("node:path");
+const account = require("./account");
 
 const HOST = "127.0.0.1";
 let server = null;
+let appOrigin = null;
 
 function freePort() {
 	return new Promise((resolve, reject) => {
@@ -83,6 +85,7 @@ async function startServer() {
 
 async function createWindow() {
 	const origin = await startServer();
+	appOrigin = origin;
 	const win = new BrowserWindow({
 		width: 1440,
 		height: 900,
@@ -92,7 +95,11 @@ async function createWindow() {
 		backgroundColor: "#0F172A",
 		icon: path.join(__dirname, "build", "icon.png"),
 		autoHideMenuBar: true,
-		webPreferences: { contextIsolation: true, sandbox: true },
+		webPreferences: {
+			contextIsolation: true,
+			sandbox: true,
+			preload: path.join(__dirname, "preload.js"),
+		},
 	});
 
 	// Keep the app on its own origin; open everything else in the system browser.
@@ -110,6 +117,38 @@ async function createWindow() {
 	await win.loadURL(`${origin}/projects`);
 }
 
+function registerAccountIpc() {
+	// Only the editor's own origin may drive the account.
+	const fromApp = (event) => event.senderFrame?.url.startsWith(appOrigin);
+	const handle = (channel, fn) =>
+		ipcMain.handle(channel, (event, ...args) => {
+			if (!fromApp(event)) throw new Error("Not allowed");
+			return fn(...args);
+		});
+
+	handle("account:get-state", () => account.getState());
+	handle("account:sign-in", async ({ signup } = {}) => {
+		const result = await account.signIn({ signup });
+		if (result.ok) {
+			const [win] = BrowserWindow.getAllWindows();
+			if (win) {
+				if (win.isMinimized()) win.restore();
+				win.focus();
+			}
+		}
+		return result;
+	});
+	handle("account:cancel", () => account.cancelSignIn());
+	handle("account:sign-out", () => account.signOut());
+	handle("account:manage", () => account.openManageAccount());
+
+	account.onChange((state) => {
+		for (const win of BrowserWindow.getAllWindows()) {
+			win.webContents.send("account:changed", state);
+		}
+	});
+}
+
 if (!app.requestSingleInstanceLock()) {
 	app.quit();
 } else {
@@ -120,10 +159,17 @@ if (!app.requestSingleInstanceLock()) {
 			win.focus();
 		}
 	});
-	app.whenReady().then(createWindow).catch((err) => {
-		dialog.showErrorBox("Worksuite Video Editor", String(err));
-		app.quit();
-	});
+	app
+		.whenReady()
+		.then(() => {
+			registerAccountIpc();
+			account.init();
+			return createWindow();
+		})
+		.catch((err) => {
+			dialog.showErrorBox("Worksuite Video Editor", String(err));
+			app.quit();
+		});
 }
 
 app.on("before-quit", () => {

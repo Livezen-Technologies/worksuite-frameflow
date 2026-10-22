@@ -37,6 +37,8 @@
     },
     "files": [
       "main.js",
+      "account.js",
+      "preload.js",
       "package.json"
     ],
     "extraResources": [
