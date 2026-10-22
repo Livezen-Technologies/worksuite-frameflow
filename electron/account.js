@@ -20,6 +20,7 @@ const SIGN_IN_TIMEOUT_MS = 10 * 60 * 1000;
 
 const tokenFile = () => path.join(app.getPath("userData"), "account-token.bin");
 const profileFile = () => path.join(app.getPath("userData"), "account-profile.json");
+const workspaceFile = () => path.join(app.getPath("userData"), "account-workspace.json");
 
 const base64url = (buf) => buf.toString("base64url");
 
@@ -81,6 +82,7 @@ function clearLocalSession() {
 	memoryRefreshToken = null;
 	fs.rmSync(tokenFile(), { force: true });
 	fs.rmSync(profileFile(), { force: true });
+	fs.rmSync(workspaceFile(), { force: true });
 }
 
 function decodeJwtPayload(jwt) {
@@ -138,19 +140,78 @@ async function fetchProfile(idTokenClaims) {
 		} catch {}
 	}
 	me = { ...(idTokenClaims || {}), ...(me || {}) };
-	const profile = {
+	const workspaces = normalizeWorkspaces(me);
+	const saved = readJson(workspaceFile())?.id;
+	const workspaceId =
+		(workspaces.some((w) => w.id === saved) && saved) ||
+		(workspaces.some((w) => w.id === me.active_workspace_id) && me.active_workspace_id) ||
+		workspaces[0]?.id ||
+		null;
+	const profile = withActiveWorkspace({
 		id: me.id ?? me.sub ?? null,
 		name: me.name ?? me.given_name ?? me.email ?? "Worksuite member",
 		email: me.email ?? null,
 		picture: me.picture ?? me.avatar_url ?? null,
-		plan: me.plan ?? null,
-		storageQuota: me.storage_quota ?? null,
-		storageUsed: me.storage_used ?? null,
+		account: {
+			plan: me.plan ?? null,
+			storageQuota: me.storage_quota ?? null,
+			storageUsed: me.storage_used ?? null,
+		},
 		features: Array.isArray(me.features) ? me.features : [],
+		workspaces,
+		workspaceId,
 		cachedAt: Date.now(),
-	};
+	});
 	fs.writeFileSync(profileFile(), JSON.stringify(profile), { mode: 0o600 });
 	return profile;
+}
+
+// Worksuite Cloud workspaces: the personal account plus any teams or
+// organisations the user belongs to. /v1/me lists them as
+// `workspaces: [{ id, name, type, role, plan, storage_quota, storage_used }]`.
+function normalizeWorkspaces(me) {
+	if (!Array.isArray(me.workspaces)) return [];
+	return me.workspaces
+		.filter((w) => w && (typeof w.id === "string" || typeof w.id === "number"))
+		.map((w) => ({
+			id: String(w.id),
+			name: typeof w.name === "string" && w.name ? w.name : "Workspace",
+			type: w.type === "personal" ? "personal" : "team",
+			role: typeof w.role === "string" ? w.role : null,
+			plan: w.plan ?? null,
+			storageQuota: w.storage_quota ?? null,
+			storageUsed: w.storage_used ?? null,
+		}));
+}
+
+// Plan and storage shown in the app are the active workspace's, when the
+// server reports them per workspace; otherwise the account's.
+function withActiveWorkspace(profile) {
+	const active = profile.workspaces.find((w) => w.id === profile.workspaceId);
+	return {
+		...profile,
+		plan: active?.plan ?? profile.account.plan,
+		storageQuota: active?.storageQuota ?? profile.account.storageQuota,
+		storageUsed: active?.storageUsed ?? profile.account.storageUsed,
+	};
+}
+
+function switchWorkspace(id) {
+	const profile = state.profile;
+	if (!profile || !profile.workspaces.some((w) => w.id === id)) {
+		throw new Error("That workspace isn't available to this account.");
+	}
+	fs.writeFileSync(workspaceFile(), JSON.stringify({ id }), { mode: 0o600 });
+	const next = withActiveWorkspace({ ...profile, workspaceId: id });
+	fs.writeFileSync(profileFile(), JSON.stringify(next), { mode: 0o600 });
+	setState({ profile: next });
+	return next;
+}
+
+/** Header that scopes Worksuite Cloud API calls to the chosen workspace. */
+function workspaceHeaders() {
+	const id = state.profile?.workspaceId;
+	return id ? { "X-Worksuite-Workspace": id } : {};
 }
 
 function callbackPage(title, message) {
@@ -301,7 +362,18 @@ async function refresh() {
 // Loads the cached profile instantly, then refreshes in the background so
 // app start never waits on the network.
 function init() {
-	const profile = readJson(profileFile());
+	const cached = readJson(profileFile());
+	// Profiles cached before workspaces existed have no workspace fields.
+	const profile = cached && {
+		workspaces: [],
+		workspaceId: null,
+		account: {
+			plan: cached.plan ?? null,
+			storageQuota: cached.storageQuota ?? null,
+			storageUsed: cached.storageUsed ?? null,
+		},
+		...cached,
+	};
 	if (profile && fs.existsSync(tokenFile())) {
 		setState({ status: "signed-in", profile });
 		refresh();
@@ -347,6 +419,8 @@ module.exports = {
 	init,
 	signIn,
 	cancelSignIn,
+	switchWorkspace,
+	workspaceHeaders,
 	reopenSignIn,
 	signOut,
 	getState,

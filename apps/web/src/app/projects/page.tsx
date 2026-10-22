@@ -64,6 +64,7 @@ import { WelcomeScreen } from "@/account/components/welcome-screen";
 import { SignInHandoff } from "@/account/components/sign-in-handoff";
 import { StorageCard } from "@/account/components/storage-card";
 import { BrandMark } from "@/account/components/brand-mark";
+import { WorkspaceSwitcher } from "@/account/components/workspace-switcher";
 const formatProjectDuration = ({
 	duration,
 }: {
@@ -162,6 +163,7 @@ function ProjectsSidebar() {
 			aria-label="Projects"
 			className="bg-sidebar sticky top-[60px] hidden h-[calc(100vh-60px)] w-[220px] shrink-0 flex-col gap-1 border-r px-3 py-5 text-sm md:flex"
 		>
+			<WorkspaceSwitcher />
 			<Link
 				href="/projects"
 				aria-current="page"

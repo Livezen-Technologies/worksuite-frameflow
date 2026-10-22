@@ -4,6 +4,16 @@ export type WorksuiteAccountStatus =
 	| "signed-in"
 	| "expired";
 
+export interface WorksuiteWorkspace {
+	id: string;
+	name: string;
+	type: "personal" | "team";
+	role: string | null;
+	plan: string | null;
+	storageQuota: number | null;
+	storageUsed: number | null;
+}
+
 export interface WorksuiteProfile {
 	id: string | null;
 	name: string;
@@ -13,6 +23,9 @@ export interface WorksuiteProfile {
 	storageQuota: number | null;
 	storageUsed: number | null;
 	features: string[];
+	/** Personal account plus teams/organisations; empty if the server lists none. */
+	workspaces: WorksuiteWorkspace[];
+	workspaceId: string | null;
 }
 
 export interface WorksuiteSignInProgress {
@@ -36,6 +49,7 @@ export interface WorksuiteAccountBridge {
 	signUp: () => Promise<{ ok: boolean; error?: string }>;
 	cancelSignIn: () => Promise<void>;
 	reopenSignIn: () => Promise<void>;
+	switchWorkspace: (id: string) => Promise<WorksuiteProfile>;
 	signOut: () => Promise<void>;
 	manage: () => Promise<void>;
 	onChange: (listener: (state: WorksuiteAccountState) => void) => () => void;

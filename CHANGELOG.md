@@ -9,6 +9,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
+- Change workspace: switch between your personal account and Worksuite Cloud teams from the projects sidebar, the account menu, or Settings → Workspaces. Plan and cloud storage follow the chosen workspace, and the choice is remembered.
+
 - Sinhala and Tamil in the auto-caption language list.
 - Transcript-first captions: "Generate transcript" opens a transcript editor instead of writing captions straight to the timeline. Edit text, split at the cursor, merge, delete, jump the playhead to a segment, find and replace, and mark segments verified. "Build subtitles" unlocks once every segment is verified.
 - Each segment is tagged Sinhala, English or mixed by script.

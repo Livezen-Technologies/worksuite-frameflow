@@ -12,6 +12,7 @@ contextBridge.exposeInMainWorld("worksuite", {
 		signUp: () => ipcRenderer.invoke("account:sign-in", { signup: true }),
 		cancelSignIn: () => ipcRenderer.invoke("account:cancel"),
 		reopenSignIn: () => ipcRenderer.invoke("account:reopen"),
+		switchWorkspace: (id) => ipcRenderer.invoke("account:switch-workspace", id),
 		signOut: () => ipcRenderer.invoke("account:sign-out"),
 		manage: () => ipcRenderer.invoke("account:manage"),
 		onChange: (listener) => {

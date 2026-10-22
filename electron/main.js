@@ -141,6 +141,7 @@ function registerAccountIpc() {
 	});
 	handle("account:cancel", () => account.cancelSignIn());
 	handle("account:reopen", () => account.reopenSignIn());
+	handle("account:switch-workspace", (id) => account.switchWorkspace(String(id)));
 	handle("account:sign-out", () => account.signOut());
 	handle("account:manage", () => account.openManageAccount());
 

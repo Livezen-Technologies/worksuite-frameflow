@@ -10,6 +10,7 @@ import { useWorksuiteAccount } from "@/account/use-worksuite-account";
 import { formatBytes } from "@/account/components/account-menu";
 import { SignInHandoff } from "@/account/components/sign-in-handoff";
 import { BrandMark } from "@/account/components/brand-mark";
+import { WorkspaceList } from "@/account/components/workspace-switcher";
 
 const SECTIONS = [
 	{ id: "account", label: "Account & cloud" },
@@ -143,6 +144,14 @@ function AccountSection() {
 							</Button>
 						</div>
 					</Section>
+					{profile.workspaces.length > 0 && (
+						<Section title="Workspaces">
+							<p className="text-muted-foreground m-0 text-sm">
+								Plan and cloud storage follow the workspace you choose. Projects on this device stay where they are.
+							</p>
+							<WorkspaceList />
+						</Section>
+					)}
 					{profile.storageQuota != null && profile.storageUsed != null && (
 						<Section title="Cloud storage">
 							<div className="text-2xl font-bold">

@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useWorksuiteAccount } from "../use-worksuite-account";
 import type { WorksuiteProfile } from "../types";
+import { WorkspaceRadioItems } from "./workspace-switcher";
 
 function initials(name: string) {
 	return name
@@ -111,6 +112,7 @@ export function AccountMenu() {
 						{storage && <span>{storage}</span>}
 					</DropdownMenuLabel>
 				)}
+				<WorkspaceRadioItems withSeparator />
 				<DropdownMenuSeparator />
 				<DropdownMenuItem asChild>
 					<Link href="/settings">Account settings</Link>

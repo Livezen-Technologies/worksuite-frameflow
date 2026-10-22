@@ -62,9 +62,7 @@ export function WelcomeScreen() {
 					<BrandMark className="size-10 rounded-[10px]" />
 					<div className="text-lg font-bold">
 						Worksuite{" "}
-						<span className="text-muted-foreground font-medium">
-							FrameFlow
-						</span>
+						<span className="text-muted-foreground font-medium">FrameFlow</span>
 					</div>
 				</div>
 				<div className="flex max-w-[520px] flex-col gap-5">

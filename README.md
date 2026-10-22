@@ -64,6 +64,8 @@ The identity server must provide:
 
 The client must allow loopback redirect URIs (`http://127.0.0.1:<any port>/callback`) and the `authorization_code` and `refresh_token` grants. Sign-up opens with `prompt=create`. Until `/v1/me` exists, the profile comes from the OIDC userinfo endpoint.
 
+`/v1/me` may list workspaces as `workspaces: [{ id, name, type: "personal" | "team", role, plan, storage_quota, storage_used }]` with an optional `active_workspace_id`. When it lists more than one, FrameFlow shows a workspace switcher and remembers the choice on the device.
+
 ## Changelog and releases
 
 Changes are listed in [CHANGELOG.md](CHANGELOG.md). Every change adds a line under **Unreleased**, and CI fails a pull request that doesn't (label it `skip-changelog` for changes with nothing user-facing).
