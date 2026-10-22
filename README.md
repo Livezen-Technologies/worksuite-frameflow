@@ -63,3 +63,9 @@ The identity server must provide:
 | Manage account page | `https://worksuitecloud.com/account` | `WSC_MANAGE_URL` |
 
 The client must allow loopback redirect URIs (`http://127.0.0.1:<any port>/callback`) and the `authorization_code` and `refresh_token` grants. Sign-up opens with `prompt=create`. Until `/v1/me` exists, the profile comes from the OIDC userinfo endpoint.
+
+## Changelog and releases
+
+Changes are listed in [CHANGELOG.md](CHANGELOG.md). Every change adds a line under **Unreleased**, and CI fails a pull request that doesn't (label it `skip-changelog` for changes with nothing user-facing).
+
+To release, run `node scripts/release.mjs patch` (or `minor`, `major`, or an exact `x.y.z`). It moves the Unreleased notes under the new version and sets the app version in `electron/package.json`. Then commit and push a `v<version>` tag; the Desktop Build workflow attaches the installers to a GitHub Release.
