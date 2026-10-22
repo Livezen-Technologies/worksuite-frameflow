@@ -1,5 +1,7 @@
 export const LANGUAGES = [
 	{ code: "en", name: "English" },
+	{ code: "si", name: "Sinhala (සිංහල)" },
+	{ code: "ta", name: "Tamil (தமிழ்)" },
 	{ code: "es", name: "Spanish" },
 	{ code: "it", name: "Italian" },
 	{ code: "fr", name: "French" },

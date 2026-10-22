@@ -7,6 +7,15 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+### Added
+
+- Sinhala and Tamil in the auto-caption language list.
+- Transcript-first captions: "Generate transcript" opens a transcript editor instead of writing captions straight to the timeline. Edit text, split at the cursor, merge, delete, jump the playhead to a segment, find and replace, and mark segments verified. "Build subtitles" unlocks once every segment is verified.
+- Each segment is tagged Sinhala, English or mixed by script.
+- Import and export transcripts as SRT, VTT, TXT (one line per segment) or JSON.
+- Subtitles from a transcript follow broadcast limits: up to 2 lines of 42 characters, 1–7 seconds on screen. Lines are broken between words, never inside a Sinhala letter cluster.
+- Noto Sans Sinhala (SIL OFL) is bundled, so Sinhala captions render offline.
+
 ### Changed
 
 - Renamed the app to Worksuite FrameFlow (short name FrameFlow). The bundle ID is now `com.worksuitecloud.frameflow`, the Linux command `worksuite-frameflow`, and the Worksuite Cloud client ID `worksuite-frameflow`. It installs as a new app, so earlier test installs need to sign in again.

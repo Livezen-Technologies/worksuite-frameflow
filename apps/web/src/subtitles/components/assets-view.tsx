@@ -20,7 +20,12 @@ import type {
 } from "@/transcription/types";
 import { transcriptionService } from "@/services/transcription/service";
 import { decodeAudioToFloat32 } from "@/media/audio";
-import { buildCaptionChunks } from "@/transcription/caption";
+import { createTranscript } from "@/transcript/transcript";
+import { useTranscriptStore } from "@/transcript/store";
+import {
+	TRANSCRIPTION_MODELS,
+	DEFAULT_TRANSCRIPTION_MODEL,
+} from "@/transcription/models";
 import { insertCaptionChunksAsTextTrack } from "@/subtitles/insert";
 import { parseSubtitleFile } from "@/subtitles/parse";
 import { Spinner } from "@/components/ui/spinner";
@@ -90,6 +95,10 @@ export function Captions() {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const editor = useEditor();
+	const projectId = useEditor((e) => e.project.getActive().metadata.id);
+	const transcript = useTranscriptStore((s) => s.byProject[projectId] ?? null);
+	const setTranscript = useTranscriptStore((s) => s.setTranscript);
+	const openTranscriptEditor = useTranscriptStore((s) => s.openEditor);
 
 	const isProcessing = processing.status === "processing";
 
@@ -138,13 +147,25 @@ export function Captions() {
 				onProgress: handleProgress,
 			});
 
-			dispatch({ type: "update_step", step: "Generating captions..." });
-			const captionChunks = buildCaptionChunks({ segments: result.segments });
-
-			if (!insertCaptions({ captions: captionChunks })) {
-				dispatch({ type: "fail", error: "No captions were generated" });
+			// Transcript first: the user fixes the text before any captions
+			// reach the timeline.
+			const modelName =
+				TRANSCRIPTION_MODELS.find((m) => m.id === DEFAULT_TRANSCRIPTION_MODEL)
+					?.name ?? "Whisper";
+			const nextTranscript = createTranscript({
+				segments: result.segments,
+				language: selectedLanguage,
+				engine: `Local Whisper ${modelName}`,
+			});
+			if (nextTranscript.segments.length === 0) {
+				dispatch({
+					type: "fail",
+					error: "No speech was found in the timeline audio",
+				});
 				return;
 			}
+			setTranscript({ projectId, transcript: nextTranscript });
+			openTranscriptEditor({ projectId });
 
 			dispatch({ type: "succeed", warnings: [] });
 		} catch (error) {
@@ -309,6 +330,29 @@ export function Captions() {
 						</SectionField>
 					</SectionFields>
 
+					{transcript && (
+						<div className="bg-card flex flex-col gap-2 rounded-lg border p-3">
+							<div className="text-sm font-medium">Transcript</div>
+							<p className="text-muted-foreground m-0 text-xs">
+								{transcript.segments.length} segments ·{" "}
+								{
+									transcript.segments.filter((segment) => segment.verified)
+										.length
+								}{" "}
+								verified
+							</p>
+							<Button
+								type="button"
+								variant="outline"
+								className="bg-accent w-full"
+								onClick={() => openTranscriptEditor({ projectId })}
+								disabled={isProcessing}
+							>
+								Open transcript
+							</Button>
+						</div>
+					)}
+
 					<Button
 						type="button"
 						className="mt-auto w-full"
@@ -316,7 +360,11 @@ export function Captions() {
 						disabled={isProcessing || activeDiagnostics.length > 0}
 					>
 						{isProcessing && <Spinner className="mr-1" />}
-						{isProcessing ? processing.step : "Generate transcript"}
+						{isProcessing
+							? processing.step
+							: transcript
+								? "Generate transcript again"
+								: "Generate transcript"}
 					</Button>
 					{error && (
 						<div className="bg-destructive/10 border-destructive/20 rounded-md border p-3">

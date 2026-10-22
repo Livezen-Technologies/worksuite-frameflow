@@ -1,5 +1,6 @@
 "use client";
 
+import { TranscriptEditor } from "@/transcript/components/transcript-editor";
 import { useParams } from "next/navigation";
 import {
 	ResizablePanelGroup,
@@ -49,6 +50,7 @@ export default function Editor() {
 						<EditorLayout />
 					</div>
 					<Onboarding />
+					<TranscriptEditor />
 					<MigrationDialog />
 					<ChangelogNotification />
 				</div>
