@@ -8,6 +8,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 ## [Unreleased]
 
 ### Added
+- Animation panel for video, image, sticker, graphic and text clips: In, Out and Combo tabs with live preview tiles. In and Out include fade, slides in four directions, zoom, pop, bounce, spin and drop (plus typewriter for text). Combo animations run for the whole clip: pulse, float, wobble, slow zoom, swing and heartbeat. Duration or speed is set with one slider.
 - Team sharing: in a team workspace, open the cloud button on a synced project and choose "Share with team…" to give teammates "Can view" or "Can edit" access, or take it away. Shared projects show who shared them and your access in the project list. Editors sync like the owner. Viewers get the owner's updates, but their own changes stay on their device, with an option to discard them and get the latest.
 - Cloud project sync: turn on "Sync to Worksuite Cloud" from the cloud button in the editor. The project and its media upload in the background, edits sync every few seconds, and newer versions from your other devices download automatically. The project list marks projects as Local or Local + Cloud and lists cloud projects you can download and open. If a project was changed on two devices, both versions are kept and you can open the other one.
 - Share links: when signed in to Worksuite, tick "Upload to Worksuite Cloud and create a share link" in the Export window. The video uploads in parts, with progress and a cancel button. Choose when the link expires (1, 7 or 30 days, or never) and whether viewers may download, then copy the link. Failed parts are retried, and a stopped upload resumes where it left off, even after restarting the app.
@@ -38,6 +39,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 - Noto Sans Sinhala (SIL OFL) is bundled, so Sinhala captions render offline.
 
 ### Changed
+- New look for the editor: a labelled tool sidebar (Media, Audio, Text, Elements, Effects, Transitions, Captions, Color, Settings) and a matching labelled tab rail in the properties panel. The timeline toolbar gets a centred play button with current and total time, and circular zoom buttons. Selected clips get a cyan outline with grip handles.
 - A cleaner, modern Export button.
 
 - Renamed the app to Worksuite FrameFlow (short name FrameFlow). The bundle ID is now `com.worksuitecloud.frameflow`, the Linux command `worksuite-frameflow`, and the Worksuite Cloud client ID `worksuite-frameflow`. It installs as a new app, so earlier test installs need to sign in again.

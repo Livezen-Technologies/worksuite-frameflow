@@ -48,7 +48,10 @@ import {
 	getSourceAudioActionLabel,
 	isSourceAudioSeparated,
 } from "@/timeline/audio-separation";
-import { buildWaveformGainSamples, isElementMuted } from "@/timeline/audio-state";
+import {
+	buildWaveformGainSamples,
+	isElementMuted,
+} from "@/timeline/audio-state";
 import { getTimelinePixelsPerSecond } from "@/timeline";
 import { buildWaveformSourceKey } from "@/media/waveform-summary";
 import { addMediaTime, type MediaTime, TICKS_PER_SECOND } from "@/wasm";
@@ -574,18 +577,19 @@ function ElementInner({
 				</span>
 			)}
 			<div
-				className="absolute inset-0 rounded-sm"
+				className="absolute inset-0 rounded-md"
 				style={
 					isSelected
 						? {
-								boxShadow: `0 0 0 ${ELEMENT_RING_WIDTH_PX}px var(--primary)`,
+								// Cyan selection outline with a soft glow.
+								boxShadow: `0 0 0 ${ELEMENT_RING_WIDTH_PX}px #22D3EE, 0 0 0 ${ELEMENT_RING_WIDTH_PX + 3}px rgba(34, 211, 238, 0.18)`,
 							}
 						: undefined
 				}
 			>
 				<div
 					className={cn(
-						"absolute inset-0 overflow-hidden rounded-sm",
+						"absolute inset-0 overflow-hidden rounded-md",
 						isExpanded && "bg-background",
 					)}
 				>
@@ -664,7 +668,9 @@ function ResizeHandle({
 			onMouseDown={(event) => onResizeStart({ event, element, track, side })}
 			onClick={(event) => event.stopPropagation()}
 			aria-label={`${isLeft ? "Left" : "Right"} resize handle`}
-		></button>
+		>
+			<span className="absolute top-1/2 left-1/2 h-1/2 max-h-5 w-[3px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#22D3EE]" />
+		</button>
 	);
 }
 
@@ -923,7 +929,9 @@ function TextElementContent({
 	return (
 		<div className="flex size-full items-center justify-start pl-2">
 			<span className="truncate text-xs text-white">
-				{typeof element.params.content === "string" ? element.params.content : ""}
+				{typeof element.params.content === "string"
+					? element.params.content
+					: ""}
 			</span>
 		</div>
 	);

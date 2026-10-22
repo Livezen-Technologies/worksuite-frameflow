@@ -1,3 +1,5 @@
+import { hasAnimation } from "@/animation/clip-animation";
+import type { ParamValues } from "@/params";
 import type { SceneTracks, TimelineTrack } from "@/timeline";
 import type { MediaAsset } from "@/media/types";
 import { TICKS_PER_SECOND } from "@/wasm";
@@ -97,6 +99,7 @@ function buildTrackNodes({
 							retime: element.retime,
 							transform: buildTransformFromParams({ params: element.params }),
 							animations: element.animations,
+							clipAnimation: animationParams(element.params),
 							opacity: readOpacityFromParams({ params: element.params }),
 							blendMode: readBlendModeFromParams({ params: element.params }),
 							effects: element.effects ?? [],
@@ -115,6 +118,7 @@ function buildTrackNodes({
 							trimEnd: element.trimEnd,
 							transform: buildTransformFromParams({ params: element.params }),
 							animations: element.animations,
+							clipAnimation: animationParams(element.params),
 							opacity: readOpacityFromParams({ params: element.params }),
 							blendMode: readBlendModeFromParams({ params: element.params }),
 							effects: element.effects ?? [],
@@ -155,6 +159,7 @@ function buildTrackNodes({
 						trimEnd: element.trimEnd,
 						transform: buildTransformFromParams({ params: element.params }),
 						animations: element.animations,
+						clipAnimation: animationParams(element.params),
 						opacity: readOpacityFromParams({ params: element.params }),
 						blendMode: readBlendModeFromParams({ params: element.params }),
 						effects: element.effects ?? [],
@@ -173,6 +178,7 @@ function buildTrackNodes({
 						trimEnd: element.trimEnd,
 						transform: buildTransformFromParams({ params: element.params }),
 						animations: element.animations,
+						clipAnimation: animationParams(element.params),
 						opacity: readOpacityFromParams({ params: element.params }),
 						blendMode: readBlendModeFromParams({ params: element.params }),
 						effects: element.effects ?? [],
@@ -243,6 +249,10 @@ export type BuildSceneParams = {
 	background: TBackground;
 	isPreview?: boolean;
 };
+
+function animationParams(params: ParamValues): ParamValues | undefined {
+	return hasAnimation(params) ? params : undefined;
+}
 
 export function buildScene({
 	canvasSize,

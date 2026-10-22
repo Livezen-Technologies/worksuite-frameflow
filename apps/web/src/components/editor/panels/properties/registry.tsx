@@ -24,11 +24,16 @@ import {
 	DashboardSpeed02Icon,
 } from "@hugeicons/core-free-icons";
 import { ElementParamsTab } from "./components/element-params-tab";
-import { ClipEffectsTab, StandaloneEffectTab } from "@/effects/components/effects-tab";
+import {
+	ClipEffectsTab,
+	StandaloneEffectTab,
+} from "@/effects/components/effects-tab";
 import { MasksTab } from "@/masks/components/masks-tab";
 import { SpeedTab } from "@/speed/components/speed-tab";
 import { GraphicTab } from "@/graphics/components/graphic-tab";
 import { OcShapesIcon } from "@/components/icons";
+import { Sparkles } from "lucide-react";
+import { AnimationTab } from "@/animation/components/animation-tab";
 
 const TRANSFORM_PARAM_KEYS = [
 	"transform.positionX",
@@ -58,7 +63,8 @@ const TEXT_PARAM_KEYS = [
 	"background.paddingY",
 	"background.offsetX",
 	"background.offsetY",
-	...TEXT_STYLE_PARAM_KEYS,
+	// Animation keys live in the Animation tab.
+	...TEXT_STYLE_PARAM_KEYS.filter((key) => !key.startsWith("animation.")),
 ];
 
 export type TabContentProps = {
@@ -178,6 +184,23 @@ function buildClipEffectsTab({
 	};
 }
 
+function buildAnimationTab({
+	element,
+	thumbnail,
+}: {
+	element: TimelineElement;
+	thumbnail?: string | null;
+}): PropertiesTabDef {
+	return {
+		id: "animation",
+		label: "Animation",
+		icon: <Sparkles size={16} />,
+		content: ({ trackId }) => (
+			<AnimationTab element={element} trackId={trackId} thumbnail={thumbnail} />
+		),
+	};
+}
+
 function buildTextTab({ element }: { element: TextElement }): PropertiesTabDef {
 	return {
 		id: "text",
@@ -203,7 +226,9 @@ function buildGraphicTab({
 		id: "graphic",
 		label: "Graphic",
 		icon: <OcShapesIcon size={16} />,
-		content: ({ trackId }) => <GraphicTab element={element} trackId={trackId} />,
+		content: ({ trackId }) => (
+			<GraphicTab element={element} trackId={trackId} />
+		),
 	};
 }
 
@@ -232,6 +257,7 @@ function getTextConfig({
 		tabs: [
 			buildTextTab({ element }),
 			buildTransformTab({ element }),
+			buildAnimationTab({ element }),
 			buildBlendingTab({ element }),
 		],
 	};
@@ -249,6 +275,7 @@ function getVideoConfig({
 		defaultTab: "transform",
 		tabs: [
 			buildTransformTab({ element }),
+			buildAnimationTab({ element, thumbnail: mediaAsset?.thumbnailUrl }),
 			...(showAudioTab ? [buildAudioTab({ element })] : []),
 			buildSpeedTab({ element }),
 			buildBlendingTab({ element }),
@@ -260,13 +287,16 @@ function getVideoConfig({
 
 function getImageConfig({
 	element,
+	thumbnail,
 }: {
 	element: ImageElement;
+	thumbnail?: string | null;
 }): ElementPropertiesConfig {
 	return {
 		defaultTab: "transform",
 		tabs: [
 			buildTransformTab({ element }),
+			buildAnimationTab({ element, thumbnail }),
 			buildBlendingTab({ element }),
 			buildMasksTab({ element }),
 			buildClipEffectsTab({ element }),
@@ -283,6 +313,7 @@ function getStickerConfig({
 		defaultTab: "transform",
 		tabs: [
 			buildTransformTab({ element }),
+			buildAnimationTab({ element }),
 			buildBlendingTab({ element }),
 			buildClipEffectsTab({ element }),
 		],
@@ -299,6 +330,7 @@ function getGraphicConfig({
 		tabs: [
 			buildGraphicTab({ element }),
 			buildTransformTab({ element }),
+			buildAnimationTab({ element }),
 			buildBlendingTab({ element }),
 			buildMasksTab({ element }),
 			buildClipEffectsTab({ element }),
@@ -342,8 +374,13 @@ export function getPropertiesConfig({
 			const mediaAsset = mediaAssets.find((a) => a.id === element.mediaId);
 			return getVideoConfig({ element, mediaAsset });
 		}
-		case "image":
-			return getImageConfig({ element });
+		case "image": {
+			const asset = mediaAssets.find((a) => a.id === element.mediaId);
+			return getImageConfig({
+				element,
+				thumbnail: asset?.thumbnailUrl ?? asset?.url ?? null,
+			});
+		}
 		case "sticker":
 			return getStickerConfig({ element });
 		case "graphic":

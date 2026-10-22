@@ -1,21 +1,12 @@
+import { ANIMATION_PARAMS } from "@/animation/clip-animation";
 import { TEXT_STYLE_PARAMS } from "@/text/style";
-import type {
-	ParamDefinition,
-	ParamValue,
-	ParamValues,
-} from "@/params";
+import type { ParamDefinition, ParamValue, ParamValues } from "@/params";
 import { MIN_TRANSFORM_SCALE } from "@/animation/transform";
 import type { BlendMode } from "@/rendering";
-import type {
-	ElementType,
-	TimelineElement,
-} from "@/timeline";
+import type { ElementType, TimelineElement } from "@/timeline";
 import { DEFAULTS } from "@/timeline/defaults";
 import { VOLUME_DB_MAX, VOLUME_DB_MIN } from "@/timeline/audio-constants";
-import {
-	CORNER_RADIUS_MAX,
-	CORNER_RADIUS_MIN,
-} from "@/text/background";
+import { CORNER_RADIUS_MAX, CORNER_RADIUS_MIN } from "@/text/background";
 
 export type ElementParamDefinition<TKey extends string = string> =
 	ParamDefinition<TKey> & {
@@ -47,13 +38,7 @@ export class DefinitionRegistry<TKey extends string, TDefinition> {
 		this.entityName = entityName;
 	}
 
-	register({
-		key,
-		definition,
-	}: {
-		key: TKey;
-		definition: TDefinition;
-	}): void {
+	register({ key, definition }: { key: TKey; definition: TDefinition }): void {
 		this.definitions.set(key, definition);
 	}
 
@@ -332,22 +317,33 @@ export const elementParamRegistry = new DefinitionRegistry<
 	readonly ElementParamDefinition[]
 >("element params");
 
+// Clips get the Animation panel's In / Out / Combo params; text has them
+// through TEXT_STYLE_PARAMS.
+const animatedVisualParams = [...visualElementParams, ...ANIMATION_PARAMS];
+
 elementParamRegistry.register({
 	key: "video",
-	definition: [...visualElementParams, ...audioElementParams],
+	definition: [...animatedVisualParams, ...audioElementParams],
 });
-elementParamRegistry.register({ key: "image", definition: visualElementParams });
+elementParamRegistry.register({
+	key: "image",
+	definition: animatedVisualParams,
+});
 elementParamRegistry.register({
 	key: "text",
-	definition: [...textElementParams, ...TEXT_STYLE_PARAMS, ...visualElementParams],
+	definition: [
+		...textElementParams,
+		...TEXT_STYLE_PARAMS,
+		...visualElementParams,
+	],
 });
 elementParamRegistry.register({
 	key: "sticker",
-	definition: visualElementParams,
+	definition: animatedVisualParams,
 });
 elementParamRegistry.register({
 	key: "graphic",
-	definition: visualElementParams,
+	definition: animatedVisualParams,
 });
 elementParamRegistry.register({ key: "audio", definition: audioElementParams });
 elementParamRegistry.register({ key: "effect", definition: [] });
@@ -436,4 +432,3 @@ export function buildElementParamValues({
 	}
 	return values;
 }
-

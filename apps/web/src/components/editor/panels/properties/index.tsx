@@ -1,13 +1,6 @@
 "use client";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Button } from "@/components/ui/button";
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { useEditor } from "@/editor/use-editor";
 import { useElementSelection } from "@/timeline/hooks/element/use-element-selection";
 import { usePropertiesStore } from "./stores/properties-store";
@@ -63,35 +56,33 @@ export function PropertiesPanel() {
 
 	return (
 		<div className="panel bg-background flex h-full overflow-hidden rounded-sm border">
-			<TooltipProvider delayDuration={0}>
-				<div className="flex shrink-0 flex-col gap-0.5 border-r p-1 scrollbar-hidden overflow-y-auto">
-					{visibleTabs.map((tab) => (
-						<Tooltip key={tab.id}>
-							<TooltipTrigger asChild>
-								<Button
-									variant={tab.id === activeTab.id ? "secondary" : "ghost"}
-									size="icon"
-									onClick={() =>
-										setActiveTab({
-											elementType: element.type,
-											tabId: tab.id,
-										})
-									}
-									aria-label={tab.label}
-									className={cn(
-										"shrink-0",
-										"h-8 w-8",
-										tab.id !== activeTab.id && "text-muted-foreground",
-									)}
-								>
-									{tab.icon}
-								</Button>
-							</TooltipTrigger>
-							<TooltipContent side="right">{tab.label}</TooltipContent>
-						</Tooltip>
-					))}
-				</div>
-			</TooltipProvider>
+			<div className="scrollbar-hidden order-last flex shrink-0 flex-col items-center gap-1 overflow-y-auto border-l px-1 py-1.5">
+				{visibleTabs.map((tab) => {
+					const active = tab.id === activeTab.id;
+					return (
+						<button
+							key={tab.id}
+							type="button"
+							aria-label={tab.label}
+							aria-pressed={active}
+							onClick={() =>
+								setActiveTab({ elementType: element.type, tabId: tab.id })
+							}
+							className={cn(
+								"flex w-[4.25rem] shrink-0 flex-col items-center gap-1 rounded-xl px-0.5 py-2 transition-colors [&_svg]:size-[18px]",
+								active
+									? "bg-accent text-foreground"
+									: "text-muted-foreground hover:bg-accent/60 hover:text-foreground",
+							)}
+						>
+							{tab.icon}
+							<span className="w-full truncate text-center text-[10px] leading-tight">
+								{tab.label}
+							</span>
+						</button>
+					);
+				})}
+			</div>
 			<ScrollArea className="flex-1 scrollbar-hidden">
 				{activeTab.content({ trackId: track.id })}
 			</ScrollArea>

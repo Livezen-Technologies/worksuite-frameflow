@@ -34,8 +34,6 @@ import {
 	SnowIcon,
 	ScissorIcon,
 	MagnetIcon,
-	SearchAddIcon,
-	SearchMinusIcon,
 	Copy01Icon,
 	AlignLeftIcon,
 	AlignRightIcon,
@@ -45,6 +43,10 @@ import {
 	Unlink02Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
+import { CircleMinus, CirclePlus, Pause, Play } from "lucide-react";
+import { useEffect, useState } from "react";
+import { formatTimecode } from "opencut-wasm";
+import type { MediaTime } from "@/wasm";
 import { OcRippleIcon } from "@/components/icons";
 import { GraphEditorPopover } from "./graph-editor/popover";
 import { PopoverTrigger } from "@/components/ui/popover";
@@ -69,10 +71,10 @@ export function TimelineToolbar({
 
 	return (
 		<ScrollArea className="scrollbar-hidden">
-			<div className="flex h-10 items-center justify-between border-b px-2 py-1">
+			<div className="grid h-12 grid-cols-[1fr_auto_1fr] items-center gap-3 border-b px-3">
 				<ToolbarLeftSection />
 
-				<SceneSelector />
+				<TransportControls />
 
 				<ToolbarRightSection
 					zoomLevel={zoomLevel}
@@ -245,13 +247,60 @@ function ToolbarLeftSection() {
 	);
 }
 
+/** Play button and "current | total" time, centred like a transport bar. */
+function TransportControls() {
+	const editor = useEditor();
+	const isPlaying = useEditor((e) => e.playback.getIsPlaying());
+	const totalDuration = useEditor((e) => e.timeline.getTotalDuration());
+	const fps = useEditor((e) => e.project.getActive().settings.fps);
+	const [currentTime, setCurrentTime] = useState<MediaTime>(() =>
+		editor.playback.getCurrentTime(),
+	);
+
+	useEffect(() => {
+		const offUpdate = editor.playback.onUpdate(setCurrentTime);
+		const offSeek = editor.playback.onSeek(setCurrentTime);
+		return () => {
+			offUpdate();
+			offSeek();
+		};
+	}, [editor.playback]);
+
+	const format = (time: MediaTime) =>
+		formatTimecode({ time, format: "HH:MM:SS:FF", rate: fps }) ?? "";
+
+	return (
+		<div className="flex items-center gap-3" data-transport>
+			<button
+				type="button"
+				aria-label={isPlaying ? "Pause" : "Play"}
+				onClick={() => invokeAction("toggle-play")}
+				className="bg-foreground text-background flex size-8 items-center justify-center rounded-full shadow-sm transition-transform hover:scale-105 active:scale-95"
+			>
+				{isPlaying ? (
+					<Pause className="size-3.5" fill="currentColor" />
+				) : (
+					<Play className="ml-0.5 size-3.5" fill="currentColor" />
+				)}
+			</button>
+			<div className="flex items-center gap-2 font-mono text-[13px] tabular-nums">
+				<span className="text-foreground font-semibold">
+					{format(currentTime)}
+				</span>
+				<span className="bg-border h-3.5 w-px" />
+				<span className="text-muted-foreground">{format(totalDuration)}</span>
+			</div>
+		</div>
+	);
+}
+
 function SceneSelector() {
 	const editor = useEditor();
 	const currentScene = editor.scenes.getActiveScene();
 
 	return (
 		<div>
-			<SplitButton className="border-foreground/10 border">
+			<SplitButton className="border-foreground/10 h-8 border">
 				<SplitButtonLeft>{currentScene?.name || "No Scene"}</SplitButtonLeft>
 				<SplitButtonSeparator />
 				<ScenesView>
@@ -281,7 +330,7 @@ function ToolbarRightSection({
 	const toggleRippleEditing = useTimelineStore((s) => s.toggleRippleEditing);
 
 	return (
-		<div className="flex items-center gap-1">
+		<div className="flex items-center justify-end gap-1">
 			<TooltipProvider delayDuration={500}>
 				<ToolbarButton
 					icon={<HugeiconsIcon icon={MagnetIcon} />}
@@ -304,9 +353,10 @@ function ToolbarRightSection({
 				<Button
 					variant="text"
 					size="icon"
+					aria-label="Zoom out"
 					onClick={() => onZoom({ direction: "out" })}
 				>
-					<HugeiconsIcon icon={SearchMinusIcon} />
+					<CircleMinus className="size-[18px]" strokeWidth={1.75} />
 				</Button>
 				<Slider
 					className="w-28"
@@ -321,11 +371,15 @@ function ToolbarRightSection({
 				<Button
 					variant="text"
 					size="icon"
+					aria-label="Zoom in"
 					onClick={() => onZoom({ direction: "in" })}
 				>
-					<HugeiconsIcon icon={SearchAddIcon} />
+					<CirclePlus className="size-[18px]" strokeWidth={1.75} />
 				</Button>
 			</div>
+
+			<div className="bg-border mx-1 h-6 w-px" />
+			<SceneSelector />
 		</div>
 	);
 }

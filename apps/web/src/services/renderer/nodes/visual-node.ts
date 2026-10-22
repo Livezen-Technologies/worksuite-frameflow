@@ -1,3 +1,4 @@
+import type { ParamValues } from "@/params";
 import type { ClipTransitionTiming } from "@/transitions/windows";
 import { BaseNode } from "./base-node";
 import type { Effect, EffectPass } from "@/effects/types";
@@ -25,6 +26,8 @@ export interface VisualNodeParams {
 	effects?: Effect[];
 	masks?: Mask[];
 	transitions?: NodeTransitions;
+	/** The element's animation.* params, when it has an In/Out/Combo animation. */
+	clipAnimation?: ParamValues;
 }
 
 export interface ResolvedVisualNodeState {

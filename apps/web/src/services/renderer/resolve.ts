@@ -5,6 +5,7 @@ import {
 	textAnimationState,
 } from "@/text/style";
 import { getElementLocalTime } from "@/animation";
+import { animationState } from "@/animation/clip-animation";
 import { resolveEffectParamsAtTime } from "@/animation/effect-param-channel";
 import {
 	buildGaussianBlurPasses,
@@ -180,7 +181,31 @@ function resolveVisualState({
 		opacity: baseOpacity,
 		aspect: sourceWidth / Math.max(1, sourceHeight),
 	});
-	const { transform, opacity } = transition;
+	// In / Out / Combo animation (Animation panel); travel is the frame size.
+	const animated = params.clipAnimation
+		? animationState({
+				params: params.clipAnimation,
+				localSeconds: (sampleTime - params.timeOffset) / TICKS_PER_SECOND,
+				durationSeconds: params.duration / TICKS_PER_SECOND,
+			})
+		: null;
+	const transform = animated
+		? {
+				...transition.transform,
+				scaleX: transition.transform.scaleX * animated.scale,
+				scaleY: transition.transform.scaleY * animated.scale,
+				rotate: transition.transform.rotate + animated.rotate,
+				position: {
+					x:
+						transition.transform.position.x +
+						animated.offsetX * context.renderer.width,
+					y:
+						transition.transform.position.y +
+						animated.offsetY * context.renderer.height,
+				},
+			}
+		: transition.transform;
+	const opacity = transition.opacity * (animated?.opacity ?? 1);
 	const containScale = Math.min(
 		context.renderer.width / sourceWidth,
 		context.renderer.height / sourceHeight,
@@ -502,8 +527,14 @@ function resolveTextNode({
 			...transform,
 			scaleX: transform.scaleX * animation.scale,
 			scaleY: transform.scaleY * animation.scale,
+			rotate: transform.rotate + animation.rotate,
 			position: {
-				x: transform.position.x,
+				x:
+					transform.position.x +
+					animation.offsetX *
+						measuredText.scaledFontSize *
+						transform.scaleX *
+						3,
 				y:
 					transform.position.y +
 					animation.offsetY * measuredText.scaledFontSize * transform.scaleY,

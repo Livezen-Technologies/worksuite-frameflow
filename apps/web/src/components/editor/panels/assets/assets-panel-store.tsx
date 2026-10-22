@@ -42,7 +42,7 @@ export const tabs = {
 	},
 	sounds: {
 		icon: createHugeiconsIcon({ icon: HeadphonesIcon }),
-		label: "Sounds",
+		label: "Audio",
 	},
 	text: {
 		icon: createHugeiconsIcon({ icon: TextIcon }),
@@ -50,7 +50,7 @@ export const tabs = {
 	},
 	stickers: {
 		icon: createHugeiconsIcon({ icon: Happy01Icon }),
-		label: "Stickers",
+		label: "Elements",
 	},
 	effects: {
 		icon: createHugeiconsIcon({ icon: MagicWand05Icon }),
