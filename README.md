@@ -25,9 +25,12 @@ The builds are not code-signed yet:
 
 ## Build locally
 
-You need [Bun](https://bun.sh) 1.2.18 and Node.js 22.
+You need [Bun](https://bun.sh) 1.2.18, Node.js 22, and Rust with the `wasm32-unknown-unknown` target plus `wasm-bindgen-cli` 0.2.116 (`cargo install wasm-bindgen-cli --version 0.2.116`).
 
 ```sh
+# 0. Build the engine (Rust → WebAssembly) into rust/wasm/pkg
+./scripts/build-wasm.sh
+
 # 1. Build the web editor (see .github/workflows/desktop-build.yml for the env vars it needs)
 cd apps/web && bun install && bun run build
 
@@ -41,6 +44,9 @@ npm run dist:linux   # or dist:mac / dist:win
 Run `npm start` in `electron/` to open the app without packaging it.
 
 ## How it works
+
+The video engine (compositor, effects, color grading) is Rust in `rust/`, compiled to WebAssembly by `scripts/build-wasm.sh`; the web app imports it as `opencut-wasm` from `rust/wasm/pkg`. After changing Rust code, rebuild it and run `bun install` in `apps/web` again so the app picks up the new build.
+
 
 `electron/main.js` starts the bundled Next.js server from `apps/web` on a random `127.0.0.1` port and opens the editor in a window.
 Projects are stored in the app's local IndexedDB. The cloud-backed parts of the upstream website (accounts, feedback, sound search) are offline in the desktop app.

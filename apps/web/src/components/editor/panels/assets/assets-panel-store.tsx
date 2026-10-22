@@ -66,7 +66,7 @@ export const tabs = {
 	},
 	adjustment: {
 		icon: createHugeiconsIcon({ icon: SlidersHorizontalIcon }),
-		label: "Adjustment",
+		label: "Color",
 	},
 	settings: {
 		icon: createHugeiconsIcon({ icon: Settings01Icon }),

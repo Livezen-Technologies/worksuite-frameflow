@@ -29,3 +29,6 @@ rust-migration-notes.md
 
 # Locally built installers
 downloads/
+
+# Engine package built by scripts/build-wasm.sh
+rust/wasm/pkg/

@@ -1,3 +1,4 @@
+import { notifyFrameRendered } from "./frame-taps";
 import type { FrameRate } from "opencut-wasm";
 import type { AnyBaseNode } from "./nodes/base-node";
 import { createCanvasSurface } from "./canvas-utils";
@@ -71,6 +72,7 @@ export class CanvasRenderer {
 			name: "renderFrame",
 			fn: () => wasmCompositor.render(frame),
 		});
+		notifyFrameRendered(wasmCompositor.getCanvas());
 	}
 
 	async renderToCanvas({

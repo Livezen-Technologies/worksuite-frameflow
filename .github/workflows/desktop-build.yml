@@ -51,6 +51,33 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install Rust (wasm target)
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - name: Install wasm-bindgen
+        uses: taiki-e/install-action@v2
+        with:
+          tool: wasm-bindgen@0.2.116
+
+      - name: Cache Rust build
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-wasm-${{ hashFiles('Cargo.lock') }}
+
+      - name: Test the effects engine
+        if: runner.os == 'Linux'
+        run: cargo test -p effects
+
+      - name: Build the engine (opencut-wasm)
+        shell: bash
+        run: ./scripts/build-wasm.sh
+
       - uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76
         with:
           bun-version: 1.2.18

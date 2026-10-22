@@ -171,6 +171,8 @@ function PreviewCanvas({
 		const mount = canvasMountRef.current;
 		if (!mount) return;
 		const outputCanvas = renderer.getOutputCanvas();
+		// Lets tests and tools find the frame being shown.
+		outputCanvas.dataset.previewOutput = "true";
 		outputCanvas.style.display = "block";
 		outputCanvas.style.width = "100%";
 		outputCanvas.style.height = "100%";
