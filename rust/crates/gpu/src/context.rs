@@ -372,6 +372,16 @@ impl GpuContext {
         self.gl_canvas.as_ref()
     }
 
+    /// Forgets the size the shared WebGL canvas surface was last configured
+    /// for, so the next effect render reconfigures it. Needed because the
+    /// compositor reconfigures the same canvas for its own (larger) frames.
+    #[cfg(all(feature = "wasm", target_arch = "wasm32"))]
+    pub fn invalidate_gl_surface_size(&self) {
+        if let Some(cached) = self.gl_surface.borrow_mut().as_mut() {
+            cached.size = (0, 0);
+        }
+    }
+
     pub fn render_texture_to_surface(
         &self,
         texture: &wgpu::Texture,

@@ -13,6 +13,11 @@ class EffectPreviewService {
 	private onReadyCallbacks = new Set<() => void>();
 
 	readonly PREVIEW_SIZE = PREVIEW_SIZE;
+	/**
+	 * Bumped on every thumbnail render. On WebGL the thumbnails draw through
+	 * the compositor's canvas, so the editor preview redraws when this changes.
+	 */
+	generation = 0;
 
 	constructor() {
 		this.loadPreviewImage();
@@ -44,6 +49,7 @@ class EffectPreviewService {
 
 		targetCanvas.width = size;
 		targetCanvas.height = size;
+		this.generation++;
 
 		const source = this.getTestSource({ width: size, height: size });
 		if (!source) {

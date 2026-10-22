@@ -12,11 +12,38 @@ const GAUSSIAN_BLUR_SHADER_SOURCE: &str = include_str!("shaders/gaussian_blur.wg
 const COLOR_GRADE_SHADER_ID: &str = "color-grade";
 const COLOR_GRADE_SHADER_SOURCE: &str = include_str!("shaders/color_grade.wgsl");
 
-/// Every effect shader, by the id the editor names it with.
-const EFFECT_SHADERS: [(&str, &str); 2] = [
-    (GAUSSIAN_BLUR_SHADER_ID, GAUSSIAN_BLUR_SHADER_SOURCE),
-    (COLOR_GRADE_SHADER_ID, COLOR_GRADE_SHADER_SOURCE),
+/// Single-pass effects sharing the `StyliseUniforms` layout (see vignette.wgsl).
+const STYLISE_SHADERS: [(&str, &str); 13] = [
+    ("vignette", include_str!("shaders/vignette.wgsl")),
+    ("film-grain", include_str!("shaders/film_grain.wgsl")),
+    ("rgb-split", include_str!("shaders/rgb_split.wgsl")),
+    ("vhs", include_str!("shaders/vhs.wgsl")),
+    ("glow", include_str!("shaders/glow.wgsl")),
+    ("sharpen", include_str!("shaders/sharpen.wgsl")),
+    ("pixelate", include_str!("shaders/pixelate.wgsl")),
+    ("mirror", include_str!("shaders/mirror.wgsl")),
+    ("wave", include_str!("shaders/wave.wgsl")),
+    ("posterize", include_str!("shaders/posterize.wgsl")),
+    ("invert", include_str!("shaders/invert.wgsl")),
+    ("sepia", include_str!("shaders/sepia.wgsl")),
+    ("edge-detect", include_str!("shaders/edge_detect.wgsl")),
 ];
+
+/// Every effect shader, by the id the editor names it with.
+fn effect_shaders() -> impl Iterator<Item = (&'static str, &'static str)> {
+    [
+        (GAUSSIAN_BLUR_SHADER_ID, GAUSSIAN_BLUR_SHADER_SOURCE),
+        (COLOR_GRADE_SHADER_ID, COLOR_GRADE_SHADER_SOURCE),
+    ]
+    .into_iter()
+    .chain(STYLISE_SHADERS)
+}
+
+fn is_stylise_shader(id: &str) -> bool {
+    STYLISE_SHADERS
+        .iter()
+        .any(|(stylise_id, _)| *stylise_id == id)
+}
 
 pub struct ApplyEffectsOptions<'a> {
     pub source: &'a wgpu::Texture,
@@ -58,6 +85,16 @@ struct EffectUniformBuffer {
     resolution: [f32; 2],
     direction: [f32; 2],
     scalars: [f32; 4],
+}
+
+#[repr(C)]
+#[derive(Clone, Copy, Pod, Zeroable)]
+struct StyliseUniformBuffer {
+    resolution: [f32; 2],
+    time: f32,
+    _pad: f32,
+    p0: [f32; 4],
+    p1: [f32; 4],
 }
 
 #[repr(C)]
@@ -107,15 +144,14 @@ impl EffectPipeline {
                     ],
                     immediate_size: 0,
                 });
-        let pipelines = EFFECT_SHADERS
-            .iter()
+        let pipelines = effect_shaders()
             .map(|(id, source)| {
                 let shader_module =
                     context
                         .device()
                         .create_shader_module(wgpu::ShaderModuleDescriptor {
                             label: Some(id),
-                            source: wgpu::ShaderSource::Wgsl((*source).into()),
+                            source: wgpu::ShaderSource::Wgsl(source.into()),
                         });
                 let pipeline =
                     context
@@ -292,6 +328,9 @@ fn pack_effect_uniforms(
 ) -> Result<Vec<u8>, EffectsError> {
     match pass.shader.as_str() {
         COLOR_GRADE_SHADER_ID => Ok(bytemuck::bytes_of(&pack_color_grade_uniforms(pass)?).to_vec()),
+        id if is_stylise_shader(id) => {
+            Ok(bytemuck::bytes_of(&pack_stylise_uniforms(pass, width, height)?).to_vec())
+        }
         _ => Ok(bytemuck::bytes_of(&pack_blur_uniforms(pass, width, height)?).to_vec()),
     }
 }
@@ -314,6 +353,34 @@ fn pack_color_grade_uniforms(pass: &EffectPass) -> Result<ColorGradeUniformBuffe
         offset: read_vec4_uniform(pass, "u_offset")?,
         tone: read_vec4_uniform(pass, "u_tone")?,
         balance: read_vec4_uniform(pass, "u_balance")?,
+    })
+}
+
+const STYLISE_UNIFORMS: [&str; 3] = ["u_time", "u_p0", "u_p1"];
+
+/// `u_p0` is required; `u_p1` and `u_time` default to zero.
+fn pack_stylise_uniforms(
+    pass: &EffectPass,
+    width: u32,
+    height: u32,
+) -> Result<StyliseUniformBuffer, EffectsError> {
+    reject_unknown_uniforms(pass, &STYLISE_UNIFORMS)?;
+    let time = if pass.uniforms.contains_key("u_time") {
+        read_number_uniform(pass, "u_time")?
+    } else {
+        0.0
+    };
+    let p1 = if pass.uniforms.contains_key("u_p1") {
+        read_vec4_uniform(pass, "u_p1")?
+    } else {
+        [0.0; 4]
+    };
+    Ok(StyliseUniformBuffer {
+        resolution: [width as f32, height as f32],
+        time,
+        _pad: 0.0,
+        p0: read_vec4_uniform(pass, "u_p0")?,
+        p1,
     })
 }
 
@@ -423,7 +490,7 @@ mod tests {
 
     #[test]
     fn every_effect_shader_is_valid_wgsl() {
-        for (id, source) in EFFECT_SHADERS {
+        for (id, source) in effect_shaders() {
             let module = wgpu::naga::front::wgsl::parse_str(source)
                 .unwrap_or_else(|error| panic!("{id}: {}", error.emit_to_string(source)));
             wgpu::naga::valid::Validator::new(
@@ -433,6 +500,32 @@ mod tests {
             .validate(&module)
             .unwrap_or_else(|error| panic!("{id}: {error:?}"));
         }
+    }
+
+    #[test]
+    fn stylise_uniforms_pack_with_defaults() {
+        assert_eq!(std::mem::size_of::<StyliseUniformBuffer>(), 48);
+        for (id, _) in STYLISE_SHADERS {
+            let pass = EffectPass {
+                shader: id.to_string(),
+                uniforms: [(
+                    "u_p0".to_string(),
+                    UniformValue::Vector(vec![0.5, 0.0, 0.0, 0.0]),
+                )]
+                .into_iter()
+                .collect(),
+            };
+            assert_eq!(
+                pack_effect_uniforms(&pass, 640, 360).unwrap().len(),
+                48,
+                "{id}"
+            );
+        }
+        let missing = EffectPass {
+            shader: "vignette".into(),
+            uniforms: Default::default(),
+        };
+        assert!(pack_effect_uniforms(&missing, 640, 360).is_err());
     }
 
     #[test]

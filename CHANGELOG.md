@@ -9,6 +9,10 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
+- 13 new effects, rendered on the GPU: Sharpen; Vignette, Posterize, Invert, Edge detect; Pixelate, Mirror, Wave; Glow; Film grain, VHS, RGB split and Sepia. Film grain, VHS and Wave move over time.
+- Effects browser: categories (Blur, Stylise, Distort, Light, Retro, Color), search, favourites (star an effect), and double-click to add an effect to the selected clips. Dragging onto a clip or an empty track works as before.
+- Effect stack presets: "Save stack as preset" in a clip's Effects tab, then apply it to other clips from Effects → My presets.
+
 - Transitions: 13 transitions in the Transitions tab: Cross dissolve, Dip to black, Blur dissolve, Slide, Push, Wipe, Split, Circle reveal, Iris diamond, Zoom in, Zoom out, Spin and Whip pan. Search, filter by category, and hover a tile to watch it. Set duration (0.1–3 s), easing, direction and alignment (centre, start or end on the cut), then apply to the selected cut, double-click a tile to apply it, or apply to every cut on the track. Clips with a transition show a ⇄ marker on the timeline. Transitions render in the preview and in exports.
 - When a transition runs past the end of a clip, that clip holds its edge frame, and the panel says so.
 
@@ -31,6 +35,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Fixed
 
+- On computers without WebGPU (WebGL fallback), opening the Effects panel could leave the preview showing an effect thumbnail or a zoomed-in corner of the frame, because thumbnails and the preview share one canvas. The preview now restores its canvas and redraws.
 - The website footer credits OpenCut again; the rebrand had renamed the credit itself.
 
 - macOS no longer says the app "is damaged and can't be opened": the Mac app is now ad-hoc code-signed after packaging, and the build checks the signature. (A first attempt left the app unsigned and failed that check.)

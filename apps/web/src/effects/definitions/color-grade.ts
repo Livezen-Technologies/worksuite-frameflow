@@ -219,6 +219,7 @@ export function isNeutralGrade(params: ParamValues): boolean {
 export const colorGradeEffectDefinition: EffectDefinition = {
 	type: COLOR_GRADE_EFFECT_TYPE,
 	name: "Color grade",
+	category: "Color",
 	keywords: [
 		"color",
 		"colour",

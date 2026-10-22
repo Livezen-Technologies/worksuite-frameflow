@@ -169,9 +169,15 @@ pub fn render_frame(options: JsValue) -> Result<(), JsValue> {
                 ));
             };
 
-            if runtime.surface_size != (frame.width, frame.height) {
+            // On WebGL the canvas is shared with effect previews, which resize
+            // it for their thumbnails. Put it back before drawing the frame,
+            // or the frame lands in a thumbnail-sized canvas (a zoomed corner).
+            let canvas_resized_elsewhere =
+                runtime.canvas.width() != frame.width || runtime.canvas.height() != frame.height;
+            if runtime.surface_size != (frame.width, frame.height) || canvas_resized_elsewhere {
                 runtime.canvas.set_width(frame.width);
                 runtime.canvas.set_height(frame.height);
+                gpu_runtime.context.invalidate_gl_surface_size();
                 let t_surface = perf::now_ms();
                 gpu_runtime
                     .context

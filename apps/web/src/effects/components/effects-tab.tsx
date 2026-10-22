@@ -26,6 +26,7 @@ import {
 import { cn } from "@/utils/ui";
 import { Separator } from "@/components/ui/separator";
 import { useAssetsPanelStore } from "@/components/editor/panels/assets/assets-panel-store";
+import { SavePresetButton } from "./save-preset-button";
 
 export function StandaloneEffectTab({
 	element,
@@ -142,8 +143,9 @@ export function ClipEffectsTab({
 
 	return (
 		<div className="flex flex-col h-full">
-			<div className="border-b px-3.5 h-11 shrink-0 flex items-center">
+			<div className="border-b px-3.5 h-11 shrink-0 flex items-center justify-between gap-2">
 				<SectionTitle>Effects</SectionTitle>
+				{effects.length > 0 && <SavePresetButton effects={effects} />}
 			</div>
 			{effects.length === 0 ? (
 				<EmptyView />

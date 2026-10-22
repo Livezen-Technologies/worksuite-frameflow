@@ -15,6 +15,11 @@ const defaults = () =>
 		]),
 	);
 
+function vec(value: unknown): number[] {
+	if (!Array.isArray(value)) throw new Error("expected a vector uniform");
+	return value.map(Number);
+}
+
 describe("color grade", () => {
 	test("defaults are a neutral grade with all-zero uniforms", () => {
 		const params = defaults();
@@ -60,9 +65,9 @@ describe("color grade", () => {
 		};
 		const uniforms = colorGradeUniforms(params);
 		expect(uniforms.u_tone).toEqual([1.5, 0.2, -0.5, 0]);
-		expect((uniforms.u_balance as number[])[0]).toBeCloseTo(0.3);
+		expect(vec(uniforms.u_balance)[0]).toBeCloseTo(0.3);
 		const gain = COLOR_WHEELS.find((w) => w.key === "gain")!;
-		expect((uniforms.u_gain as number[])[3]).toBeCloseTo(0.5 * gain.strength);
+		expect(vec(uniforms.u_gain)[3]).toBeCloseTo(0.5 * gain.strength);
 		expect(isNeutralGrade(params)).toBe(false);
 	});
 
@@ -72,7 +77,7 @@ describe("color grade", () => {
 			exposure: "abc",
 			liftX: Number.NaN,
 		});
-		expect((uniforms.u_tone as number[])[0]).toBe(0);
+		expect(vec(uniforms.u_tone)[0]).toBe(0);
 		expect(uniforms.u_lift).toEqual([0, 0, 0, 0]);
 	});
 });
