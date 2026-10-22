@@ -15,6 +15,7 @@ import { DeleteProjectDialog } from "@/project/components/delete-project-dialog"
 import { useRouter } from "next/navigation";
 import { FaDiscord } from "react-icons/fa6";
 import { ExportButton } from "./export-button";
+import { CloudSyncButton } from "@/cloud/components/cloud-sync-button";
 import { FeedbackPopover } from "@/feedback/components/feedback-popover";
 import { ThemeToggle } from "../theme-toggle";
 import { DEFAULT_LOGO_URL } from "@/site/brand";
@@ -38,6 +39,7 @@ export function EditorHeader() {
 			<WorkspaceBar />
 			<nav className="flex flex-1 items-center justify-end gap-2">
 				<FeedbackPopover />
+				<CloudSyncButton />
 				<ExportButton />
 				<ThemeToggle />
 			</nav>

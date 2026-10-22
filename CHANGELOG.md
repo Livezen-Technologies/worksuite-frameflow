@@ -8,6 +8,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 ## [Unreleased]
 
 ### Added
+- Cloud project sync: turn on "Sync to Worksuite Cloud" from the cloud button in the editor. The project and its media upload in the background, edits sync every few seconds, and newer versions from your other devices download automatically. The project list marks projects as Local or Local + Cloud and lists cloud projects you can download and open. If a project was changed on two devices, both versions are kept and you can open the other one.
 - Share links: when signed in to Worksuite, tick "Upload to Worksuite Cloud and create a share link" in the Export window. The video uploads in parts, with progress and a cancel button. Choose when the link expires (1, 7 or 30 days, or never) and whether viewers may download, then copy the link. Failed parts are retried, and a stopped upload resumes where it left off, even after restarting the app.
 - New Export window: presets (Project, YouTube 1080p, TikTok / Reels, 4K master, Custom size), frame rate, codec (H.264, HEVC, AV1, VP9 — ones your computer can't encode are greyed out), quality, and an estimated file size. A different shape from the project is letterboxed.
 - Export subtitles: burn captions in or leave them out, add them as a subtitle track inside the video, and save a UTF-8 .srt file beside it.
@@ -36,10 +37,13 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 - Noto Sans Sinhala (SIL OFL) is bundled, so Sinhala captions render offline.
 
 ### Changed
+- A cleaner, modern Export button.
 
 - Renamed the app to Worksuite FrameFlow (short name FrameFlow). The bundle ID is now `com.worksuitecloud.frameflow`, the Linux command `worksuite-frameflow`, and the Worksuite Cloud client ID `worksuite-frameflow`. It installs as a new app, so earlier test installs need to sign in again.
 
 ### Fixed
+- Clicking the workspace you're already in now brings its tool panel back.
+- Projects, media and settings are no longer lost when the desktop app is restarted. The app now always starts on the same local address.
 
 - On computers without WebGPU (WebGL fallback), opening the Effects panel could leave the preview showing an effect thumbnail or a zoomed-in corner of the frame, because thumbnails and the preview share one canvas. The preview now restores its canvas and redraws.
 - The website footer credits OpenCut again; the rebrand had renamed the credit itself.

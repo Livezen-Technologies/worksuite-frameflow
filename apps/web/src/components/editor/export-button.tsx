@@ -1,10 +1,15 @@
 "use client";
 
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { TransitionTopIcon } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
 import { canEncodeVideo } from "mediabunny";
-import { Check, Copy, Download, FolderOpen, RotateCcw } from "lucide-react";
+import {
+	Check,
+	Copy,
+	Download,
+	FolderOpen,
+	RotateCcw,
+	Upload,
+} from "lucide-react";
 import { toast } from "sonner";
 import {
 	Dialog,
@@ -65,19 +70,17 @@ export function ExportButton() {
 			<button
 				type="button"
 				className={cn(
-					"flex items-center gap-1.5 rounded-md bg-[#38BDF8] px-[0.12rem] py-[0.12rem] text-white",
-					hasProject ? "cursor-pointer" : "cursor-not-allowed opacity-50",
+					"inline-flex h-8 items-center gap-1.5 rounded-lg px-3.5 text-sm font-medium text-white",
+					"bg-linear-to-b from-[#4C8DFF] to-[#2F6BF0] shadow-[0_1px_2px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.18)]",
+					"transition-[filter,transform] hover:brightness-110 active:translate-y-px active:brightness-95",
+					"focus-visible:ring-ring focus-visible:ring-offset-background focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none",
+					!hasProject && "pointer-events-none opacity-50",
 				)}
 				onClick={hasProject ? () => setOpen(true) : undefined}
 				disabled={!hasProject}
 			>
-				<div className="relative flex items-center gap-1.5 rounded-[0.6rem] bg-linear-270 from-[#2567EC] to-[#37B6F7] px-4 py-1 shadow-[0_1px_3px_0px_rgba(0,0,0,0.65)]">
-					<HugeiconsIcon icon={TransitionTopIcon} className="z-50 size-3.5" />
-					<span className="z-50 text-[0.875rem]">Export</span>
-					<div className="absolute top-0 left-0 z-10 flex size-full items-center justify-center rounded-[0.6rem] bg-linear-to-t from-white/0 to-white/50">
-						<div className="absolute top-[0.08rem] z-50 h-[calc(100%-2px)] w-[calc(100%-2px)] rounded-[0.6rem] bg-linear-270 from-[#2567EC] to-[#37B6F7]"></div>
-					</div>
-				</div>
+				<Upload className="size-4" strokeWidth={2.25} />
+				Export
 			</button>
 			{hasProject && open && (
 				<ExportDialog onClose={() => handleOpenChange(false)} />

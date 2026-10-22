@@ -65,6 +65,11 @@ import { SignInHandoff } from "@/account/components/sign-in-handoff";
 import { StorageCard } from "@/account/components/storage-card";
 import { BrandMark } from "@/account/components/brand-mark";
 import { WorkspaceSwitcher } from "@/account/components/workspace-switcher";
+import {
+	CloudOnlyProjects,
+	ProjectCloudBadge,
+} from "@/cloud/components/project-badges";
+import { CloudSyncRunner } from "@/cloud/components/cloud-sync-runner";
 const formatProjectDuration = ({
 	duration,
 }: {
@@ -108,6 +113,7 @@ export default function ProjectsPage() {
 			<ChangelogNotification />
 			<WelcomeScreen />
 			<SignInHandoff />
+			<CloudSyncRunner />
 			<ProjectsHeader />
 			<div className="flex">
 				<ProjectsSidebar />
@@ -115,6 +121,7 @@ export default function ProjectsPage() {
 					<ProjectsTitleBar />
 					<ProjectsToolbar projectIds={projectsToDisplay.map((p) => p.id)} />
 					<main className="mx-auto px-4 pt-2 pb-6 flex flex-col gap-4">
+						<CloudOnlyProjects />
 						{isLoading || !isInitialized ? (
 							<ProjectsSkeleton />
 						) : projectsToDisplay.length === 0 ? (
@@ -618,6 +625,10 @@ function ProjectItem({
 					)}
 				</div>
 
+				<div className="absolute top-2 left-2">
+					<ProjectCloudBadge projectId={project.id} />
+				</div>
+
 				{durationLabel && (
 					<div className="absolute bottom-2 right-2 bg-black/60 text-white text-xs font-semibold px-2 py-1 rounded-sm">
 						{durationLabel}
@@ -657,6 +668,8 @@ function ProjectItem({
 			<h3 className="group-hover:text-foreground/90 text-sm font-medium truncate flex-1 min-w-0">
 				{project.name}
 			</h3>
+
+			<ProjectCloudBadge projectId={project.id} />
 
 			<span className="text-muted-foreground text-sm shrink-0 hidden sm:block">
 				{durationLabel ?? "—"}

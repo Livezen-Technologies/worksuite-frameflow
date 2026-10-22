@@ -8,21 +8,47 @@ const fs = require("node:fs");
 const path = require("node:path");
 const account = require("./account");
 const cloud = require("./cloud-upload");
+const cloudSync = require("./cloud-sync");
 
 const HOST = "127.0.0.1";
 let server = null;
 let appOrigin = null;
 
-function freePort() {
-	return new Promise((resolve, reject) => {
+// The page's storage (projects, media, settings) belongs to its origin, so
+// the server must come back on the same port every launch. The port is
+// remembered per install; another is picked only if it's taken.
+const DEFAULT_PORT = 38719;
+const portFile = () => path.join(app.getPath("userData"), "server-port.json");
+
+function tryPort(port) {
+	return new Promise((resolve) => {
 		const s = net.createServer();
 		s.unref();
-		s.on("error", reject);
-		s.listen(0, HOST, () => {
-			const { port } = s.address();
-			s.close(() => resolve(port));
+		s.on("error", () => resolve(null));
+		s.listen(port, HOST, () => {
+			const { port: bound } = s.address();
+			s.close(() => resolve(bound));
 		});
 	});
+}
+
+async function stablePort() {
+	let saved = null;
+	try {
+		saved = Number(JSON.parse(fs.readFileSync(portFile(), "utf8")).port) || null;
+	} catch {}
+	const preferred = saved ?? DEFAULT_PORT;
+	for (let offset = 0; offset < 20; offset++) {
+		const port = await tryPort(preferred + offset);
+		if (port) {
+			if (port !== saved) {
+				if (saved) console.warn(`Port ${saved} is busy; using ${port}. Local projects stay on the old port.`);
+				fs.writeFileSync(portFile(), JSON.stringify({ port }));
+			}
+			return port;
+		}
+	}
+	return tryPort(0);
 }
 
 function waitForServer(url, timeoutMs = 30000) {
@@ -44,7 +70,7 @@ function waitForServer(url, timeoutMs = 30000) {
 }
 
 async function startServer() {
-	const port = await freePort();
+	const port = await stablePort();
 	const webRoot = app.isPackaged
 		? path.join(process.resourcesPath, "web")
 		: path.join(__dirname, "web");
@@ -190,6 +216,7 @@ function registerAccountIpc() {
 		}
 	});
 	handle("cloud:cancel", () => cloud.cancelUpload());
+	handle("cloud:sync", (operation, args) => cloudSync.run(String(operation), args));
 	handle("clipboard:write", (text) => clipboard.writeText(String(text)));
 	// Only files this session exported can be revealed.
 	handle("files:show", (filePath) => {

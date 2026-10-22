@@ -101,6 +101,47 @@ export interface WorksuiteCloudBridge {
 		allowDownload: boolean;
 	}) => Promise<CloudShareResult>;
 	cancel: () => Promise<void>;
+	sync: <K extends keyof CloudSyncOperations>(
+		operation: K,
+		args: CloudSyncOperations[K]["args"],
+	) => Promise<CloudSyncResult<CloudSyncOperations[K]["value"]>>;
 	copy: (text: string) => Promise<void>;
 	onProgress: (listener: (progress: CloudUploadProgress) => void) => () => void;
+}
+
+export interface CloudProjectSummary {
+	id: string;
+	name: string;
+	revision: number;
+	updatedAt: string | null;
+}
+
+export type CloudSyncResult<T> =
+	| { ok: true; value: T }
+	| { ok: false; code: string; message: string };
+
+export interface CloudSyncOperations {
+	listProjects: { args: Record<string, never>; value: CloudProjectSummary[] };
+	createProject: { args: { name: string }; value: CloudProjectSummary };
+	getProject: {
+		args: { id: string };
+		value: CloudProjectSummary & { data: unknown };
+	};
+	putProject: {
+		args: { id: string; revision: number; name: string; data: unknown };
+		value: { revision: number };
+	};
+	uploadMedia: {
+		args: {
+			name: string;
+			contentType: string;
+			sha256: string;
+			data: ArrayBuffer;
+		};
+		value: { assetId: string };
+	};
+	downloadAsset: {
+		args: { assetId: string };
+		value: Uint8Array<ArrayBuffer>;
+	};
 }

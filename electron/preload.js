@@ -13,6 +13,7 @@ contextBridge.exposeInMainWorld("worksuite", {
 	cloud: {
 		uploadAndShare: (args) => ipcRenderer.invoke("cloud:upload-share", args),
 		cancel: () => ipcRenderer.invoke("cloud:cancel"),
+		sync: (operation, args) => ipcRenderer.invoke("cloud:sync", operation, args),
 		copy: (text) => ipcRenderer.invoke("clipboard:write", text),
 		onProgress: (listener) => {
 			const handler = (_event, progress) => listener(progress);

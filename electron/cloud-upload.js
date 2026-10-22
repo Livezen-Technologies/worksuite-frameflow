@@ -57,9 +57,9 @@ async function problem(res) {
 	});
 }
 
-async function api(method, route, { body, signal } = {}) {
+async function api(method, route, { body, signal, headers = {} } = {}) {
 	const token = await account.getAccessToken();
-	if (!token) throw new CloudError("Sign in to Worksuite to upload.", { code: "auth" });
+	if (!token) throw new CloudError("Sign in to Worksuite to use the cloud.", { code: "auth" });
 	const res = await fetch(`${account.apiBase}${route}`, {
 		method,
 		signal,
@@ -68,6 +68,7 @@ async function api(method, route, { body, signal } = {}) {
 			Accept: "application/json",
 			...(body ? { "Content-Type": "application/json" } : {}),
 			...account.workspaceHeaders(),
+			...headers,
 		},
 		body: body ? JSON.stringify(body) : undefined,
 	});
@@ -108,6 +109,57 @@ async function putPart({ upload, n, chunk, signal }) {
 	}
 }
 
+/**
+ * Uploads bytes in resumable parts and returns the asset id.
+ * `key` identifies the content so a later call resumes the same upload.
+ */
+async function uploadParts({ key, filename, size, contentType, purpose, readPart, signal, onProgress }) {
+	const uploads = readUploads();
+	let upload = uploads[key];
+	if (!upload) {
+		const started = await api("POST", "/v1/uploads", {
+			signal,
+			body: { filename, size, content_type: contentType, purpose },
+		});
+		upload = {
+			id: String(started.id ?? started.upload_id),
+			chunkSize: Number(started.chunk_size) || 8 * 1024 * 1024,
+			partUrls: Array.isArray(started.part_urls) ? started.part_urls : null,
+			done: [],
+		};
+		writeUploads({ ...readUploads(), [key]: upload });
+	}
+	const partCount = Math.max(1, Math.ceil(size / upload.chunkSize));
+	for (let n = 1; n <= partCount; n++) {
+		if (upload.done.includes(n)) continue;
+		if (signal?.aborted) throw new CloudError("Upload cancelled.", { code: "cancelled" });
+		const start = (n - 1) * upload.chunkSize;
+		const chunk = await readPart({ start, length: Math.min(upload.chunkSize, size - start) });
+		await putPart({ upload, n, chunk, signal });
+		upload.done.push(n);
+		writeUploads({ ...readUploads(), [key]: upload });
+		onProgress?.({ phase: "uploading", progress: upload.done.length / partCount });
+	}
+	onProgress?.({ phase: "finishing", progress: 1 });
+	const completed = await api("POST", `/v1/uploads/${encodeURIComponent(upload.id)}/complete`, {
+		signal,
+		body: { parts: partCount },
+	});
+	const rest = readUploads();
+	delete rest[key];
+	writeUploads(rest);
+	return String(completed.asset_id ?? completed.id);
+}
+
+/** Network failures become one readable, resumable error. */
+function asCloudError(error, signal) {
+	if (signal?.aborted) return new CloudError("Upload cancelled.", { code: "cancelled" });
+	if (error instanceof CloudError) return error;
+	return new CloudError("Couldn't reach Worksuite Cloud. Check your connection and try again — the upload will resume.", {
+		code: "network",
+	});
+}
+
 let active = null;
 
 /**
@@ -121,58 +173,26 @@ async function uploadAndShare({ filePath, expiresInDays, allowDownload, onProgre
 	const { signal } = controller;
 	try {
 		const stat = await fs.promises.stat(filePath);
-		const key = uploadKey(filePath, stat);
-		const uploads = readUploads();
-		let upload = uploads[key];
-
-		if (!upload) {
-			const started = await api("POST", "/v1/uploads", {
+		const handle = await fs.promises.open(filePath, "r");
+		let assetId;
+		try {
+			assetId = await uploadParts({
+				key: uploadKey(filePath, stat),
+				filename: path.basename(filePath),
+				size: stat.size,
+				contentType: filePath.endsWith(".webm") ? "video/webm" : "video/mp4",
+				purpose: "export",
 				signal,
-				body: {
-					filename: path.basename(filePath),
-					size: stat.size,
-					content_type: filePath.endsWith(".webm") ? "video/webm" : "video/mp4",
-					purpose: "export",
+				onProgress,
+				readPart: async ({ start, length }) => {
+					const chunk = Buffer.alloc(length);
+					await handle.read(chunk, 0, length, start);
+					return chunk;
 				},
 			});
-			upload = {
-				id: String(started.id ?? started.upload_id),
-				chunkSize: Number(started.chunk_size) || 8 * 1024 * 1024,
-				partUrls: Array.isArray(started.part_urls) ? started.part_urls : null,
-				done: [],
-			};
-			uploads[key] = upload;
-			writeUploads(uploads);
-		}
-
-		const partCount = Math.max(1, Math.ceil(stat.size / upload.chunkSize));
-		const handle = await fs.promises.open(filePath, "r");
-		try {
-			for (let n = 1; n <= partCount; n++) {
-				if (upload.done.includes(n)) continue;
-				if (signal.aborted) throw new CloudError("Upload cancelled.", { code: "cancelled" });
-				const start = (n - 1) * upload.chunkSize;
-				const length = Math.min(upload.chunkSize, stat.size - start);
-				const chunk = Buffer.alloc(length);
-				await handle.read(chunk, 0, length, start);
-				await putPart({ upload, n, chunk, signal });
-				upload.done.push(n);
-				writeUploads({ ...readUploads(), [key]: upload });
-				onProgress?.({ phase: "uploading", progress: upload.done.length / partCount });
-			}
 		} finally {
 			await handle.close();
 		}
-
-		onProgress?.({ phase: "finishing", progress: 1 });
-		const completed = await api("POST", `/v1/uploads/${encodeURIComponent(upload.id)}/complete`, {
-			signal,
-			body: { parts: partCount },
-		});
-		const assetId = String(completed.asset_id ?? completed.id);
-		const rest = readUploads();
-		delete rest[key];
-		writeUploads(rest);
 
 		const share = await api("POST", "/v1/shares", {
 			signal,
@@ -184,11 +204,7 @@ async function uploadAndShare({ filePath, expiresInDays, allowDownload, onProgre
 		});
 		return { url: String(share.url), expiresAt: share.expires_at ?? null, assetId };
 	} catch (error) {
-		if (signal.aborted) throw new CloudError("Upload cancelled.", { code: "cancelled" });
-		if (error instanceof CloudError) throw error;
-		throw new CloudError("Couldn't reach Worksuite Cloud. Check your connection and try again — the upload will resume.", {
-			code: "network",
-		});
+		throw asCloudError(error, signal);
 	} finally {
 		active = null;
 	}
@@ -198,4 +214,4 @@ function cancelUpload() {
 	active?.abort();
 }
 
-module.exports = { uploadAndShare, cancelUpload };
+module.exports = { uploadAndShare, cancelUpload, uploadParts, asCloudError, api, CloudError };

@@ -39,6 +39,7 @@
       "main.js",
       "account.js",
       "cloud-upload.js",
+      "cloud-sync.js",
       "preload.js",
       "package.json"
     ],

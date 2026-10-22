@@ -58,7 +58,18 @@ export const useWorkspaceStore = create<WorkspaceStore>()(
 			switchTo: ({ id, current }) => {
 				const { activeId, custom, layouts } = get();
 				const target = findWorkspace({ custom, id });
-				if (!target || id === activeId) return;
+				if (!target) return;
+				if (id === activeId) {
+					// Clicking the active workspace brings back its tool tab
+					// without touching the panel sizes.
+					set({
+						apply: request({
+							panels: current.panels,
+							tab: (layouts[id] ?? target).tab,
+						}),
+					});
+					return;
+				}
 				const saved = { ...layouts, [activeId]: current };
 				set({
 					activeId: id,

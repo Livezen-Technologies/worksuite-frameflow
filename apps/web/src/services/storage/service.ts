@@ -280,6 +280,33 @@ class StorageService {
 		);
 	}
 
+	/** The project exactly as stored, for cloud sync. */
+	async getSerializedProject({
+		id,
+	}: {
+		id: string;
+	}): Promise<SerializedProject | null> {
+		await this.ensureMigrations();
+		const record = await this.projectsAdapter.get(id);
+		if (!record) return null;
+		// Drop the store's key so the project can be stored under another id.
+		const project = { ...record };
+		Reflect.deleteProperty(project, "id");
+		return project;
+	}
+
+	/** Stores a project received from the cloud. */
+	async putSerializedProject({
+		project,
+	}: {
+		project: SerializedProject;
+	}): Promise<void> {
+		await this.projectsAdapter.set({
+			key: project.metadata.id,
+			value: project,
+		});
+	}
+
 	async deleteProject({ id }: { id: string }): Promise<void> {
 		await this.projectsAdapter.remove(id);
 	}
