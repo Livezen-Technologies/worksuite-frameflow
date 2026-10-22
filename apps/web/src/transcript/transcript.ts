@@ -267,3 +267,35 @@ export function snapToGraphemeBoundary({
 	}
 	return text.length;
 }
+
+/**
+ * The transcript after [start, end) seconds were cut out of the video:
+ * segments inside go, segments after move earlier (ED-17).
+ */
+export function cutTranscriptRange({
+	transcript,
+	start,
+	end,
+}: {
+	transcript: Transcript;
+	start: number;
+	end: number;
+}): Transcript {
+	const gap = end - start;
+	const segments = transcript.segments.flatMap((segment) => {
+		if (segment.end <= start) return [segment];
+		if (segment.start >= end) {
+			return [
+				{ ...segment, start: segment.start - gap, end: segment.end - gap },
+			];
+		}
+		if (segment.start >= start && segment.end <= end) return [];
+		// Overlaps the cut: keep what's left of it.
+		const newStart = segment.start < start ? segment.start : start;
+		const newEnd = segment.end > end ? segment.end - gap : start;
+		return newEnd > newStart
+			? [{ ...segment, start: newStart, end: newEnd }]
+			: [];
+	});
+	return { ...transcript, segments };
+}

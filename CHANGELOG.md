@@ -8,6 +8,11 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 ## [Unreleased]
 
 ### Added
+- Transcript sidebar: the transcript sits beside the video.
+  - The current line is highlighted as it plays. Click a line to jump there, double-click to edit it, or search.
+  - "Cut from video" removes that line's stretch from every track and closes the gap. One undo (Ctrl+Z) restores the video and the line.
+  - Start from a transcription, from the captions already on the timeline, or by importing SRT, VTT, ASS or JSON.
+  - "Add as captions" turns the transcript into captions.
 - Automatic updates from the Worksuite download center. Windows and Linux (AppImage) download new versions in the background and offer "Restart to update". macOS and .deb builds show the new version and open the download center. Settings › Updates has Check for updates, a Stable or Beta channel, and automatic checks you can turn off.
 - LUTs in the Color workspace.
   - Import .cube 3D LUTs one by one, as a ZIP, or as a folder. They run on the GPU with smooth (trilinear) interpolation.
