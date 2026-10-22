@@ -1,0 +1,100 @@
+name: Desktop Build
+
+on:
+  push:
+    branches: [main, "claude/**"]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: desktop-build-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: macOS
+            os: macos-latest
+            target: dist:mac
+          - name: Windows
+            os: windows-latest
+            target: dist:win
+          - name: Linux
+            os: ubuntu-latest
+            target: dist:linux
+
+    # Build-time placeholders only: the web app validates these at build.
+    # The desktop app runs fully offline; see electron/main.js.
+    env:
+      DATABASE_URL: "postgresql://opencut:opencut@localhost:5432/opencut"
+      BETTER_AUTH_SECRET: "build-only-placeholder-secret"
+      NEXT_PUBLIC_SITE_URL: "http://localhost:3000"
+      UPSTASH_REDIS_REST_URL: "https://placeholder.example.com"
+      UPSTASH_REDIS_REST_TOKEN: "placeholder"
+      NEXT_PUBLIC_MARBLE_API_URL: "https://placeholder.example.com"
+      MARBLE_WORKSPACE_KEY: "placeholder"
+      FREESOUND_CLIENT_ID: "placeholder"
+      FREESOUND_API_KEY: "placeholder"
+      # Unsigned builds until Livezen signing certificates are added as secrets.
+      CSC_IDENTITY_AUTO_DISCOVERY: "false"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76
+        with:
+          bun-version: 1.2.18
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install web dependencies
+        working-directory: apps/web
+        run: bun install
+
+      - name: Build web app
+        working-directory: apps/web
+        run: bun run build
+
+      - name: Install desktop dependencies
+        working-directory: electron
+        run: npm install
+
+      - name: Bundle web server into desktop app
+        working-directory: electron
+        run: npm run prepare-web
+
+      - name: Package installers
+        working-directory: electron
+        run: npm run ${{ matrix.target }}
+
+      - name: Upload installers
+        uses: actions/upload-artifact@v4
+        with:
+          name: Worksuite-Video-Editor-${{ matrix.name }}
+          path: |
+            electron/dist/*.dmg
+            electron/dist/*.exe
+            electron/dist/*.AppImage
+            electron/dist/*.deb
+          if-no-files-found: error
+
+      - name: Attach to release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            electron/dist/*.dmg
+            electron/dist/*.exe
+            electron/dist/*.AppImage
+            electron/dist/*.deb
