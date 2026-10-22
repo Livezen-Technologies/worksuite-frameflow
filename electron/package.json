@@ -41,6 +41,7 @@
       "cloud-upload.js",
       "cloud-sync.js",
       "updater.js",
+      "capture.js",
       "preload.js",
       "package.json"
     ],
@@ -72,7 +73,11 @@
       "artifactName": "Worksuite-FrameFlow-${version}-mac-${arch}.${ext}",
       "identity": null,
       "hardenedRuntime": false,
-      "gatekeeperAssess": false
+      "gatekeeperAssess": false,
+      "extendInfo": {
+        "NSMicrophoneUsageDescription": "FrameFlow records voiceovers and your microphone during screen recordings.",
+        "NSCameraUsageDescription": "FrameFlow records your camera during screen recordings."
+      }
     },
     "win": {
       "target": [

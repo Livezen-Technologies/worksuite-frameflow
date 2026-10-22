@@ -10,6 +10,7 @@ import { Captions } from "@/subtitles/components/assets-view";
 import { ColorPanel } from "@/color/components/color-panel";
 import { TransitionsView } from "@/transitions/components/transitions-view";
 import { MediaView } from "./views/assets";
+import { RecordView } from "@/recording/components/record-view";
 import { TranscriptSidebar } from "@/transcript/components/transcript-sidebar";
 import { BrandKitView } from "@/brand/components/brand-kit-view";
 import { FiltersView } from "@/filters/components/filters-view";
@@ -34,6 +35,7 @@ export function AssetsPanel() {
 		filters: <FiltersView />,
 		captions: <Captions />,
 		transcript: <TranscriptSidebar />,
+		record: <RecordView />,
 		brand: <BrandKitView />,
 		adjustment: <ColorPanel />,
 		settings: <SettingsView />,

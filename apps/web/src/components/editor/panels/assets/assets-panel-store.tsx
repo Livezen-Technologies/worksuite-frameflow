@@ -17,12 +17,14 @@ import { HugeiconsIcon, type IconSvgElement } from "@hugeicons/react";
 import {
 	Blend,
 	BriefcaseBusiness,
+	CircleDot,
 	LayoutTemplate,
 	ScrollText,
 } from "lucide-react";
 
 export const TAB_KEYS = [
 	"media",
+	"record",
 	"templates",
 	"sounds",
 	"text",
@@ -49,6 +51,12 @@ export const tabs = {
 	media: {
 		icon: createHugeiconsIcon({ icon: Folder03Icon }),
 		label: "Media",
+	},
+	record: {
+		icon: ({ className }: { className?: string }) => (
+			<CircleDot className={className} strokeWidth={1.75} />
+		),
+		label: "Record",
 	},
 	templates: {
 		icon: ({ className }: { className?: string }) => (

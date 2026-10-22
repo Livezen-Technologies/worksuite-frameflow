@@ -2,6 +2,7 @@
 // private loopback port and shows it in a window.
 const { app, BrowserWindow, clipboard, shell, dialog, ipcMain } = require("electron");
 const { spawn } = require("node:child_process");
+const capture = require("./capture");
 const net = require("node:net");
 const http = require("node:http");
 const fs = require("node:fs");
@@ -131,6 +132,8 @@ async function createWindow() {
 		},
 	});
 
+	capture.setupCapture({ session: win.webContents.session, origin });
+
 	// Keep the app on its own origin; open everything else in the system browser.
 	win.webContents.setWindowOpenHandler(({ url }) => {
 		shell.openExternal(url);
@@ -158,6 +161,9 @@ function registerAccountIpc() {
 		});
 
 	handle("app:version", () => app.getVersion());
+	handle("capture:sources", () => capture.listSources());
+	handle("capture:choose", (id) => capture.chooseSource(id));
+	handle("capture:permissions", () => capture.permissionStatus());
 	handle("account:get-state", () => account.getState());
 	handle("account:sign-in", async ({ signup } = {}) => {
 		const result = await account.signIn({ signup });

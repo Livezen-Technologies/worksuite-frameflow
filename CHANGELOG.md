@@ -8,6 +8,13 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 ## [Unreleased]
 
 ### Added
+- Record sidebar: record a voiceover, your screen, screen + camera, or your camera, straight onto the timeline.
+  - Voiceovers start at the playhead while the video plays (timeline muted by default). They are saved as 48 kHz WAV, mono or stereo, and placed on a free audio track, lined up with the picture.
+  - Screen recordings: pick a display or window, at 1080p 30, 1440p 60 or 4K 60, with optional system audio on Windows and Linux. The camera lands on its own track as a picture-in-picture you can move or resize, and the mic on its own audio track.
+  - Countdown (off, 3, 5 or 10 s), a live level meter with a clipping warning, pause and resume, markers (M) that become timeline bookmarks, and Esc to discard.
+  - Takes are saved every second. If the app closes mid-take, the Record sidebar offers to recover it.
+  - Shows how much space a minute of recording takes and warns when less than 10 minutes are left. If a mic, camera or screen share drops out, the take pauses.
+  - Your choices of microphone, camera, quality and countdown are remembered. If access is blocked, FrameFlow says where to allow it in system settings. Only FrameFlow's own pages may use the camera, mic or screen.
 - Transcript sidebar: the transcript sits beside the video.
   - The current line is highlighted as it plays. Click a line to jump there, double-click to edit it, or search.
   - "Cut from video" removes that line's stretch from every track and closes the gap. One undo (Ctrl+Z) restores the video and the line.

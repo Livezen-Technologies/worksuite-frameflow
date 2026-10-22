@@ -70,6 +70,7 @@ declare global {
 			};
 			cloud?: WorksuiteCloudBridge;
 			updates?: WorksuiteUpdatesBridge;
+			capture?: WorksuiteCaptureBridge;
 		};
 	}
 }
@@ -209,4 +210,29 @@ export interface WorksuiteUpdatesBridge {
 		auto?: boolean;
 	}) => Promise<UpdateState>;
 	onChange: (listener: (state: UpdateState) => void) => () => void;
+}
+
+export interface CaptureSource {
+	id: string;
+	name: string;
+	kind: "screen" | "window";
+	thumbnail: string | null;
+}
+
+export type MediaAccess =
+	| "granted"
+	| "denied"
+	| "restricted"
+	| "not-determined"
+	| "unknown";
+
+export interface WorksuiteCaptureBridge {
+	sources: () => Promise<CaptureSource[]>;
+	/** The screen or window the next getDisplayMedia call records. */
+	choose: (id: string | null) => Promise<void>;
+	permissions: () => Promise<{
+		microphone: MediaAccess;
+		camera: MediaAccess;
+		screen: MediaAccess;
+	}>;
 }
