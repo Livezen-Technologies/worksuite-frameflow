@@ -39,10 +39,10 @@ export function useWorkspaces() {
 		try {
 			await bridge.switchWorkspace(id);
 			const name = workspaces.find((w) => w.id === id)?.name;
-			toast.success(`Switched to ${name ?? "workspace"}`);
+			toast.success(`Switched to ${name ?? "team"}`);
 		} catch (error) {
 			toast.error(
-				error instanceof Error ? error.message : "Couldn't switch workspace",
+				error instanceof Error ? error.message : "Couldn't switch team",
 			);
 		}
 	};
@@ -83,7 +83,7 @@ export function WorkspaceSwitcher() {
 			<DropdownMenuTrigger asChild>
 				<button
 					type="button"
-					aria-label={`Workspace: ${active.name}. Change workspace`}
+					aria-label={`Team: ${active.name}. Change team`}
 					className="hover:bg-accent mb-3 flex w-full items-center gap-2.5 rounded-lg border px-2.5 py-2 text-left"
 				>
 					<WorkspaceTile workspace={active} />
@@ -111,7 +111,7 @@ export function WorkspaceSwitcher() {
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align="start" className="w-64">
 				<DropdownMenuLabel className="text-muted-foreground text-xs font-normal">
-					Change workspace
+					Change team
 				</DropdownMenuLabel>
 				<WorkspaceRadioItems />
 			</DropdownMenuContent>

@@ -26,15 +26,17 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { ShortcutsDialog } from "@/actions/components/shortcuts-dialog";
 import Image from "next/image";
 import { cn } from "@/utils/ui";
+import { WorkspaceBar } from "@/workspaces/components/workspace-bar";
 
 export function EditorHeader() {
 	return (
-		<header className="bg-background flex h-[3.4rem] items-center justify-between px-3 pt-0.5">
-			<div className="flex items-center gap-1">
+		<header className="bg-background flex h-[3.4rem] items-center justify-between gap-3 px-3 pt-0.5">
+			<div className="flex min-w-0 flex-1 items-center gap-1">
 				<ProjectDropdown />
 				<EditableProjectName />
 			</div>
-			<nav className="flex items-center gap-2">
+			<WorkspaceBar />
+			<nav className="flex flex-1 items-center justify-end gap-2">
 				<FeedbackPopover />
 				<ExportButton />
 				<ThemeToggle />

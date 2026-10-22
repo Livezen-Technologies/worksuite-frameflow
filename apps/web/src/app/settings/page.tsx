@@ -145,9 +145,10 @@ function AccountSection() {
 						</div>
 					</Section>
 					{profile.workspaces.length > 0 && (
-						<Section title="Workspaces">
+						<Section title="Teams">
 							<p className="text-muted-foreground m-0 text-sm">
-								Plan and cloud storage follow the workspace you choose. Projects on this device stay where they are.
+								Plan and cloud storage follow the team you choose. Projects on
+								this device stay where they are.
 							</p>
 							<WorkspaceList />
 						</Section>

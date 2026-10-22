@@ -18,7 +18,10 @@ import { MigrationDialog } from "@/project/components/migration-dialog";
 import { usePanelStore } from "@/editor/panel-store";
 import { usePasteMedia } from "@/media/use-paste-media";
 import { MobileGate } from "@/components/editor/mobile-gate";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import type { ImperativePanelGroupHandle } from "react-resizable-panels";
+import { useWorkspaceStore } from "@/workspaces/store";
+import { useAssetsPanelStore } from "@/components/editor/panels/assets/assets-panel-store";
 import { useEditor } from "@/editor/use-editor";
 import { Cancel01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
@@ -83,6 +86,24 @@ function DegradedRendererBanner() {
 function EditorLayout() {
 	usePasteMedia();
 	const { panels, setPanel } = usePanelStore();
+	const verticalGroupRef = useRef<ImperativePanelGroupHandle>(null);
+	const horizontalGroupRef = useRef<ImperativePanelGroupHandle>(null);
+	const workspaceRequest = useWorkspaceStore((s) => s.apply);
+	const setActiveTab = useAssetsPanelStore((s) => s.setActiveTab);
+
+	// Apply a workspace in place: no remount, so playback, selection and
+	// undo history are untouched (SRS WS-02).
+	useEffect(() => {
+		if (!workspaceRequest) return;
+		const { panels: target, tab } = workspaceRequest;
+		verticalGroupRef.current?.setLayout([target.mainContent, target.timeline]);
+		horizontalGroupRef.current?.setLayout([
+			target.tools,
+			target.preview,
+			target.properties,
+		]);
+		setActiveTab(tab);
+	}, [workspaceRequest, setActiveTab]);
 	const activeScene = useEditor((editor) =>
 		editor.scenes.getActiveSceneOrNull(),
 	);
@@ -129,6 +150,7 @@ function EditorLayout() {
 
 	return (
 		<ResizablePanelGroup
+			ref={verticalGroupRef}
 			direction="vertical"
 			className="size-full gap-[0.18rem]"
 			onLayout={(sizes) => {
@@ -149,6 +171,7 @@ function EditorLayout() {
 				className="min-h-0"
 			>
 				<ResizablePanelGroup
+					ref={horizontalGroupRef}
 					direction="horizontal"
 					className="size-full gap-[0.19rem] px-3"
 					onLayout={(sizes) => {
