@@ -25,7 +25,9 @@ export type CloudSyncStatus =
 	| { state: "idle" }
 	| { state: "syncing"; progress: number; message: string }
 	| { state: "error"; message: string }
-	| { state: "conflict"; otherProjectId: string };
+	| { state: "conflict"; otherProjectId: string }
+	/** Shared with this user as "Can view": changes are never uploaded. */
+	| { state: "view-only"; hasLocalChanges: boolean };
 
 interface CloudSyncStore {
 	links: Record<string, CloudLink>;

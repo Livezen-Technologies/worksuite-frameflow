@@ -45,6 +45,12 @@ async function problem(res) {
 	if (res.status === 401) {
 		return new CloudError("Your Worksuite session has expired. Sign in again.", { code: "auth", status: 401 });
 	}
+	if (res.status === 403) {
+		return new CloudError(body?.detail || "You don't have permission to do that in Worksuite Cloud.", {
+			code: "forbidden",
+			status: 403,
+		});
+	}
 	if (res.status === 413 || res.status === 507 || /quota/i.test(type)) {
 		return new CloudError(
 			body?.detail || "Your Worksuite Cloud storage is full. Free up space or upgrade your plan.",

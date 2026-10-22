@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Cloud, Download, HardDrive, Loader2 } from "lucide-react";
+import { Cloud, Download, HardDrive, Loader2, Users } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useWorksuiteAccount } from "@/account/use-worksuite-account";
@@ -13,8 +13,23 @@ import { downloadCloudProject } from "../sync";
 /** Local / Both badge on a project card (CL-03); hidden when signed out. */
 export function ProjectCloudBadge({ projectId }: { projectId: string }) {
 	const { state } = useWorksuiteAccount();
-	const linked = useCloudSync((s) => !!s.links[projectId]);
+	const link = useCloudSync((s) => s.links[projectId]);
+	const summary = useCloudSync((s) =>
+		s.cloudProjects.find((p) => p.id === link?.cloudId),
+	);
+	const linked = !!link;
 	if (state?.status !== "signed-in") return null;
+	if (summary && summary.role !== "owner") {
+		return (
+			<span
+				data-cloud-badge="shared"
+				className="inline-flex items-center gap-1 rounded-sm bg-violet-600/80 px-1.5 py-0.5 text-[10px] font-semibold text-white"
+			>
+				<Users className="size-3" />
+				{summary.role === "edit" ? "Shared · Can edit" : "Shared · Can view"}
+			</span>
+		);
+	}
 	return (
 		<span
 			data-cloud-badge={linked ? "both" : "local"}
@@ -76,6 +91,17 @@ export function CloudOnlyProjects() {
 						<span className="min-w-0 flex-1 truncate text-sm">
 							{project.name}
 						</span>
+						{project.role !== "owner" && (
+							<span
+								className="inline-flex items-center gap-1 rounded-sm bg-violet-600/80 px-1.5 py-0.5 text-[10px] font-semibold text-white"
+								data-shared-by
+							>
+								<Users className="size-3" />
+								Shared{project.ownerName
+									? ` by ${project.ownerName}`
+									: ""} · {project.role === "edit" ? "Can edit" : "Can view"}
+							</span>
+						)}
 						{project.updatedAt && (
 							<span className="text-muted-foreground hidden text-xs sm:block">
 								Updated {new Date(project.updatedAt).toLocaleDateString()}

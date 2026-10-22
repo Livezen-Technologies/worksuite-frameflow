@@ -53,7 +53,7 @@ export function isCloudAvailable(): boolean {
 	return bridge() !== null;
 }
 
-async function call<K extends keyof CloudSyncOperations>({
+export async function cloudCall<K extends keyof CloudSyncOperations>({
 	operation,
 	args,
 }: {
@@ -110,11 +110,16 @@ function setSyncing({
 	});
 }
 
+/** This user's role on a cloud project; projects they made are "owner". */
+export function cloudRole(cloudId: string) {
+	return store().cloudProjects.find((p) => p.id === cloudId)?.role ?? "owner";
+}
+
 export async function refreshCloudProjects(): Promise<void> {
 	if (!isCloudAvailable()) return;
 	try {
 		store().setCloudProjects(
-			await call({ operation: "listProjects", args: {} }),
+			await cloudCall({ operation: "listProjects", args: {} }),
 		);
 	} catch {
 		// Offline or signed out: keep the last list.
@@ -135,7 +140,10 @@ async function importCloudProject({
 	targetId?: string;
 	onProgress?: (progress: number) => void;
 }): Promise<string> {
-	const remote = await call({ operation: "getProject", args: { id: cloudId } });
+	const remote = await cloudCall({
+		operation: "getProject",
+		args: { id: cloudId },
+	});
 	if (!isCloudProjectData(remote.data)) {
 		throw new CloudSyncError({
 			message:
@@ -159,7 +167,7 @@ async function importCloudProject({
 			media[item.id] = previous.media[item.id];
 			continue;
 		}
-		const bytes = await call({
+		const bytes = await cloudCall({
 			operation: "downloadAsset",
 			args: { assetId: item.assetId },
 		});
@@ -266,6 +274,16 @@ async function pushProject({
 			};
 
 	const contentHash = await projectContentHash(serialized);
+	if (link.cloudId && cloudRole(link.cloudId) === "view") {
+		store().setStatus({
+			projectId,
+			status: {
+				state: "view-only",
+				hasLocalChanges: link.contentHash !== contentHash,
+			},
+		});
+		return;
+	}
 	if (link.cloudId && link.contentHash === contentHash) {
 		// Only re-saved, not edited: nothing to push.
 		store().setLink({
@@ -292,7 +310,7 @@ async function pushProject({
 			const hash = await sha256(buffer);
 			let known = link.media[asset.id];
 			if (known?.sha256 !== hash) {
-				const { assetId } = await call({
+				const { assetId } = await cloudCall({
 					operation: "uploadMedia",
 					args: {
 						name: asset.name,
@@ -328,7 +346,7 @@ async function pushProject({
 
 		setSyncing({ projectId, progress: 0.95, message: "Saving project…" });
 		if (!link.cloudId) {
-			const created = await call({
+			const created = await cloudCall({
 				operation: "createProject",
 				args: { name: serialized.metadata.name },
 			});
@@ -344,7 +362,7 @@ async function pushProject({
 		let otherProjectId: string | null = null;
 		let saved: { revision: number };
 		try {
-			saved = await call({
+			saved = await cloudCall({
 				operation: "putProject",
 				args: {
 					id: link.cloudId,
@@ -362,11 +380,11 @@ async function pushProject({
 				cloudId: link.cloudId,
 				asCopy: true,
 			});
-			const remote = await call({
+			const remote = await cloudCall({
 				operation: "getProject",
 				args: { id: link.cloudId },
 			});
-			saved = await call({
+			saved = await cloudCall({
 				operation: "putProject",
 				args: {
 					id: link.cloudId,
@@ -395,6 +413,13 @@ async function pushProject({
 				: { state: "idle" },
 		});
 	} catch (error) {
+		if (error instanceof CloudSyncError && error.code === "forbidden") {
+			store().setStatus({
+				projectId,
+				status: { state: "view-only", hasLocalChanges: true },
+			});
+			return;
+		}
 		store().setStatus({
 			projectId,
 			status: {
@@ -412,15 +437,29 @@ async function pushProject({
  */
 export async function pullProject({
 	projectId,
+	discardLocalChanges = false,
 }: {
 	projectId: string;
+	/** Replace this device's unsynced edits (a viewer getting the latest). */
+	discardLocalChanges?: boolean;
 }): Promise<boolean> {
 	const link = store().links[projectId];
 	const serialized = await storageService.getSerializedProject({
 		id: projectId,
 	});
 	if (!link?.cloudId || !serialized) return false;
-	if (link.contentHash !== (await projectContentHash(serialized))) return false;
+	if (
+		!discardLocalChanges &&
+		link.contentHash !== (await projectContentHash(serialized))
+	) {
+		if (cloudRole(link.cloudId) === "view") {
+			store().setStatus({
+				projectId,
+				status: { state: "view-only", hasLocalChanges: true },
+			});
+		}
+		return false;
+	}
 	setSyncing({ projectId, progress: 0, message: "Downloading changes…" });
 	try {
 		await importCloudProject({
@@ -430,7 +469,13 @@ export async function pullProject({
 			onProgress: (progress) =>
 				setSyncing({ projectId, progress, message: "Downloading changes…" }),
 		});
-		store().setStatus({ projectId, status: { state: "idle" } });
+		store().setStatus({
+			projectId,
+			status:
+				cloudRole(link.cloudId) === "view"
+					? { state: "view-only", hasLocalChanges: false }
+					: { state: "idle" },
+		});
 		return true;
 	} catch (error) {
 		store().setStatus({

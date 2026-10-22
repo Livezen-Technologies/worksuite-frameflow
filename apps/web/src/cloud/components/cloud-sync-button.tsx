@@ -7,6 +7,7 @@ import {
 	Loader2,
 	RefreshCw,
 	TriangleAlert,
+	Users,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,7 +21,14 @@ import { useWorksuiteAccount } from "@/account/use-worksuite-account";
 import { useEditor } from "@/editor/use-editor";
 import { cn } from "@/utils/ui";
 import { useCloudSync } from "../store";
-import { disableSync, enableSync, syncProject } from "../sync";
+import {
+	cloudRole,
+	disableSync,
+	enableSync,
+	pullProject,
+	syncProject,
+} from "../sync";
+import { ShareProjectDialog } from "./share-project-dialog";
 
 function timeAgo(iso: string | null): string {
 	if (!iso) return "never";
@@ -40,6 +48,8 @@ export function CloudSyncButton() {
 	const link = useCloudSync((s) => s.links[projectId]);
 	const status = useCloudSync((s) => s.status[projectId]) ?? { state: "idle" };
 	const [open, setOpen] = useState(false);
+	const [sharing, setSharing] = useState(false);
+	useCloudSync((s) => s.cloudProjects);
 
 	if (state?.status !== "signed-in" || !project) return null;
 
@@ -104,6 +114,27 @@ export function CloudSyncButton() {
 								<span className="text-muted-foreground">{status.message}</span>
 								<Progress value={status.progress * 100} />
 							</>
+						) : status.state === "view-only" ? (
+							<div className="flex flex-col gap-1.5" data-view-only>
+								<span>
+									Shared with you as <b>Can view</b>. You get the owner&rsquo;s
+									updates, but your changes stay on this device.
+								</span>
+								{status.hasLocalChanges && (
+									<Button
+										size="sm"
+										variant="outline"
+										onClick={() =>
+											void pullProject({
+												projectId,
+												discardLocalChanges: true,
+											}).then((pulled) => pulled && window.location.reload())
+										}
+									>
+										Discard my changes and get the latest
+									</Button>
+								)}
+							</div>
 						) : status.state === "error" ? (
 							<span className="text-destructive">{status.message}</span>
 						) : status.state === "conflict" ? (
@@ -141,9 +172,31 @@ export function CloudSyncButton() {
 							<RefreshCw />
 							Sync now
 						</Button>
+						{link.cloudId && cloudRole(link.cloudId) === "owner" && (
+							<Button
+								size="sm"
+								variant="outline"
+								className="self-start"
+								onClick={() => {
+									setOpen(false);
+									setSharing(true);
+								}}
+							>
+								<Users />
+								Share with team…
+							</Button>
+						)}
 					</div>
 				)}
 			</PopoverContent>
+			{link?.cloudId && (
+				<ShareProjectDialog
+					cloudId={link.cloudId}
+					projectName={project.metadata.name}
+					open={sharing}
+					onOpenChange={setSharing}
+				/>
+			)}
 		</Popover>
 	);
 }

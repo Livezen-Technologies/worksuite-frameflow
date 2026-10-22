@@ -2,13 +2,57 @@
 // /v1/video/projects with If-Match revisions, media to chunked uploads.
 // The page decides what to sync; this side holds the tokens and talks HTTP.
 const { api, uploadParts, asCloudError, CloudError } = require("./cloud-upload");
+const account = require("./account");
+
+const ROLES = new Set(["owner", "edit", "view"]);
+const asRole = (role) => (ROLES.has(role) ? role : "owner");
 
 const asProject = (p) => ({
 	id: String(p.id),
 	name: String(p.name ?? "Untitled"),
 	revision: Number(p.revision ?? 0),
 	updatedAt: p.updated_at ?? null,
+	// Team sharing (CL-07): this user's role and who owns it.
+	role: asRole(p.my_role ?? p.role),
+	ownerName: p.owner?.name ?? null,
+	shared: !!p.shared || (p.members_count ?? 0) > 1,
 });
+
+const asMember = (m) => ({
+	userId: String(m.user_id ?? m.id),
+	name: String(m.name ?? m.email ?? "Member"),
+	email: m.email ?? null,
+	role: m.role === "owner" || m.role === "edit" || m.role === "view" ? m.role : "member",
+});
+
+/** People in the active team workspace, to pick from when sharing. */
+async function listTeamMembers() {
+	const workspaceId = account.getState().profile?.workspaceId;
+	const workspace = account.getState().profile?.workspaces?.find((w) => w.id === workspaceId);
+	if (!workspace || workspace.type !== "team") return { team: null, members: [] };
+	const body = await api("GET", `/v1/workspaces/${encodeURIComponent(workspaceId)}/members`);
+	const items = Array.isArray(body) ? body : (body.data ?? []);
+	return { team: { id: workspace.id, name: workspace.name }, members: items.map(asMember) };
+}
+
+async function listProjectMembers({ id }) {
+	const body = await api("GET", `/v1/video/projects/${encodeURIComponent(id)}/members`);
+	const items = Array.isArray(body) ? body : (body.data ?? []);
+	return items.map(asMember);
+}
+
+async function setProjectMember({ id, userId, role }) {
+	if (role !== "edit" && role !== "view") throw new CloudError("Unknown role", { code: "denied" });
+	await api("PUT", `/v1/video/projects/${encodeURIComponent(id)}/members/${encodeURIComponent(userId)}`, {
+		body: { role },
+	});
+	return {};
+}
+
+async function removeProjectMember({ id, userId }) {
+	await api("DELETE", `/v1/video/projects/${encodeURIComponent(id)}/members/${encodeURIComponent(userId)}`);
+	return {};
+}
 
 async function listProjects() {
 	const body = await api("GET", "/v1/video/projects");
@@ -62,7 +106,18 @@ async function downloadAsset({ assetId }) {
 	return new Uint8Array(await res.arrayBuffer());
 }
 
-const operations = { listProjects, createProject, getProject, putProject, uploadMedia, downloadAsset };
+const operations = {
+	listProjects,
+	createProject,
+	getProject,
+	putProject,
+	uploadMedia,
+	downloadAsset,
+	listTeamMembers,
+	listProjectMembers,
+	setProjectMember,
+	removeProjectMember,
+};
 
 /** One IPC entry point: `{ ok: true, value }` or `{ ok: false, code, message }`. */
 async function run(operation, args) {

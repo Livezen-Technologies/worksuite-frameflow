@@ -109,11 +109,24 @@ export interface WorksuiteCloudBridge {
 	onProgress: (listener: (progress: CloudUploadProgress) => void) => () => void;
 }
 
+export type CloudProjectRole = "owner" | "edit" | "view";
+
 export interface CloudProjectSummary {
 	id: string;
 	name: string;
 	revision: number;
 	updatedAt: string | null;
+	/** This user's role on the project (CL-07). */
+	role: CloudProjectRole;
+	ownerName: string | null;
+	shared: boolean;
+}
+
+export interface CloudMember {
+	userId: string;
+	name: string;
+	email: string | null;
+	role: CloudProjectRole | "member";
 }
 
 export type CloudSyncResult<T> =
@@ -139,6 +152,22 @@ export interface CloudSyncOperations {
 			data: ArrayBuffer;
 		};
 		value: { assetId: string };
+	};
+	listTeamMembers: {
+		args: Record<string, never>;
+		value: {
+			team: { id: string; name: string } | null;
+			members: CloudMember[];
+		};
+	};
+	listProjectMembers: { args: { id: string }; value: CloudMember[] };
+	setProjectMember: {
+		args: { id: string; userId: string; role: "edit" | "view" };
+		value: Record<string, never>;
+	};
+	removeProjectMember: {
+		args: { id: string; userId: string };
+		value: Record<string, never>;
 	};
 	downloadAsset: {
 		args: { assetId: string };
