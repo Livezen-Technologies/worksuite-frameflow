@@ -7,6 +7,7 @@ import { stickersRegistry } from "./registry";
 import { resolveStickerId } from "./resolver";
 import { registerDefaultStickerProviders } from "./providers";
 import { parseStickerId } from "./sticker-id";
+import { getDriftAsset } from "./providers/drift";
 import type {
 	StickerBrowseResult,
 	StickerItem,
@@ -290,6 +291,10 @@ export async function resolveStickerIntrinsicSize({
 }: {
 	stickerId: string;
 }): Promise<{ width: number; height: number }> {
+	const driftAsset = await getDriftAsset({ stickerId });
+	if (driftAsset) {
+		return { width: driftAsset.width, height: driftAsset.height };
+	}
 	const url = resolveStickerId({ stickerId });
 	return new Promise((resolve) => {
 		const img = new Image();
@@ -305,6 +310,9 @@ export async function resolveStickerIntrinsicSize({
 }
 
 export { resolveStickerId };
+export { getDriftAsset, isDriftStickerId } from "./providers/drift";
+export type { DriftAsset } from "./providers/drift";
+export { lottieSecondsAt, renderLottieFrame } from "./lottie";
 export { resolveQueryToRegions, getRegionLabel } from "./providers/flags";
 export type {
 	StickerBrowseResult,

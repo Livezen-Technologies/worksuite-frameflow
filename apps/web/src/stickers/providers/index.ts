@@ -1,5 +1,6 @@
 import { stickersRegistry } from "../registry";
 import type { StickerProvider } from "@/stickers/types";
+import { driftProvider } from "./drift";
 import { flagsProvider } from "./flags";
 import { logosProvider } from "./logos";
 import { shapesProvider } from "./shapes";
@@ -8,6 +9,7 @@ const defaultProviders: StickerProvider[] = [
 	logosProvider,
 	flagsProvider,
 	shapesProvider,
+	driftProvider,
 ];
 
 export function registerDefaultStickerProviders({
