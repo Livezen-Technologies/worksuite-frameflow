@@ -296,5 +296,30 @@ module.exports = {
 		}
 	},
 
+	/** A PNG frame as a one-frame HEVC MP4, for HEIC export (HE-10). */
+	async encodeStill({ data }) {
+		const bin = nativeHelper._test.ffmpegPath();
+		if (!bin) throw new Error("FFmpeg isn't bundled with this build.");
+		await fs.promises.mkdir(tmpDir(), { recursive: true });
+		const id = crypto.randomUUID();
+		const input = path.join(tmpDir(), `${id}.png`);
+		const output = path.join(tmpDir(), `${id}.mp4`);
+		await fs.promises.writeFile(input, Buffer.from(data));
+		try {
+			await new Promise((resolve, reject) => {
+				// kvazaar needs sizes in multiples of 8: pad, and the HEIC crops back.
+				const child = spawn(bin, ["-hide_banner", "-loglevel", "error", "-y", "-i", input, "-frames:v", "1", "-vf", "pad=ceil(iw/8)*8:ceil(ih/8)*8", "-c:v", "libkvazaar", "-pix_fmt", "yuv420p", "-kvazaar-params", "preset=medium,qp=20", "-tag:v", "hvc1", output]);
+				let err = "";
+				child.stderr.on("data", (d) => { err += d; });
+				child.on("close", (code) => (code === 0 ? resolve() : reject(new Error(err.trim().split("\n").pop() || `FFmpeg failed (${code})`))));
+			});
+			const bytes = await fs.promises.readFile(output);
+			return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength);
+		} finally {
+			await fs.promises.unlink(input).catch(() => {});
+			await fs.promises.unlink(output).catch(() => {});
+		}
+	},
+
 	_test: { masterArgs },
 };

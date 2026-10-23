@@ -28,6 +28,8 @@ export interface MasterExportBridge {
 	}) => Promise<ArrayBuffer>;
 	/** Any picture FFmpeg can read, as JPEG bytes (HE-11). */
 	convertImage?: (args: { data: ArrayBuffer }) => Promise<ArrayBuffer>;
+	/** A PNG frame as a one-frame HEVC MP4 (HE-10). */
+	encodeStill?: (args: { data: ArrayBuffer }) => Promise<ArrayBuffer>;
 	/** Swaps in WAV sound, kept at its channel count (4-channel ambisonics). */
 	muxAudio?: (args: {
 		video: ArrayBuffer;

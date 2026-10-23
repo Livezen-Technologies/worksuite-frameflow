@@ -9,6 +9,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
+- The desktop app can export the frame at the playhead as HEIC (Export → Frame → HEIC), about half the size of a JPEG of the same quality.
+
 - In the desktop app, a HEIC photo FrameFlow's own reader can't open is converted to JPEG through FFmpeg instead of failing.
 
 - HEIC photos: the date taken, camera and place (with a map link) now show in a photo's right-click menu in the media bin; files with several pictures (bursts, collections) can be imported whole, in order; and wide-gamut Display P3 photos are converted to the project's colours instead of looking washed out.

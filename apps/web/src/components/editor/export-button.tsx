@@ -32,6 +32,7 @@ import { ExportQueueHost, ExportQueueList } from "@/export/queue/queue-list";
 import { useExportQueue } from "@/export/queue/store";
 import { generateUUID } from "@/utils/id";
 import { finishSphereExport, SPHERE_EXPORT_PRESETS } from "@/vr/export";
+import { hevcStillFromMp4, writeHeic } from "@/media/heif/write";
 import { useSphereStore } from "@/vr/store";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { canEncodeVideo } from "mediabunny";
@@ -325,7 +326,7 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 		"video",
 	);
 	const [audioFormat, setAudioFormat] = useState<AudioExportFormat>("wav");
-	const [frameFormat, setFrameFormat] = useState<"png" | "jpeg">("png");
+	const [frameFormat, setFrameFormat] = useState<"png" | "jpeg" | "heic">("png");
 	const [audioSupported, setAudioSupported] = useState<Set<AudioExportFormat>>(
 		() => new Set(["wav"]),
 	);
@@ -467,7 +468,7 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 				? durationSeconds * (project.settings.audio?.sampleRate ?? 48000) * 4
 				: (durationSeconds * 192000) / 8
 			: kind === "frame"
-				? projectSize.width * projectSize.height * (frameFormat === "png" ? 1.5 : 0.3)
+				? projectSize.width * projectSize.height * (frameFormat === "png" ? 1.5 : frameFormat === "heic" ? 0.15 : 0.3)
 				: kind === "gif"
 			? estimateGifBytes({
 					...size,
@@ -543,13 +544,26 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 				const canvas = await editor.project.renderFrame({
 					time: editor.playback.getCurrentTime(),
 				});
-				mimeType = frameFormat === "png" ? "image/png" : "image/jpeg";
+				const heic = frameFormat === "heic";
+				mimeType = frameFormat === "jpeg" ? "image/jpeg" : "image/png";
 				extension = frameFormat === "png" ? ".png" : ".jpg";
 				const blob = await new Promise<Blob | null>((resolve) =>
 					canvas.toBlob(resolve, mimeType, 0.92),
 				);
 				if (!blob) throw new Error("Couldn't draw the frame.");
 				data = await blob.arrayBuffer();
+				// HEIC: FFmpeg encodes the frame as HEVC, packaged here (HE-10).
+				if (heic && bridge?.encodeStill) {
+					const mp4 = await bridge.encodeStill({ data });
+					const bytes = writeHeic({
+						still: hevcStillFromMp4(new Uint8Array(mp4)),
+						crop: { width: canvas.width, height: canvas.height },
+					});
+					data = new ArrayBuffer(bytes.byteLength);
+					new Uint8Array(data).set(bytes);
+					mimeType = "image/heic";
+					extension = ".heic";
+				}
 			}
 			const name = `${fileName.trim() || project.metadata.name}${extension}`;
 			const files = window.worksuite?.files;
@@ -833,7 +847,10 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 						) : kind === "frame" ? (
 							<Row label="Format">
 								<div className="flex items-center gap-1" data-frame-formats>
-									{(["png", "jpeg"] as const).map((f) => (
+									{(bridge?.encodeStill
+										? (["png", "jpeg", "heic"] as const)
+										: (["png", "jpeg"] as const)
+									).map((f) => (
 										<Pill
 											key={f}
 											active={frameFormat === f}
