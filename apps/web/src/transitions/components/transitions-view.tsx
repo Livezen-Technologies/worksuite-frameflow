@@ -10,6 +10,7 @@ import { useElementSelection } from "@/timeline/hooks/element/use-element-select
 import type { ImageElement, TimelineTrack, VideoElement } from "@/timeline";
 import { TICKS_PER_SECOND } from "@/wasm";
 import { cn } from "@/utils/ui";
+import { useTransitionPresets } from "../presets";
 import {
 	TRANSITION_CATEGORIES,
 	TRANSITIONS,
@@ -97,6 +98,10 @@ export function TransitionsView() {
 		duration: projectTransition ?? DEFAULT_TRANSITION.duration,
 	}));
 	const [hovered, setHovered] = useState<TransitionType | null>(null);
+	const presets = useTransitionPresets((s) => s.presets);
+	const savePreset = useTransitionPresets((s) => s.save);
+	const removePreset = useTransitionPresets((s) => s.remove);
+	const [presetName, setPresetName] = useState<string | null>(null);
 
 	const selection = editor.timeline.getElementsWithTracks({
 		elements: selectedElements,
@@ -212,6 +217,46 @@ export function TransitionsView() {
 						</button>
 					))}
 				</div>
+
+				{presets.length > 0 && (
+					<div className="flex flex-col gap-1" data-transition-presets>
+						<span className="text-muted-foreground text-xs">My presets</span>
+						<div className="flex flex-wrap gap-1">
+							{presets.map((preset) => (
+								<span key={preset.id} className="bg-card flex items-center rounded-full border text-xs">
+									<button
+										type="button"
+										className="px-2.5 py-1"
+										title="Click to load, double-click to apply to the selected cut"
+										onClick={() => {
+											const { type: presetType, ...rest } = preset.value;
+											setType(presetType);
+											setSettings(rest);
+										}}
+										onDoubleClick={() => {
+											if (!cut) return;
+											editor.timeline.updateElements({
+												updates: [applyToCut({ target: cut, value: preset.value })],
+											});
+											toast.success(`${preset.name} added to the cut before “${cut.to.name}”`);
+										}}
+										data-transition-preset={preset.name}
+									>
+										{preset.name}
+									</button>
+									<button
+										type="button"
+										aria-label={`Delete ${preset.name}`}
+										className="text-muted-foreground hover:text-foreground pr-2"
+										onClick={() => removePreset(preset.id)}
+									>
+										×
+									</button>
+								</span>
+							))}
+						</div>
+					</div>
+				)}
 
 				<div
 					className="grid gap-2"
@@ -341,6 +386,31 @@ export function TransitionsView() {
 						</p>
 					)}
 
+					{presetName === null ? (
+						<Button variant="ghost" onClick={() => setPresetName(`${definition.name} ${settings.duration.toFixed(1)} s`)} data-save-transition-preset>
+							Save as preset
+						</Button>
+					) : (
+						<form
+							className="flex items-center gap-1"
+							onSubmit={(e) => {
+								e.preventDefault();
+								const preset = savePreset({ name: presetName, value: { ...settings, type } });
+								setPresetName(null);
+								toast.success(`Saved “${preset.name}”`);
+							}}
+						>
+							<input
+								ref={(el) => el?.focus()}
+								className="bg-background h-8 flex-1 rounded-md border px-2 text-xs"
+								value={presetName}
+								onChange={(e) => setPresetName(e.target.value)}
+								aria-label="Preset name"
+								data-transition-preset-name
+							/>
+							<Button type="submit" size="sm">Save</Button>
+						</form>
+					)}
 					<Button disabled={!cut} onClick={applySelected}>
 						{existing ? "Update selected cut" : "Apply to selected cut"}
 					</Button>

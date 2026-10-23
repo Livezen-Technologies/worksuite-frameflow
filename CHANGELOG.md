@@ -9,6 +9,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
+- Transition presets: set up a transition (type, duration, easing, direction, alignment) and **Save as preset**; presets appear under My presets in Transitions — click to load, double-click to apply to the selected cut.
+
 - GIF export can start anywhere: Export → GIF → Start at, with Beginning, Playhead and Selected clips (which also sets the length to the selection).
 
 - Project backups: while you work, a copy of the project is kept every 10 minutes (the newest 20). Project settings → Defaults → Backups lists them; Restore opens a backup as a new project, leaving the current one untouched.
