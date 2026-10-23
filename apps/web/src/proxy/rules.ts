@@ -31,3 +31,23 @@ export function needsProxy({
 }
 
 export const PROXY_HEIGHTS = [540, 720, 1080] as const;
+
+/**
+ * 360° clips are seen a slice at a time, so their proxies stay sharper:
+ * 2880×1440 equirectangular (SRS VR-05), never above the original.
+ */
+export const SPHERE_PROXY_HEIGHT = 1440;
+
+export function proxyHeightFor({
+	asset,
+	height,
+	sphere,
+}: {
+	asset: Pick<MediaAssetData, "height">;
+	height: number;
+	sphere: boolean;
+}): number {
+	if (!sphere) return height;
+	const target = Math.max(height, SPHERE_PROXY_HEIGHT);
+	return asset.height ? Math.min(target, asset.height) : target;
+}

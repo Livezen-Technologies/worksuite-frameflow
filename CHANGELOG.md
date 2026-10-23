@@ -120,6 +120,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
   - Stabilize and Remove flicker analyse the clip and write ordinary keyframes, so the result stays editable.
 
 ### Changed
+- 360° clips get sharper editing proxies (2880×1440, or the original size if smaller), so the reframed view stays clear while 5.7K and 8K footage plays smoothly.
 - 10-bit SDR footage (for example 10-bit H.264, HEVC Main 10, VP9 or AV1, such as camera log clips) is now decoded at full precision and stays 10-bit into 10-bit exports.
 - 10-bit HDR footage (HLG and PQ) keeps its full precision all the way into 10-bit desktop exports, instead of passing through 8 bits on the way.
 - 10-bit desktop exports (ProRes, FFV1, AV1 and HEVC 10-bit) now take frames straight from the 16-bit engine, so gradients, grades and scaled images keep their in-between shades instead of 8-bit steps.

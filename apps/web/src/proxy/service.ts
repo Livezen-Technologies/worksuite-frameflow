@@ -3,7 +3,8 @@ import type { MediaAsset } from "@/media/types";
 import { OPFSAdapter } from "@/services/storage/opfs-adapter";
 import { helperBridge } from "./bridge";
 import { proxyRegistry } from "./registry";
-import { needsProxy } from "./rules";
+import { needsProxy, proxyHeightFor } from "./rules";
+import { isSphereMedia } from "@/vr/store";
 import { useProxySettings, useProxyStatus } from "./store";
 
 const CHUNK = 8 * 1024 * 1024;
@@ -22,7 +23,12 @@ async function makeProxy({
 }) {
 	const bridge = helperBridge();
 	if (!bridge) return;
-	const { height, gpu } = useProxySettings.getState();
+	const { gpu } = useProxySettings.getState();
+	const height = proxyHeightFor({
+		asset,
+		height: useProxySettings.getState().height,
+		sphere: isSphereMedia(asset.id),
+	});
 	status().setStatus({ mediaId: asset.id, status: { state: "queued" } });
 	const { jobId } = await bridge.begin();
 	const off = bridge.onProgress((p) => {
@@ -130,7 +136,8 @@ export async function syncProjectProxies({
 				continue;
 			}
 		}
-		if (helperBridge() && needsProxy({ asset, mode, height }))
+		const target = proxyHeightFor({ asset, height, sphere: isSphereMedia(asset.id) });
+		if (helperBridge() && needsProxy({ asset, mode, height: target }))
 			void ensureProxy({ projectId, asset });
 	}
 }

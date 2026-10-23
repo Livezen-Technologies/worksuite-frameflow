@@ -118,3 +118,18 @@ describe("preview source", () => {
 		proxyRegistry.clear();
 	});
 });
+
+describe("360° proxies (VR-05)", () => {
+	test("sharper, but never above the original", async () => {
+		const { proxyHeightFor, needsProxy } = await import("../rules");
+		expect(proxyHeightFor({ asset: { height: 2880 }, height: 540, sphere: true })).toBe(1440);
+		expect(proxyHeightFor({ asset: { height: 1920 }, height: 1080, sphere: true })).toBe(1440);
+		expect(proxyHeightFor({ asset: { height: 1200 }, height: 540, sphere: true })).toBe(1200);
+		expect(proxyHeightFor({ asset: { height: 2880 }, height: 540, sphere: false })).toBe(540);
+		// A 2880×1440 sphere needs no proxy at its own size.
+		const asset = { type: "video" as const, width: 2880, height: 1440 };
+		expect(needsProxy({ asset, mode: "auto", height: proxyHeightFor({ asset, height: 540, sphere: true }) })).toBe(false);
+		const big = { type: "video" as const, width: 5760, height: 2880 };
+		expect(needsProxy({ asset: big, mode: "auto", height: proxyHeightFor({ asset: big, height: 540, sphere: true }) })).toBe(true);
+	});
+});
