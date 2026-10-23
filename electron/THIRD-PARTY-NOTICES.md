@@ -52,3 +52,15 @@ of providing it.
   (https://github.com/Ezhil-Language-Foundation/open-tamil). Licence: MIT.
 - Either file can be replaced with a list in the same format (one word per
   line).
+
+### Fonts (titles, captions and template packs)
+
+- Bundled: Noto Sans Sinhala and Noto Sans Tamil (Regular and Bold), by
+  Google, under the SIL Open Font License 1.1. Where they are:
+  `resources/web/apps/web/public/fonts/bundled/`, with each font's
+  `*-OFL.txt` licence beside it.
+- Loaded from Google Fonts when a template uses them, not bundled: Bebas
+  Neue, Inter, Montserrat, Abhaya Libre and Pacifico, all under the SIL Open
+  Font License 1.1 (https://openfontlicense.org). Brand kit fonts the user
+  picks come from Google Fonts the same way.
+- The fonts may be used in exported videos; the licence covers that use.
