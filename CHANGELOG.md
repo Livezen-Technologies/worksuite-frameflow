@@ -9,6 +9,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
+- A project can have its own brand kit: tick **Separate brand kit for this project** in the Brand kit panel. Other projects keep the shared kit, and the right one is loaded whenever you switch projects.
+
 - Project folders now keep editing proxies in their proxies/ folder, so a project opened from its folder on another computer doesn't need to make them again; proxies of deleted media are removed.
 
 - Automation API events: clients can `events.subscribe` to project.opened, project.saved, timeline.changed, export.started and export.finished and get them pushed on the same connection; `wve events [topic…]` prints them as JSON lines.

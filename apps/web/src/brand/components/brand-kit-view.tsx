@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Plus, Stamp, Trash2, Wand2, X } from "lucide-react";
 import { toast } from "sonner";
 import { PanelView } from "@/components/editor/panels/assets/views/base-panel";
@@ -9,6 +9,7 @@ import { FontPicker } from "@/components/ui/font-picker";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import { useEditor } from "@/editor/use-editor";
+import { setOwnKit, switchBrandKit, useProjectKits } from "../project-kits";
 import { useElementSelection } from "@/timeline/hooks/element/use-element-selection";
 import { generateUUID } from "@/utils/id";
 import { cn } from "@/utils/ui";
@@ -111,6 +112,7 @@ export function BrandKitView() {
 					className="h-8 font-semibold"
 					aria-label="Brand name"
 				/>
+				<ProjectKitSwitch />
 
 				<Section
 					title="Logos"
@@ -390,5 +392,22 @@ export function BrandKitView() {
 				</Section>
 			</div>
 		</PanelView>
+	);
+}
+
+/** This project's own kit, or the kit shared by every project (PS-20). */
+function ProjectKitSwitch() {
+	const projectId = useEditor((e) => e.project.getActiveOrNull()?.metadata.id ?? null);
+	const own = useProjectKits((s) => (projectId ? !!s.byProject[projectId] : false));
+	useEffect(() => {
+		switchBrandKit({ projectId });
+	}, [projectId]);
+	if (!projectId) return null;
+	return (
+		<label className="flex items-center gap-2 text-xs" data-project-kit>
+			<input type="checkbox" checked={own} onChange={(e) => setOwnKit({ projectId, own: e.target.checked })} />
+			Separate brand kit for this project
+			<span className="text-muted-foreground">({own ? "only this project" : "shared by all projects"})</span>
+		</label>
 	);
 }

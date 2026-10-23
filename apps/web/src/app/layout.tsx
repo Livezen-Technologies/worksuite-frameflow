@@ -1,3 +1,4 @@
+import { BrandKitHost } from "@/brand/components/brand-kit-host";
 import { ThemeProvider } from "next-themes";
 import Script from "next/script";
 import "./globals.css";
@@ -65,6 +66,7 @@ export default function RootLayout({
 						<LocaleSync />
 						<ProjectFolderHost />
 						<AutomationHost />
+						<BrandKitHost />
 						<ProxyHost />
 						<RenderCacheHost />
 						<RecordingCommandHost />
