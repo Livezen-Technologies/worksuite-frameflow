@@ -1,3 +1,4 @@
+import type { ProjectHdrSettings } from "@/hdr/settings";
 import type { FrameRate } from "opencut-wasm";
 import type { TScene } from "@/timeline/types";
 import type { MediaTime } from "@/wasm";
@@ -47,6 +48,8 @@ export interface TProjectSettings {
 	colorSpace?: TProjectColorSpace;
 	/** Export audio format (PS-09). */
 	audio?: { sampleRate: 44100 | 48000; channels: 1 | 2 };
+	/** Tone mapping for HDR footage, project-wide and per media (HD-05, HD-08). */
+	hdr?: ProjectHdrSettings;
 	/** Per-project defaults (PS-17 – PS-23). */
 	defaults?: TProjectDefaults;
 }

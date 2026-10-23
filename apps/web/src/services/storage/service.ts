@@ -332,6 +332,7 @@ class StorageService {
 			duration: mediaAsset.duration,
 			thumbnailUrl: mediaAsset.thumbnailUrl,
 			ephemeral: mediaAsset.ephemeral,
+			color: mediaAsset.color,
 		};
 
 		try {
@@ -405,6 +406,7 @@ class StorageService {
 			duration: metadata.duration,
 			thumbnailUrl: metadata.thumbnailUrl,
 			ephemeral: metadata.ephemeral,
+			color: metadata.color,
 		};
 	}
 

@@ -11,7 +11,13 @@ type ElementPatch = {
 	patch: Partial<TimelineElement>;
 };
 
-function num({ value, fallback }: { value: unknown; fallback: number }): number {
+function num({
+	value,
+	fallback,
+}: {
+	value: unknown;
+	fallback: number;
+}): number {
 	return typeof value === "number" && Number.isFinite(value) ? value : fallback;
 }
 
@@ -49,19 +55,33 @@ export function reflowElements({
 			const scaleX = num({ value: params["transform.scaleX"], fallback: 1 });
 			const scaleY = num({ value: params["transform.scaleY"], fallback: 1 });
 			const asset =
-				"mediaId" in element ? assets.find((a) => a.id === element.mediaId) : undefined;
+				"mediaId" in element
+					? assets.find((a) => a.id === element.mediaId)
+					: undefined;
 			const next: Record<string, number> = {};
 			if (mode === "fill" && asset?.width && asset.height) {
-				const contain = Math.min(to.width / asset.width, to.height / asset.height);
-				const cover = Math.max(to.width / asset.width, to.height / asset.height);
+				const contain = Math.min(
+					to.width / asset.width,
+					to.height / asset.height,
+				);
+				const cover = Math.max(
+					to.width / asset.width,
+					to.height / asset.height,
+				);
 				const fill = cover / contain;
 				next["transform.scaleX"] = fill * (Math.sign(scaleX) || 1);
 				next["transform.scaleY"] = fill * (Math.sign(scaleY) || 1);
 				next["transform.positionX"] = 0;
 				next["transform.positionY"] = 0;
 			} else if (mode === "keep" && asset?.width && asset.height) {
-				const before = Math.min(from.width / asset.width, from.height / asset.height);
-				const after = Math.min(to.width / asset.width, to.height / asset.height);
+				const before = Math.min(
+					from.width / asset.width,
+					from.height / asset.height,
+				);
+				const after = Math.min(
+					to.width / asset.width,
+					to.height / asset.height,
+				);
 				next["transform.scaleX"] = (scaleX * before) / after;
 				next["transform.scaleY"] = (scaleY * before) / after;
 			} else if (mode !== "keep") {

@@ -4,6 +4,7 @@ import { HEIF_ACCEPT } from "@/media/heif";
 import { LibraryView } from "@/cloud/components/library-view";
 import { useCloudReady } from "@/cloud/network";
 import { SphereBadge } from "@/vr/components/sphere-badge";
+import { HdrBadge } from "@/hdr/components/hdr-badge";
 import Image from "next/image";
 import { useMemo, useState } from "react";
 import { PanelView } from "@/components/editor/panels/assets/views/base-panel";
@@ -508,6 +509,7 @@ function MediaPreview({
 						<MediaDurationBadge duration={item.duration} />
 					) : null}
 					<SphereBadge mediaId={item.id} />
+					<HdrBadge color={item.color} />
 				</div>
 			);
 		}

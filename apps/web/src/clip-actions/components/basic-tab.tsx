@@ -18,6 +18,7 @@ import {
 	setStabilize,
 } from "../enhance";
 import { mediaOf } from "../actions";
+import { HdrSection } from "@/hdr/components/hdr-section";
 
 const BLEND_KEYS = ["opacity", "blendMode"] as const;
 const TRANSFORM_KEYS = [
@@ -106,7 +107,8 @@ export function BasicTab({
 		null,
 	);
 	const clip = { trackId, element };
-	const isVideo = mediaOf({ editor, element })?.type === "video";
+	const asset = mediaOf({ editor, element });
+	const isVideo = asset?.type === "video";
 	const mask = "masks" in element ? element.masks?.[0] : undefined;
 
 	const runAnalysis = async ({
@@ -151,6 +153,7 @@ export function BasicTab({
 					useAssetsPanelStore.getState().setActiveTab("adjustment")
 				}
 			/>
+			{asset?.type === "video" && <HdrSection asset={asset} />}
 			<ElementParamsTab
 				element={element}
 				trackId={trackId}

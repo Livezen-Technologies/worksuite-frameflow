@@ -1,4 +1,5 @@
 import { toast } from "sonner";
+import type { MediaColorInfo } from "@/services/storage/types";
 import { convertHeif, findLivePhotoPairs, isHeif } from "./heif";
 import { unsupportedSphereFormat } from "@/vr/spherical";
 import { getMediaTypeFromFile } from "@/media/media-utils";
@@ -167,6 +168,7 @@ export async function processMediaAssets({
 		let height: number | undefined;
 		let fps: number | undefined;
 		let hasAudio: boolean | undefined;
+		let color: MediaColorInfo | undefined;
 
 		try {
 			if (fileType === "image") {
@@ -184,6 +186,12 @@ export async function processMediaAssets({
 						? Math.round(videoData.fps)
 						: undefined;
 					hasAudio = videoData.hasAudio;
+					color = videoData.color;
+					if (color.transfer !== "sdr")
+						toast.info(`${file.name} is HDR (${color.transfer.toUpperCase()})`, {
+							description:
+								"It's tone-mapped to SDR for this project. Adjust exposure and highlight roll-off in the clip's Basic tab.",
+						});
 					thumbnailUrl = videoData.thumbnailUrl ?? undefined;
 
 					if (!videoData.canDecode) {
@@ -216,6 +224,7 @@ export async function processMediaAssets({
 				height,
 				fps,
 				hasAudio,
+				color,
 			});
 
 			await new Promise((resolve) => setTimeout(resolve, 0));

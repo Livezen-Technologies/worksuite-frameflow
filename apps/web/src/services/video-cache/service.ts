@@ -5,10 +5,17 @@ import {
 	CanvasSink,
 	type WrappedCanvas,
 } from "mediabunny";
+import { HdrCanvasSink } from "@/hdr/sink";
+import {
+	onHdrSettingsChange,
+	resolveMediaHdr,
+	transferFromColorSpace,
+} from "@/hdr/settings";
+import { effectPreviewService } from "@/services/renderer/effect-preview";
 
 interface VideoSinkData {
 	input: Input;
-	sink: CanvasSink;
+	sink: CanvasSink | HdrCanvasSink;
 	iterator: AsyncGenerator<WrappedCanvas, void, unknown> | null;
 	currentFrame: WrappedCanvas | null;
 	nextFrame: WrappedCanvas | null;
@@ -18,6 +25,16 @@ interface VideoSinkData {
 }
 
 export class VideoCache {
+	constructor() {
+		// New tone-mapping settings reopen the affected decoders.
+		onHdrSettingsChange((changed) => {
+			const ids = changed.includes("*") ? [...this.sinks.keys()] : changed;
+			for (const mediaId of ids)
+				if (this.sinks.has(mediaId)) this.clearVideo({ mediaId });
+			if (ids.length > 0) effectPreviewService.generation++;
+		});
+	}
+
 	private sinks = new Map<string, VideoSinkData>();
 	private initPromises = new Map<string, Promise<void>>();
 	private frameChain = new Map<string, Promise<unknown>>();
@@ -278,10 +295,21 @@ export class VideoCache {
 				throw new Error("Video codec not supported for decoding");
 			}
 
-			const sink = new CanvasSink(videoTrack, {
-				poolSize: 3,
-				fit: "contain",
+			// HDR footage is tone-mapped by us, not squeezed by the browser (HD-03).
+			const colorSpace = await videoTrack.getColorSpace().catch(() => null);
+			const hdr = resolveMediaHdr({
+				mediaId,
+				detected: transferFromColorSpace(colorSpace?.transfer),
 			});
+			const sink =
+				hdr.transfer === "sdr"
+					? new CanvasSink(videoTrack, { poolSize: 3, fit: "contain" })
+					: new HdrCanvasSink({
+							track: videoTrack,
+							transfer: hdr.transfer,
+							settings: hdr.settings,
+							fullRange: colorSpace?.fullRange ?? false,
+						});
 
 			this.sinks.set(mediaId, {
 				input,

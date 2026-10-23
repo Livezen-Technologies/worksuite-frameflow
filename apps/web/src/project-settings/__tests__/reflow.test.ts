@@ -22,7 +22,9 @@ const from = { width: 1920, height: 1080 };
 describe("reflowElements", () => {
 	test("fit scales offsets with the frame", () => {
 		const [patch] = reflowElements({
-			tracks: tracks([text({ "transform.positionX": 100, "transform.positionY": -50 })]),
+			tracks: tracks([
+				text({ "transform.positionX": 100, "transform.positionY": -50 }),
+			]),
 			assets,
 			from,
 			to: { width: 1280, height: 720 },
@@ -40,7 +42,10 @@ describe("reflowElements", () => {
 			mode: "fill",
 		});
 		// contain = 1080/1920, cover = 1920/1080 → ratio (16/9)^2
-		expect(patch.patch.params?.["transform.scaleX"]).toBeCloseTo((16 / 9) ** 2, 4);
+		expect(patch.patch.params?.["transform.scaleX"]).toBeCloseTo(
+			(16 / 9) ** 2,
+			4,
+		);
 		expect(patch.patch.params?.["transform.positionX"]).toBe(0);
 	});
 	test("keep holds the pixel size", () => {
@@ -55,7 +60,13 @@ describe("reflowElements", () => {
 	});
 	test("no change, no patches", () => {
 		expect(
-			reflowElements({ tracks: tracks([video({})]), assets, from, to: from, mode: "fit" }),
+			reflowElements({
+				tracks: tracks([video({})]),
+				assets,
+				from,
+				to: from,
+				mode: "fit",
+			}),
 		).toEqual([]);
 	});
 });

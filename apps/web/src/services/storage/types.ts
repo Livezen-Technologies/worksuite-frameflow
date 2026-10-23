@@ -27,6 +27,13 @@ export interface MediaAssetData {
 	hasAudio?: boolean;
 	ephemeral?: boolean;
 	thumbnailUrl?: string;
+	/** Colour metadata of video, for HDR handling (HD-01). */
+	color?: MediaColorInfo;
+}
+
+export interface MediaColorInfo {
+	transfer: "sdr" | "hlg" | "pq";
+	primaries?: string;
 }
 
 export type SerializedScene = Omit<TScene, "createdAt" | "updatedAt"> & {

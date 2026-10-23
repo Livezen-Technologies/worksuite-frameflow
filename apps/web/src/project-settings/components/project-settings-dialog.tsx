@@ -28,6 +28,7 @@ import { hasMediaId, isVisualElement } from "@/timeline/element-utils";
 import { LANGUAGES } from "@/transcription/languages";
 import { cn } from "@/utils/ui";
 import { useSphereStore } from "@/vr/store";
+import { DEFAULT_TONE_MAP } from "@/hdr/tonemap";
 import { reflowElements, type ReflowMode } from "../reflow";
 import { BUILT_IN_TEMPLATES, useProjectSettings } from "../store";
 
@@ -48,7 +49,11 @@ const LEVELS = [
 	{ value: 4320, label: "8K" },
 ];
 const RATES = [23.976, 24, 25, 29.97, 30, 50, 59.94, 60];
-const COLOR_SPACES: { value: TProjectColorSpace; label: string; hdr: boolean }[] = [
+const COLOR_SPACES: {
+	value: TProjectColorSpace;
+	label: string;
+	hdr: boolean;
+}[] = [
 	{ value: "rec709", label: "Rec. 709 SDR", hdr: false },
 	{ value: "rec2020", label: "Rec. 2020 SDR", hdr: false },
 	{ value: "hlg", label: "Rec. 2100 HLG (HDR)", hdr: true },
@@ -63,7 +68,13 @@ const INPUT_MODES: { value: InputMode | ""; label: string }[] = [
 
 type Tab = "details" | "performance" | "defaults";
 
-function sizeFor({ ratio, level }: { ratio: [number, number]; level: number }): TCanvasSize {
+function sizeFor({
+	ratio,
+	level,
+}: {
+	ratio: [number, number];
+	level: number;
+}): TCanvasSize {
 	const [w, h] = ratio;
 	return evenSize(
 		w >= h
@@ -74,7 +85,10 @@ function sizeFor({ ratio, level }: { ratio: [number, number]; level: number }): 
 
 function aspectOf(size: TCanvasSize): string {
 	const r = size.width / size.height;
-	return ASPECTS.find((a) => Math.abs(a.ratio[0] / a.ratio[1] - r) < 0.01)?.id ?? "custom";
+	return (
+		ASPECTS.find((a) => Math.abs(a.ratio[0] / a.ratio[1] - r) < 0.01)?.id ??
+		"custom"
+	);
 }
 
 function Field({
@@ -91,7 +105,9 @@ function Field({
 			<span className="pt-1.5 text-sm">{label}</span>
 			<div className="flex min-w-0 flex-col gap-1">
 				{children}
-				{hint ? <span className="text-muted-foreground text-xs">{hint}</span> : null}
+				{hint ? (
+					<span className="text-muted-foreground text-xs">{hint}</span>
+				) : null}
 			</div>
 		</div>
 	);
@@ -108,7 +124,10 @@ export function ProjectSettingsDialog() {
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			{open ? (
-				<ProjectSettingsBody key={project.metadata.id} onClose={() => setOpen(false)} />
+				<ProjectSettingsBody
+					key={project.metadata.id}
+					onClose={() => setOpen(false)}
+				/>
 			) : null}
 		</Dialog>
 	);
@@ -131,17 +150,28 @@ function ProjectSettingsBody({ onClose }: { onClose: () => void }) {
 	const [colorSpace, setColorSpace] = useState<TProjectColorSpace>(
 		settings.colorSpace ?? "rec709",
 	);
-	const [sampleRate, setSampleRate] = useState(settings.audio?.sampleRate ?? 48000);
+	const [sampleRate, setSampleRate] = useState(
+		settings.audio?.sampleRate ?? 48000,
+	);
 	const [channels, setChannels] = useState(settings.audio?.channels ?? 2);
 	const [is360, setIs360] = useState(sphere);
 	const [reflow, setReflow] = useState<ReflowMode>("fit");
-	const [defaults, setDefaults] = useState<TProjectDefaults>(settings.defaults ?? {});
+	const [defaults, setDefaults] = useState<TProjectDefaults>(
+		settings.defaults ?? {},
+	);
+	const [toneMap, setToneMap] = useState({
+		...DEFAULT_TONE_MAP,
+		...(settings.hdr?.toneMap ?? {}),
+	});
 	const [templateName, setTemplateName] = useState<string | null>(null);
 
 	const tracks = editor.scenes.getActiveScene().tracks;
-	const hasClips = [tracks.main, ...tracks.overlay].some((t) => t.elements.length > 0);
+	const hasClips = [tracks.main, ...tracks.overlay].some(
+		(t) => t.elements.length > 0,
+	);
 	const sizeChanged =
-		size.width !== settings.canvasSize.width || size.height !== settings.canvasSize.height;
+		size.width !== settings.canvasSize.width ||
+		size.height !== settings.canvasSize.height;
 	const aspect = aspectOf(size);
 	const shortSide = Math.min(size.width, size.height);
 	const level = LEVELS.find((l) => l.value === shortSide)?.value ?? 0;
@@ -161,7 +191,10 @@ function ProjectSettingsBody({ onClose }: { onClose: () => void }) {
 	const setAspect = (id: string) => {
 		if (id === "original" && original) return setSize(original);
 		const option = ASPECTS.find((a) => a.id === id);
-		if (option) setSize(sizeFor({ ratio: option.ratio, level: level || shortSide || 1080 }));
+		if (option)
+			setSize(
+				sizeFor({ ratio: option.ratio, level: level || shortSide || 1080 }),
+			);
 	};
 	const setLevel = (value: number) => {
 		const option = ASPECTS.find((a) => a.id === aspect);
@@ -175,10 +208,14 @@ function ProjectSettingsBody({ onClose }: { onClose: () => void }) {
 		canvasSize: size,
 		canvasSizeMode: "custom",
 		lastCustomCanvasSize: size,
-		fps: fps === frameRateToFloat(settings.fps) ? settings.fps : floatToFrameRate(fps),
+		fps:
+			fps === frameRateToFloat(settings.fps)
+				? settings.fps
+				: floatToFrameRate(fps),
 		colorSpace,
 		audio: { sampleRate, channels },
 		defaults,
+		hdr: { ...(settings.hdr ?? {}), toneMap },
 	});
 
 	const save = async () => {
@@ -196,10 +233,14 @@ function ProjectSettingsBody({ onClose }: { onClose: () => void }) {
 		editor.command.execute({
 			command:
 				patches.length > 0
-					? new BatchCommand([settingsCommand, new UpdateElementsCommand({ updates: patches })])
+					? new BatchCommand([
+							settingsCommand,
+							new UpdateElementsCommand({ updates: patches }),
+						])
 					: settingsCommand,
 		});
-		if (is360 !== sphere) setSphere({ projectId: project.metadata.id, on: is360 });
+		if (is360 !== sphere)
+			setSphere({ projectId: project.metadata.id, on: is360 });
 		const trimmed = name.trim();
 		if (trimmed && trimmed !== project.metadata.name)
 			await editor.project
@@ -210,7 +251,9 @@ function ProjectSettingsBody({ onClose }: { onClose: () => void }) {
 	};
 
 	const applyTemplate = (id: string) => {
-		const template = [...BUILT_IN_TEMPLATES, ...templates].find((t) => t.id === id);
+		const template = [...BUILT_IN_TEMPLATES, ...templates].find(
+			(t) => t.id === id,
+		);
 		if (!template) return;
 		const t = template.settings;
 		if (t.canvasSize) setSize(t.canvasSize);
@@ -280,7 +323,9 @@ function ProjectSettingsBody({ onClose }: { onClose: () => void }) {
 								onChange={(e) => setAspect(e.target.value)}
 								data-field="aspect"
 							>
-								{original && <option value="original">Original (first clip)</option>}
+								{original && (
+									<option value="original">Original (first clip)</option>
+								)}
 								{ASPECTS.map((a) => (
 									<option key={a.id} value={a.id}>
 										{a.label}
@@ -315,7 +360,10 @@ function ProjectSettingsBody({ onClose }: { onClose: () => void }) {
 									onChange={(e) =>
 										setSize((s) => ({
 											...s,
-											width: Math.min(7680, Math.max(2, Number(e.target.value) || 2)),
+											width: Math.min(
+												7680,
+												Math.max(2, Number(e.target.value) || 2),
+											),
 										}))
 									}
 								/>
@@ -328,13 +376,19 @@ function ProjectSettingsBody({ onClose }: { onClose: () => void }) {
 									onChange={(e) =>
 										setSize((s) => ({
 											...s,
-											height: Math.min(4320, Math.max(2, Number(e.target.value) || 2)),
+											height: Math.min(
+												4320,
+												Math.max(2, Number(e.target.value) || 2),
+											),
 										}))
 									}
 								/>
 							</div>
 						</Field>
-						<Field label="Frame rate" hint="Match most of your footage for the smoothest result.">
+						<Field
+							label="Frame rate"
+							hint="Match most of your footage for the smoothest result."
+						>
 							<select
 								className={selectClass}
 								value={fps}
@@ -352,13 +406,15 @@ function ProjectSettingsBody({ onClose }: { onClose: () => void }) {
 						</Field>
 						<Field
 							label="Color space"
-							hint="HDR (HLG and PQ) needs the HDR pipeline in section 24, which isn't built yet."
+							hint="HDR footage is tone-mapped into this SDR project. HDR projects (HLG and PQ output) need a 16-bit compositor and 10-bit export, which aren't built yet."
 						>
 							<select
 								className={selectClass}
 								value={colorSpace}
 								onChange={(e) => {
-									const next = COLOR_SPACES.find((c) => c.value === e.target.value);
+									const next = COLOR_SPACES.find(
+										(c) => c.value === e.target.value,
+									);
 									if (next && !next.hdr) setColorSpace(next.value);
 								}}
 							>
@@ -369,9 +425,57 @@ function ProjectSettingsBody({ onClose }: { onClose: () => void }) {
 								))}
 							</select>
 						</Field>
-						<Field label="Arrange layers" hint="Free tracks (all tracks equal) is coming later.">
+						<Field
+							label="HDR tone mapping"
+							hint="Default for HDR clips; each clip can override it in its Basic tab."
+						>
+							<div className="grid grid-cols-[110px_1fr_40px] items-center gap-x-2 gap-y-1 text-xs">
+								<span>Highlight roll-off</span>
+								<input
+									type="range"
+									min={0}
+									max={1}
+									step={0.05}
+									value={toneMap.rolloff}
+									onChange={(e) =>
+										setToneMap((t) => ({
+											...t,
+											rolloff: Number(e.target.value),
+										}))
+									}
+									aria-label="Highlight roll-off"
+								/>
+								<span className="tabular-nums">
+									{Math.round(toneMap.rolloff * 100)}%
+								</span>
+								<span>Saturation</span>
+								<input
+									type="range"
+									min={0}
+									max={2}
+									step={0.05}
+									value={toneMap.saturation}
+									onChange={(e) =>
+										setToneMap((t) => ({
+											...t,
+											saturation: Number(e.target.value),
+										}))
+									}
+									aria-label="Saturation"
+								/>
+								<span className="tabular-nums">
+									{Math.round(toneMap.saturation * 100)}%
+								</span>
+							</div>
+						</Field>
+						<Field
+							label="Arrange layers"
+							hint="Free tracks (all tracks equal) is coming later."
+						>
 							<select className={selectClass} value="main" disabled>
-								<option value="main">Main track (magnetic), others as overlays</option>
+								<option value="main">
+									Main track (magnetic), others as overlays
+								</option>
 								<option value="free">Free tracks</option>
 							</select>
 						</Field>
@@ -380,7 +484,11 @@ function ProjectSettingsBody({ onClose }: { onClose: () => void }) {
 								<select
 									className={selectClass}
 									value={sampleRate}
-									onChange={(e) => setSampleRate(Number(e.target.value) === 44100 ? 44100 : 48000)}
+									onChange={(e) =>
+										setSampleRate(
+											Number(e.target.value) === 44100 ? 44100 : 48000,
+										)
+									}
 								>
 									<option value={48000}>48 kHz</option>
 									<option value={44100}>44.1 kHz</option>
@@ -388,14 +496,19 @@ function ProjectSettingsBody({ onClose }: { onClose: () => void }) {
 								<select
 									className={selectClass}
 									value={channels}
-									onChange={(e) => setChannels(Number(e.target.value) === 1 ? 1 : 2)}
+									onChange={(e) =>
+										setChannels(Number(e.target.value) === 1 ? 1 : 2)
+									}
 								>
 									<option value={2}>Stereo</option>
 									<option value={1}>Mono</option>
 								</select>
 							</div>
 						</Field>
-						<Field label="360° project" hint="Equirectangular 2:1 output with 360° metadata.">
+						<Field
+							label="360° project"
+							hint="Equirectangular 2:1 output with 360° metadata."
+						>
 							<label className="flex items-center gap-2 text-sm">
 								<input
 									type="checkbox"
@@ -409,7 +522,10 @@ function ProjectSettingsBody({ onClose }: { onClose: () => void }) {
 							</label>
 						</Field>
 						{sizeChanged && hasClips && (
-							<Field label="Existing clips" hint="How clips adapt to the new frame.">
+							<Field
+								label="Existing clips"
+								hint="How clips adapt to the new frame."
+							>
 								<div className="flex flex-wrap gap-1.5" data-field="reflow">
 									{(
 										[
@@ -424,7 +540,9 @@ function ProjectSettingsBody({ onClose }: { onClose: () => void }) {
 											onClick={() => setReflow(value)}
 											className={cn(
 												"rounded-md border px-2.5 py-1 text-xs",
-												reflow === value ? "border-primary bg-primary/10" : "hover:bg-accent",
+												reflow === value
+													? "border-primary bg-primary/10"
+													: "hover:bg-accent",
 											)}
 										>
 											{label}
@@ -443,8 +561,8 @@ function ProjectSettingsBody({ onClose }: { onClose: () => void }) {
 						</p>
 						<p>
 							Proxies, preview quality, render cache, GPU choice and background
-							task priority (PS-12 – PS-16) need the native media helper and
-							are not available yet.
+							task priority (PS-12 – PS-16) need the native media helper and are
+							not available yet.
 						</p>
 					</div>
 				)}
@@ -458,7 +576,9 @@ function ProjectSettingsBody({ onClose }: { onClose: () => void }) {
 									step={0.5}
 									className="h-8 w-24"
 									value={defaults.stillSeconds ?? 5}
-									onChange={(e) => setDefault({ stillSeconds: Number(e.target.value) || 5 })}
+									onChange={(e) =>
+										setDefault({ stillSeconds: Number(e.target.value) || 5 })
+									}
 									data-field="still"
 								/>
 								<span className="text-muted-foreground text-xs">seconds</span>
@@ -473,7 +593,9 @@ function ProjectSettingsBody({ onClose }: { onClose: () => void }) {
 									className="h-8 w-24"
 									value={defaults.transitionSeconds ?? 0.8}
 									onChange={(e) =>
-										setDefault({ transitionSeconds: Number(e.target.value) || 0.8 })
+										setDefault({
+											transitionSeconds: Number(e.target.value) || 0.8,
+										})
 									}
 								/>
 								<span className="text-muted-foreground text-xs">seconds</span>
@@ -483,7 +605,9 @@ function ProjectSettingsBody({ onClose }: { onClose: () => void }) {
 							<select
 								className={selectClass}
 								value={defaults.captionLanguage ?? "auto"}
-								onChange={(e) => setDefault({ captionLanguage: e.target.value })}
+								onChange={(e) =>
+									setDefault({ captionLanguage: e.target.value })
+								}
 							>
 								<option value="auto">Detect automatically</option>
 								{LANGUAGES.map((l) => (
@@ -493,12 +617,17 @@ function ProjectSettingsBody({ onClose }: { onClose: () => void }) {
 								))}
 							</select>
 						</Field>
-						<Field label="Typing language" hint="Switched on when this project opens.">
+						<Field
+							label="Typing language"
+							hint="Switched on when this project opens."
+						>
 							<select
 								className={selectClass}
 								value={defaults.inputMode ?? ""}
 								onChange={(e) => {
-									const mode = INPUT_MODES.find((m) => m.value === e.target.value);
+									const mode = INPUT_MODES.find(
+										(m) => m.value === e.target.value,
+									);
 									setDefault({ inputMode: mode?.value || undefined });
 								}}
 							>
@@ -523,7 +652,10 @@ function ProjectSettingsBody({ onClose }: { onClose: () => void }) {
 								))}
 							</select>
 						</Field>
-						<Field label="Autosave" hint="Every change is saved within a second.">
+						<Field
+							label="Autosave"
+							hint="Every change is saved within a second."
+						>
 							<span className="text-sm">Always on</span>
 						</Field>
 					</>
@@ -544,7 +676,13 @@ function ProjectSettingsBody({ onClose }: { onClose: () => void }) {
 					))}
 				</select>
 				{templateName === null ? (
-					<Button variant="ghost" size="sm" onClick={() => setTemplateName(`${size.width}×${size.height} ${fps} fps`)}>
+					<Button
+						variant="ghost"
+						size="sm"
+						onClick={() =>
+							setTemplateName(`${size.width}×${size.height} ${fps} fps`)
+						}
+					>
 						Save as template
 					</Button>
 				) : (
@@ -553,7 +691,10 @@ function ProjectSettingsBody({ onClose }: { onClose: () => void }) {
 						onSubmit={(e) => {
 							e.preventDefault();
 							if (!templateName.trim()) return;
-							const { background: _background, ...rest } = { ...settings, ...nextSettings() };
+							const { background: _background, ...rest } = {
+								...settings,
+								...nextSettings(),
+							};
 							saveTemplate({ name: templateName.trim(), settings: rest });
 							setTemplateName(null);
 							toast.success("Template saved");

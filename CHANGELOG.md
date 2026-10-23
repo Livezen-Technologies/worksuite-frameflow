@@ -8,6 +8,11 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 ## [Unreleased]
 
 ### Added
+- HDR video support in SDR projects:
+  - HLG and PQ (HDR10) clips are detected on import and badged "HDR · HLG" or "HDR · PQ" in the media bin.
+  - They are tone-mapped to SDR by the editor itself rather than by the browser. Reference white lands on SDR white, highlights roll off instead of clipping, and BT.2020 colour is mapped to Rec. 709. Preview, thumbnails and export all use this.
+  - Each clip's Basic tab has an HDR section: colour-source override (Auto, SDR, HLG, PQ) plus exposure, highlight roll-off and saturation. Project-wide defaults are in Project settings.
+  - The preview shows a "Previewing tone-mapped" label.
 - Social template packs for YouTube, Facebook, TikTok and Podcast: 12 animated templates each, in English, Sinhala and mixed versions. Find them in Text → Packs.
   - Templates are laid out inside each platform's safe area and adapt to every shape the pack supports (16:9, 9:16, 1:1, 4:5). The matching safe-area guide turns on while you place a vertical template.
   - "Your details" fills in names, channel, handle, episode and more; the brand kit name is used for the channel. Chapter titles can be added at every bookmark.

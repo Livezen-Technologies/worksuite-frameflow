@@ -9,6 +9,10 @@ import { createTimelineAudioBuffer } from "@/media/audio";
 import type { SceneTracks } from "@/timeline";
 import type { MediaAsset } from "@/media/types";
 import { TICKS_PER_SECOND } from "@/wasm";
+import { HdrCanvasSink } from "@/hdr/sink";
+import { transferFromColorSpace } from "@/hdr/settings";
+import { DEFAULT_TONE_MAP } from "@/hdr/tonemap";
+import type { MediaColorInfo } from "@/services/storage/types";
 import { renderThumbnailDataUrl } from "./thumbnail";
 
 export type VideoFileData = {
@@ -20,6 +24,7 @@ export type VideoFileData = {
 	codec: VideoCodec | null;
 	canDecode: boolean;
 	thumbnailUrl: string | null;
+	color: MediaColorInfo;
 };
 
 export async function readVideoFile({
@@ -44,8 +49,37 @@ export async function readVideoFile({
 		const packetStats = await videoTrack.computePacketStats(100);
 		const audioTrack = await input.getPrimaryAudioTrack();
 
+		const colorSpace = await videoTrack.getColorSpace().catch(() => null);
+		const color: MediaColorInfo = {
+			transfer: transferFromColorSpace(colorSpace?.transfer),
+			primaries: colorSpace?.primaries ?? undefined,
+		};
+
 		let thumbnailUrl: string | null = null;
-		if (canDecode) {
+		if (canDecode && color.transfer !== "sdr") {
+			// Tone-map HDR thumbnails the same way as the timeline (HD-01).
+			try {
+				const sink = new HdrCanvasSink({
+					track: videoTrack,
+					transfer: color.transfer,
+					settings: DEFAULT_TONE_MAP,
+					fullRange: colorSpace?.fullRange ?? false,
+				});
+				const frame = await sink.getCanvas(1);
+				if (frame) {
+					thumbnailUrl = renderThumbnailDataUrl({
+						width: videoTrack.displayWidth,
+						height: videoTrack.displayHeight,
+						draw: ({ context, width, height }) => {
+							context.drawImage(frame.canvas, 0, 0, width, height);
+						},
+					});
+				}
+			} catch {
+				thumbnailUrl = null;
+			}
+		}
+		if (canDecode && !thumbnailUrl) {
 			const sink = new VideoSampleSink(videoTrack);
 			const frame = await sink.getSample(1);
 			if (frame) {
@@ -72,6 +106,7 @@ export async function readVideoFile({
 			codec: videoTrack.codec,
 			canDecode,
 			thumbnailUrl,
+			color,
 		};
 	} finally {
 		input.dispose();
