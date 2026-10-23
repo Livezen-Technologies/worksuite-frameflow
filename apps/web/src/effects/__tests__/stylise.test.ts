@@ -25,7 +25,9 @@ function vec(value: unknown): number[] {
 describe("stylise effects", () => {
 	test("every effect has a shader in the Rust engine, and vice versa", () => {
 		const types = STYLISE_EFFECTS.map((effect) => effect.type).sort();
-		expect(types).toEqual([...engineStyliseShaders].sort());
+		// HDR colour conversions are applied by the renderer, not offered as effects.
+		const internal = new Set(["hdr-from-sdr", "hdr-preview"]);
+		expect(types).toEqual([...engineStyliseShaders].filter((id) => !internal.has(id)).sort());
 	});
 
 	test("types are unique and each effect has a category", () => {

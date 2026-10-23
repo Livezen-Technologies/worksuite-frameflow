@@ -163,6 +163,9 @@ function ProjectSettingsBody({ onClose }: { onClose: () => void }) {
 		...DEFAULT_TONE_MAP,
 		...(settings.hdr?.toneMap ?? {}),
 	});
+	const [graphicsWhite, setGraphicsWhite] = useState(
+		settings.hdr?.graphicsWhiteNits ?? 203,
+	);
 	const [templateName, setTemplateName] = useState<string | null>(null);
 
 	const tracks = editor.scenes.getActiveScene().tracks;
@@ -215,7 +218,7 @@ function ProjectSettingsBody({ onClose }: { onClose: () => void }) {
 		colorSpace,
 		audio: { sampleRate, channels },
 		defaults,
-		hdr: { ...(settings.hdr ?? {}), toneMap },
+		hdr: { ...(settings.hdr ?? {}), toneMap, graphicsWhiteNits: graphicsWhite },
 	});
 
 	const save = async () => {
@@ -406,7 +409,11 @@ function ProjectSettingsBody({ onClose }: { onClose: () => void }) {
 						</Field>
 						<Field
 							label="Color space"
-							hint="HDR footage is tone-mapped into this SDR project. HDR projects (HLG and PQ output) need a 16-bit compositor and 10-bit export, which aren't built yet."
+							hint={
+								colorSpace === "hlg" || colorSpace === "pq"
+									? "HDR project: SDR clips, photos and titles sit at graphics white; the preview is tone-mapped for SDR screens; exports are 10-bit VP9 (WebM) with HDR signalling."
+									: "HDR footage is tone-mapped into this SDR project. Choose HLG or PQ to make an HDR project."
+							}
 						>
 							<select
 								className={selectClass}
@@ -415,16 +422,43 @@ function ProjectSettingsBody({ onClose }: { onClose: () => void }) {
 									const next = COLOR_SPACES.find(
 										(c) => c.value === e.target.value,
 									);
-									if (next && !next.hdr) setColorSpace(next.value);
+									if (next) setColorSpace(next.value);
 								}}
 							>
 								{COLOR_SPACES.map((c) => (
-									<option key={c.value} value={c.value} disabled={c.hdr}>
+									<option key={c.value} value={c.value}>
 										{c.label}
 									</option>
 								))}
 							</select>
 						</Field>
+						{(colorSpace === "hlg" || colorSpace === "pq") && (
+							<Field
+								label="Graphics white"
+								hint="How bright SDR white is in this HDR project: titles, captions, photos and SDR clips (203 nits is the BT.2408 standard)."
+							>
+								<div className="flex items-center gap-2">
+									<Input
+										type="number"
+										min={100}
+										max={400}
+										step={1}
+										className="h-8 w-24"
+										value={graphicsWhite}
+										onChange={(e) =>
+											setGraphicsWhite(
+												Math.min(
+													400,
+													Math.max(100, Number(e.target.value) || 203),
+												),
+											)
+										}
+										data-field="graphics-white"
+									/>
+									<span className="text-muted-foreground text-xs">nits</span>
+								</div>
+							</Field>
+						)}
 						<Field
 							label="HDR tone mapping"
 							hint="Default for HDR clips; each clip can override it in its Basic tab."

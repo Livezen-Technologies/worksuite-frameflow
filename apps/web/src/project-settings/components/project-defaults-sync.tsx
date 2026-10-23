@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useEditor } from "@/editor/use-editor";
 import { useInputMethod } from "@/input-method/store";
 import { setDefaultStillSeconds } from "@/timeline/creation";
-import { setProjectHdrSettings } from "@/hdr/settings";
+import { setColorMode, setProjectHdrSettings } from "@/hdr/settings";
 
 /** Applies the open project's defaults to the editor (PS-17, PS-19). */
 export function ProjectDefaultsSync() {
@@ -12,6 +12,15 @@ export function ProjectDefaultsSync() {
 	const defaults = useEditor(
 		(e) => e.project.getActiveOrNull()?.settings.defaults,
 	);
+
+	const colorSpace = useEditor(
+		(e) => e.project.getActiveOrNull()?.settings.colorSpace,
+	);
+	useEffect(() => {
+		setColorMode({
+			mode: colorSpace === "hlg" || colorSpace === "pq" ? colorSpace : "sdr",
+		});
+	}, [colorSpace]);
 
 	const hdr = useEditor((e) => e.project.getActiveOrNull()?.settings.hdr);
 	useEffect(() => {

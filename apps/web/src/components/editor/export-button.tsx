@@ -295,7 +295,13 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 	);
 	const [custom, setCustom] = useState({ ...projectSize });
 	const [fps, setFps] = useState(projectFps);
-	const [codec, setCodec] = useState<ExportCodec>("avc");
+	const hdrProject =
+		project.settings.colorSpace === "hlg" ||
+		project.settings.colorSpace === "pq";
+	const [hdrMode, setHdrMode] = useState<"hdr" | "sdr">("hdr");
+	const [alsoSdr, setAlsoSdr] = useState(false);
+	const hdrExport = hdrProject && hdrMode === "hdr";
+	const [codec, setCodec] = useState<ExportCodec>(hdrProject ? "vp9" : "avc");
 	const [quality, setQuality] = useState<ExportQuality>("high");
 	const [includeAudio, setIncludeAudio] = useState(true);
 	const [burnIn, setBurnIn] = useState(true);
@@ -415,6 +421,7 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 				videoBitrate:
 					kind === "video" && bitrate !== null ? bitrate * 1e6 : undefined,
 				coverImage: useCover && cover ? cover.image : undefined,
+				forceSdr: hdrProject && hdrMode === "sdr",
 			},
 		});
 		if (exportResult.cancelled) {
@@ -447,6 +454,34 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 				setSavedPath(saved.path);
 				if (share.enabled) setSharing({ ...share });
 				toast.success("Export saved");
+			}
+			// Dual export: a tone-mapped SDR file from the same timeline (HD-16).
+			if (saved.saved && hdrExport && alsoSdr && kind === "video") {
+				const sdr = await editor.project.export({
+					options: {
+						format: "mp4",
+						codec: "avc",
+						quality,
+						fps:
+							exportRate === projectFps
+								? project.settings.fps
+								: floatToFrameRate(exportRate),
+						includeAudio,
+						resolution: size,
+						burnInCaptions: burnIn,
+						coverImage: useCover && cover ? cover.image : undefined,
+						forceSdr: true,
+					},
+				});
+				editor.project.clearExportState();
+				if (sdr.success && sdr.buffer) {
+					const sdrSaved = await files.saveExport({
+						suggestedName: `${fileName.trim() || project.metadata.name} (SDR).mp4`,
+						data: sdr.buffer,
+						sideFiles: [],
+					});
+					if (sdrSaved.saved) toast.success("SDR version saved too");
+				}
 			}
 			return;
 		}
@@ -664,12 +699,49 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 										</span>
 									)}
 								</Row>
+								{hdrProject && (
+									<Row label="Dynamic range">
+										<Pill
+											active={hdrMode === "hdr"}
+											onClick={() => {
+												setHdrMode("hdr");
+												setCodec("vp9");
+											}}
+										>
+											HDR (
+											{project.settings.colorSpace === "pq"
+												? "PQ / HDR10"
+												: "HLG"}
+											) 10-bit
+										</Pill>
+										<Pill
+											active={hdrMode === "sdr"}
+											onClick={() => setHdrMode("sdr")}
+										>
+											SDR (tone-mapped)
+										</Pill>
+										{hdrMode === "hdr" && (
+											<CheckRow
+												id="export-alsoSdr"
+												checked={alsoSdr}
+												onChange={setAlsoSdr}
+											>
+												Also save an SDR version
+											</CheckRow>
+										)}
+										<span className="text-muted-foreground w-full text-[11px]">
+											{hdrMode === "hdr"
+												? "HDR exports are VP9 Profile 2 in WebM with BT.2020 and the transfer signalled, which YouTube accepts as HDR."
+												: "Highlights are rolled off, never clipped."}
+										</span>
+									</Row>
+								)}
 								<Row label="Codec">
 									{EXPORT_CODEC_VALUES.map((c) => (
 										<Pill
 											key={c}
 											active={codec === c}
-											disabled={!supported[c]}
+											disabled={!supported[c] || (hdrExport && c !== "vp9")}
 											title={
 												supported[c]
 													? `${EXPORT_CODEC_LABELS[c]} in ${formatForCodec(c).toUpperCase()}`

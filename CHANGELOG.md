@@ -8,6 +8,11 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 ## [Unreleased]
 
 ### Added
+- HDR projects (Rec. 2100 HLG or PQ/HDR10), set in Project settings or with "Make HDR project" when you import HDR footage.
+  - HDR clips keep their highlights, while SDR clips, photos, titles and captions sit at graphics white (203 nits by default, adjustable).
+  - On SDR screens the preview is tone-mapped and labelled.
+  - Exports are 10-bit VP9 Profile 2 WebM with BT.2020 and HLG or PQ signalling. Choose SDR (tone-mapped) instead, or tick "Also save an SDR version" to get both from one click.
+
 - HDR video support in SDR projects:
   - HLG and PQ (HDR10) clips are detected on import and badged "HDR · HLG" or "HDR · PQ" in the media bin.
   - They are tone-mapped to SDR by the editor itself rather than by the browser. Reference white lands on SDR white, highlights roll off instead of clipping, and BT.2020 colour is mapped to Rec. 709. Preview, thumbnails and export all use this.
@@ -56,6 +61,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 - Platform guide icons no longer load logos from Brandfetch; they show a plain letter instead.
 
 ### Fixed
+- Adjustment-layer effects no longer fail to reach the renderer (a field name mismatch with the engine).
 - Undo no longer reaches into a project you had open before.
 - Videos from other cameras are no longer mistaken for DJI footage.
 - New text panel with Presets, Basic, Animation and Motion tracking tabs.

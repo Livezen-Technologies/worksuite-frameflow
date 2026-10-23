@@ -6,6 +6,8 @@ import {
 	WebMOutputFormat,
 	BufferTarget,
 	CanvasSource,
+	VideoSampleSource,
+	VideoSample,
 	AudioBufferSource,
 	TextSubtitleSource,
 	QUALITY_LOW,
@@ -21,6 +23,7 @@ import type { RootNode } from "./nodes/root-node";
 import type { ExportCodec, ExportFormat, ExportQuality } from "@/export";
 import { evenSize, fitRect } from "@/export/presets";
 import { CanvasRenderer } from "./canvas-renderer";
+import { HDR_CODEC_STRINGS, hdrVideoFrame, rgbaToI420P10 } from "@/hdr/encode";
 
 type ExportParams = {
 	width: number;
@@ -37,6 +40,8 @@ type ExportParams = {
 	subtitlesVtt?: string;
 	videoBitrate?: number;
 	coverImage?: string;
+	/** HDR project export: 10-bit VP9 with HLG or PQ signalling (HD-14). */
+	hdrOutput?: "hlg" | "pq";
 };
 
 const qualityMap = {
@@ -64,6 +69,7 @@ export class SceneExporter extends EventEmitter<SceneExporterEvents> {
 	private subtitlesVtt?: string;
 	private videoBitrate?: number;
 	private coverImage?: string;
+	private hdrOutput?: "hlg" | "pq";
 
 	private isCancelled = false;
 
@@ -80,6 +86,7 @@ export class SceneExporter extends EventEmitter<SceneExporterEvents> {
 		subtitlesVtt,
 		videoBitrate,
 		coverImage,
+		hdrOutput,
 	}: ExportParams) {
 		super();
 		this.renderer = new CanvasRenderer({
@@ -97,20 +104,28 @@ export class SceneExporter extends EventEmitter<SceneExporterEvents> {
 		this.subtitlesVtt = subtitlesVtt;
 		this.videoBitrate = videoBitrate;
 		this.coverImage = coverImage;
+		this.hdrOutput = hdrOutput;
+		if (hdrOutput) this.renderer.purpose = "export";
 	}
 
 	/**
 	 * The canvas the encoder reads. When the output size differs from the
 	 * project, each frame is scaled onto a canvas of that size, letterboxed.
 	 */
-	private createEncodeSurface({ separate = false }: { separate?: boolean } = {}): {
+	private createEncodeSurface({
+		separate = false,
+	}: { separate?: boolean } = {}): {
 		canvas: HTMLCanvasElement;
 		copyFrame: () => void;
 		drawPicture: (picture: ImageBitmap) => void;
 	} {
 		const source = this.renderer.getOutputCanvas();
 		const { width, height } = this.outputSize;
-		if (!separate && width === this.renderer.width && height === this.renderer.height) {
+		if (
+			!separate &&
+			width === this.renderer.width &&
+			height === this.renderer.height
+		) {
 			return { canvas: source, copyFrame: () => {}, drawPicture: () => {} };
 		}
 		const canvas = document.createElement("canvas");
@@ -161,7 +176,13 @@ export class SceneExporter extends EventEmitter<SceneExporterEvents> {
 			? await createImageBitmap(await (await fetch(this.coverImage)).blob())
 			: null;
 		if (this.format === "gif")
-			return this.exportGif({ rootNode, frameCount, ticksPerFrame, fpsFloat, cover });
+			return this.exportGif({
+				rootNode,
+				frameCount,
+				ticksPerFrame,
+				fpsFloat,
+				cover,
+			});
 
 		const outputFormat =
 			this.format === "webm" ? new WebMOutputFormat() : new Mp4OutputFormat();
@@ -171,11 +192,19 @@ export class SceneExporter extends EventEmitter<SceneExporterEvents> {
 			target: new BufferTarget(),
 		});
 
-		const surface = this.createEncodeSurface({ separate: !!cover });
-		const videoSource = new CanvasSource(surface.canvas, {
-			codec: this.codec,
-			bitrate: this.videoBitrate ?? qualityMap[this.quality],
-		});
+		const hdr = this.hdrOutput;
+		const surface = this.createEncodeSurface({ separate: !!cover || !!hdr });
+		const bitrate = this.videoBitrate ?? qualityMap[this.quality];
+		const videoSource = hdr
+			? new VideoSampleSource({
+					codec: "vp9",
+					bitrate,
+					fullCodecString: HDR_CODEC_STRINGS[hdr],
+				})
+			: new CanvasSource(surface.canvas, { codec: this.codec, bitrate });
+		const readback = hdr
+			? surface.canvas.getContext("2d", { willReadFrequently: true })
+			: null;
 
 		output.addVideoTrack(videoSource, { frameRate: fpsFloat });
 
@@ -235,7 +264,23 @@ export class SceneExporter extends EventEmitter<SceneExporterEvents> {
 				await this.renderer.render({ node: rootNode, time: timeTicks });
 				surface.copyFrame();
 			}
-			await videoSource.add(timeSeconds, 1 / fpsFloat);
+			if (videoSource instanceof VideoSampleSource && readback && hdr) {
+				const { width, height } = surface.canvas;
+				const pixels = readback.getImageData(0, 0, width, height).data;
+				const frame = hdrVideoFrame({
+					data: rgbaToI420P10({ rgba: pixels, width, height, transfer: hdr }),
+					width,
+					height,
+					timestamp: Math.round(timeSeconds * 1e6),
+					duration: Math.round(1e6 / fpsFloat),
+					transfer: hdr,
+				});
+				const sample = new VideoSample(frame);
+				await videoSource.add(sample);
+				sample.close();
+			} else if (videoSource instanceof CanvasSource) {
+				await videoSource.add(timeSeconds, 1 / fpsFloat);
+			}
 
 			this.emit("progress", i / frameCount);
 		}
@@ -293,7 +338,10 @@ export class SceneExporter extends EventEmitter<SceneExporterEvents> {
 			}
 			const { data } = ctx.getImageData(0, 0, width, height);
 			const palette = quantize(data, 256);
-			gif.writeFrame(applyPalette(data, palette), width, height, { palette, delay });
+			gif.writeFrame(applyPalette(data, palette), width, height, {
+				palette,
+				delay,
+			});
 			this.emit("progress", i / frameCount);
 		}
 		gif.finish();

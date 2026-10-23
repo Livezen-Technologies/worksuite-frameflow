@@ -308,6 +308,7 @@ export class VideoCache {
 							track: videoTrack,
 							transfer: hdr.transfer,
 							settings: hdr.settings,
+							output: hdr.output,
 							fullRange: colorSpace?.fullRange ?? false,
 						});
 

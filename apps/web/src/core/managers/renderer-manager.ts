@@ -166,6 +166,7 @@ export class RendererManager {
 			embedCaptions = false,
 			videoBitrate,
 			coverImage,
+			forceSdr = false,
 		} = options;
 
 		try {
@@ -196,6 +197,7 @@ export class RendererManager {
 			}
 
 			const exportFps = fps ?? activeProject.settings.fps;
+			const colorSpace = activeProject.settings.colorSpace ?? "rec709";
 			const canvasSize = activeProject.settings.canvasSize;
 
 			let audioBuffer: AudioBuffer | null = null;
@@ -230,6 +232,11 @@ export class RendererManager {
 				outputSize: resolution,
 				videoBitrate,
 				coverImage,
+				// HDR projects export 10-bit VP9 with HLG/PQ signalling (HD-14).
+				hdrOutput:
+					!forceSdr && format === "webm" && (colorSpace === "hlg" || colorSpace === "pq")
+						? colorSpace
+						: undefined,
 				subtitlesVtt:
 					embedCaptions && captionCues[0]?.length
 						? cuesToVtt(captionCues[0])

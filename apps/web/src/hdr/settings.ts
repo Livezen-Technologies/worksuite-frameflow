@@ -11,6 +11,8 @@ export interface MediaHdrSettings extends Partial<ToneMapSettings> {
 }
 
 export interface ProjectHdrSettings {
+	/** Brightness of SDR white (graphics, titles, SDR clips) in HDR projects (HD-04, HD-12). */
+	graphicsWhiteNits?: number;
 	/** Project-wide tone mapping for HDR footage. */
 	toneMap?: Partial<ToneMapSettings>;
 	media?: Record<string, MediaHdrSettings>;
@@ -21,6 +23,28 @@ export interface ProjectHdrSettings {
  * clip's decoder. Kept outside React so the cache needs no editor import.
  */
 let current: ProjectHdrSettings = {};
+/** The project's output: SDR, or an HDR project working in HLG signal. */
+export type ColorMode = "sdr" | "hlg" | "pq";
+let colorMode: ColorMode = "sdr";
+
+export function getColorMode(): ColorMode {
+	return colorMode;
+}
+
+export function isHdrProject(): boolean {
+	return colorMode !== "sdr";
+}
+
+export function getGraphicsWhiteNits(): number {
+	return current.graphicsWhiteNits ?? 203;
+}
+
+/** Sets the project colour mode; HDR decoders reopen with the new output. */
+export function setColorMode({ mode }: { mode: ColorMode }) {
+	if (mode === colorMode) return;
+	colorMode = mode;
+	for (const listener of listeners) listener(["*"]);
+}
 const listeners = new Set<(changedMedia: string[]) => void>();
 
 export function setProjectHdrSettings({
@@ -59,12 +83,14 @@ export function resolveMediaHdr({
 }: {
 	mediaId: string;
 	detected: Transfer;
-}): { transfer: Transfer; settings: ToneMapSettings } {
+}): { transfer: Transfer; settings: ToneMapSettings; output: "sdr" | "hlg" } {
 	const media = current.media?.[mediaId] ?? {};
 	const transfer =
 		media.source && media.source !== "auto" ? media.source : detected;
 	return {
 		transfer,
+		// HDR projects keep HDR footage as HLG signal; SDR projects tone-map it.
+		output: colorMode === "sdr" ? "sdr" : "hlg",
 		settings: {
 			rolloff:
 				media.rolloff ?? current.toneMap?.rolloff ?? DEFAULT_TONE_MAP.rolloff,

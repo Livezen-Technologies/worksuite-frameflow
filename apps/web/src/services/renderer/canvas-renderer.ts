@@ -23,6 +23,11 @@ export class CanvasRenderer {
 	width: number;
 	height: number;
 	fps: FrameRate;
+	/**
+	 * "export" keeps an HDR project's HLG signal for 10-bit encoding; anything
+	 * else (preview, thumbnails, SDR export) is tone-mapped for SDR (HD-09).
+	 */
+	purpose: "display" | "export" = "display";
 
 	constructor({ width, height, fps }: CanvasRendererParams) {
 		this.width = width;

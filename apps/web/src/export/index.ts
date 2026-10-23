@@ -35,6 +35,8 @@ export interface ExportOptions {
 	videoBitrate?: number;
 	/** Picture (data URL) shown as the first frame, e.g. the project cover. */
 	coverImage?: string;
+	/** In an HDR project, export SDR (tone-mapped) instead of 10-bit HDR (HD-16, HD-17). */
+	forceSdr?: boolean;
 }
 
 export interface ExportResult {

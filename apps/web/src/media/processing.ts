@@ -1,4 +1,6 @@
 import { toast } from "sonner";
+import { isHdrProject } from "@/hdr/settings";
+import { EditorCore } from "@/core";
 import type { MediaColorInfo } from "@/services/storage/types";
 import { convertHeif, findLivePhotoPairs, isHeif } from "./heif";
 import { unsupportedSphereFormat } from "@/vr/spherical";
@@ -187,11 +189,22 @@ export async function processMediaAssets({
 						: undefined;
 					hasAudio = videoData.hasAudio;
 					color = videoData.color;
-					if (color.transfer !== "sdr")
-						toast.info(`${file.name} is HDR (${color.transfer.toUpperCase()})`, {
+					if (color.transfer !== "sdr" && !isHdrProject()) {
+						const transfer = color.transfer;
+						// HD-07: convert (default) or switch the project to HDR.
+						toast.info(`${file.name} is HDR (${transfer.toUpperCase()})`, {
 							description:
-								"It's tone-mapped to SDR for this project. Adjust exposure and highlight roll-off in the clip's Basic tab.",
+								"It's tone-mapped to SDR for this project. Adjust it in the clip's Basic tab, or make this an HDR project.",
+							duration: 12_000,
+							action: {
+								label: "Make HDR project",
+								onClick: () =>
+									void EditorCore.getInstance().project.updateSettings({
+										settings: { colorSpace: transfer === "pq" ? "pq" : "hlg" },
+									}),
+							},
 						});
+					}
 					thumbnailUrl = videoData.thumbnailUrl ?? undefined;
 
 					if (!videoData.canDecode) {

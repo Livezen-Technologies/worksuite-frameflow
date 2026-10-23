@@ -26,6 +26,54 @@ import type {
 	TextureUploadDescriptor,
 } from "./types";
 import { DEFAULT_GRAPHIC_SOURCE_SIZE } from "@/graphics";
+import { getGraphicsWhiteNits, isHdrProject } from "@/hdr/settings";
+import { isHdrSignalSource } from "@/hdr/sink";
+
+/**
+ * HDR projects composite in HLG signal (SRS HD-03, HD-04, HD-12): every
+ * SDR layer — titles, graphics, photos, SDR clips — is converted after its
+ * own effects so its white sits at graphics white, while HDR clips arrive
+ * as HLG already. On screen, a final pass tone-maps the result for SDR
+ * displays; exports keep the HLG signal for 10-bit encoding.
+ */
+function applyHdrWorkingSpace({
+	items,
+	textures,
+	display,
+}: {
+	items: FrameItemDescriptor[];
+	textures: Map<string, TextureUploadDescriptor>;
+	display: boolean;
+}) {
+	const white = getGraphicsWhiteNits();
+	for (const item of items) {
+		if (item.type !== "layer") continue;
+		const texture = textures.get(item.textureId);
+		if (texture?.kind === "external" && isHdrSignalSource(texture.source))
+			continue;
+		item.effectPassGroups = [
+			...item.effectPassGroups,
+			[
+				{
+					shader: "hdr-from-sdr",
+					uniforms: { u_time: 0, u_p0: [white, 0, 0, 0] },
+				},
+			],
+		];
+	}
+	if (display)
+		items.push({
+			type: "sceneEffect",
+			effectPassGroups: [
+				[
+					{
+						shader: "hdr-preview",
+						uniforms: { u_time: 0, u_p0: [0.5, 0, 0, 0] },
+					},
+				],
+			],
+		});
+}
 
 export async function buildFrameDescriptor({
 	node,
@@ -47,6 +95,13 @@ export async function buildFrameDescriptor({
 		items,
 		textures,
 	});
+
+	if (isHdrProject())
+		applyHdrWorkingSpace({
+			items,
+			textures,
+			display: renderer.purpose === "display",
+		});
 
 	incrementCounter({ name: "frameItems", by: items.length });
 	incrementCounter({ name: "frameTextures", by: textures.size });

@@ -5,6 +5,13 @@ import { isSupportedFormat, ToneMapper, type PlanarFrame } from "./tonemap-gl";
 
 const POOL_SIZE = 4;
 
+/** Canvases holding HLG signal rather than SDR, so layers skip SDR→HDR conversion. */
+const hdrSignalCanvases = new WeakSet<CanvasImageSource>();
+
+export function isHdrSignalSource(source: CanvasImageSource): boolean {
+	return hdrSignalCanvases.has(source);
+}
+
 /**
  * Drop-in for mediabunny's CanvasSink for HDR tracks: decodes each frame,
  * reads its raw 10-bit planes and tone-maps them with our own operator,
@@ -23,6 +30,7 @@ export class HdrCanvasSink {
 		transfer: Transfer;
 		settings: ToneMapSettings;
 		fullRange: boolean;
+		output: "sdr" | "hlg";
 	};
 
 	constructor({
@@ -33,9 +41,11 @@ export class HdrCanvasSink {
 		transfer: Transfer;
 		settings: ToneMapSettings;
 		fullRange: boolean;
+		/** "hlg" keeps HDR as HLG signal for an HDR project. */
+		output?: "sdr" | "hlg";
 	}) {
 		this.samples = new VideoSampleSink(track);
-		this.options = options;
+		this.options = { ...options, output: options.output ?? "sdr" };
 	}
 
 	private canvasFor({ width, height }: { width: number; height: number }) {
@@ -78,8 +88,11 @@ export class HdrCanvasSink {
 					frame: planar,
 					transfer: this.options.transfer,
 					settings: this.options.settings,
+					output: this.options.output,
 				});
 				ctx.drawImage(mapped, 0, 0, width, height);
+				if (this.options.output === "hlg") hdrSignalCanvases.add(canvas);
+				else hdrSignalCanvases.delete(canvas);
 			} else {
 				ctx.drawImage(frame, 0, 0, width, height);
 			}

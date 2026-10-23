@@ -17,7 +17,7 @@ const LUT_SHADER_SOURCE: &str = include_str!("shaders/lut3d.wgsl");
 const IDENTITY_LUT_ID: &str = "__identity";
 
 /// Single-pass effects sharing the `StyliseUniforms` layout (see vignette.wgsl).
-const STYLISE_SHADERS: [(&str, &str); 14] = [
+const STYLISE_SHADERS: [(&str, &str); 16] = [
     ("vignette", include_str!("shaders/vignette.wgsl")),
     ("film-grain", include_str!("shaders/film_grain.wgsl")),
     ("rgb-split", include_str!("shaders/rgb_split.wgsl")),
@@ -32,6 +32,8 @@ const STYLISE_SHADERS: [(&str, &str); 14] = [
     ("sepia", include_str!("shaders/sepia.wgsl")),
     ("edge-detect", include_str!("shaders/edge_detect.wgsl")),
     ("denoise", include_str!("shaders/denoise.wgsl")),
+    ("hdr-from-sdr", include_str!("shaders/hdr_from_sdr.wgsl")),
+    ("hdr-preview", include_str!("shaders/hdr_preview.wgsl")),
 ];
 
 /// Every effect shader, by the id the editor names it with.

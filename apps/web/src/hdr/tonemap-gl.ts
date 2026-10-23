@@ -32,6 +32,7 @@ uniform float maxCode;
 uniform float rolloff;
 uniform float saturation;
 uniform float exposure;
+uniform int outputMode; // 0 SDR (tone-mapped), 1 HLG signal for HDR projects
 
 const vec3 LUMA = vec3(0.2627, 0.678, 0.0593);
 
@@ -51,6 +52,14 @@ float hlgToScene(float s) {
 	float c = 0.5 - a * log(4.0 * a);
 	float e = max(s, 0.0);
 	return e <= 0.5 ? e * e / 3.0 : (exp((e - c) / a) + b) / 12.0;
+}
+
+float hlgOetf(float e) {
+	const float a = 0.17883277;
+	const float b = 1.0 - 4.0 * a;
+	float c = 0.5 - a * log(4.0 * a);
+	e = clamp(e, 0.0, 1.0);
+	return e <= 1.0 / 12.0 ? sqrt(3.0 * e) : a * log(12.0 * e - b) + c;
 }
 
 float rolloffCurve(float x, float r) {
@@ -91,6 +100,17 @@ void main() {
 		nits = scene * 1000.0 * pow(ys, 0.2);
 	} else {
 		nits = pow(rgb, vec3(2.4)) * 203.0;
+	}
+	if (outputMode == 1) {
+		// Keep HDR: to a 1,000-nit HLG display, highlights above it rolled off.
+		vec3 d = nits * exp2(exposure) / 1000.0;
+		float dl = dot(LUMA, d);
+		float dm = rolloffCurve(dl, rolloff);
+		d *= dl > 1e-6 ? dm / dl : 0.0;
+		float yd = max(dot(LUMA, d), 1e-6);
+		vec3 scene = d * pow(yd, 1.0 / 1.2 - 1.0);
+		color = vec4(hlgOetf(scene.r), hlgOetf(scene.g), hlgOetf(scene.b), 1.0);
+		return;
 	}
 	vec3 rel = nits * exp2(exposure) / 203.0;
 	float lum = dot(LUMA, rel);
@@ -200,10 +220,12 @@ export class ToneMapper {
 		frame,
 		transfer,
 		settings,
+		output = "sdr",
 	}: {
 		frame: PlanarFrame;
 		transfer: Transfer;
 		settings: ToneMapSettings;
+		output?: "sdr" | "hlg";
 	}): HTMLCanvasElement {
 		const { gl, program } = this;
 		const { width, height } = frame;
@@ -254,6 +276,7 @@ export class ToneMapper {
 		gl.uniform1f(set("rolloff"), settings.rolloff);
 		gl.uniform1f(set("saturation"), settings.saturation);
 		gl.uniform1f(set("exposure"), settings.exposure);
+		gl.uniform1i(set("outputMode"), output === "hlg" ? 1 : 0);
 		gl.viewport(0, 0, width, height);
 		gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 		return this.canvas;
