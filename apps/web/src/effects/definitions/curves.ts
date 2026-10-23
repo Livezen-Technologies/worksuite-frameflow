@@ -11,6 +11,7 @@ import {
 	parseCurve,
 	serializeCurve,
 } from "@/color/curves";
+import { curvesAt, parseCurveKeys } from "@/color/curve-keys";
 import { ensureGeneratedLutUploaded } from "@/lut/library";
 
 export const CURVES_EFFECT_TYPE = "curves";
@@ -100,14 +101,15 @@ export function readQualifier(params: ParamValues): HslQualifier {
 	};
 }
 
-/** Stable short id for a set of params, so identical grades share one LUT. */
-function hashParams(params: ParamValues): string {
-	const text = JSON.stringify(
+/** Stable short id for a grade, so identical grades share one LUT. */
+function hashGrade({ params, curves }: { params: ParamValues; curves: Curves }): string {
+	const text = JSON.stringify([
+		CHANNELS.map((c) => serializeCurve(curves[c])),
 		Object.keys(params)
-			.filter((k) => k.startsWith("curve.") || k.startsWith("hsl."))
+			.filter((k) => k.startsWith("hsl."))
 			.sort()
 			.map((k) => [k, params[k]]),
-	);
+	]);
 	let h = 2166136261;
 	for (let i = 0; i < text.length; i++)
 		h = Math.imul(h ^ text.charCodeAt(i), 16777619);
@@ -135,6 +137,8 @@ export const curvesEffectDefinition: EffectDefinition = {
 	],
 	params: [
 		...CHANNELS.map(curveParam),
+		// Keyframed curves (WS-15), JSON; empty when the curves don't change over time.
+		{ key: "curve.keys", label: "keys", type: "text", default: "", keyframable: false },
 		boolParam("enabled"),
 		numberParam({ key: "hue", min: 0, max: 1, value: DEFAULT_QUALIFIER.hue }),
 		numberParam({
@@ -181,14 +185,16 @@ export const curvesEffectDefinition: EffectDefinition = {
 	],
 	renderer: {
 		passes: [],
-		buildPasses: ({ effectParams }) => {
-			const id = `curves:${hashParams(effectParams)}`;
+		buildPasses: ({ effectParams, time }) => {
+			const keys = parseCurveKeys(effectParams["curve.keys"]);
+			const curves = curvesAt({ keys, t: time, fallback: readCurves(effectParams) });
+			const id = `curves:${hashGrade({ params: effectParams, curves })}`;
 			ensureGeneratedLutUploaded({
 				id,
 				size: BAKE_SIZE,
 				make: () =>
 					bakeLut({
-						curves: readCurves(effectParams),
+						curves,
 						qualifier: readQualifier(effectParams),
 					}),
 			});

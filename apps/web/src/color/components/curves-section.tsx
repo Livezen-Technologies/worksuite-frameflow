@@ -5,6 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { useEditor } from "@/editor/use-editor";
+import {
+	curvesAt,
+	keyFromCurves,
+	parseCurveKeys,
+	serializeCurveKeys,
+	upsertKey,
+} from "@/color/curve-keys";
+import { mediaTimeFromSeconds, TICKS_PER_SECOND } from "@/wasm";
 import type { ParamValues } from "@/params";
 import type { VisualElement } from "@/timeline";
 import { useElementPreview } from "@/timeline/hooks/use-element-preview";
@@ -209,6 +217,7 @@ export function CurvesSection({
 }) {
 	const editor = useEditor();
 	const [channel, setChannel] = useState<CurveChannel>("luma");
+	const playhead = useEditor((e) => e.playback.getCurrentTime());
 	const { renderElement, previewUpdates } = useElementPreview({
 		trackId,
 		elementId: element.id,
@@ -263,6 +272,19 @@ export function CurvesSection({
 			params: { ...params, ...changes },
 		});
 	const curveKey = `curve.${channel}`;
+	// Keyframed curves (WS-15): with keys, edits go into the key at the playhead.
+	const keys = parseCurveKeys(params["curve.keys"]);
+	const local = Math.max(0, (playhead - element.startTime) / TICKS_PER_SECOND);
+	const shown = keys.length ? curvesAt({ keys, t: local, fallback: curves }) : curves;
+	const curveChange = (points: CurvePoint[]): ParamValues =>
+		keys.length
+			? {
+					"curve.keys": serializeCurveKeys(
+						upsertKey({ keys, key: keyFromCurves({ t: local, curves: { ...shown, [channel]: points } }) }),
+					),
+				}
+			: { [curveKey]: serializeCurve(points) };
+	const keyHere = keys.find((k) => Math.abs(k.t - local) <= 1 / 60);
 	const setQ = ({
 		patch,
 		done = true,
@@ -318,9 +340,7 @@ export function CurvesSection({
 					size="sm"
 					variant="ghost"
 					className="h-6 text-xs"
-					onClick={() =>
-						commit({ [curveKey]: serializeCurve(DEFAULT_CURVES[channel]) })
-					}
+					onClick={() => commit(curveChange(DEFAULT_CURVES[channel]))}
 				>
 					Reset {CHANNELS.find((c) => c.id === channel)?.label}
 				</Button>
@@ -346,10 +366,64 @@ export function CurvesSection({
 			<CurveEditor
 				key={channel}
 				channel={channel}
-				points={curves[channel]}
-				onChange={(points) => preview({ [curveKey]: serializeCurve(points) })}
-				onCommit={(points) => commit({ [curveKey]: serializeCurve(points) })}
+				points={shown[channel]}
+				onChange={(points) => preview(curveChange(points))}
+				onCommit={(points) => commit(curveChange(points))}
 			/>
+			<div className="flex flex-wrap items-center gap-1 text-[11px]" data-curve-keys>
+				<Button
+					size="sm"
+					variant={keyHere ? "secondary" : "outline"}
+					className="h-6 text-[11px]"
+					data-curve-key-add
+					onClick={() =>
+						commit({
+							"curve.keys": serializeCurveKeys(
+								upsertKey({ keys, key: keyFromCurves({ t: local, curves: shown }) }),
+							),
+						})
+					}
+				>
+					{keyHere ? "◆ Key here" : "◇ Add key at playhead"}
+				</Button>
+				{keys.map((k) => (
+					<span key={k.t} className="flex items-center rounded border" data-curve-key={k.t.toFixed(2)}>
+						<button
+							type="button"
+							className="hover:bg-accent px-1.5"
+							title="Go to this key"
+							onClick={() =>
+								editor.playback.seek({
+									time: mediaTimeFromSeconds({ seconds: element.startTime / TICKS_PER_SECOND + k.t }),
+								})
+							}
+						>
+							{k.t.toFixed(2)} s
+						</button>
+						<button
+							type="button"
+							className="hover:bg-accent px-1"
+							aria-label={`Delete key at ${k.t.toFixed(2)} s`}
+							onClick={() =>
+								commit({
+									"curve.keys": serializeCurveKeys(keys.filter((x) => x !== k)),
+									// The last key's curves stay as the still grade.
+									...(keys.length === 1
+										? Object.fromEntries(
+												Object.entries(k.curves).map(([c, text]) => [`curve.${c}`, text]),
+											)
+										: {}),
+								})
+							}
+						>
+							×
+						</button>
+					</span>
+				))}
+				{keys.length === 1 && (
+					<span className="text-muted-foreground">Move the playhead and add another key to animate.</span>
+				)}
+			</div>
 			<p className="text-muted-foreground text-[11px] leading-snug">
 				{isHueChannel(channel)
 					? "Middle line is no change. Raise or lower a hue to shift it (Hue vs Hue) or change its saturation (Hue vs Sat)."
