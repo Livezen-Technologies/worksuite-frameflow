@@ -23,7 +23,7 @@ const rad = (d: number) => (d * Math.PI) / 180;
 const deg = (r: number) => (r * 180) / Math.PI;
 
 /** CIEDE2000 between two Lab colours. */
-export function deltaE2000(a: [number, number, number], b: [number, number, number]): number {
+export function deltaE2000({ a, b }: { a: [number, number, number]; b: [number, number, number] }): number {
 	const [L1, a1, b1] = a;
 	const [L2, a2, b2] = b;
 	const C1 = Math.hypot(a1, b1);
@@ -34,13 +34,13 @@ export function deltaE2000(a: [number, number, number], b: [number, number, numb
 	const a2p = (1 + G) * a2;
 	const C1p = Math.hypot(a1p, b1);
 	const C2p = Math.hypot(a2p, b2);
-	const h = (x: number, y: number) => {
+	const h = ({ x, y }: { x: number; y: number }) => {
 		if (x === 0 && y === 0) return 0;
 		const v = deg(Math.atan2(y, x));
 		return v < 0 ? v + 360 : v;
 	};
-	const h1p = h(a1p, b1);
-	const h2p = h(a2p, b2);
+	const h1p = h({ x: a1p, y: b1 });
+	const h2p = h({ x: a2p, y: b2 });
 	const dLp = L2 - L1;
 	const dCp = C2p - C1p;
 	let dhp = 0;
@@ -74,11 +74,11 @@ export function deltaE2000(a: [number, number, number], b: [number, number, numb
 	);
 }
 
-export const deltaERgb = (a: Rgb, b: Rgb) => deltaE2000(rgbToLab(a), rgbToLab(b));
+export const deltaERgb = ({ a, b }: { a: Rgb; b: Rgb }) => deltaE2000({ a: rgbToLab(a), b: rgbToLab(b) });
 
 /** Mean, 95th percentile and worst ΔE over pairs of colours. */
 export function deltaEStats(pairs: [Rgb, Rgb][]): { mean: number; p95: number; max: number } {
-	const values = pairs.map(([a, b]) => deltaERgb(a, b)).sort((x, y) => x - y);
+	const values = pairs.map(([a, b]) => deltaERgb({ a, b })).sort((x, y) => x - y);
 	const mean = values.reduce((s, v) => s + v, 0) / Math.max(values.length, 1);
 	return {
 		mean,

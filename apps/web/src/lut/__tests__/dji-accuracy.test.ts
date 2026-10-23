@@ -16,7 +16,7 @@ describe("CIEDE2000", () => {
 		[[50, 2.5, 0], [73, 25, -18], 27.1492],
 		[[60.2574, -34.0099, 36.2677], [60.4626, -34.1751, 39.4387], 1.2644],
 	])("%p vs %p", (a, b, want) => {
-		expect(deltaE2000(a as [number, number, number], b as [number, number, number])).toBeCloseTo(want, 3);
+		expect(deltaE2000({ a: a as [number, number, number], b: b as [number, number, number] })).toBeCloseTo(want, 3);
 	});
 });
 
