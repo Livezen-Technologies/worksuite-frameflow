@@ -48,7 +48,8 @@ import { TextBasicTab, TextPresetsTab } from "@/text/components/text-panel";
 import { TrackingTab } from "@/text/components/tracking-tab";
 import { BasicTab } from "@/clip-actions/components/basic-tab";
 import { AnimationTab } from "@/animation/components/animation-tab";
-import { SphereTab } from "@/vr/components/sphere-tab";
+import { SpherePinTab, SphereTab } from "@/vr/components/sphere-tab";
+import { findSpherePlaceEffect } from "@/vr/projection";
 import { VoiceTab } from "@/audio-tools/components/voice-tab";
 import { Mic } from "lucide-react";
 
@@ -244,6 +245,19 @@ function buildSphereTab({
 	};
 }
 
+/** Shown on titles and pictures pinned to the 360° sphere (VR-17). */
+function buildSpherePinTabs({ element }: { element: VisualElement }): PropertiesTabDef[] {
+	if (!findSpherePlaceEffect(element.effects)) return [];
+	return [
+		{
+			id: "sphere-pin",
+			label: "360°",
+			icon: <Globe size={16} />,
+			content: ({ trackId }) => <SpherePinTab element={element} trackId={trackId} />,
+		},
+	];
+}
+
 function buildTextTab({ element }: { element: TextElement }): PropertiesTabDef {
 	return {
 		id: "text",
@@ -315,6 +329,7 @@ function getTextConfig({
 				),
 			},
 			buildAnimationTab({ element }),
+			...buildSpherePinTabs({ element }),
 			{
 				id: "tracking",
 				label: "Motion tracking",
@@ -395,6 +410,7 @@ function getImageConfig({
 			buildBasicTab({ element }),
 			buildTransformTab({ element }),
 			buildAnimationTab({ element, thumbnail }),
+			...buildSpherePinTabs({ element }),
 			buildBlendingTab({ element }),
 			buildMasksTab({ element }),
 			buildClipEffectsTab({ element }),

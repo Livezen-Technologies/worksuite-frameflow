@@ -487,6 +487,7 @@ function collectTextNode({
 		blendMode: node.params.blendMode ?? "normal",
 		effectPassGroups: node.resolved.effectPasses,
 		mask: null,
+		...(node.resolved.projection ? { projection: node.resolved.projection } : {}),
 	});
 }
 

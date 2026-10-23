@@ -24,6 +24,8 @@ import { cn } from "@/utils/ui";
 import type { MediaTime } from "@/wasm";
 import { cameraAtPlayhead, CAMERA_KEYS, setCamera } from "../camera";
 import {
+	findSpherePlaceEffect,
+	SPHERE_PLACE_PARAMS,
 	findReframeEffect,
 	PROJECTION_STYLES,
 	REFRAME_PARAMS,
@@ -32,7 +34,7 @@ import {
 } from "../projection";
 import { useSphereStore } from "../store";
 
-function CameraParamField({
+export function CameraParamField({
 	param,
 	trackId,
 	element,
@@ -272,5 +274,78 @@ export function SphereTab({
 				</SectionContent>
 			</Section>
 		</div>
+	);
+}
+
+/** 360° tab for a title, logo or picture pinned to the sphere (VR-17). */
+export function SpherePinTab({
+	element,
+	trackId,
+}: {
+	element: VisualElement;
+	trackId: string;
+}) {
+	const editor = useEditor();
+	const { localTime, isPlayheadWithinElementRange } = useElementPlayhead({
+		startTime: element.startTime,
+		duration: element.duration,
+	});
+	const { renderElement } = useElementPreview({
+		trackId,
+		elementId: element.id,
+		fallback: element,
+	});
+	const live = renderElement as VisualElement;
+	const effect = findSpherePlaceEffect(live.effects);
+	if (!effect) return null;
+	const resolvedParams = resolveEffectParamsAtTime({
+		effectId: effect.id,
+		params: effect.params,
+		animations: live.animations,
+		localTime,
+	});
+	return (
+		<Section data-sphere-pin>
+			<SectionHeader>
+				<SectionTitle>Pinned to the 360° sphere</SectionTitle>
+			</SectionHeader>
+			<SectionContent>
+				<SectionFields>
+					{SPHERE_PLACE_PARAMS.map((param) => (
+						<CameraParamField
+							key={param.key}
+							param={param}
+							trackId={trackId}
+							element={live}
+							effect={effect}
+							localTime={localTime}
+							isPlayheadWithinElementRange={isPlayheadWithinElementRange}
+							resolvedParams={resolvedParams}
+						/>
+					))}
+				</SectionFields>
+				<p className="text-muted-foreground mt-2 text-[11px]">
+					Direction 0° is the front of the video. At 100% the middle of the item keeps the size you laid it out at.
+				</p>
+				<Button
+					variant="outline"
+					size="sm"
+					className="mt-2"
+					onClick={() =>
+						editor.timeline.updateElements({
+							updates: [
+								{
+									trackId,
+									elementId: element.id,
+									patch: { effects: (live.effects ?? []).filter((e) => e.id !== effect.id) },
+								},
+							],
+						})
+					}
+				>
+					Unpin
+				</Button>
+			</SectionContent>
+		</Section>
 	);
 }

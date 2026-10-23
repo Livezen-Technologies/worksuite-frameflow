@@ -4,6 +4,10 @@ import {
 	type ProjectionDescriptor,
 	projectionFromParams,
 	REFRAME_EFFECT_TYPE,
+	SPHERE_PLACE_EFFECT_TYPE,
+	findSpherePlaceEffect,
+	placementFromParams,
+	scalePlacement,
 } from "@/vr/projection";
 import { screenZoomAt, zoomOffset } from "@/screen-zoom/evaluate";
 import { previewSource } from "@/proxy/registry";
@@ -135,7 +139,12 @@ function resolveEffectPassGroups({
 	height: number;
 }): EffectPass[][] {
 	return (effects ?? [])
-		.filter((effect) => effect.enabled && effect.type !== REFRAME_EFFECT_TYPE)
+		.filter(
+			(effect) =>
+				effect.enabled &&
+				effect.type !== REFRAME_EFFECT_TYPE &&
+				effect.type !== SPHERE_PLACE_EFFECT_TYPE,
+		)
 		.map((effect) => {
 			const resolvedParams = resolveEffectParamsAtTime({
 				effectId: effect.id,
@@ -167,6 +176,11 @@ function resolveProjection({
 	animations: VisualNodeParams["animations"];
 	localTime: number;
 }): ProjectionDescriptor | null {
+	const pin = findSpherePlaceEffect(effects);
+	if (pin)
+		return placementFromParams(
+			resolveEffectParamsAtTime({ effectId: pin.id, params: pin.params, animations, localTime }),
+		);
 	const effect = findReframeEffect(effects);
 	if (!effect?.enabled) return null;
 	return projectionFromParams(
@@ -279,6 +293,16 @@ function resolveVisualState({
 		context.renderer.height / sourceHeight,
 	);
 	// A 360° clip is drawn across the whole frame by its virtual camera.
+	// A pinned picture covers its laid-out share of the frame (VR-17).
+	const placed =
+		projection?.place
+			? scalePlacement({
+					projection,
+					fraction:
+						Math.abs(sourceWidth * Math.min(context.renderer.width / sourceWidth, context.renderer.height / sourceHeight) * transform.scaleX) /
+						context.renderer.width,
+				})
+			: projection;
 	const effectWidth = projection
 		? context.renderer.width
 		: Math.round(Math.abs(sourceWidth * containScale * transform.scaleX));
@@ -318,7 +342,7 @@ function resolveVisualState({
 		transform,
 		opacity,
 		effectPasses,
-		...(projection ? { projection } : {}),
+		...(placed ? { projection: placed } : {}),
 		...(transition.mask ? { maskOverride: transition.mask } : {}),
 	};
 }
@@ -703,6 +727,15 @@ function resolveTextNode({
 			width: context.renderer.width,
 			height: context.renderer.height,
 		}),
+		...(() => {
+			// A title pinned to the 360° sphere (VR-17).
+			const projection = resolveProjection({
+				effects: node.params.effects,
+				animations: node.params.animations,
+				localTime,
+			});
+			return projection?.place ? { projection } : {};
+		})(),
 		measuredText,
 		styleEffects,
 	};

@@ -16,7 +16,7 @@ import { useEditor } from "@/editor/use-editor";
 import { isVisualElement } from "@/timeline/element-utils";
 import { findReframeEffect } from "../projection";
 import { useSphereStore } from "../store";
-import { addNadirLogo, coverTripod } from "../nadir-actions";
+import { addNadirLogo, coverTripod, pinSelectionToSphere } from "../nadir-actions";
 import { useRef } from "react";
 
 const SIZES = [
@@ -126,6 +126,21 @@ export function SphereMenu() {
 						>
 							Horizon and front guides
 						</DropdownMenuCheckboxItem>
+						<DropdownMenuSeparator />
+						<DropdownMenuItem
+							data-pin-to-sphere
+							onClick={() => {
+								const n = pinSelectionToSphere({ editor });
+								if (n)
+									toast.success(`Pinned ${n} item${n === 1 ? "" : "s"} to the sphere`, {
+										description:
+											"Set the direction, height, tilt and size in its 360° tab; each can be keyframed.",
+									});
+								else toast.info("Select a title, logo or picture on the timeline first.");
+							}}
+						>
+							Pin selected titles to the sphere
+						</DropdownMenuItem>
 						<DropdownMenuSeparator />
 						<DropdownMenuLabel className="text-muted-foreground text-xs">
 							Hide the tripod or selfie stick

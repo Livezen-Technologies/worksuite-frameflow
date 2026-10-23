@@ -729,9 +729,20 @@ impl Compositor {
             ],
             resolution: [width as f32, height as f32],
             lens: p.lens,
-            mode: if p.equirectangular { 1.0 } else { 0.0 },
+            mode: if p.place {
+                2.0
+            } else if p.equirectangular {
+                1.0
+            } else {
+                0.0
+            },
             opacity: layer.opacity,
-            _padding: [0.0; 3],
+            // Source aspect, for laying a flat layer on the sphere.
+            _padding: [
+                source.width() as f32 / source.height().max(1) as f32,
+                p.plane_half_width,
+                0.0,
+            ],
         });
         let contents: &[u8] = match &projection_uniforms {
             Some(uniforms) => bytemuck::bytes_of(uniforms),

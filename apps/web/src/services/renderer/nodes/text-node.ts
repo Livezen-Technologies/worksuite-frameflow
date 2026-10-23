@@ -1,3 +1,4 @@
+import type { ProjectionDescriptor } from "@/vr/projection";
 import { BaseNode } from "./base-node";
 import type { TextElement } from "@/timeline";
 import type { EffectPass } from "@/effects/types";
@@ -21,6 +22,8 @@ export interface ResolvedTextNodeState {
 	textColor: string;
 	backgroundColor: string;
 	effectPasses: EffectPass[][];
+	/** Pinned to the 360° sphere (VR-17). */
+	projection?: ProjectionDescriptor;
 	measuredText: MeasuredTextElement;
 	styleEffects?: TextStyleEffects;
 }

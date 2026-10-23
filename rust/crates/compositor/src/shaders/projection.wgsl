@@ -7,6 +7,8 @@
 // hole looking up).
 // mode 1 keeps the output equirectangular and only turns the sphere
 // (reorient / set the front).
+// mode 2 lays a flat source (a title or image) on the sphere, facing
+// yaw/pitch and fov wide, into an equirectangular output (VR-17).
 
 struct VertexOutput {
     @builtin(position) position: vec4f,
@@ -20,6 +22,7 @@ struct ProjectionUniforms {
     lens: f32,
     mode: f32,
     opacity: f32,
+    // Source width / height (mode 2).
     _p0: f32,
     _p1: f32,
     _p2: f32,
@@ -77,9 +80,46 @@ fn stereographic(p: vec2f, fov: f32) -> vec3f {
     return from_angle(p, 2.0 * atan(length(p) * k));
 }
 
+// World to the placed layer's frame: undo yaw, then pitch, then roll.
+fn unorient(d: vec3f) -> vec3f {
+    let cy = cos(u.angles.x);
+    let sy = sin(u.angles.x);
+    var v = vec3f(d.x * cy - d.z * sy, d.y, d.x * sy + d.z * cy);
+    let cp = cos(u.angles.y);
+    let sp = sin(u.angles.y);
+    v = vec3f(v.x, v.y * cp - v.z * sp, v.y * sp + v.z * cp);
+    let cr = cos(u.angles.z);
+    let sr = sin(u.angles.z);
+    return vec3f(v.x * cr + v.y * sr, -v.x * sr + v.y * cr, v.z);
+}
+
+fn place_flat(uv: vec2f) -> vec4f {
+    let lon = (uv.x - 0.5) * 2.0 * PI;
+    let lat = (0.5 - uv.y) * PI;
+    let d = unorient(vec3f(cos(lat) * sin(lon), sin(lat), cos(lat) * cos(lon)));
+    if (d.z <= 0.01) {
+        return vec4f(0.0);
+    }
+    // The layer is a flat card fov wide at distance 1, seen straight on.
+    var half_w = tan(min(u.angles.w, 3.0) * 0.5);
+    if (u._p1 > 0.0) {
+        half_w = u._p1;
+    }
+    let half_h = half_w / max(u._p0, 0.01);
+    let s = vec2f(0.5 + d.x / d.z / (2.0 * half_w), 0.5 - d.y / d.z / (2.0 * half_h));
+    if (any(s < vec2f(0.0)) || any(s > vec2f(1.0))) {
+        return vec4f(0.0);
+    }
+    let color = textureSampleLevel(source_texture, source_sampler, s, 0.0);
+    return vec4f(color.rgb, color.a * u.opacity);
+}
+
 @fragment
 fn fragment_main(input: VertexOutput) -> @location(0) vec4f {
     let uv = input.tex_coord;
+    if (u.mode > 1.5) {
+        return place_flat(uv);
+    }
     var dir: vec3f;
     if (u.mode > 0.5) {
         let lon = (uv.x - 0.5) * 2.0 * PI;

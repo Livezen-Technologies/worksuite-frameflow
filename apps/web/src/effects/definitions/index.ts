@@ -4,7 +4,7 @@ import { colorGradeEffectDefinition } from "./color-grade";
 import { STYLISE_EFFECTS } from "./stylise";
 import { lutEffectDefinition } from "./lut";
 import { curvesEffectDefinition } from "./curves";
-import { reframeEffectDefinition } from "@/vr/projection";
+import { reframeEffectDefinition, spherePlaceEffectDefinition } from "@/vr/projection";
 import { nadirEffectDefinition } from "@/vr/nadir";
 
 const defaultEffects = [
@@ -13,6 +13,7 @@ const defaultEffects = [
 	lutEffectDefinition,
 	curvesEffectDefinition,
 	reframeEffectDefinition,
+	spherePlaceEffectDefinition,
 	nadirEffectDefinition,
 	...STYLISE_EFFECTS,
 ];

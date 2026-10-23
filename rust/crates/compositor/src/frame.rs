@@ -61,6 +61,13 @@ pub struct ProjectionDescriptor {
     /// Keep the output equirectangular (reorient only).
     #[serde(default)]
     pub equirectangular: bool,
+    /// The source is flat (a title or image): lay it on the sphere facing
+    /// yaw/pitch, `fov` degrees wide, in an equirectangular output (VR-17).
+    #[serde(default)]
+    pub place: bool,
+    /// Half-width of the placed card in tangent units; 0 uses `fov`.
+    #[serde(default)]
+    pub plane_half_width: f32,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

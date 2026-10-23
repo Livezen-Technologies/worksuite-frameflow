@@ -19,6 +19,10 @@ export interface ProjectionDescriptor {
 	lens: number;
 	/** Keep the picture equirectangular and only turn the sphere. */
 	equirectangular: boolean;
+	/** A flat title or image laid on the sphere (VR-17). */
+	place?: boolean;
+	/** Half-width of the placed card in tangent units (set by the renderer). */
+	planeHalfWidth?: number;
 }
 
 export type ProjectionStyle =
@@ -153,6 +157,68 @@ export function projectionFromParams(
 		lens: Math.max(0, Math.min(2, read({ params, key: "lens" }))),
 		equirectangular: params.mode === "sphere",
 	};
+}
+
+/**
+ * Pins a title, logo or picture to a direction in a 360° project (VR-17):
+ * the flat layer becomes a card on the sphere, `size` degrees wide, facing
+ * the viewer from yaw/pitch, curved correctly in the equirectangular frame.
+ * Every value can be keyframed.
+ */
+export const SPHERE_PLACE_EFFECT_TYPE = "sphere-place";
+
+export const SPHERE_PLACE_PARAMS: ParamDefinition[] = [
+	number({ key: "yaw", label: "Direction (°)", min: -180, max: 180, step: 1, value: 0 }),
+	number({ key: "pitch", label: "Height (°)", min: -85, max: 85, step: 1, value: 0 }),
+	number({ key: "roll", label: "Tilt (°)", min: -180, max: 180, step: 1, value: 0 }),
+	number({ key: "size", label: "Size (%)", min: 10, max: 400, step: 1, value: 100 }),
+];
+
+export const spherePlaceEffectDefinition: EffectDefinition = {
+	type: SPHERE_PLACE_EFFECT_TYPE,
+	name: "Pin to 360° sphere",
+	keywords: ["360", "sphere", "pin", "place", "title", "vr", "direction"],
+	params: SPHERE_PLACE_PARAMS,
+	renderer: { passes: [] },
+};
+
+export function findSpherePlaceEffect(effects: Effect[] | undefined): Effect | null {
+	return effects?.find((e) => e.type === SPHERE_PLACE_EFFECT_TYPE && e.enabled) ?? null;
+}
+
+export function placementFromParams(params: ParamValues): ProjectionDescriptor {
+	const get = (key: string) => {
+		const v = params[key];
+		const fallback = SPHERE_PLACE_PARAMS.find((p) => p.key === key)?.default;
+		return typeof v === "number" && Number.isFinite(v) ? v : typeof fallback === "number" ? fallback : 0;
+	};
+	return {
+		yaw: get("yaw"),
+		pitch: Math.max(-85, Math.min(85, get("pitch"))),
+		roll: get("roll"),
+		fov: 90,
+		lens: 0,
+		equirectangular: false,
+		place: true,
+		planeHalfWidth: Math.PI / (Math.max(10, Math.min(400, get("size"))) / 100),
+	};
+}
+
+/**
+ * The card's half-width for a layer covering `fraction` of the frame's
+ * width: at 100% the middle of the card keeps the size it was laid out at,
+ * since the equirectangular frame spans 2π across its width.
+ */
+export function scalePlacement({
+	projection,
+	fraction,
+}: {
+	projection: ProjectionDescriptor;
+	fraction: number;
+}): ProjectionDescriptor {
+	return projection.planeHalfWidth
+		? { ...projection, planeHalfWidth: projection.planeHalfWidth * fraction }
+		: projection;
 }
 
 export function findReframeEffect(

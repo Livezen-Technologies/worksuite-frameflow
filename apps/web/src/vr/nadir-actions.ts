@@ -11,7 +11,7 @@ import { isVisualElement } from "@/timeline/element-utils";
 import { mediaTimeFromSeconds, roundMediaTime } from "@/wasm";
 import { NADIR_EFFECT_TYPE } from "./nadir";
 import { warpNadirLogo } from "./nadir-logo";
-import { findReframeEffect } from "./projection";
+import { findReframeEffect, findSpherePlaceEffect, SPHERE_PLACE_EFFECT_TYPE } from "./projection";
 
 /** Puts a nadir patch on every 360° clip that doesn't have one (VR-19). Returns how many. */
 export function coverTripod({ editor }: { editor: EditorCore }): number {
@@ -81,4 +81,32 @@ export async function addNadirLogo({
 			new InsertElementCommand({ element, placement: { mode: "explicit", trackId: addTrack.getTrackId() } }),
 		]),
 	});
+}
+
+/**
+ * Pins the selected titles, logos and pictures to the 360° sphere in front of
+ * the viewer (VR-17). Returns how many.
+ */
+export function pinSelectionToSphere({ editor }: { editor: EditorCore }): number {
+	const selected = editor.timeline.getElementsWithTracks({
+		elements: editor.selection.getSelectedElements(),
+	});
+	const updates = selected.flatMap(({ track, element }) => {
+		if (!isVisualElement(element) || element.type === "video") return [];
+		if (findSpherePlaceEffect(element.effects)) return [];
+		return [
+			{
+				trackId: track.id,
+				elementId: element.id,
+				patch: {
+					effects: [
+						...(element.effects ?? []),
+						buildDefaultEffectInstance({ effectType: SPHERE_PLACE_EFFECT_TYPE }),
+					],
+				},
+			},
+		];
+	});
+	if (updates.length) editor.timeline.updateElements({ updates });
+	return updates.length;
 }
