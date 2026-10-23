@@ -183,6 +183,23 @@ export function applyTemplate({
 	media: MediaAsset[];
 	at: MediaTime;
 }): void {
+	editor.command.execute({
+		command: buildTemplateCommand({ editor, template, media, at }),
+	});
+}
+
+/** The commands that add a template, for batching several into one undo step. */
+export function buildTemplateCommand({
+	editor,
+	template,
+	media,
+	at,
+}: {
+	editor: EditorCore;
+	template: ProjectTemplate;
+	media: MediaAsset[];
+	at: MediaTime;
+}): Command {
 	const frame = editor.project.getActive().settings.canvasSize;
 	const built = template.layers.map((layer) =>
 		buildLayer({ layer, media, frame, at }),
@@ -212,7 +229,5 @@ export function applyTemplate({
 			}),
 		);
 	}
-	editor.command.execute({
-		command: new BatchCommand([...commands, ...inserts]),
-	});
+	return new BatchCommand([...commands, ...inserts]);
 }

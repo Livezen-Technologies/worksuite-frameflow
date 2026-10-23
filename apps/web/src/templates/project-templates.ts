@@ -24,7 +24,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategory[] = [
 ];
 
 export interface TemplateAspect {
-	label: "16:9" | "9:16" | "1:1";
+	label: "16:9" | "9:16" | "1:1" | "4:5";
 	width: number;
 	height: number;
 }

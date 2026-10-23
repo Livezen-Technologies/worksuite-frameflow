@@ -8,6 +8,13 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 ## [Unreleased]
 
 ### Added
+- Social template packs for YouTube, Facebook, TikTok and Podcast: 12 animated templates each, in English, Sinhala and mixed versions. Find them in Text → Packs.
+  - Templates are laid out inside each platform's safe area and adapt to every shape the pack supports (16:9, 9:16, 1:1, 4:5). The matching safe-area guide turns on while you place a vertical template.
+  - "Your details" fills in names, channel, handle, episode and more; the brand kit name is used for the channel. Chapter titles can be added at every bookmark.
+  - Brand kit option to recolour with your colours and fonts.
+  - Favourites, search and purpose filters.
+  - "Use the whole pack" adds the intro, lower third, call to action and ending as one undo step.
+- Templates carry no platform logos.
 - HEIC/HEIF photo import (.heic, .heif, .hif) from the Import button and drag and drop.
   - Photos are decoded off the editor thread, including iPhone tiled images, rotation and mirroring.
   - Photos with transparency stay transparent. For files holding several pictures, the main one is imported.
@@ -39,6 +46,9 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
   - On the next start, Home offers to reopen the projects from last time.
 - Copy and paste between projects: clips pasted into another project bring their media into its Media bin.
 - Paste attributes (Ctrl/Cmd+Alt+V): choose what to copy from a clip onto the selected clips (effects, colour grade and LUTs, transform, speed, volume, text style, animations, keyframes), in one undo step.
+
+### Removed
+- Platform guide icons no longer load logos from Brandfetch; they show a plain letter instead.
 
 ### Fixed
 - Undo no longer reaches into a project you had open before.

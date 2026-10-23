@@ -1,7 +1,7 @@
-import Image from "next/image";
 import type { GuideDefinition } from "@/guides/types";
 import { TikTokLayout } from "./tiktok-layout";
 
+/** Lettered badge: no third-party logo fetching (SRS SP-14, SP-17). */
 function PlatformLogo({
 	domain,
 	className = "size-4",
@@ -10,15 +10,12 @@ function PlatformLogo({
 	className?: string;
 }) {
 	return (
-		<Image
-			src={`https://cdn.brandfetch.io/${domain}/w/64/h/64`}
-			alt=""
-			width={18}
-			height={18}
-			className={className}
-			draggable={false}
-			unoptimized
-		/>
+		<span
+			className={`${className} bg-foreground/15 inline-flex items-center justify-center rounded-[4px] text-[9px] font-semibold uppercase`}
+			aria-hidden
+		>
+			{domain.charAt(0)}
+		</span>
 	);
 }
 
