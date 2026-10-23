@@ -25,8 +25,9 @@ function vec(value: unknown): number[] {
 describe("stylise effects", () => {
 	test("every effect has a shader in the Rust engine, and vice versa", () => {
 		const types = STYLISE_EFFECTS.map((effect) => effect.type).sort();
-		// HDR colour conversions are applied by the renderer, not offered as effects.
-		const internal = new Set(["hdr-from-sdr", "hdr-preview"]);
+		// HDR colour conversions are applied by the renderer, not offered as
+		// effects; the 360° nadir patch is defined with the other 360° tools.
+		const internal = new Set(["hdr-from-sdr", "hdr-preview", "nadir"]);
 		expect(types).toEqual(
 			[...engineStyliseShaders].filter((id) => !internal.has(id)).sort(),
 		);
