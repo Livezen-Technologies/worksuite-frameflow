@@ -1,6 +1,7 @@
 import type { EditorCore } from "@/core";
 import type {
 	TProject,
+	TProjectCover,
 	TProjectMetadata,
 	TProjectSortKey,
 	TProjectSortOption,
@@ -647,8 +648,58 @@ export class ProjectManager {
 		return () => this.listeners.delete(listener);
 	}
 
+	/** Sets or clears the project cover, which becomes the thumbnail. */
+	async setCover({ cover }: { cover: TProjectCover | null }): Promise<void> {
+		if (!this.active) return;
+		const metadata = { ...this.active.metadata, updatedAt: new Date() };
+		if (cover) {
+			metadata.cover = cover;
+			metadata.thumbnail = cover.image;
+		} else delete metadata.cover;
+		this.active = { ...this.active, metadata };
+		this.notify();
+		this.updateMetadata(this.active);
+		this.editor.save.markDirty();
+		if (!cover) await this.updateThumbnailFromTimeline();
+	}
+
+	/** Draws the timeline at `time` (ticks), scaled to fit `maxSize` pixels. */
+	async renderFrame({
+		time,
+		maxSize,
+	}: {
+		time: number;
+		maxSize?: number;
+	}): Promise<HTMLCanvasElement> {
+		const project = this.getActive();
+		const tracks = this.editor.scenes.getActiveScene().tracks;
+		const mediaAssets = this.editor.media.getAssets();
+		const duration = this.editor.timeline.getTotalDuration();
+		const { canvasSize, background } = project.settings;
+		const scale = maxSize
+			? Math.min(1, maxSize / Math.max(canvasSize.width, canvasSize.height))
+			: 1;
+		const width = Math.max(2, Math.round(canvasSize.width * scale));
+		const height = Math.max(2, Math.round(canvasSize.height * scale));
+		const scene = buildScene({
+			tracks,
+			mediaAssets,
+			duration: duration || 1,
+			canvasSize,
+			background,
+		});
+		const renderer = new CanvasRenderer({ width, height, fps: project.settings.fps });
+		const canvas = document.createElement("canvas");
+		canvas.width = width;
+		canvas.height = height;
+		await renderer.renderToCanvas({ node: scene, time, targetCanvas: canvas });
+		return canvas;
+	}
+
 	private async updateThumbnailFromTimeline(): Promise<boolean> {
 		if (!this.active) return false;
+		// A chosen cover is the thumbnail.
+		if (this.active.metadata.cover) return false;
 
 		const tracks = this.editor.scenes.getActiveScene().tracks;
 		const mediaAssets = this.editor.media.getAssets();

@@ -9,7 +9,7 @@ export const EXPORT_QUALITY_VALUES = [
 	"very_high",
 ] as const;
 
-export const EXPORT_FORMAT_VALUES = ["mp4", "webm"] as const;
+export const EXPORT_FORMAT_VALUES = ["mp4", "webm", "gif"] as const;
 
 export type ExportFormat = (typeof EXPORT_FORMAT_VALUES)[number];
 export type ExportQuality = (typeof EXPORT_QUALITY_VALUES)[number];
@@ -31,6 +31,10 @@ export interface ExportOptions {
 	burnInCaptions?: boolean;
 	/** Add the captions as a subtitle track inside the file. */
 	embedCaptions?: boolean;
+	/** Video bitrate in bits per second; overrides the quality's bitrate. */
+	videoBitrate?: number;
+	/** Picture (data URL) shown as the first frame, e.g. the project cover. */
+	coverImage?: string;
 }
 
 export interface ExportResult {

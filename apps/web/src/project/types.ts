@@ -17,10 +17,20 @@ export interface TCanvasSize {
 	height: number;
 }
 
+export interface TProjectCover {
+	source: "video" | "upload";
+	/** Timeline time in ticks the cover was taken from (source "video"). */
+	time: number;
+	/** JPEG data URL. */
+	image: string;
+}
+
 export interface TProjectMetadata {
 	id: string;
 	name: string;
 	thumbnail?: string;
+	/** Chosen cover picture; also used as the project thumbnail. */
+	cover?: TProjectCover;
 	duration: MediaTime;
 	createdAt: Date;
 	updatedAt: Date;

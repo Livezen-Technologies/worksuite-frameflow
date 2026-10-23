@@ -164,6 +164,8 @@ export class RendererManager {
 			resolution,
 			burnInCaptions = true,
 			embedCaptions = false,
+			videoBitrate,
+			coverImage,
 		} = options;
 
 		try {
@@ -197,7 +199,7 @@ export class RendererManager {
 			const canvasSize = activeProject.settings.canvasSize;
 
 			let audioBuffer: AudioBuffer | null = null;
-			if (includeAudio) {
+			if (includeAudio && format !== "gif") {
 				onProgress?.({ progress: 0.05 });
 				audioBuffer = await createTimelineAudioBuffer({
 					tracks,
@@ -224,6 +226,8 @@ export class RendererManager {
 				audioBuffer: audioBuffer || undefined,
 				codec,
 				outputSize: resolution,
+				videoBitrate,
+				coverImage,
 				subtitlesVtt:
 					embedCaptions && captionCues[0]?.length
 						? cuesToVtt(captionCues[0])

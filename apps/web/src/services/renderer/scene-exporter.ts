@@ -35,6 +35,8 @@ type ExportParams = {
 	outputSize?: { width: number; height: number };
 	/** WebVTT text to embed as a subtitle track. */
 	subtitlesVtt?: string;
+	videoBitrate?: number;
+	coverImage?: string;
 };
 
 const qualityMap = {
@@ -60,6 +62,8 @@ export class SceneExporter extends EventEmitter<SceneExporterEvents> {
 	private codec: ExportCodec;
 	private outputSize: { width: number; height: number };
 	private subtitlesVtt?: string;
+	private videoBitrate?: number;
+	private coverImage?: string;
 
 	private isCancelled = false;
 
@@ -74,6 +78,8 @@ export class SceneExporter extends EventEmitter<SceneExporterEvents> {
 		codec,
 		outputSize,
 		subtitlesVtt,
+		videoBitrate,
+		coverImage,
 	}: ExportParams) {
 		super();
 		this.renderer = new CanvasRenderer({
@@ -89,20 +95,23 @@ export class SceneExporter extends EventEmitter<SceneExporterEvents> {
 		this.codec = codec ?? (format === "webm" ? "vp9" : "avc");
 		this.outputSize = evenSize(outputSize ?? { width, height });
 		this.subtitlesVtt = subtitlesVtt;
+		this.videoBitrate = videoBitrate;
+		this.coverImage = coverImage;
 	}
 
 	/**
 	 * The canvas the encoder reads. When the output size differs from the
 	 * project, each frame is scaled onto a canvas of that size, letterboxed.
 	 */
-	private createEncodeSurface(): {
+	private createEncodeSurface({ separate = false }: { separate?: boolean } = {}): {
 		canvas: HTMLCanvasElement;
 		copyFrame: () => void;
+		drawPicture: (picture: ImageBitmap) => void;
 	} {
 		const source = this.renderer.getOutputCanvas();
 		const { width, height } = this.outputSize;
-		if (width === this.renderer.width && height === this.renderer.height) {
-			return { canvas: source, copyFrame: () => {} };
+		if (!separate && width === this.renderer.width && height === this.renderer.height) {
+			return { canvas: source, copyFrame: () => {}, drawPicture: () => {} };
 		}
 		const canvas = document.createElement("canvas");
 		canvas.width = width;
@@ -120,6 +129,15 @@ export class SceneExporter extends EventEmitter<SceneExporterEvents> {
 				ctx.fillStyle = "#000000";
 				ctx.fillRect(0, 0, width, height);
 				ctx.drawImage(source, rect.x, rect.y, rect.width, rect.height);
+			},
+			drawPicture: (picture) => {
+				const fit = fitRect({
+					source: { width: picture.width, height: picture.height },
+					target: { width, height },
+				});
+				ctx.fillStyle = "#000000";
+				ctx.fillRect(0, 0, width, height);
+				ctx.drawImage(picture, fit.x, fit.y, fit.width, fit.height);
 			},
 		};
 	}
@@ -139,6 +157,11 @@ export class SceneExporter extends EventEmitter<SceneExporterEvents> {
 			(TICKS_PER_SECOND * fps.denominator) / fps.numerator,
 		);
 		const frameCount = Math.floor(rootNode.duration / ticksPerFrame);
+		const cover = this.coverImage
+			? await createImageBitmap(await (await fetch(this.coverImage)).blob())
+			: null;
+		if (this.format === "gif")
+			return this.exportGif({ rootNode, frameCount, ticksPerFrame, fpsFloat, cover });
 
 		const outputFormat =
 			this.format === "webm" ? new WebMOutputFormat() : new Mp4OutputFormat();
@@ -148,10 +171,10 @@ export class SceneExporter extends EventEmitter<SceneExporterEvents> {
 			target: new BufferTarget(),
 		});
 
-		const surface = this.createEncodeSurface();
+		const surface = this.createEncodeSurface({ separate: !!cover });
 		const videoSource = new CanvasSource(surface.canvas, {
 			codec: this.codec,
-			bitrate: qualityMap[this.quality],
+			bitrate: this.videoBitrate ?? qualityMap[this.quality],
 		});
 
 		output.addVideoTrack(videoSource, { frameRate: fpsFloat });
@@ -207,8 +230,11 @@ export class SceneExporter extends EventEmitter<SceneExporterEvents> {
 
 			const timeTicks = i * ticksPerFrame;
 			const timeSeconds = mediaTimeToSeconds({ time: timeTicks });
-			await this.renderer.render({ node: rootNode, time: timeTicks });
-			surface.copyFrame();
+			if (i === 0 && cover) surface.drawPicture(cover);
+			else {
+				await this.renderer.render({ node: rootNode, time: timeTicks });
+				surface.copyFrame();
+			}
 			await videoSource.add(timeSeconds, 1 / fpsFloat);
 
 			this.emit("progress", i / frameCount);
@@ -230,6 +256,51 @@ export class SceneExporter extends EventEmitter<SceneExporterEvents> {
 			return null;
 		}
 
+		this.emit("complete", buffer);
+		return buffer;
+	}
+
+	/** Animated GIF: each frame quantised to its own 256-colour palette. */
+	private async exportGif({
+		rootNode,
+		frameCount,
+		ticksPerFrame,
+		fpsFloat,
+		cover,
+	}: {
+		rootNode: RootNode;
+		frameCount: number;
+		ticksPerFrame: number;
+		fpsFloat: number;
+		cover: ImageBitmap | null;
+	}): Promise<ArrayBuffer | null> {
+		const { GIFEncoder, quantize, applyPalette } = await import("gifenc");
+		const surface = this.createEncodeSurface({ separate: true });
+		const ctx = surface.canvas.getContext("2d", { willReadFrequently: true });
+		if (!ctx) throw new Error("Could not create the GIF canvas");
+		const { width, height } = this.outputSize;
+		const gif = GIFEncoder();
+		const delay = Math.round(1000 / fpsFloat);
+		for (let i = 0; i < frameCount; i++) {
+			if (this.isCancelled) {
+				this.emit("cancelled");
+				return null;
+			}
+			if (i === 0 && cover) surface.drawPicture(cover);
+			else {
+				await this.renderer.render({ node: rootNode, time: i * ticksPerFrame });
+				surface.copyFrame();
+			}
+			const { data } = ctx.getImageData(0, 0, width, height);
+			const palette = quantize(data, 256);
+			gif.writeFrame(applyPalette(data, palette), width, height, { palette, delay });
+			this.emit("progress", i / frameCount);
+		}
+		gif.finish();
+		const bytes = gif.bytes();
+		const buffer = new ArrayBuffer(bytes.byteLength);
+		new Uint8Array(buffer).set(bytes);
+		this.emit("progress", 1);
 		this.emit("complete", buffer);
 		return buffer;
 	}

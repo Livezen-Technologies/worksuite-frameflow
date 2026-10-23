@@ -2,7 +2,14 @@
 
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { Cloud, CloudOff, Loader2, Plus, X } from "lucide-react";
+import { Check, ChevronDown, Cloud, CloudOff, Loader2, Plus, X } from "lucide-react";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 import { useCloudSync } from "@/cloud/store";
 import { useEditor } from "@/editor/use-editor";
@@ -10,7 +17,7 @@ import { cn } from "@/utils/ui";
 import { useProjectTabs } from "../store";
 import { cycleTab, SOFT_TAB_LIMIT, tabForNumber } from "../tabs";
 
-/** Tabs of open projects across the top of the editor (SRS MP-01–MP-11). */
+/** Switcher for the open projects, in the editor header (SRS MP-01–MP-11). */
 export function ProjectTabBar() {
 	const router = useRouter();
 	const editor = useEditor();
@@ -79,100 +86,102 @@ export function ProjectTabBar() {
 		return () => window.removeEventListener("keydown", onKey, true);
 	});
 
-	if (tabs.length === 0) return null;
+	const activeTab = tabs.find((t) => t.id === activeId);
+	const name = activeName ?? activeTab?.name ?? "Project";
 
 	return (
-		<div
-			className="bg-sidebar flex h-9 shrink-0 items-end gap-0.5 overflow-x-auto border-b px-2 pt-1"
-			role="tablist"
-			aria-label="Open projects"
-			data-project-tabs
-		>
-			{tabs.map((tab, index) => {
-				const active = tab.id === activeId;
-				const link = links[tab.id];
-				const state = statuses[tab.id]?.state;
-				return (
-					<div
-						key={tab.id}
-						role="tab"
-						aria-selected={active}
-						tabIndex={0}
-						draggable
-						data-project-tab={tab.id}
-						title={tab.name}
-						onDragStart={() => {
-							dragFrom.current = index;
-						}}
-						onDragOver={(e) => e.preventDefault()}
-						onDrop={() => {
-							if (dragFrom.current !== null)
-								useProjectTabs
-									.getState()
-									.move({ from: dragFrom.current, to: index });
-							dragFrom.current = null;
-						}}
-						onClick={() => !active && void go(tab.id)}
-						onKeyDown={(e) => {
-							if (e.key === "Enter" && !active) void go(tab.id);
-						}}
-						onAuxClick={(e) => {
-							if (e.button === 1) void close(tab.id);
-						}}
-						className={cn(
-							"group flex h-8 max-w-56 min-w-28 cursor-pointer items-center gap-1.5 rounded-t-lg border border-b-0 px-2.5 text-xs select-none",
-							active
-								? "bg-background text-foreground"
-								: "text-muted-foreground hover:bg-accent/50 border-transparent",
-						)}
-					>
-						{state === "syncing" ? (
-							<Loader2 className="size-3 shrink-0 animate-spin" />
-						) : link ? (
-							<Cloud
-								className="size-3 shrink-0 text-sky-400"
-								aria-label="Local + Cloud"
-							/>
-						) : (
-							<CloudOff
-								className="size-3 shrink-0 opacity-50"
-								aria-label="Local"
-							/>
-						)}
-						<span className="min-w-0 flex-1 truncate">{tab.name}</span>
-						{active && dirty ? (
-							<span
-								className="size-1.5 shrink-0 rounded-full bg-amber-400"
-								title="Saving…"
-							/>
-						) : null}
-						<button
-							type="button"
-							aria-label={`Close ${tab.name}`}
-							onClick={(e) => {
-								e.stopPropagation();
-								void close(tab.id);
+		<DropdownMenu>
+			<DropdownMenuTrigger asChild>
+				<button
+					type="button"
+					aria-label="Switch project"
+					title="Open projects (Ctrl+1–9)"
+					className="hover:bg-accent flex h-8 min-w-0 items-center gap-1.5 rounded-md px-1.5"
+					data-project-switcher
+				>
+					<span className="bg-primary text-primary-foreground flex size-6 shrink-0 items-center justify-center rounded-md text-xs font-semibold">
+						{name.trim().charAt(0).toUpperCase() || "P"}
+					</span>
+					{tabs.length > 1 ? (
+						<span className="bg-accent text-muted-foreground rounded px-1 text-[10px] tabular-nums">
+							{tabs.length}
+						</span>
+					) : null}
+					<ChevronDown className="text-muted-foreground size-3.5 shrink-0" />
+				</button>
+			</DropdownMenuTrigger>
+			<DropdownMenuContent align="start" className="w-80 p-1.5" data-project-tabs>
+				{tabs.map((tab, index) => {
+					const active = tab.id === activeId;
+					const link = links[tab.id];
+					const state = statuses[tab.id]?.state;
+					return (
+						<DropdownMenuItem
+							key={tab.id}
+							data-project-tab={tab.id}
+							draggable
+							onDragStart={() => {
+								dragFrom.current = index;
+							}}
+							onDragOver={(e) => e.preventDefault()}
+							onDrop={() => {
+								if (dragFrom.current !== null)
+									useProjectTabs.getState().move({ from: dragFrom.current, to: index });
+								dragFrom.current = null;
+							}}
+							onSelect={() => {
+								if (!active) void go(tab.id);
 							}}
 							className={cn(
-								"hover:bg-accent rounded p-0.5",
-								active ? "opacity-70" : "opacity-0 group-hover:opacity-70",
+								"group flex h-11 items-center gap-2.5 rounded-lg px-3 text-sm",
+								active && "bg-accent",
 							)}
 						>
-							<X className="size-3" />
-						</button>
-					</div>
-				);
-			})}
-			<button
-				type="button"
-				aria-label="Open another project"
-				title="Open another project"
-				onClick={() => void go(null)}
-				className="text-muted-foreground hover:bg-accent mb-1 ml-1 flex size-7 items-center justify-center rounded-md"
-				data-new-tab
-			>
-				<Plus className="size-4" />
-			</button>
-		</div>
+							{state === "syncing" ? (
+								<Loader2 className="size-3.5 shrink-0 animate-spin" />
+							) : link ? (
+								<Cloud className="size-3.5 shrink-0 text-sky-400" aria-label="Local + Cloud" />
+							) : (
+								<CloudOff className="size-3.5 shrink-0 opacity-50" aria-label="Local" />
+							)}
+							<span className="min-w-0 flex-1 truncate">{tab.name}</span>
+							{index < 9 ? (
+								<span className="text-muted-foreground text-[10px]">Ctrl+{index + 1}</span>
+							) : null}
+							{active && dirty ? (
+								<span className="size-1.5 shrink-0 rounded-full bg-amber-400" title="Saving…" />
+							) : null}
+							{active ? (
+								<Check className="text-primary size-4 shrink-0" />
+							) : (
+								<button
+									type="button"
+									aria-label={`Close ${tab.name}`}
+									onPointerDown={(e) => e.stopPropagation()}
+									onClick={(e) => {
+										e.stopPropagation();
+										e.preventDefault();
+										void close(tab.id);
+									}}
+									className="hover:bg-background rounded p-0.5 opacity-0 group-hover:opacity-70"
+								>
+									<X className="size-3.5" />
+								</button>
+							)}
+						</DropdownMenuItem>
+					);
+				})}
+				<DropdownMenuSeparator />
+				<DropdownMenuItem onSelect={() => void go(null)} data-new-tab className="gap-2.5 px-3">
+					<Plus className="size-4" /> Open another project
+				</DropdownMenuItem>
+				{activeId ? (
+					<DropdownMenuItem onSelect={() => void close(activeId)} className="gap-2.5 px-3">
+						<X className="size-4" /> Close this project
+						<span className="text-muted-foreground ml-auto text-[10px]">Ctrl+W</span>
+					</DropdownMenuItem>
+				) : null}
+			</DropdownMenuContent>
+		</DropdownMenu>
 	);
 }

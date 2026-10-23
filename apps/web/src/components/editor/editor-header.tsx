@@ -15,6 +15,7 @@ import { DeleteProjectDialog } from "@/project/components/delete-project-dialog"
 import { useRouter } from "next/navigation";
 import { FaDiscord } from "react-icons/fa6";
 import { ExportButton } from "./export-button";
+import { ProjectTabBar } from "@/tabs/components/project-tab-bar";
 import { InputModeButton } from "@/input-method/components/input-mode-button";
 import { CloudSyncButton } from "@/cloud/components/cloud-sync-button";
 import {
@@ -40,6 +41,7 @@ export function EditorHeader() {
 		<header className="bg-background flex h-[3.4rem] items-center justify-between gap-3 px-3 pt-0.5">
 			<div className="flex min-w-0 flex-1 items-center gap-1">
 				<ProjectDropdown />
+				<ProjectTabBar />
 				<EditableProjectName />
 			</div>
 			<WorkspaceBar />

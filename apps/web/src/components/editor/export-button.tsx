@@ -26,6 +26,7 @@ import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
 import { cn } from "@/utils/ui";
 import {
 	downloadBuffer,
@@ -164,6 +165,93 @@ function CheckRow({
 	);
 }
 
+/** A slider that snaps to labelled steps, like 480p … 4K. */
+function StepSlider<T extends string | number>({
+	steps,
+	value,
+	onChange,
+	label,
+}: {
+	steps: { value: T; label: string }[];
+	value: T;
+	onChange: (value: T) => void;
+	label: string;
+}) {
+	const index = Math.max(
+		0,
+		steps.findIndex((s) => s.value === value),
+	);
+	return (
+		<div className="flex w-full flex-col gap-1.5" data-step-slider={label}>
+			<Slider
+				min={0}
+				max={steps.length - 1}
+				step={1}
+				value={[index]}
+				onValueChange={([i]) => onChange(steps[i].value)}
+				aria-label={label}
+			/>
+			<div className="text-muted-foreground flex justify-between text-[11px]">
+				{steps.map((s, i) => (
+					<button
+						key={s.label}
+						type="button"
+						onClick={() => onChange(s.value)}
+						className={cn(
+							"min-w-0",
+							i === index && "text-foreground font-medium",
+						)}
+					>
+						{s.label}
+					</button>
+				))}
+			</div>
+		</div>
+	);
+}
+
+const VIDEO_LEVELS = [
+	{ value: 480, label: "480p" },
+	{ value: 720, label: "720p" },
+	{ value: 1080, label: "1080p" },
+	{ value: 1440, label: "2K" },
+	{ value: 2160, label: "4K" },
+];
+const GIF_LEVELS = [
+	{ value: 240, label: "240p" },
+	{ value: 320, label: "320p" },
+	{ value: 480, label: "480p" },
+	{ value: 720, label: "720p" },
+];
+const VIDEO_RATES = [24, 25, 30, 50, 60].map((v) => ({
+	value: v,
+	label: String(v),
+}));
+const GIF_RATES = [10, 12, 15, 20, 24, 30].map((v) => ({
+	value: v,
+	label: String(v),
+}));
+const BITRATES = [5, 10, 20, 50, 100].map((v) => ({
+	value: v,
+	label: String(v),
+}));
+
+/** Frame size whose short side is `level`, keeping the project's shape. */
+function sizeForLevel({
+	level,
+	project,
+}: {
+	level: number;
+	project: { width: number; height: number };
+}) {
+	const aspect = project.width / project.height;
+	return evenSize(
+		aspect >= 1
+			? { width: Math.round(level * aspect), height: level }
+			: { width: level, height: Math.round(level / aspect) },
+	);
+}
+
 function formatDuration(seconds: number) {
 	const total = Math.round(seconds);
 	const m = Math.floor(total / 60);
@@ -195,6 +283,13 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 	);
 
 	const [fileName, setFileName] = useState(project.metadata.name);
+	const [kind, setKind] = useState<"video" | "gif">("video");
+	const [gifLevel, setGifLevel] = useState(480);
+	const [gifFps, setGifFps] = useState(15);
+	/** Mbps chosen on the slider; null follows the quality setting. */
+	const [bitrate, setBitrate] = useState<number | null>(null);
+	const cover = project.metadata.cover;
+	const [useCover, setUseCover] = useState(!!cover);
 	const [preset, setPreset] = useState<string>("project");
 	const [custom, setCustom] = useState({ ...projectSize });
 	const [fps, setFps] = useState(projectFps);
@@ -223,14 +318,34 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 		(s) => !!s.sphereProjects[project.metadata.id],
 	);
 	const presets = sphereProject ? SPHERE_EXPORT_PRESETS : EXPORT_PRESETS;
-	const size = evenSize(
+	const videoSize = evenSize(
 		preset === "project"
 			? projectSize
 			: preset === "custom"
 				? custom
 				: (presets.find((p) => p.id === preset) ?? projectSize),
 	);
-	const format = formatForCodec(codec);
+	const size =
+		kind === "gif"
+			? sizeForLevel({ level: gifLevel, project: projectSize })
+			: videoSize;
+	const shortSide = Math.min(videoSize.width, videoSize.height);
+	const level = VIDEO_LEVELS.reduce((best, l) =>
+		Math.abs(l.value - shortSide) < Math.abs(best.value - shortSide) ? l : best,
+	).value;
+	const format = kind === "gif" ? "gif" : formatForCodec(codec);
+	const exportRate = kind === "gif" ? gifFps : fps;
+	// About 0.1 bits per pixel per frame for H.264, less for newer codecs.
+	const recommendedMbps = Math.max(
+		2,
+		Math.round(
+			(videoSize.width *
+				videoSize.height *
+				fps *
+				(codec === "avc" ? 0.1 : 0.07)) /
+				1e6,
+		),
+	);
 	const aspectDiffers =
 		Math.abs(
 			size.width / size.height - projectSize.width / projectSize.height,
@@ -264,14 +379,19 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 		// eslint-disable-next-line react-hooks/exhaustive-deps -- size is rebuilt each render
 	}, [size.width, size.height]);
 
-	const estimate = estimateExportBytes({
-		...size,
-		fps,
-		seconds: durationSeconds,
-		quality,
-		codec,
-		includeAudio,
-	});
+	const estimate =
+		kind === "gif"
+			? size.width * size.height * gifFps * durationSeconds * 0.35
+			: bitrate !== null
+				? ((bitrate * 1e6 + (includeAudio ? 192000 : 0)) * durationSeconds) / 8
+				: estimateExportBytes({
+						...size,
+						fps,
+						seconds: durationSeconds,
+						quality,
+						codec,
+						includeAudio,
+					});
 	const isDesktop = typeof window !== "undefined" && !!window.worksuite?.files;
 
 	const handleExport = async () => {
@@ -282,11 +402,17 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 				format,
 				codec,
 				quality,
-				fps: fps === projectFps ? project.settings.fps : floatToFrameRate(fps),
-				includeAudio,
+				fps:
+					exportRate === projectFps
+						? project.settings.fps
+						: floatToFrameRate(exportRate),
+				includeAudio: kind === "video" && includeAudio,
 				resolution: size,
 				burnInCaptions: burnIn,
-				embedCaptions: embed,
+				embedCaptions: kind === "video" && embed,
+				videoBitrate:
+					kind === "video" && bitrate !== null ? bitrate * 1e6 : undefined,
+				coverImage: useCover && cover ? cover.image : undefined,
 			},
 		});
 		if (exportResult.cancelled) {
@@ -294,7 +420,7 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 			return;
 		}
 		if (!exportResult.success || !exportResult.buffer) return;
-		if (sphereProject) {
+		if (sphereProject && format !== "gif") {
 			exportResult.buffer = finishSphereExport({
 				buffer: exportResult.buffer,
 				format,
@@ -371,6 +497,26 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 					</div>
 				) : (
 					<>
+						<div className="flex gap-4 border-b" role="tablist">
+							{(["video", "gif"] as const).map((k) => (
+								<button
+									key={k}
+									type="button"
+									role="tab"
+									aria-selected={kind === k}
+									onClick={() => setKind(k)}
+									data-export-kind={k}
+									className={cn(
+										"-mb-px border-b-2 pb-1.5 text-sm font-medium",
+										kind === k
+											? "border-primary text-foreground"
+											: "text-muted-foreground border-transparent",
+									)}
+								>
+									{k === "video" ? "Video" : "GIF"}
+								</button>
+							))}
+						</div>
 						<div className="flex flex-col gap-1">
 							<Label htmlFor="export-name" className="text-xs">
 								File name
@@ -387,136 +533,216 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 							</p>
 						</div>
 
-						<div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
-							{[
-								{
-									id: "project",
-									label: "Project",
-									detail: `${projectSize.width} × ${projectSize.height}`,
-								},
-								...presets.map((p) => ({
-									id: p.id,
-									label: p.label,
-									detail: `${p.width} × ${p.height}`,
-								})),
-								{ id: "custom", label: "Custom", detail: "Any size" },
-							].map((p) => (
-								<button
-									key={p.id}
-									type="button"
-									onClick={() => setPreset(p.id)}
-									className={cn(
-										"flex flex-col items-start rounded-md border p-2 text-left",
-										preset === p.id
-											? "border-primary bg-primary/10"
-											: "hover:bg-accent",
-									)}
-								>
-									<span className="text-xs font-medium">{p.label}</span>
+						{kind === "gif" ? (
+							<>
+								<Row label="Resolution">
+									<StepSlider
+										label="GIF resolution"
+										steps={GIF_LEVELS}
+										value={gifLevel}
+										onChange={setGifLevel}
+									/>
 									<span className="text-muted-foreground text-[11px]">
-										{p.detail}
+										{size.width} × {size.height}
 									</span>
-								</button>
-							))}
-						</div>
+								</Row>
+								<Row label="Frame rate">
+									<StepSlider
+										label="GIF frame rate"
+										steps={GIF_RATES}
+										value={gifFps}
+										onChange={setGifFps}
+									/>
+								</Row>
+								<p className="text-muted-foreground text-xs">
+									GIFs have no sound and use 256 colours per frame. Keep them
+									short.
+								</p>
+							</>
+						) : (
+							<>
+								<div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
+									{[
+										{
+											id: "project",
+											label: "Project",
+											detail: `${projectSize.width} × ${projectSize.height}`,
+										},
+										...presets.map((p) => ({
+											id: p.id,
+											label: p.label,
+											detail: `${p.width} × ${p.height}`,
+										})),
+										{ id: "custom", label: "Custom", detail: "Any size" },
+									].map((p) => (
+										<button
+											key={p.id}
+											type="button"
+											onClick={() => setPreset(p.id)}
+											className={cn(
+												"flex flex-col items-start rounded-md border p-2 text-left",
+												preset === p.id
+													? "border-primary bg-primary/10"
+													: "hover:bg-accent",
+											)}
+										>
+											<span className="text-xs font-medium">{p.label}</span>
+											<span className="text-muted-foreground text-[11px]">
+												{p.detail}
+											</span>
+										</button>
+									))}
+								</div>
 
-						<Row label="Resolution">
-							{preset === "custom" ? (
-								<>
-									<Input
-										type="number"
-										className="h-7 w-24"
-										value={custom.width}
-										onChange={(e) =>
-											setCustom((c) => ({
-												...c,
-												width: Math.min(
-													7680,
-													Math.max(2, Number(e.target.value) || 2),
-												),
-											}))
-										}
+								<Row label="Resolution">
+									<StepSlider
+										label="Resolution"
+										steps={VIDEO_LEVELS}
+										value={level}
+										onChange={(value) => {
+											setCustom(
+												sizeForLevel({ level: value, project: projectSize }),
+											);
+											setPreset("custom");
+										}}
 									/>
-									<span className="text-muted-foreground text-xs">×</span>
-									<Input
-										type="number"
-										className="h-7 w-24"
-										value={custom.height}
-										onChange={(e) =>
-											setCustom((c) => ({
-												...c,
-												height: Math.min(
-													4320,
-													Math.max(2, Number(e.target.value) || 2),
-												),
-											}))
-										}
+									{preset === "custom" ? (
+										<>
+											<Input
+												type="number"
+												className="h-7 w-24"
+												value={custom.width}
+												onChange={(e) =>
+													setCustom((c) => ({
+														...c,
+														width: Math.min(
+															7680,
+															Math.max(2, Number(e.target.value) || 2),
+														),
+													}))
+												}
+											/>
+											<span className="text-muted-foreground text-xs">×</span>
+											<Input
+												type="number"
+												className="h-7 w-24"
+												value={custom.height}
+												onChange={(e) =>
+													setCustom((c) => ({
+														...c,
+														height: Math.min(
+															4320,
+															Math.max(2, Number(e.target.value) || 2),
+														),
+													}))
+												}
+											/>
+										</>
+									) : (
+										<span className="text-xs">
+											{size.width} × {size.height}
+										</span>
+									)}
+									{aspectDiffers && (
+										<span className="text-muted-foreground text-[11px]">
+											Different shape from the project — it will be letterboxed.
+										</span>
+									)}
+								</Row>
+								<Row label="Frame rate">
+									<StepSlider
+										label="Frame rate"
+										steps={VIDEO_RATES}
+										value={VIDEO_RATES.some((r) => r.value === fps) ? fps : 30}
+										onChange={setFps}
 									/>
-								</>
-							) : (
-								<span className="text-xs">
-									{size.width} × {size.height}
-								</span>
-							)}
-							{aspectDiffers && (
-								<span className="text-muted-foreground text-[11px]">
-									Different shape from the project — it will be letterboxed.
-								</span>
-							)}
-						</Row>
-						<Row label="Frame rate">
-							{[...new Set([projectFps, 24, 30, 60])]
-								.sort((a, b) => a - b)
-								.map((value) => (
-									<Pill
-										key={value}
-										active={fps === value}
-										onClick={() => setFps(value)}
+									{!VIDEO_RATES.some((r) => r.value === fps) && (
+										<span className="text-muted-foreground text-[11px]">
+											Project rate {Number(fps.toFixed(3))} fps
+										</span>
+									)}
+								</Row>
+								<Row label="Codec">
+									{EXPORT_CODEC_VALUES.map((c) => (
+										<Pill
+											key={c}
+											active={codec === c}
+											disabled={!supported[c]}
+											title={
+												supported[c]
+													? `${EXPORT_CODEC_LABELS[c]} in ${formatForCodec(c).toUpperCase()}`
+													: `This computer can't encode ${EXPORT_CODEC_LABELS[c]} at ${size.width} × ${size.height}`
+											}
+											onClick={() => setCodec(c)}
+										>
+											{EXPORT_CODEC_LABELS[c]}
+										</Pill>
+									))}
+								</Row>
+								<Row label="Quality">
+									{QUALITY_CHOICES.map((q) => (
+										<Pill
+											key={q.value}
+											active={quality === q.value}
+											onClick={() => setQuality(q.value)}
+										>
+											{q.label}
+										</Pill>
+									))}
+								</Row>
+								<Row label="Bitrate (Mbps)">
+									<StepSlider
+										label="Bitrate"
+										steps={BITRATES}
+										value={
+											bitrate ??
+											BITRATES.reduce((best, b) =>
+												Math.abs(b.value - recommendedMbps) <
+												Math.abs(best.value - recommendedMbps)
+													? b
+													: best,
+											).value
+										}
+										onChange={setBitrate}
+									/>
+									<span className="text-muted-foreground text-[11px]">
+										Recommended for this video: {recommendedMbps}
+										{bitrate !== null && (
+											<>
+												{" · "}
+												<button
+													type="button"
+													className="underline"
+													onClick={() => setBitrate(null)}
+												>
+													Use quality setting
+												</button>
+											</>
+										)}
+									</span>
+								</Row>
+								<Row label="Audio">
+									<CheckRow
+										id="export-includeAudio"
+										checked={includeAudio}
+										onChange={setIncludeAudio}
 									>
-										{Number(value.toFixed(3))} fps
-										{value === projectFps ? " (project)" : ""}
-									</Pill>
-								))}
-						</Row>
-						<Row label="Codec">
-							{EXPORT_CODEC_VALUES.map((c) => (
-								<Pill
-									key={c}
-									active={codec === c}
-									disabled={!supported[c]}
-									title={
-										supported[c]
-											? `${EXPORT_CODEC_LABELS[c]} in ${formatForCodec(c).toUpperCase()}`
-											: `This computer can't encode ${EXPORT_CODEC_LABELS[c]} at ${size.width} × ${size.height}`
-									}
-									onClick={() => setCodec(c)}
-								>
-									{EXPORT_CODEC_LABELS[c]}
-								</Pill>
-							))}
-						</Row>
-						<Row label="Quality">
-							{QUALITY_CHOICES.map((q) => (
-								<Pill
-									key={q.value}
-									active={quality === q.value}
-									onClick={() => setQuality(q.value)}
-								>
-									{q.label}
-								</Pill>
-							))}
-						</Row>
-						<Row label="Audio">
+										Include audio
+									</CheckRow>
+								</Row>
+							</>
+						)}
+						{cover && (
 							<CheckRow
-								id="export-includeAudio"
-								checked={includeAudio}
-								onChange={setIncludeAudio}
+								id="export-cover"
+								checked={useCover}
+								onChange={setUseCover}
 							>
-								Include audio
+								Use the cover as the first frame
 							</CheckRow>
-						</Row>
+						)}
 
-						{captionCount > 0 && (
+						{kind === "video" && captionCount > 0 && (
 							<div className="flex flex-col gap-1.5 rounded-md border p-3">
 								<span className="text-xs font-medium">Subtitles</span>
 								<CheckRow
@@ -578,7 +804,7 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 						</Button>
 						<Button onClick={handleExport} className="gap-2">
 							<Download className="size-4" />
-							Export video
+							{kind === "gif" ? "Export GIF" : "Export video"}
 						</Button>
 					</>
 				)}

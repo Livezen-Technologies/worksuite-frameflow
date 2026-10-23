@@ -8,6 +8,10 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 ## [Unreleased]
 
 ### Added
+- Add cover: pick a frame from the video on a filmstrip, or upload a picture. The cover becomes the project thumbnail and can be the first frame of the export. Open it from Cover in the timeline toolbar.
+- Export: Video and GIF tabs.
+  - Video adds sliders for resolution (480p–4K), frame rate (24–60) and bitrate (5–100 Mbps), with a recommended bitrate and the estimated file size.
+  - GIF exports at 240p–720p and 10–30 fps.
 - Sinhala and Tamil typing in every text field, with no OS keyboard needed. The EN / සිං / த button in the editor header switches language, as does Ctrl/Cmd+Shift+L.
   - Singlish: type as it sounds (ayubowan → ආයුබෝවන්), including yansaya, rakaransaya and repaya. A Wijesekara layout is also available.
   - Tamil phonetic typing (vanakkam → வணக்கம்).
@@ -17,9 +21,9 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 - Legacy Sinhala fonts (FM, DL): text stays Unicode while you edit and is converted automatically when drawn.
   - Pasting FM-encoded text converts it to Unicode, with Undo.
   - The text panel adds Copy as legacy text, Singlish → සිංහල and Add romanised line.
-- Project tabs: open several projects at once, each in a tab above the editor.
-  - Each tab shows its name, Local or Cloud status, an unsaved dot and a close button. Drag to reorder.
-  - Shortcuts: Ctrl/Cmd+Tab and Ctrl/Cmd+1–9 switch, Ctrl/Cmd+W closes, Ctrl/Cmd+Shift+T reopens the last closed tab, and + opens another project.
+- Several open projects at once, switched from a menu next to the project name.
+  - The menu lists each project with its Local or Cloud status and shortcut, with a check on the current one. Drag to reorder.
+  - Shortcuts: Ctrl/Cmd+Tab and Ctrl/Cmd+1–9 switch, Ctrl/Cmd+W closes, and Ctrl/Cmd+Shift+T reopens the last closed project.
   - Each tab keeps its own undo history, playhead and selection.
   - On the next start, Home offers to reopen the projects from last time.
 - Copy and paste between projects: clips pasted into another project bring their media into its Media bin.

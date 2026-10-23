@@ -1,4 +1,5 @@
 import { useEditor } from "@/editor/use-editor";
+import { CoverButton } from "@/cover/components/cover-dialog";
 import { useElementSelection } from "@/timeline/hooks/element/use-element-selection";
 import {
 	TooltipProvider,
@@ -201,6 +202,8 @@ function ToolbarLeftSection() {
 				/>
 
 				<div className="bg-border mx-1 h-6 w-px" />
+
+				<CoverButton />
 
 				<Tooltip>
 					<ToolbarButton
