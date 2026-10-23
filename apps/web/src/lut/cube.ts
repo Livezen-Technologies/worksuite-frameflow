@@ -107,3 +107,14 @@ export function applyCube({
 	}
 	return out;
 }
+
+/** Writes 8-bit LUT texels back out as a .cube file, for LUTs imported before the original was kept. */
+export function rgba8ToCube({ size, rgba, title }: { size: number; rgba: Uint8Array; title: string }): string {
+	const lines = [`TITLE "${title.replace(/"/g, "'")}"`, `LUT_3D_SIZE ${size}`];
+	for (let i = 0; i < size ** 3; i++) {
+		lines.push(
+			[0, 1, 2].map((c) => ((rgba[i * 4 + c] ?? 0) / 255).toFixed(6)).join(" "),
+		);
+	}
+	return `${lines.join("\n")}\n`;
+}

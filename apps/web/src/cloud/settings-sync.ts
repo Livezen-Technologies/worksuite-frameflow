@@ -8,7 +8,7 @@ import type { SyncedSetting } from "@/account/types";
 import { useKeybindingsStore } from "@/actions/keybindings-store";
 import { useBrandKit } from "@/brand/store";
 import { useEffectLibrary } from "@/effects/presets";
-import { useLutLibrary } from "@/lut/library";
+import { type LutCloud, syncLutFiles, useLutLibrary } from "@/lut/library";
 import { usePreviewStore } from "@/preview/preview-store";
 import { useMyTextTemplates } from "@/text/templates";
 import { useTimelineStore } from "@/timeline/timeline-store";
@@ -94,12 +94,12 @@ export const SYNCED_STORES: SyncedStore[] = [
 		label: "Preview preferences",
 		api: usePreviewStore,
 	}),
-	// LUT files stay on the device; the camera profile answers follow you.
+	// The LUT list and camera answers sync here; the files go up as assets (WS-40).
 	store({
 		key: "frameflow-luts",
-		label: "Camera LUT choices",
+		label: "LUTs and camera LUT choices",
 		api: useLutLibrary,
-		fields: ["cameraProfiles", "autoApply"],
+		fields: ["luts", "cameraProfiles", "autoApply"],
 	}),
 ];
 
@@ -211,6 +211,23 @@ export function syncSettings(): Promise<void> {
 		try {
 			const cloud = window.worksuite?.cloud;
 			if (!cloud || !readMeta().enabled) return;
+			const lutCloud: LutCloud = {
+				upload: async ({ name, text }) => {
+					const data = new TextEncoder().encode(text).buffer;
+					const digest = await crypto.subtle.digest("SHA-256", data);
+					const sha256 = Array.from(new Uint8Array(digest), (b) => b.toString(16).padStart(2, "0")).join("");
+					const result = await cloud.sync("uploadMedia", { name, contentType: "text/plain", sha256, data });
+					if (!result.ok) throw new Error(result.message);
+					return result.value.assetId;
+				},
+				download: async (assetId) => {
+					const result = await cloud.sync("downloadAsset", { assetId });
+					if (!result.ok) throw new Error(result.message);
+					return new TextDecoder().decode(result.value);
+				},
+			};
+			// Upload new LUT files first, so the list we push names their assets.
+			await syncLutFiles(lutCloud).catch(() => null);
 			stampLocalChanges();
 			for (let attempt = 0; attempt < 3; attempt++) {
 				const remote = await cloud.sync("getSettings", {});
@@ -251,6 +268,8 @@ export function syncSettings(): Promise<void> {
 					revision = put.value.revision;
 				}
 				writeMeta({ ...meta, revision, lastSyncedAt: Date.now() });
+				// LUTs another device added: fetch their files.
+				await syncLutFiles(lutCloud).catch(() => null);
 				return;
 			}
 		} finally {

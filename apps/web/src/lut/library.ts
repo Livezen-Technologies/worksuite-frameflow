@@ -9,7 +9,7 @@ import { effectPreviewService } from "@/services/renderer/effect-preview";
 import { IndexedDBAdapter } from "@/services/storage/indexeddb-adapter";
 import { generateUUID } from "@/utils/id";
 import { type CameraBrand, cameraKey, identifyLutFile } from "./cameras";
-import { cubeToRgba8, parseCube } from "./cube";
+import { cubeToRgba8, parseCube, rgba8ToCube } from "./cube";
 
 /** A LUT in the library (SRS WS-11, WS-35, WS-40). Texels live in IndexedDB. */
 export interface LutEntry {
@@ -26,6 +26,8 @@ export interface LutEntry {
 	importedAt: number;
 	/** SDR (Rec. 709) or HDR output (HD-11); older entries are SDR. */
 	output?: LutOutput;
+	/** The .cube file in the account, so other devices can fetch it (WS-40). */
+	assetId?: string;
 }
 
 interface LutLibraryStore {
@@ -36,6 +38,7 @@ interface LutLibraryStore {
 	autoApply: boolean;
 	add: (entry: LutEntry) => void;
 	remove: (id: string) => void;
+	setAssetId: (args: { id: string; assetId: string }) => void;
 	rememberProfile: (args: { camera: string; profile: string }) => void;
 	setAutoApply: (on: boolean) => void;
 }
@@ -64,6 +67,8 @@ export const useLutLibrary = create<LutLibraryStore>()(
 					],
 				})),
 			remove: (id) => set((s) => ({ luts: s.luts.filter((l) => l.id !== id) })),
+			setAssetId: ({ id, assetId }) =>
+				set((s) => ({ luts: s.luts.map((l) => (l.id === id ? { ...l, assetId } : l)) })),
 			rememberProfile: ({ camera, profile }) =>
 				set((s) => ({
 					cameraProfiles: { ...s.cameraProfiles, [camera]: profile },
@@ -77,6 +82,8 @@ export const useLutLibrary = create<LutLibraryStore>()(
 interface LutData {
 	size: number;
 	rgba: Uint8Array;
+	/** The original .cube text, kept for syncing to other devices (WS-40). */
+	cube?: string;
 }
 
 const lutData = new IndexedDBAdapter<LutData>({
@@ -102,7 +109,7 @@ async function importCube({
 	const id = generateUUID();
 	await lutData.set({
 		key: id,
-		value: { size: lut.size, rgba: cubeToRgba8(lut) },
+		value: { size: lut.size, rgba: cubeToRgba8(lut), cube: text },
 	});
 	const isCamera =
 		!!brand && !!profile && profile !== "Normal" && profile !== "Native";
@@ -163,6 +170,42 @@ export async function importLutFiles(files: File[]): Promise<ImportResult> {
 		}
 	}
 	return result;
+}
+
+/** What LUT sync needs from the account (WS-40). */
+export interface LutCloud {
+	upload: (args: { name: string; text: string }) => Promise<string>;
+	download: (assetId: string) => Promise<string>;
+}
+
+/**
+ * LUT files follow the account (WS-40): new imports are uploaded and the
+ * library list (synced with the other settings) names each file's asset, so
+ * a device missing a LUT's data fetches and imports it under the same id.
+ * Returns how many files went up and came down.
+ */
+export async function syncLutFiles(cloud: LutCloud): Promise<{ uploaded: number; downloaded: number; failed: number }> {
+	const out = { uploaded: 0, downloaded: 0, failed: 0 };
+	for (const entry of useLutLibrary.getState().luts) {
+		try {
+			const data = await lutData.get(entry.id);
+			if (!entry.assetId && data) {
+				const text = data.cube ?? rgba8ToCube({ size: data.size, rgba: data.rgba, title: entry.name });
+				const assetId = await cloud.upload({ name: entry.fileName, text });
+				useLutLibrary.getState().setAssetId({ id: entry.id, assetId });
+				out.uploaded++;
+			} else if (entry.assetId && !data) {
+				const text = await cloud.download(entry.assetId);
+				const lut = parseCube(text);
+				await lutData.set({ key: entry.id, value: { size: lut.size, rgba: cubeToRgba8(lut), cube: text } });
+				out.downloaded++;
+			}
+		} catch (error) {
+			console.error(`LUT sync failed for ${entry.name}:`, error);
+			out.failed++;
+		}
+	}
+	return out;
 }
 
 export async function removeLut(id: string): Promise<void> {

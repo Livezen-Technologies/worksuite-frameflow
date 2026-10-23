@@ -92,3 +92,14 @@ describe("camera recognition", () => {
 		expect(found.profile).toBeNull();
 	});
 });
+
+describe("LUT sync file", () => {
+	test("8-bit texels round-trip through a .cube file", async () => {
+		const { parseCube, cubeToRgba8, rgba8ToCube } = await import("../cube");
+		const rgba = new Uint8Array(2 ** 3 * 4).map((_, i) => (i % 4 === 3 ? 255 : (i * 37) % 256));
+		const text = rgba8ToCube({ size: 2, rgba, title: 'My "look"' });
+		const back = cubeToRgba8(parseCube(text));
+		expect(Array.from(back)).toEqual(Array.from(rgba));
+		expect(parseCube(text).title).toBe("My 'look'");
+	});
+});

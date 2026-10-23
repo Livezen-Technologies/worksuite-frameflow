@@ -8,6 +8,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 ## [Unreleased]
 
 ### Added
+- Imported LUTs now follow your Worksuite account: the files upload with settings sync and appear, ready to use, on your other devices.
 - Grades are a stack of nodes: add Wheels & sliders or Curves & HSL nodes to a clip, turn each on or off, and reorder them. Choose Whole timeline in the Color panel to grade every clip at once with its own node stack; it's saved with the sequence and used in exports.
 - Curves can be keyframed: add a key at the playhead in the Curves section, move the playhead and change the curve to add another, and the grade morphs between them. Click a key's time to jump to it.
 - Check setup in the Record panel tests your devices before you record: that each one opens, the resolution and frame rate it really delivers, whether the encoder keeps up with the chosen quality, and disk write speed, with advice for anything that falls short.
