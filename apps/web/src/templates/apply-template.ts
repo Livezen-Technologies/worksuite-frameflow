@@ -16,7 +16,8 @@ import {
 	buildTextElement,
 } from "@/timeline/element-utils";
 import { DEFAULT_TRANSITION } from "@/transitions/types";
-import { type MediaTime, mediaTimeFromSeconds, roundMediaTime } from "@/wasm";
+import { type MediaTime, mediaTimeFromSeconds, roundMediaTime, TICKS_PER_SECOND } from "@/wasm";
+import { keyframesOn } from "@/clip-actions/enhance";
 import type { ProjectTemplate, TemplateLayer } from "./project-templates";
 
 interface Frame {
@@ -72,6 +73,41 @@ function position({
 	};
 }
 
+/** Sound level of the timeline, 0–1, `rate` values a second from 0 (SP-13). */
+export interface TemplateAudio {
+	levels: number[];
+	rate: number;
+}
+
+/** Keyframes on scaleY so a bar's height follows the sound. */
+function audioBarAnimation({
+	audio,
+	bar,
+	baseScale,
+	from,
+	duration,
+}: {
+	audio: TemplateAudio;
+	bar: number;
+	baseScale: number;
+	from: number;
+	duration: number;
+}) {
+	const times: number[] = [];
+	const values: number[] = [];
+	const step = 1 / audio.rate;
+	// Neighbouring bars lag a little and differ in reach, so the row ripples.
+	const lag = bar * 0.04;
+	const reach = 0.7 + 0.3 * Math.cos(bar * 1.7);
+	for (let t = 0; t <= duration + 1e-6; t += step) {
+		const index = Math.round((from + t - lag) * audio.rate);
+		const level = audio.levels[Math.max(0, Math.min(audio.levels.length - 1, index))] ?? 0;
+		times.push(Math.round(t * TICKS_PER_SECOND));
+		values.push(baseScale * (0.15 + 0.85 * reach * level ** 0.7));
+	}
+	return keyframesOn({ animations: undefined, path: "transform.scaleY", times, values });
+}
+
 /** A logo already added to the project, for logo layers (SP-05). */
 export interface TemplateLogo {
 	mediaId: string;
@@ -86,12 +122,14 @@ function buildLayer({
 	frame,
 	at,
 	logo,
+	audio,
 }: {
 	layer: TemplateLayer;
 	media: MediaAsset[];
 	frame: Frame;
 	at: MediaTime;
 	logo?: TemplateLogo;
+	audio?: TemplateAudio;
 }): { trackType: TrackType; element: CreateTimelineElement; own?: boolean } | null {
 	const startTime = roundMediaTime({ time: at + seconds(layer.start) });
 	const duration = seconds(layer.duration);
@@ -141,6 +179,10 @@ function buildLayer({
 	}
 
 	if (layer.kind === "shape") {
+		const scale = shapeScale({ frame, width: layer.width, height: layer.height });
+		const reacts = layer.audioBar !== undefined && audio && audio.levels.some((l) => l > 0);
+		// A bar following the sound drops its stand-in pulse.
+		const { "animation.combo": _pulse, "animation.comboSpeed": _speed, ...still } = layer.animation ?? {};
 		const element = buildGraphicElement({
 			definitionId: layer.definitionId,
 			startTime,
@@ -148,12 +190,25 @@ function buildLayer({
 				fill: layer.fill,
 				cornerRadius: layer.cornerRadius ?? 0,
 				opacity: layer.opacity ?? 1,
-				...shapeScale({ frame, width: layer.width, height: layer.height }),
+				...scale,
 				...position({ frame, x: layer.x, y: layer.y }),
-				...(layer.animation ?? {}),
+				...(reacts ? still : (layer.animation ?? {})),
 			},
 		});
-		return { trackType: "graphic", element: { ...element, duration } };
+		const animations =
+			reacts && audio && layer.audioBar !== undefined
+				? audioBarAnimation({
+						audio,
+						bar: layer.audioBar,
+						baseScale: scale["transform.scaleY"],
+						from: (at + seconds(layer.start)) / TICKS_PER_SECOND,
+						duration: layer.duration,
+					})
+				: undefined;
+		return {
+			trackType: "graphic",
+			element: { ...element, duration, ...(animations ? { animations } : {}) },
+		};
 	}
 
 	const visual = media.filter((m) => m.type === "image" || m.type === "video");
@@ -233,16 +288,18 @@ export function buildTemplateCommand({
 	media,
 	at,
 	logo,
+	audio,
 }: {
 	editor: EditorCore;
 	template: ProjectTemplate;
 	media: MediaAsset[];
 	at: MediaTime;
 	logo?: TemplateLogo;
+	audio?: TemplateAudio;
 }): Command {
 	const frame = editor.project.getActive().settings.canvasSize;
 	const built = template.layers.flatMap((layer) => {
-		const one = buildLayer({ layer, media, frame, at, logo });
+		const one = buildLayer({ layer, media, frame, at, logo, audio });
 		return one ? [one] : [];
 	});
 

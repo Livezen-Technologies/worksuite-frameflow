@@ -5,7 +5,8 @@ import type { EditorCore } from "@/core";
 import { loadFonts } from "@/fonts/google-fonts";
 import type { BrandKit } from "@/brand/store";
 import type { ProjectTemplate } from "@/templates/project-templates";
-import { buildTemplateCommand, type TemplateLogo } from "@/templates/apply-template";
+import { buildTemplateCommand, type TemplateAudio, type TemplateLogo } from "@/templates/apply-template";
+import { createTimelineAudioBuffer, extractRmsRange } from "@/media/audio";
 import { AddMediaAssetCommand } from "@/commands/media";
 import { processMediaAssets } from "@/media/processing";
 import { usePreviewStore } from "@/preview/preview-store";
@@ -129,6 +130,10 @@ export async function applyPackTemplates({
 			};
 		}
 	}
+	// Audiogram bars follow the timeline's sound (SP-13).
+	let audio: TemplateAudio | undefined;
+	if (placements.some((p) => p.template.layers.some((l) => l.kind === "shape" && l.audioBar !== undefined)))
+		audio = await timelineLevels({ editor });
 	for (const placement of placements) {
 		const compiled = compilePackTemplate({
 			pack,
@@ -145,6 +150,7 @@ export async function applyPackTemplates({
 				media,
 				at: placement.at,
 				logo,
+				audio,
 			}),
 		);
 	}
@@ -153,6 +159,31 @@ export async function applyPackTemplates({
 		command: commands.length === 1 ? commands[0] : new BatchCommand(commands),
 	});
 	showSafeAreaGuide({ pack, aspect });
+}
+
+const LEVEL_RATE = 15;
+
+/** The mixed timeline sound as 0–1 levels, 15 a second, or nothing when silent. */
+async function timelineLevels({ editor }: { editor: EditorCore }): Promise<TemplateAudio | undefined> {
+	const duration = editor.timeline.getTotalDuration();
+	if (duration <= 0) return undefined;
+	try {
+		const buffer = await createTimelineAudioBuffer({
+			tracks: editor.scenes.getActiveScene().tracks,
+			mediaAssets: editor.media.getAssets(),
+			duration,
+		});
+		if (!buffer) return undefined;
+		const count = Math.max(1, Math.ceil(buffer.duration * LEVEL_RATE));
+		const rms = extractRmsRange({ buffer, count, startSample: 0, endSample: buffer.length });
+		// Scale to the loud parts (95th percentile), so one peak doesn't flatten the rest.
+		const sorted = [...rms].sort((a, b) => a - b);
+		const top = sorted[Math.floor(sorted.length * 0.95)] || sorted[sorted.length - 1] || 0;
+		if (top <= 0) return undefined;
+		return { levels: rms.map((v) => Math.min(1, v / top)), rate: LEVEL_RATE };
+	} catch {
+		return undefined;
+	}
 }
 
 const seconds = (s: number) =>

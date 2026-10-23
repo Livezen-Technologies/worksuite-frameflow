@@ -166,10 +166,12 @@ function shape(
 		radius?: number;
 		opacity?: number;
 		animation?: ParamValues;
+		audioBar?: number;
 	},
 ): PackLayer {
 	return {
 		kind: "shape",
+		...(look.audioBar !== undefined ? { audioBar: look.audioBar } : {}),
 		shape: look.shape ?? "rectangle",
 		color: look.color,
 		radius: look.radius,
@@ -1132,7 +1134,7 @@ export const PACKS: Pack[] = [
 						{ anchor: "t", w: 0.8, h: 0.08, duration: 8 },
 						{ size: 14, color: "accent" },
 					),
-					// Pulsing bars stand in for the live waveform (SP-13 needs audio analysis).
+					// Bars follow the timeline's sound when it has any; they pulse otherwise (SP-13).
 					...[-0.2, -0.1, 0, 0.1, 0.2].map((dx, i) =>
 						shape(
 							{
@@ -1146,6 +1148,7 @@ export const PACKS: Pack[] = [
 							{
 								color: "primary",
 								radius: 12,
+								audioBar: i,
 								animation: {
 									"animation.combo": "pulse",
 									"animation.comboSpeed": 1.5 + i * 0.3,

@@ -192,6 +192,7 @@ export function compilePackTemplate({
 				cornerRadius: layer.radius,
 				opacity: layer.opacity,
 				animation: layer.animation,
+				...(layer.audioBar !== undefined ? { audioBar: layer.audioBar } : {}),
 				...timing,
 			};
 		if (layer.kind === "logo")

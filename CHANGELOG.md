@@ -9,6 +9,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
+- The Podcast pack's Audiogram card now moves with your sound: each bar's height follows the timeline audio where the card is placed (the bars pulse when there is no sound).
+
 - Template packs: **Fill host and guest from the transcript** (Text → Packs → Your details) reads speaker names from captions or the transcript ("Name:" lines or WebVTT voice tags) and fills the host and guest lower thirds.
 
 - THIRD-PARTY-NOTICES now lists the fonts used by titles, captions and template packs, with their licences.

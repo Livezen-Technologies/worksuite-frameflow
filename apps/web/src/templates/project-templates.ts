@@ -79,6 +79,8 @@ export type TemplateLayer =
 			cornerRadius?: number;
 			opacity?: number;
 			animation?: ParamValues;
+			/** Height follows the sound; the number delays this bar (SP-13). */
+			audioBar?: number;
 	  });
 
 export interface ProjectTemplate {

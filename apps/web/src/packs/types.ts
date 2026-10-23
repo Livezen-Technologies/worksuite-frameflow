@@ -60,6 +60,8 @@ export type PackLayer =
 			radius?: number;
 			opacity?: number;
 			animation?: ParamValues;
+			/** Audiogram bar: its height follows the sound, this bar's lag (SP-13). */
+			audioBar?: number;
 	  })
 	| (Placement & {
 			kind: "media";
