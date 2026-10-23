@@ -26,6 +26,7 @@ import { cn } from "@/utils/ui";
 import { mediaTimeFromSeconds, TICKS_PER_SECOND } from "@/wasm";
 import { placeRecording } from "../place";
 import { AreaPicker } from "./area-picker";
+import { findProtected, parsePatterns } from "../privacy";
 import {
 	bytesPerMinute,
 	formatBytes,
@@ -182,6 +183,10 @@ export function RecordView() {
 	const [preview, setPreview] = useState<MediaStream | null>(null);
 	const [activeId, setActiveId] = useState<string | null>(null);
 	const wasMuted = useRef(false);
+	const dndOn = useRef(false);
+	// The protected app that paused the take, if any (SC-08).
+	const autoPaused = useRef<string | null>(null);
+	const togglePauseRef = useRef<() => void>(() => {});
 	const capture =
 		typeof window !== "undefined" ? window.worksuite?.capture : undefined;
 
@@ -280,6 +285,9 @@ export function RecordView() {
 	};
 
 	const reset = () => {
+		if (dndOn.current) void capture?.doNotDisturb?.(false);
+		dndOn.current = false;
+		autoPaused.current = null;
 		void capture?.hideBar?.();
 		recorderRef.current = null;
 		setActiveId(null);
@@ -293,6 +301,17 @@ export function RecordView() {
 
 	const start = async () => {
 		if (!project) return;
+		const source = sources.find((x) => x.id === settings.sourceId);
+		const blocked =
+			needsScreen && source?.kind === "window"
+				? findProtected({ windows: [source.name], patterns: settings.protectedApps })
+				: null;
+		if (blocked) {
+			toast.error(`${blocked} is protected and can't be recorded`, {
+				description: "Pick another window, or remove it from the protected apps.",
+			});
+			return;
+		}
 		let recorder: Recorder;
 		try {
 			recorder = await Recorder.open({
@@ -352,6 +371,13 @@ export function RecordView() {
 			editor.playback.play();
 		}
 		recorder.start();
+		if (needsScreen && settings.doNotDisturb && capture?.doNotDisturb) {
+			dndOn.current = true;
+			void capture.doNotDisturb(true).then((r) => {
+				if (!r.ok && r.reason === "unsupported")
+					toast.info("Turn on Focus or Do Not Disturb yourself to hide notifications.", { id: "dnd" });
+			});
+		}
 		// Cursor and clicks as data, for zooms after recording (SC-06).
 		if (needsScreen)
 			await capture
@@ -375,6 +401,45 @@ export function RecordView() {
 			setPaused(true);
 		}
 	};
+
+	// Pause while a protected app's window is open; resume when it closes (SC-08).
+	useEffect(() => {
+		if (phase !== "recording" || !needsScreen || !capture?.windowNames) return;
+		let busy = false;
+		const timer = window.setInterval(async () => {
+			if (busy) return;
+			busy = true;
+			try {
+				const names = await capture.windowNames!();
+				const recorder = recorderRef.current;
+				if (!recorder?.isRecording) return;
+				const hit = findProtected({
+					windows: names,
+					patterns: useRecordingSettings.getState().protectedApps,
+				});
+				if (hit && !recorder.clock.paused) {
+					autoPaused.current = hit;
+					togglePauseRef.current();
+					toast.warning(`Paused: ${hit} is open`, {
+						id: "protected",
+						description: "Recording carries on when it closes.",
+					});
+				} else if (!hit && autoPaused.current && recorder.clock.paused) {
+					autoPaused.current = null;
+					togglePauseRef.current();
+					toast.success("Recording again", { id: "protected" });
+				}
+			} catch {
+				// Window list unavailable; nothing to do.
+			} finally {
+				busy = false;
+			}
+		}, 1500);
+		return () => window.clearInterval(timer);
+	}, [phase, needsScreen, capture]);
+	useEffect(() => {
+		togglePauseRef.current = togglePause;
+	});
 
 	const marker = () => {
 		if (recorderRef.current?.addMarker() !== null) setMarkers((n) => n + 1);
@@ -837,6 +902,29 @@ export function RecordView() {
 							Zoom in on clicks and typing afterwards (edit in the clip&apos;s
 							Zoom tab)
 						</label>
+					)}
+					{needsScreen && capture?.windowNames && (
+						<div className="flex flex-col gap-1 text-xs" data-privacy>
+							<label className="flex items-center gap-2">
+								<input
+									type="checkbox"
+									data-dnd
+									checked={settings.doNotDisturb}
+									onChange={(e) => settings.set({ doNotDisturb: e.target.checked })}
+								/>
+								Do not disturb while recording (no notification pop-ups)
+							</label>
+							<label htmlFor="protected-apps" className="text-muted-foreground">
+								Pause while these apps are open
+							</label>
+							<input
+								id="protected-apps"
+								data-protected-apps
+								className="bg-background h-7 rounded-md border px-2"
+								defaultValue={settings.protectedApps.join(", ")}
+								onBlur={(e) => settings.set({ protectedApps: parsePatterns(e.target.value) })}
+							/>
+						</div>
 					)}
 				</div>
 

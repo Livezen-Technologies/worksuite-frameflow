@@ -53,6 +53,7 @@
       "native-helper.js",
       "cursor-log.js",
       "capture-controls.js",
+      "privacy.js",
       "capture-bar/**",
       "project-windows.js",
       "master-export.js"

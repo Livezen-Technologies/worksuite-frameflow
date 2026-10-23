@@ -372,6 +372,10 @@ export interface WorksuiteCaptureBridge {
 		countdown?: number;
 	}) => Promise<void>;
 	hideBar?: () => Promise<void>;
+	/** Open window titles, for pausing when a protected app shows (SC-08). */
+	windowNames?: () => Promise<string[]>;
+	/** Hold notifications back during a take (SC-08). */
+	doNotDisturb?: (on: boolean) => Promise<{ ok: boolean; reason?: string }>;
 	/** Global shortcuts (SC-05); returns accelerators another app holds. */
 	setShortcuts?: (
 		next: Record<string, string>,

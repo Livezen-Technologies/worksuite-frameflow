@@ -8,6 +8,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 ## [Unreleased]
 
 ### Added
+- Screen recordings pause by themselves while a protected app is open (password managers by default; edit the list in the Record panel) and carry on when it closes. Protected windows can't be picked as the source. Do not disturb holds notification pop-ups back while recording on Windows and GNOME; it's put back when you stop.
 - Record part of the screen: drag a box on the screen's picture in the Record panel (Whole screen to undo). The video is only that area, and zooms and the clean cursor line up with it.
 - The floating recording bar has a camera on/off button and a Pen for drawing on the screen while recording (pick a colour, Clear to wipe, Esc to stop drawing). The drawing is part of the recording.
 - Punch-in voice-over: set In and Out points and the take replaces only that range, stopping at Out. Each take over the same range is kept, and you switch between takes in the clip's Voice tab.

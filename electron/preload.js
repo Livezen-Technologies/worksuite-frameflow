@@ -18,6 +18,8 @@ contextBridge.exposeInMainWorld("worksuite", {
 		barState: (state) => ipcRenderer.invoke("capture:bar-state", state),
 		hideBar: () => ipcRenderer.invoke("capture:bar-hide"),
 		setShortcuts: (next) => ipcRenderer.invoke("capture:shortcuts", next),
+		windowNames: () => ipcRenderer.invoke("capture:window-names"),
+		doNotDisturb: (on) => ipcRenderer.invoke("capture:do-not-disturb", on),
 		onCommand: (listener) => {
 			const handler = (_event, command) => listener(command);
 			ipcRenderer.on("capture:command", handler);

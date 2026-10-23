@@ -5,6 +5,7 @@ const { spawn } = require("node:child_process");
 const capture = require("./capture");
 const cursorLog = require("./cursor-log");
 const captureControls = require("./capture-controls");
+const privacy = require("./privacy");
 const network = require("./network");
 const uploadQueue = require("./upload-queue");
 const net = require("node:net");
@@ -244,6 +245,8 @@ function registerAccountIpc() {
 	handle("capture:bar-state", (state) => captureControls.updateBar(state));
 	handle("capture:bar-hide", () => captureControls.hideBar());
 	handle("capture:shortcuts", (next) => captureControls.setShortcuts(next ?? {}));
+	handle("capture:window-names", () => privacy.windowNames());
+	handle("capture:do-not-disturb", (on) => privacy.doNotDisturb(on === true));
 	handle("account:get-state", () => account.getState());
 	handle("account:sign-in", async ({ signup } = {}) => {
 		if (network.isOffline()) {
@@ -459,6 +462,7 @@ if (!app.requestSingleInstanceLock()) {
 }
 
 app.on("before-quit", () => {
+	void privacy.doNotDisturb(false);
 	captureControls.dispose();
 	void automation.stop();
 	app.isQuitting = true;

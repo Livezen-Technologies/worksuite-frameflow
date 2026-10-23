@@ -3,6 +3,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { CaptureArea } from "./area";
+import { DEFAULT_PROTECTED } from "./privacy";
 import type { QualityProfile, RecordingMode } from "./preflight";
 
 /** Remembered recording choices (AR-02). */
@@ -22,6 +23,10 @@ export interface RecordingSettings {
 	autoZoom: boolean;
 	/** Part of the screen to record; null records all of it (SC-01). */
 	area: CaptureArea | null;
+	/** Pause while a window with one of these names is open (SC-08). */
+	protectedApps: string[];
+	/** Hold notifications back while recording the screen (SC-08). */
+	doNotDisturb: boolean;
 	set: (patch: Partial<Omit<RecordingSettings, "set">>) => void;
 }
 
@@ -44,6 +49,8 @@ export const useRecordingSettings = create<RecordingSettings>()(
 			},
 			autoZoom: true,
 			area: null,
+			protectedApps: DEFAULT_PROTECTED,
+			doNotDisturb: true,
 			set: (patch) => set(patch),
 		}),
 		{
