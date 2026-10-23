@@ -8,6 +8,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 ## [Unreleased]
 
 ### Added
+- The interface can now be shown in Sinhala or Tamil. Pick a language under Settings → Project info; it follows your system language the first time and syncs with your other settings.
 - Curves and HSL in the Color panel (Curves & HSL effect).
   - Curves: luma, red, green and blue, plus hue vs hue and hue vs saturation. Click to add a point, drag it, and double-click to remove it.
   - HSL qualifier: pick a colour by hue, saturation and luminance range with softness, invert, or show the selection in black and white. Then shift its hue, saturation and lightness, for example skin tones or a sky.

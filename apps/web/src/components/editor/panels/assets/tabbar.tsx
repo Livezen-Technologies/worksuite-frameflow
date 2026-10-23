@@ -7,8 +7,10 @@ import {
 	tabs,
 	useAssetsPanelStore,
 } from "@/components/editor/panels/assets/assets-panel-store";
+import { useT } from "@/i18n";
 
 export function TabBar() {
+	const t = useT();
 	const { activeTab, setActiveTab } = useAssetsPanelStore();
 	const [showTopFade, setShowTopFade] = useState(false);
 	const [showBottomFade, setShowBottomFade] = useState(false);
@@ -55,7 +57,7 @@ export function TabBar() {
 							)}
 							<button
 								type="button"
-								aria-label={tab.label}
+								aria-label={t(tab.label)}
 								aria-pressed={active}
 								onClick={() => setActiveTab(tabKey)}
 								className={cn(
@@ -67,7 +69,7 @@ export function TabBar() {
 							>
 								<tab.icon className="size-5" />
 								<span className="w-full truncate text-center text-[10px] leading-tight">
-									{tab.label}
+									{t(tab.label)}
 								</span>
 							</button>
 						</div>

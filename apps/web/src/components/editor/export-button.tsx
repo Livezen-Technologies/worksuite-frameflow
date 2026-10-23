@@ -53,8 +53,12 @@ import {
 } from "@/export/components/share-panel";
 import { floatToFrameRate, frameRateToFloat } from "@/fps/utils";
 import { TICKS_PER_SECOND } from "@/wasm";
+import { t } from "@/i18n";
+import { useLocale } from "@/i18n/store";
 
 export function ExportButton() {
+	// Re-render when the interface language changes.
+	useLocale((s) => s.locale);
 	const [open, setOpen] = useState(false);
 	const editor = useEditor();
 	const activeProject = useEditor((e) => e.project.getActiveOrNull());
@@ -83,7 +87,7 @@ export function ExportButton() {
 				disabled={!hasProject}
 			>
 				<Upload className="size-4" strokeWidth={2.25} />
-				Export
+				{t("Export")}
 			</button>
 			{hasProject && open && (
 				<ExportDialog onClose={() => handleOpenChange(false)} />
@@ -127,7 +131,7 @@ function Pill({
 function Row({ label, children }: { label: string; children: ReactNode }) {
 	return (
 		<div className="grid grid-cols-[6.5rem_1fr] items-center gap-2">
-			<span className="text-muted-foreground text-xs">{label}</span>
+			<span className="text-muted-foreground text-xs">{t(label)}</span>
 			<div className="flex flex-wrap items-center gap-1.5">{children}</div>
 		</div>
 	);
@@ -453,7 +457,7 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 			if (saved.saved && saved.path) {
 				setSavedPath(saved.path);
 				if (share.enabled) setSharing({ ...share });
-				toast.success("Export saved");
+				toast.success(t("Export saved"));
 			}
 			// Dual export: a tone-mapped SDR file from the same timeline (HD-16).
 			if (saved.saved && hdrExport && alsoSdr && kind === "video") {
@@ -505,7 +509,7 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 		return (
 			<DialogContent className="max-w-md">
 				<DialogHeader>
-					<DialogTitle>Export failed</DialogTitle>
+					<DialogTitle>{t("Export failed")}</DialogTitle>
 				</DialogHeader>
 				<ExportError
 					error={result.error || "Unknown error occurred"}
@@ -818,7 +822,7 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 
 						{kind === "video" && captionCount > 0 && (
 							<div className="flex flex-col gap-1.5 rounded-md border p-3">
-								<span className="text-xs font-medium">Subtitles</span>
+								<span className="text-xs font-medium">{t("Subtitles")}</span>
 								<CheckRow
 									id="export-burnIn"
 									checked={burnIn}
@@ -905,7 +909,7 @@ function ExportError({
 	return (
 		<div className="space-y-4 p-3">
 			<div className="flex flex-col gap-1.5">
-				<p className="text-destructive text-sm font-medium">Export failed</p>
+				<p className="text-destructive text-sm font-medium">{t("Export failed")}</p>
 				<p className="text-muted-foreground text-xs">{error}</p>
 			</div>
 

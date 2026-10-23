@@ -7,8 +7,10 @@ import { usePropertiesStore } from "./stores/properties-store";
 import { getPropertiesConfig } from "./registry";
 import { cn } from "@/utils/ui";
 import { EmptyView } from "./empty-view";
+import { useT } from "@/i18n";
 
 export function PropertiesPanel() {
+	const t = useT();
 	const editor = useEditor();
 	useEditor((e) => e.scenes.getActiveSceneOrNull());
 	useEditor((e) => e.media.getAssets());
@@ -63,7 +65,7 @@ export function PropertiesPanel() {
 						<button
 							key={tab.id}
 							type="button"
-							aria-label={tab.label}
+							aria-label={t(tab.label)}
 							aria-pressed={active}
 							onClick={() =>
 								setActiveTab({ elementType: element.type, tabId: tab.id })
@@ -77,7 +79,7 @@ export function PropertiesPanel() {
 						>
 							{tab.icon}
 							<span className="w-full truncate text-center text-[10px] leading-tight">
-								{tab.label}
+								{t(tab.label)}
 							</span>
 						</button>
 					);

@@ -2,6 +2,7 @@ import { ThemeProvider } from "next-themes";
 import Script from "next/script";
 import "./globals.css";
 import { Toaster } from "../components/ui/sonner";
+import { LocaleSync } from "@/i18n/components/locale-sync";
 import { InputMethodHost } from "@/input-method/components/input-method-host";
 import { ChangelogNotification } from "@/changelog/components/changelog-notification";
 import { TooltipProvider } from "../components/ui/tooltip";
@@ -40,7 +41,13 @@ export default function RootLayout({
 					</>
 				)}
 			</head>
-			<body className={`${siteFont.className} font-sans antialiased`}>
+			<body
+				className={`${siteFont.className} font-sans antialiased`}
+				style={{
+					// Sinhala and Tamil interface text falls through Inter to the bundled Noto fonts.
+					fontFamily: `${siteFont.style.fontFamily}, "Noto Sans Sinhala", "Noto Sans Tamil", sans-serif`,
+				}}
+			>
 				<ThemeProvider
 					attribute="class"
 					defaultTheme="dark"
@@ -49,6 +56,7 @@ export default function RootLayout({
 					<TooltipProvider>
 						<Toaster />
 						<InputMethodHost />
+						<LocaleSync />
 						<Script
 							src="https://cdn.databuddy.cc/databuddy.js"
 							strategy="afterInteractive"

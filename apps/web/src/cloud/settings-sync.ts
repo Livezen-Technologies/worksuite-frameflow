@@ -1,5 +1,6 @@
 "use client";
 
+import { useLocale } from "@/i18n/store";
 import type { SyncedSetting } from "@/account/types";
 import { useKeybindingsStore } from "@/actions/keybindings-store";
 import { useBrandKit } from "@/brand/store";
@@ -49,6 +50,11 @@ const store = ({
 });
 
 export const SYNCED_STORES: SyncedStore[] = [
+	store({
+		key: "frameflow-locale",
+		label: "Interface language",
+		api: useLocale,
+	}),
 	store({
 		key: "frameflow-input-method",
 		label: "Sinhala/Tamil typing and personal dictionary",

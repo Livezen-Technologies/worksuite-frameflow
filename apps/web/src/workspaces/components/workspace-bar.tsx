@@ -24,6 +24,7 @@ import { isTypableDOMElement } from "@/utils/browser";
 import { cn } from "@/utils/ui";
 import { readCurrentLayout } from "../current";
 import { allWorkspaces, useWorkspaceStore } from "../store";
+import { useT } from "@/i18n";
 
 type NameDialog = { mode: "save" } | { mode: "rename"; id: string } | null;
 
@@ -32,6 +33,7 @@ type NameDialog = { mode: "save" } | { mode: "rename"; id: string } | null;
  * or Alt+1…Alt+9, save the current layout, rename, reset and delete.
  */
 export function WorkspaceBar() {
+	const t = useT();
 	const activeId = useWorkspaceStore((s) => s.activeId);
 	const custom = useWorkspaceStore((s) => s.custom);
 	const switchTo = useWorkspaceStore((s) => s.switchTo);
@@ -112,7 +114,7 @@ export function WorkspaceBar() {
 									: "text-muted-foreground hover:text-foreground hover:bg-accent",
 							)}
 						>
-							{workspace.name}
+							{t(workspace.name)}
 						</button>
 					);
 				})}
@@ -128,7 +130,7 @@ export function WorkspaceBar() {
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="end" className="w-72">
 						<DropdownMenuLabel className="text-muted-foreground text-xs font-normal">
-							Workspace: {active.name}
+							{t("Workspace: {name}", { name: t(active.name) })}
 						</DropdownMenuLabel>
 						<DropdownMenuItem onClick={() => openNameDialog({ mode: "save" })}>
 							Save current layout as new workspace…
