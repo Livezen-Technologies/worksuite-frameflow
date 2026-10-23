@@ -1,5 +1,6 @@
 "use client";
 
+import { hdrUnsupportedReason } from "@/effects/hdr-support";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { PanelView } from "@/components/editor/panels/assets/views/base-panel";
@@ -247,6 +248,13 @@ function EffectItem({
 	const editor = useEditor();
 	const toggleFavourite = useEffectLibrary((s) => s.toggleFavourite);
 	const addToSelection = useAddToSelection();
+	const colorSpace = useEditor(
+		(e) => e.project.getActiveOrNull()?.settings.colorSpace,
+	);
+	const hdrBlocked = hdrUnsupportedReason({
+		effectType: effect.type,
+		colorSpace,
+	});
 
 	const handleAddToTimeline = () => {
 		const currentTime = editor.playback.getCurrentTime();
@@ -263,8 +271,14 @@ function EffectItem({
 
 	return (
 		<div
-			className="relative"
+			className={cn("relative", hdrBlocked && "cursor-not-allowed opacity-40")}
+			title={
+				hdrBlocked ? `Not available in HDR projects. ${hdrBlocked}` : undefined
+			}
+			aria-disabled={hdrBlocked ? true : undefined}
+			data-hdr-blocked={hdrBlocked ? effect.type : undefined}
 			onDoubleClick={() => {
+				if (hdrBlocked) return;
 				const count = addToSelection([{ type: effect.type }]);
 				if (count === 0)
 					toast.info("Select a video or image clip to add the effect to.");
@@ -274,22 +288,24 @@ function EffectItem({
 					);
 			}}
 		>
-			<DraggableItem
-				name={effect.name}
-				preview={<EffectPreviewCanvas effectType={effect.type} />}
-				dragData={{
-					id: effect.type,
-					name: effect.name,
-					type: "effect",
-					effectType: effect.type,
-					targetElementTypes: EFFECT_TARGET_ELEMENT_TYPES,
-				}}
-				onAddToTimeline={handleAddToTimeline}
-				aspectRatio={1}
-				isRounded
-				variant="card"
-				containerClassName="w-full"
-			/>
+			<div className={cn(hdrBlocked && "pointer-events-none")}>
+				<DraggableItem
+					name={effect.name}
+					preview={<EffectPreviewCanvas effectType={effect.type} />}
+					dragData={{
+						id: effect.type,
+						name: effect.name,
+						type: "effect",
+						effectType: effect.type,
+						targetElementTypes: EFFECT_TARGET_ELEMENT_TYPES,
+					}}
+					onAddToTimeline={handleAddToTimeline}
+					aspectRatio={1}
+					isRounded
+					variant="card"
+					containerClassName="w-full"
+				/>
+			</div>
 			<button
 				type="button"
 				aria-label={

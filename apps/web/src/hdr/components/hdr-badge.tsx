@@ -8,7 +8,7 @@ export function HdrBadge({ color }: { color: MediaColorInfo | undefined }) {
 	return (
 		<span
 			className="absolute top-1 right-1 rounded bg-amber-400 px-1 py-px text-[9px] font-bold text-black"
-			title={`HDR video (${color.transfer.toUpperCase()}${color.primaries ? `, ${color.primaries}` : ""}), tone-mapped to SDR`}
+			title={`HDR video (${color.transfer.toUpperCase()}${color.primaries ? `, ${color.primaries}` : ""})${color.maxCll ? `, MaxCLL ${color.maxCll} nits${color.maxFall ? ` / MaxFALL ${color.maxFall}` : ""}` : ""}`}
 			data-hdr-badge
 		>
 			HDR · {color.transfer.toUpperCase()}

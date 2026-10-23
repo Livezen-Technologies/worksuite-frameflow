@@ -1,5 +1,6 @@
 "use client";
 
+import { HDR_EXPORT_PRESETS } from "@/hdr/presets";
 import { finishSphereExport, SPHERE_EXPORT_PRESETS } from "@/vr/export";
 import { useSphereStore } from "@/vr/store";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
@@ -329,7 +330,11 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 	const sphereProject = useSphereStore(
 		(s) => !!s.sphereProjects[project.metadata.id],
 	);
-	const presets = sphereProject ? SPHERE_EXPORT_PRESETS : EXPORT_PRESETS;
+	const presets = sphereProject
+		? SPHERE_EXPORT_PRESETS
+		: hdrProject
+			? [...HDR_EXPORT_PRESETS, ...EXPORT_PRESETS]
+			: EXPORT_PRESETS;
 	const videoSize = evenSize(
 		preset === "project"
 			? projectSize
@@ -619,7 +624,19 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 										<button
 											key={p.id}
 											type="button"
-											onClick={() => setPreset(p.id)}
+											data-export-preset={p.id}
+											onClick={() => {
+												setPreset(p.id);
+												// HDR presets: 10-bit VP9 HDR at the recommended bitrate (HD-15).
+												const hdrPreset = HDR_EXPORT_PRESETS.find(
+													(h) => h.id === p.id,
+												);
+												if (hdrPreset) {
+													setHdrMode("hdr");
+													setCodec("vp9");
+													setBitrate(hdrPreset.bitrate);
+												}
+											}}
 											className={cn(
 												"flex flex-col items-start rounded-md border p-2 text-left",
 												preset === p.id
@@ -909,7 +926,9 @@ function ExportError({
 	return (
 		<div className="space-y-4 p-3">
 			<div className="flex flex-col gap-1.5">
-				<p className="text-destructive text-sm font-medium">{t("Export failed")}</p>
+				<p className="text-destructive text-sm font-medium">
+					{t("Export failed")}
+				</p>
 				<p className="text-muted-foreground text-xs">{error}</p>
 			</div>
 

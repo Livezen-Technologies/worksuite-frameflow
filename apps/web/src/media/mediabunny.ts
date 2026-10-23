@@ -5,6 +5,7 @@ import {
 	VideoSampleSink,
 	type VideoCodec,
 } from "mediabunny";
+import { readLightLevel } from "@/hdr/read-light-level";
 import { createTimelineAudioBuffer } from "@/media/audio";
 import type { SceneTracks } from "@/timeline";
 import type { MediaAsset } from "@/media/types";
@@ -54,6 +55,13 @@ export async function readVideoFile({
 			transfer: transferFromColorSpace(colorSpace?.transfer),
 			primaries: colorSpace?.primaries ?? undefined,
 		};
+		if (color.transfer !== "sdr") {
+			const level = await readLightLevel({ file });
+			if (level) {
+				color.maxCll = level.maxCll;
+				if (level.maxFall) color.maxFall = level.maxFall;
+			}
+		}
 
 		let thumbnailUrl: string | null = null;
 		if (canDecode && color.transfer !== "sdr") {

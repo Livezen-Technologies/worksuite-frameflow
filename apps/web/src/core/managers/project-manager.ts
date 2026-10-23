@@ -679,9 +679,12 @@ export class ProjectManager {
 	async renderFrame({
 		time,
 		maxSize,
+		signal = false,
 	}: {
 		time: number;
 		maxSize?: number;
+		/** The HDR working signal instead of the display picture (nits scopes, HD-10). */
+		signal?: boolean;
 	}): Promise<HTMLCanvasElement> {
 		const project = this.getActive();
 		const tracks = this.editor.scenes.getActiveScene().tracks;
@@ -708,6 +711,7 @@ export class ProjectManager {
 		});
 		// Stills you keep use the original media, not proxies.
 		renderer.useProxies = false;
+		if (signal) renderer.purpose = "export";
 		const full = document.createElement("canvas");
 		full.width = canvasSize.width;
 		full.height = canvasSize.height;

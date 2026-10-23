@@ -1,5 +1,7 @@
 import EventEmitter from "eventemitter3";
 
+import { LightLevelMeter } from "@/hdr/light-level";
+import { injectHdrMetadata } from "@/hdr/webm-hdr-metadata";
 import {
 	Output,
 	Mp4OutputFormat,
@@ -255,6 +257,8 @@ export class SceneExporter extends EventEmitter<SceneExporterEvents> {
 			subtitleSource.close();
 		}
 
+		// MaxCLL / MaxFALL for HDR10 metadata, measured as frames are encoded (HD-14).
+		const lightLevels = new LightLevelMeter();
 		const firstFrame = Math.max(0, range?.startFrame ?? 0);
 		const endFrame = Math.min(frameCount, range?.endFrame ?? frameCount);
 		for (let i = firstFrame; i < endFrame; i++) {
@@ -276,6 +280,7 @@ export class SceneExporter extends EventEmitter<SceneExporterEvents> {
 			if (videoSource instanceof VideoSampleSource && readback && hdr) {
 				const { width, height } = surface.canvas;
 				const pixels = readback.getImageData(0, 0, width, height).data;
+				lightLevels.add({ rgba: pixels });
 				const frame = hdrVideoFrame({
 					data: rgbaToI420P10({ rgba: pixels, width, height, transfer: hdr }),
 					width,
@@ -307,10 +312,16 @@ export class SceneExporter extends EventEmitter<SceneExporterEvents> {
 		await output.finalize();
 		this.emit("progress", 1);
 
-		const buffer = output.target.buffer;
+		let buffer = output.target.buffer;
 		if (!buffer) {
 			this.emit("error", new Error("Failed to export video"));
 			return null;
+		}
+		if (hdr && this.format === "webm") {
+			buffer = injectHdrMetadata({
+				buffer,
+				meta: { ...lightLevels.result(), maxLuminance: 1000, minLuminance: 0.0001 },
+			}).buffer;
 		}
 
 		this.emit("complete", buffer);

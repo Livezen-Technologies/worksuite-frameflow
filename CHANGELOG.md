@@ -8,6 +8,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 ## [Unreleased]
 
 ### Added
+- HDR finishing: Nits and False colour scopes in HDR projects (lines at 100, 203 and 1,000 nits; red over 1,000 nits, yellow above graphics white, magenta outside Rec. 709); HDR exports now carry HDR10 metadata (MaxCLL, MaxFALL measured from the timeline, and the mastering display); YouTube HDR 4K/1080p and Reels HDR export presets; LUTs are tagged SDR or HDR and an SDR LUT asks before going on an HDR project; effects that can't work in HDR are greyed out there; MaxCLL/MaxFALL stored in imported files are read and shown.
 - Multicam: make a multicam clip from 2–9 camera angles (Multicam button on the timeline toolbar), synced by sound, recording time or by hand. Cut between angles live in the angle viewer (click or press 1–9 while playing), change any cut's angle afterwards, take audio from one angle or follow the picture, copy a grade to every cut of an angle, and let it cut to whoever is speaking.
 - Screen recordings now log the cursor, clicks and typing (as data, not in the video) and zoom in on the action automatically. Change each zoom's level, length, ease and focus, follow the cursor smoothly, add zooms by hand on any video, or re-generate them in the clip's new Zoom tab.
 - Floating recording bar with timer, pause, marker, mic mute, discard and stop, kept out of the recording, plus shortcuts that work in any app (Ctrl/Cmd+Shift+R start/stop, +P pause, +M marker; change them in the Record panel).

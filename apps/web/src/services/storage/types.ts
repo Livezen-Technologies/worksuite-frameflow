@@ -34,6 +34,9 @@ export interface MediaAssetData {
 export interface MediaColorInfo {
 	transfer: "sdr" | "hlg" | "pq";
 	primaries?: string;
+	/** Light levels stored in the file, in nits (HD-01). */
+	maxCll?: number;
+	maxFall?: number;
 }
 
 export type SerializedScene = Omit<TScene, "createdAt" | "updatedAt"> & {

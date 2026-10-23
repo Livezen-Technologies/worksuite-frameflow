@@ -1,5 +1,6 @@
 "use client";
 
+import { detectLutOutput, type LutOutput } from "./space";
 import { unzipSync } from "fflate";
 import { uploadLut } from "opencut-wasm";
 import { create } from "zustand";
@@ -23,6 +24,8 @@ export interface LutEntry {
 	source: "imported";
 	fileName: string;
 	importedAt: number;
+	/** SDR (Rec. 709) or HDR output (HD-11); older entries are SDR. */
+	output?: LutOutput;
 }
 
 interface LutLibraryStore {
@@ -114,6 +117,7 @@ async function importCube({
 		source: "imported",
 		fileName: name,
 		importedAt: Date.now(),
+		output: detectLutOutput({ name, title: lut.title }),
 	};
 }
 

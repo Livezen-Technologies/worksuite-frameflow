@@ -1,5 +1,6 @@
 "use client";
 
+import { needsHdrWarning } from "../space";
 import { useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { useAssetsPanelStore } from "@/components/editor/panels/assets/assets-panel-store";
@@ -24,6 +25,7 @@ export function FootageWatcher() {
 	const byMedia = useFootageCameras((s) => s.byMedia);
 	const setCamera = useFootageCameras((s) => s.setCamera);
 	const autoApply = useLutLibrary((s) => s.autoApply);
+	const colorSpace = useEditor((e) => e.project.getActiveOrNull()?.settings.colorSpace);
 	const luts = useLutLibrary((s) => s.luts);
 	const cameraProfiles = useLutLibrary((s) => s.cameraProfiles);
 	const scanning = useRef(new Set<string>());
@@ -89,6 +91,8 @@ export function FootageWatcher() {
 						profile: camera.profile,
 					});
 					if (!lut) return [];
+					// HD-11: never auto-apply an SDR LUT inside an HDR project.
+					if (needsHdrWarning({ lut, colorSpace })) return [];
 					handled.current.add(element.id);
 					return [
 						{
@@ -111,7 +115,7 @@ export function FootageWatcher() {
 				`Applied camera LUT to ${updates.length} clip${updates.length === 1 ? "" : "s"}`,
 			);
 		}
-	}, [autoApply, tracks, byMedia, luts, editor.timeline]);
+	}, [autoApply, tracks, byMedia, luts, editor.timeline, colorSpace]);
 
 	return null;
 }

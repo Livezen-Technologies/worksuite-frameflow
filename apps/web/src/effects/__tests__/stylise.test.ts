@@ -27,7 +27,9 @@ describe("stylise effects", () => {
 		const types = STYLISE_EFFECTS.map((effect) => effect.type).sort();
 		// HDR colour conversions are applied by the renderer, not offered as effects.
 		const internal = new Set(["hdr-from-sdr", "hdr-preview"]);
-		expect(types).toEqual([...engineStyliseShaders].filter((id) => !internal.has(id)).sort());
+		expect(types).toEqual(
+			[...engineStyliseShaders].filter((id) => !internal.has(id)).sort(),
+		);
 	});
 
 	test("types are unique and each effect has a category", () => {

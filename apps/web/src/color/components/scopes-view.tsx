@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useEditor } from "@/editor/use-editor";
+import { falseColour, NITS_GUIDES, nitsWaveform } from "@/hdr/light-level";
 import { cn } from "@/utils/ui";
 import { addFrameTap } from "@/services/renderer/frame-taps";
 import {
@@ -43,6 +45,100 @@ function useSampledFrame(enabled: boolean): Frame | null {
 	}, [enabled]);
 
 	return frame;
+}
+
+type HdrScope = "nits" | "false-colour";
+
+/** The HDR working signal at the playhead, sampled while an HDR scope shows. */
+function useSignalFrame(enabled: boolean): Frame | null {
+	const editor = useEditor();
+	const [frame, setFrame] = useState<Frame | null>(null);
+	useEffect(() => {
+		if (!enabled) return;
+		let stopped = false;
+		let busy = false;
+		const sample = async () => {
+			if (busy) return;
+			busy = true;
+			try {
+				const canvas = await editor.project.renderFrame({
+					time: editor.playback.getCurrentTime(),
+					maxSize: SAMPLE_WIDTH,
+					signal: true,
+				});
+				const ctx = canvas.getContext("2d", { willReadFrequently: true });
+				if (!ctx || stopped) return;
+				const { data } = ctx.getImageData(0, 0, canvas.width, canvas.height);
+				setFrame({ width: canvas.width, height: canvas.height, data });
+			} catch {
+				// Nothing to render yet.
+			} finally {
+				busy = false;
+			}
+		};
+		void sample();
+		const timer = window.setInterval(() => void sample(), 700);
+		return () => {
+			stopped = true;
+			window.clearInterval(timer);
+		};
+	}, [enabled, editor]);
+	return frame;
+}
+
+/** Luminance waveform on a PQ (0–10,000 nit) axis with 100 / 203 / 1,000 nit lines (HD-10). */
+function drawNitsWaveform({
+	ctx,
+	frame,
+}: {
+	ctx: CanvasRenderingContext2D;
+	frame: Frame;
+}) {
+	const counts = nitsWaveform(frame);
+	const xScale = DRAW_WIDTH / frame.width;
+	for (let x = 0; x < frame.width; x++)
+		for (let level = 0; level < 256; level++) {
+			const count = counts[x * 256 + level];
+			if (!count) continue;
+			ctx.fillStyle = `rgba(250,200,90,${Math.min(1, 0.15 + count / 6)})`;
+			ctx.fillRect(
+				x * xScale,
+				DRAW_HEIGHT - (level / 255) * DRAW_HEIGHT,
+				Math.max(1, xScale),
+				1,
+			);
+		}
+	ctx.font = "10px system-ui";
+	for (const guide of NITS_GUIDES) {
+		const y = DRAW_HEIGHT - guide.level * DRAW_HEIGHT;
+		ctx.strokeStyle =
+			guide.nits === 203 ? "rgba(255,255,255,0.55)" : "rgba(255,255,255,0.25)";
+		ctx.beginPath();
+		ctx.moveTo(0, y);
+		ctx.lineTo(DRAW_WIDTH, y);
+		ctx.stroke();
+		ctx.fillStyle = "rgba(255,255,255,0.7)";
+		ctx.fillText(`${guide.nits.toLocaleString()} nits`, 4, Math.max(10, y - 2));
+	}
+}
+
+/** Over 1,000 nits red, highlights yellow, outside Rec. 709 magenta (HD-10). */
+function drawFalseColour({
+	ctx,
+	frame,
+}: {
+	ctx: CanvasRenderingContext2D;
+	frame: Frame;
+}) {
+	const image = new ImageData(falseColour(frame), frame.width, frame.height);
+	const tmp = document.createElement("canvas");
+	tmp.width = frame.width;
+	tmp.height = frame.height;
+	tmp.getContext("2d")?.putImageData(image, 0, 0);
+	const scale = Math.min(DRAW_WIDTH / frame.width, DRAW_HEIGHT / frame.height);
+	const w = frame.width * scale;
+	const h = frame.height * scale;
+	ctx.drawImage(tmp, (DRAW_WIDTH - w) / 2, (DRAW_HEIGHT - h) / 2, w, h);
 }
 
 function drawWaveform({
@@ -156,9 +252,25 @@ function drawVectorscope({
 
 /** Waveform, RGB parade, histogram and vectorscope of the preview (WS-10). */
 export function ScopesView() {
-	const [kind, setKind] = useState<ScopeKind>("waveform");
+	const [kind, setKind] = useState<ScopeKind | HdrScope>("waveform");
 	const canvasRef = useRef<HTMLCanvasElement>(null);
-	const frame = useSampledFrame(true);
+	const colorSpace = useEditor(
+		(e) => e.project.getActiveOrNull()?.settings.colorSpace,
+	);
+	const hdrProject = colorSpace === "hlg" || colorSpace === "pq";
+	const hdrScope = hdrProject && (kind === "nits" || kind === "false-colour");
+	const sampled = useSampledFrame(!hdrScope);
+	const signal = useSignalFrame(hdrScope);
+	const frame = hdrScope ? signal : sampled;
+	const kinds: { kind: ScopeKind | HdrScope; label: string }[] = [
+		...SCOPE_KINDS,
+		...(hdrProject
+			? [
+					{ kind: "nits" as const, label: "Nits" },
+					{ kind: "false-colour" as const, label: "False colour" },
+				]
+			: []),
+	];
 
 	useEffect(() => {
 		const ctx = canvasRef.current?.getContext("2d");
@@ -166,6 +278,8 @@ export function ScopesView() {
 		ctx.fillStyle = "#0A0C0F";
 		ctx.fillRect(0, 0, DRAW_WIDTH, DRAW_HEIGHT);
 		if (!frame) return;
+		if (kind === "nits") drawNitsWaveform({ ctx, frame });
+		if (kind === "false-colour") drawFalseColour({ ctx, frame });
 		if (kind === "waveform") drawWaveform({ ctx, frame, channels: ["luma"] });
 		if (kind === "parade") drawWaveform({ ctx, frame, channels: [0, 1, 2] });
 		if (kind === "histogram") drawHistogram({ ctx, frame });
@@ -175,7 +289,7 @@ export function ScopesView() {
 	return (
 		<div className="flex flex-col gap-2">
 			<div className="flex flex-wrap gap-1" role="tablist" aria-label="Scope">
-				{SCOPE_KINDS.map((scope) => (
+				{kinds.map((scope) => (
 					<button
 						key={scope.kind}
 						type="button"
@@ -193,12 +307,23 @@ export function ScopesView() {
 					</button>
 				))}
 			</div>
+			{kind === "false-colour" && (
+				<p
+					className="text-muted-foreground m-0 text-[11px]"
+					data-false-colour-key
+				>
+					<span className="text-red-400">■</span> over 1,000 nits ·{" "}
+					<span className="text-yellow-300">■</span> brighter than graphics
+					white · <span className="text-fuchsia-400">■</span> outside Rec. 709
+				</p>
+			)}
 			<canvas
 				ref={canvasRef}
 				width={DRAW_WIDTH}
 				height={DRAW_HEIGHT}
 				role="img"
-				aria-label={`${SCOPE_KINDS.find((s) => s.kind === kind)?.label} of the current frame`}
+				aria-label={`${kinds.find((s) => s.kind === kind)?.label} of the current frame`}
+				data-scope-kind={kind}
 				className="w-full rounded-md border"
 				style={{ aspectRatio: `${DRAW_WIDTH} / ${DRAW_HEIGHT}` }}
 			/>

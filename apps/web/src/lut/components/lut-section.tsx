@@ -1,5 +1,6 @@
 "use client";
 
+import { lutOutput, needsHdrWarning } from "../space";
 import { useMemo, useRef, useState } from "react";
 import {
 	Check,
@@ -46,6 +47,28 @@ function openExternal(url: string) {
 /** The Color workspace's LUTs section (SRS WS-11, WS-35–WS-48). */
 export function LutSection() {
 	const editor = useEditor();
+	const colorSpace = useEditor(
+		(e) => e.project.getActiveOrNull()?.settings.colorSpace,
+	);
+	/** HD-11: an SDR LUT in an HDR project asks first. */
+	const guardHdr = ({
+		lutId,
+		run,
+	}: {
+		lutId: string | null;
+		run: () => void;
+	}) => {
+		const lut = lutId
+			? useLutLibrary.getState().luts.find((l) => l.id === lutId)
+			: null;
+		if (!lut || !needsHdrWarning({ lut, colorSpace })) return run();
+		toast.warning(`${lut.name} makes SDR (Rec. 709) pictures`, {
+			id: "lut-hdr",
+			description:
+				"This is an HDR project, so the LUT would flatten highlights and colour. Use an HDR LUT, or apply it anyway.",
+			action: { label: "Apply anyway", onClick: run },
+		});
+	};
 	useEditor((e) => e.scenes.getActiveSceneOrNull());
 	const { selectedElements } = useElementSelection();
 	const library = useLutLibrary();
@@ -110,7 +133,13 @@ export function LutSection() {
 		});
 	};
 
-	const applyCamera = ({
+	const applyCamera = (args: {
+		lutId: string | null;
+		scope: "selection" | "camera";
+		intensity?: number;
+	}) => guardHdr({ lutId: args.lutId, run: () => applyCameraNow(args) });
+
+	const applyCameraNow = ({
 		lutId,
 		scope,
 		intensity = 100,
@@ -164,7 +193,10 @@ export function LutSection() {
 			);
 	};
 
-	const applyCreative = (lutId: string) => {
+	const applyCreative = (lutId: string) =>
+		guardHdr({ lutId, run: () => applyCreativeNow(lutId) });
+
+	const applyCreativeNow = (lutId: string) => {
 		if (targets.length === 0) {
 			toast.info("Select a video or photo clip first.");
 			return;
@@ -518,7 +550,23 @@ export function LutSection() {
 							className="flex items-center justify-between gap-2 rounded-md px-1 py-1 text-xs hover:bg-accent/40"
 						>
 							<span className="truncate">{lut.name}</span>
-							<div className="flex shrink-0 gap-1">
+							<span
+								className={cn(
+									"shrink-0 rounded px-1 text-[10px] font-semibold",
+									lutOutput(lut) === "hdr"
+										? "bg-amber-500/20 text-amber-300"
+										: "bg-accent text-muted-foreground",
+								)}
+								title={
+									lutOutput(lut) === "hdr"
+										? "Outputs HDR (HLG / PQ)"
+										: "Outputs SDR (Rec. 709)"
+								}
+								data-lut-space={lutOutput(lut)}
+							>
+								{lutOutput(lut) === "hdr" ? "HDR" : "SDR"}
+							</span>
+							<div className="ml-auto flex shrink-0 gap-1">
 								<Button
 									size="sm"
 									variant="outline"
