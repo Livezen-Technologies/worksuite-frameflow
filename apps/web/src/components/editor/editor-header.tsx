@@ -16,6 +16,10 @@ import { useRouter } from "next/navigation";
 import { FaDiscord } from "react-icons/fa6";
 import { ExportButton } from "./export-button";
 import { CloudSyncButton } from "@/cloud/components/cloud-sync-button";
+import {
+	OfflineBadge,
+	UploadQueueButton,
+} from "@/cloud/components/upload-queue";
 import { UpdatePrompt } from "@/updates/components/update-prompt";
 import { FeedbackPopover } from "@/feedback/components/feedback-popover";
 import { ThemeToggle } from "../theme-toggle";
@@ -41,6 +45,8 @@ export function EditorHeader() {
 			<nav className="flex flex-1 items-center justify-end gap-2">
 				<FeedbackPopover />
 				<UpdatePrompt />
+				<OfflineBadge />
+				<UploadQueueButton />
 				<CloudSyncButton />
 				<ExportButton />
 				<ThemeToggle />

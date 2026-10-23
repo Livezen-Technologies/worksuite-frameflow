@@ -60,6 +60,10 @@ import { RenameProjectDialog } from "@/project/components/rename-project-dialog"
 import { cn } from "@/utils/ui";
 import { ChangelogNotification } from "@/changelog/components/changelog-notification";
 import { AccountMenu } from "@/account/components/account-menu";
+import {
+	OfflineBadge,
+	UploadQueueButton,
+} from "@/cloud/components/upload-queue";
 import { WelcomeScreen } from "@/account/components/welcome-screen";
 import { SignInHandoff } from "@/account/components/sign-in-handoff";
 import { StorageCard } from "@/account/components/storage-card";
@@ -161,6 +165,8 @@ function ProjectsHeader() {
 			<div className="flex-1" />
 			<SearchBar className="hidden w-[280px] md:block" />
 			<UpdatePrompt />
+			<OfflineBadge />
+			<UploadQueueButton />
 			<AccountMenu />
 		</header>
 	);

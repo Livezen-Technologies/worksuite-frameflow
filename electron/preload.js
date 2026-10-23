@@ -11,6 +11,27 @@ contextBridge.exposeInMainWorld("worksuite", {
 		choose: (id) => ipcRenderer.invoke("capture:choose", id),
 		permissions: () => ipcRenderer.invoke("capture:permissions"),
 	},
+	network: {
+		getState: () => ipcRenderer.invoke("network:get-state"),
+		update: (patch) => ipcRenderer.invoke("network:update", patch),
+		onChange: (listener) => {
+			const handler = (_event, state) => listener(state);
+			ipcRenderer.on("network:changed", handler);
+			return () => ipcRenderer.removeListener("network:changed", handler);
+		},
+	},
+	uploads: {
+		list: () => ipcRenderer.invoke("uploads:list"),
+		pause: (id) => ipcRenderer.invoke("uploads:pause", id),
+		resume: (id) => ipcRenderer.invoke("uploads:resume", id),
+		pauseAll: () => ipcRenderer.invoke("uploads:pause-all"),
+		resumeAll: () => ipcRenderer.invoke("uploads:resume-all"),
+		onChange: (listener) => {
+			const handler = (_event, list) => listener(list);
+			ipcRenderer.on("uploads:changed", handler);
+			return () => ipcRenderer.removeListener("uploads:changed", handler);
+		},
+	},
 	files: {
 		saveExport: (args) => ipcRenderer.invoke("files:save-export", args),
 		show: (filePath) => ipcRenderer.invoke("files:show", filePath),

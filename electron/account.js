@@ -341,6 +341,8 @@ function reopenSignIn() {
 }
 
 async function refresh() {
+	// Offline mode (CL-09): keep the cached profile, make no requests.
+	if (require("./network").isOffline()) return false;
 	const refreshToken = memoryRefreshToken ?? loadRefreshToken();
 	if (!refreshToken) return false;
 	try {

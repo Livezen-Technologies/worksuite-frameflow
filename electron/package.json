@@ -42,6 +42,8 @@
       "cloud-sync.js",
       "updater.js",
       "capture.js",
+      "network.js",
+      "upload-queue.js",
       "preload.js",
       "package.json"
     ],

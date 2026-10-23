@@ -8,6 +8,10 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 ## [Unreleased]
 
 ### Added
+- Offline mode (Settings › Network & sync) stops all network traffic from FrameFlow: cloud sync, sharing, sign-in, fonts and sound search. Update checks still run unless you turn them off. An "Offline" badge in the header turns it off again. Cloud features are hidden while offline or signed out.
+- Upload queue in the header: every cloud upload (project media, share links, library items) with its progress, pause and resume, and pause/resume all. A paused or interrupted upload carries on from its last finished part. Settings has an upload speed limit.
+- Settings sync: keyboard shortcuts, effect presets, title templates, workspaces, the brand kit, timeline and preview preferences, and camera-LUT choices follow your Worksuite account, setting by setting, newest change wins. It can be turned off or run now from Settings.
+- Cloud asset library in the Media bin: "My library" and "Team library" folders of logos, intros, music and LUTs. Add files from any project and use them in any project on any computer. LUTs go straight into your LUT library.
 - 360° video.
   - 360° videos are recognised on import, from their 360° metadata or their 2:1 shape, and get a "360°" badge. Any clip can be marked "This is 360°" by hand.
   - Reframe a 360° clip into normal video with a virtual camera: pan, tilt, roll, field of view and lens, all keyframeable. Drag the preview to aim and scroll to zoom. "Keyframe view" saves the current view in one click, and pans take the short way round.

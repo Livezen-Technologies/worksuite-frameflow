@@ -197,6 +197,7 @@ function init() {
 }
 
 module.exports = {
+	FEED_BASE,
 	isNewer,
 	init,
 	check,

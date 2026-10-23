@@ -71,6 +71,8 @@ declare global {
 			cloud?: WorksuiteCloudBridge;
 			updates?: WorksuiteUpdatesBridge;
 			capture?: WorksuiteCaptureBridge;
+			network?: WorksuiteNetworkBridge;
+			uploads?: WorksuiteUploadsBridge;
 		};
 	}
 }
@@ -175,6 +177,105 @@ export interface CloudSyncOperations {
 		args: { assetId: string };
 		value: Uint8Array<ArrayBuffer>;
 	};
+	getSettings: {
+		args: Record<string, never>;
+		value: { revision: number; items: Record<string, SyncedSetting> };
+	};
+	putSettings: {
+		args: { revision: number; items: Record<string, SyncedSetting> };
+		value: { revision: number };
+	};
+	listLibrary: {
+		args: { scope: LibraryScope; folderId: string | null };
+		value: { folders: LibraryFolder[]; items: LibraryItem[] };
+	};
+	createLibraryFolder: {
+		args: { scope: LibraryScope; name: string; parentId: string | null };
+		value: LibraryFolder;
+	};
+	addLibraryItem: {
+		args: {
+			scope: LibraryScope;
+			folderId: string | null;
+			name: string;
+			kind: LibraryKind;
+			contentType: string;
+			sha256: string;
+			data: ArrayBuffer;
+		};
+		value: LibraryItem;
+	};
+	removeLibraryItem: {
+		args: { id: string };
+		value: Record<string, never>;
+	};
+}
+
+/** A synced setting (CL-01): its stored value and when it last changed. */
+export interface SyncedSetting {
+	value: unknown;
+	updatedAt: number;
+}
+
+export type LibraryScope = "personal" | "team";
+export type LibraryKind =
+	| "logo"
+	| "intro"
+	| "music"
+	| "lut"
+	| "video"
+	| "image"
+	| "audio"
+	| "other";
+
+export interface LibraryFolder {
+	id: string;
+	name: string;
+}
+
+export interface LibraryItem {
+	id: string;
+	name: string;
+	kind: LibraryKind;
+	folderId: string | null;
+	assetId: string;
+	size: number;
+	contentType: string;
+	thumbnailUrl: string | null;
+	addedBy: string | null;
+}
+
+/** Offline mode and upload pacing (CL-08, CL-09). */
+export interface NetworkState {
+	offline: boolean;
+	/** Bytes per second for uploads; 0 = no limit. */
+	bandwidthLimit: number;
+}
+
+export interface WorksuiteNetworkBridge {
+	getState: () => Promise<NetworkState>;
+	update: (patch: Partial<NetworkState>) => Promise<NetworkState>;
+	onChange: (listener: (state: NetworkState) => void) => () => void;
+}
+
+export interface UploadItem {
+	id: string;
+	name: string;
+	size: number;
+	sent: number;
+	purpose: string;
+	state: "uploading" | "paused" | "waiting" | "done" | "error" | "cancelled";
+	error: string | null;
+	startedAt: number;
+}
+
+export interface WorksuiteUploadsBridge {
+	list: () => Promise<UploadItem[]>;
+	pause: (id: string) => Promise<UploadItem[]>;
+	resume: (id: string) => Promise<UploadItem[]>;
+	pauseAll: () => Promise<UploadItem[]>;
+	resumeAll: () => Promise<UploadItem[]>;
+	onChange: (listener: (list: UploadItem[]) => void) => () => void;
 }
 
 export interface UpdateState {

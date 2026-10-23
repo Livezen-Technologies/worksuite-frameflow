@@ -1,5 +1,6 @@
 "use client";
 
+import { useNetwork } from "@/cloud/network";
 import { useEffect, useState } from "react";
 import { Check, Copy, Link2, RotateCcw, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -35,7 +36,9 @@ export function ShareOptions({
 	onChange: (next: ShareSettings) => void;
 }) {
 	const { state, bridge } = useWorksuiteAccount();
+	const { offline } = useNetwork();
 	if (!getCloudBridge() || !state) return null;
+	if (offline) return null;
 	const signedIn = state.status === "signed-in";
 
 	return (

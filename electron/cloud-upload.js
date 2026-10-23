@@ -6,6 +6,8 @@ const { app } = require("electron");
 const fs = require("node:fs");
 const path = require("node:path");
 const account = require("./account");
+const network = require("./network");
+const queue = require("./upload-queue");
 
 const PART_RETRIES = 3;
 const stateFile = () => path.join(app.getPath("userData"), "uploads.json");
@@ -64,6 +66,7 @@ async function problem(res) {
 }
 
 async function api(method, route, { body, signal, headers = {} } = {}) {
+	if (network.isOffline()) throw new CloudError("Offline mode is on. Turn it off to use Worksuite Cloud.", { code: "offline" });
 	const token = await account.getAccessToken();
 	if (!token) throw new CloudError("Sign in to Worksuite to use the cloud.", { code: "auth" });
 	const res = await fetch(`${account.apiBase}${route}`, {
@@ -119,7 +122,31 @@ async function putPart({ upload, n, chunk, signal }) {
  * Uploads bytes in resumable parts and returns the asset id.
  * `key` identifies the content so a later call resumes the same upload.
  */
+/**
+ * Uploads bytes in resumable parts and returns the asset id. The upload
+ * shows in the upload queue (CL-08), where it can be paused and resumed.
+ * `key` identifies the content so a later call resumes the same upload.
+ */
 async function uploadParts({ key, filename, size, contentType, purpose, readPart, signal, onProgress }) {
+	const entry = queue.begin({ name: filename, size, purpose });
+	try {
+		const assetId = await sendParts({ key, filename, size, contentType, purpose, readPart, signal, onProgress, entry });
+		entry.done();
+		return assetId;
+	} catch (error) {
+		entry.fail(asCloudError(error, signal));
+		throw error;
+	}
+}
+
+/** A signal that fires on cancel (caller) or pause (queue). */
+function partSignal({ signal, entry }) {
+	const signals = [entry.pauseSignal, signal].filter(Boolean);
+	return signals.length === 1 ? signals[0] : AbortSignal.any(signals);
+}
+
+async function sendParts({ key, filename, size, contentType, purpose, readPart, signal, onProgress, entry }) {
+	await entry.gate();
 	const uploads = readUploads();
 	let upload = uploads[key];
 	if (!upload) {
@@ -136,14 +163,29 @@ async function uploadParts({ key, filename, size, contentType, purpose, readPart
 		writeUploads({ ...readUploads(), [key]: upload });
 	}
 	const partCount = Math.max(1, Math.ceil(size / upload.chunkSize));
+	const sentBytes = () =>
+		upload.done.reduce((sum, n) => sum + Math.min(upload.chunkSize, size - (n - 1) * upload.chunkSize), 0);
+	entry.progress(sentBytes());
 	for (let n = 1; n <= partCount; n++) {
 		if (upload.done.includes(n)) continue;
-		if (signal?.aborted) throw new CloudError("Upload cancelled.", { code: "cancelled" });
 		const start = (n - 1) * upload.chunkSize;
 		const chunk = await readPart({ start, length: Math.min(upload.chunkSize, size - start) });
-		await putPart({ upload, n, chunk, signal });
+		for (;;) {
+			if (signal?.aborted) throw new CloudError("Upload cancelled.", { code: "cancelled" });
+			await entry.gate();
+			await entry.pace(chunk.length);
+			try {
+				await putPart({ upload, n, chunk, signal: partSignal({ signal, entry }) });
+				break;
+			} catch (error) {
+				// Paused mid-part: wait at the gate, then send this part again.
+				if (entry.isPaused() && !signal?.aborted) continue;
+				throw error;
+			}
+		}
 		upload.done.push(n);
 		writeUploads({ ...readUploads(), [key]: upload });
+		entry.progress(sentBytes());
 		onProgress?.({ phase: "uploading", progress: upload.done.length / partCount });
 	}
 	onProgress?.({ phase: "finishing", progress: 1 });

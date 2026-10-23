@@ -1,5 +1,6 @@
 "use client";
 
+import { useCloudReady } from "../network";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Cloud, Download, HardDrive, Loader2, Users } from "lucide-react";
@@ -12,13 +13,13 @@ import { downloadCloudProject } from "../sync";
 
 /** Local / Both badge on a project card (CL-03); hidden when signed out. */
 export function ProjectCloudBadge({ projectId }: { projectId: string }) {
-	const { state } = useWorksuiteAccount();
+	const cloudReady = useCloudReady();
 	const link = useCloudSync((s) => s.links[projectId]);
 	const summary = useCloudSync((s) =>
 		s.cloudProjects.find((p) => p.id === link?.cloudId),
 	);
 	const linked = !!link;
-	if (state?.status !== "signed-in") return null;
+	if (!cloudReady) return null;
 	if (summary && summary.role !== "owner") {
 		return (
 			<span
@@ -49,14 +50,14 @@ export function ProjectCloudBadge({ projectId }: { projectId: string }) {
 export function CloudOnlyProjects() {
 	const router = useRouter();
 	const editor = useEditor();
-	const { state } = useWorksuiteAccount();
+	const cloudReady = useCloudReady();
 	const links = useCloudSync((s) => s.links);
 	const cloudProjects = useCloudSync((s) => s.cloudProjects);
 	const [busy, setBusy] = useState<{ id: string; progress: number } | null>(
 		null,
 	);
 
-	if (state?.status !== "signed-in") return null;
+	if (!cloudReady) return null;
 	const linkedIds = new Set(Object.values(links).map((link) => link.cloudId));
 	const cloudOnly = cloudProjects.filter((p) => !linkedIds.has(p.id));
 	if (cloudOnly.length === 0) return null;

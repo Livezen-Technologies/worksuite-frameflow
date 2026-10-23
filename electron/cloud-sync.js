@@ -106,7 +106,97 @@ async function downloadAsset({ assetId }) {
 	return new Uint8Array(await res.arrayBuffer());
 }
 
+// Settings sync (CL-01): one JSON document per user, each key stamped with
+// when it last changed so devices merge key by key.
+async function getSettings() {
+	const body = await api("GET", "/v1/video/settings");
+	return {
+		revision: Number(body.revision ?? 0),
+		items: body.items && typeof body.items === "object" ? body.items : {},
+	};
+}
+
+async function putSettings({ revision, items }) {
+	try {
+		const body = await api("PUT", "/v1/video/settings", {
+			headers: { "If-Match": `"${Number(revision) || 0}"` },
+			body: { items },
+		});
+		return { ok: true, revision: Number(body.revision ?? Number(revision) + 1) };
+	} catch (error) {
+		if (error instanceof CloudError && (error.status === 409 || error.status === 412)) {
+			return { ok: false, code: "conflict", message: "Settings changed on another device." };
+		}
+		throw error;
+	}
+}
+
+// Asset library (CL-05): personal and team folders of logos, intros,
+// music and LUTs.
+const LIBRARY_KINDS = new Set(["logo", "intro", "music", "lut", "video", "image", "audio", "other"]);
+const asLibraryItem = (i) => ({
+	id: String(i.id),
+	name: String(i.name ?? "Untitled"),
+	kind: LIBRARY_KINDS.has(i.kind) ? i.kind : "other",
+	folderId: i.folder_id ? String(i.folder_id) : null,
+	assetId: String(i.asset_id ?? i.id),
+	size: Number(i.size ?? 0),
+	contentType: String(i.content_type ?? "application/octet-stream"),
+	thumbnailUrl: typeof i.thumbnail_url === "string" ? i.thumbnail_url : null,
+	addedBy: i.added_by?.name ?? null,
+});
+
+async function listLibrary({ scope, folderId }) {
+	const params = new URLSearchParams({ scope: scope === "team" ? "team" : "personal" });
+	if (folderId) params.set("folder_id", String(folderId));
+	const body = await api("GET", `/v1/video/library?${params}`);
+	return {
+		folders: (body.folders ?? []).map((f) => ({ id: String(f.id), name: String(f.name ?? "Folder") })),
+		items: (body.items ?? body.data ?? []).map(asLibraryItem),
+	};
+}
+
+async function createLibraryFolder({ scope, name, parentId }) {
+	const body = await api("POST", "/v1/video/library/folders", {
+		body: { scope: scope === "team" ? "team" : "personal", name: String(name), parent_id: parentId ?? null },
+	});
+	return { id: String(body.id), name: String(body.name ?? name) };
+}
+
+async function addLibraryItem({ scope, folderId, name, kind, contentType, sha256, data }) {
+	const bytes = Buffer.from(data);
+	const assetId = await uploadParts({
+		key: `library|${sha256}`,
+		filename: String(name),
+		size: bytes.length,
+		contentType: String(contentType || "application/octet-stream"),
+		purpose: "library",
+		readPart: async ({ start, length }) => bytes.subarray(start, start + length),
+	});
+	const body = await api("POST", "/v1/video/library/items", {
+		body: {
+			scope: scope === "team" ? "team" : "personal",
+			folder_id: folderId ?? null,
+			name: String(name),
+			kind: LIBRARY_KINDS.has(kind) ? kind : "other",
+			asset_id: assetId,
+		},
+	});
+	return asLibraryItem({ size: bytes.length, content_type: contentType, ...body });
+}
+
+async function removeLibraryItem({ id }) {
+	await api("DELETE", `/v1/video/library/items/${encodeURIComponent(id)}`);
+	return {};
+}
+
 const operations = {
+	getSettings,
+	putSettings,
+	listLibrary,
+	createLibraryFolder,
+	addLibraryItem,
+	removeLibraryItem,
 	listProjects,
 	createProject,
 	getProject,

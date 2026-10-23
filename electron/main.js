@@ -3,6 +3,8 @@
 const { app, BrowserWindow, clipboard, shell, dialog, ipcMain } = require("electron");
 const { spawn } = require("node:child_process");
 const capture = require("./capture");
+const network = require("./network");
+const uploadQueue = require("./upload-queue");
 const net = require("node:net");
 const http = require("node:http");
 const fs = require("node:fs");
@@ -133,6 +135,11 @@ async function createWindow() {
 	});
 
 	capture.setupCapture({ session: win.webContents.session, origin });
+	network.guardSession({
+		session: win.webContents.session,
+		origin,
+		allow: [updates.FEED_BASE],
+	});
 
 	// Keep the app on its own origin; open everything else in the system browser.
 	win.webContents.setWindowOpenHandler(({ url }) => {
@@ -166,6 +173,9 @@ function registerAccountIpc() {
 	handle("capture:permissions", () => capture.permissionStatus());
 	handle("account:get-state", () => account.getState());
 	handle("account:sign-in", async ({ signup } = {}) => {
+		if (network.isOffline()) {
+			return { ok: false, error: "Offline mode is on. Turn it off to sign in." };
+		}
 		const result = await account.signIn({ signup });
 		if (result.ok) {
 			const [win] = BrowserWindow.getAllWindows();
@@ -229,11 +239,31 @@ function registerAccountIpc() {
 	handle("updates:install", () => updates.install());
 	handle("updates:configure", (settings) => updates.configure(settings ?? {}));
 	handle("cloud:sync", (operation, args) => cloudSync.run(String(operation), args));
+	handle("network:get-state", () => network.getState());
+	handle("network:update", (patch = {}) =>
+		network.update({
+			...("offline" in patch ? { offline: !!patch.offline } : {}),
+			...("bandwidthLimit" in patch
+				? { bandwidthLimit: Math.max(0, Number(patch.bandwidthLimit) || 0) }
+				: {}),
+		}),
+	);
+	handle("uploads:list", () => uploadQueue.list());
+	handle("uploads:pause", (id) => uploadQueue.pause(id));
+	handle("uploads:resume", (id) => uploadQueue.resume(id));
+	handle("uploads:pause-all", () => uploadQueue.pauseAll());
+	handle("uploads:resume-all", () => uploadQueue.resumeAll());
 	handle("clipboard:write", (text) => clipboard.writeText(String(text)));
 	// Only files this session exported can be revealed.
 	handle("files:show", (filePath) => {
 		if (savedExports.has(filePath)) shell.showItemInFolder(filePath);
 	});
+
+	const broadcast = (channel, payload) => {
+		for (const win of BrowserWindow.getAllWindows()) win.webContents.send(channel, payload);
+	};
+	network.onChange((state) => broadcast("network:changed", state));
+	uploadQueue.onChange((list) => broadcast("uploads:changed", list));
 
 	account.onChange((state) => {
 		for (const win of BrowserWindow.getAllWindows()) {

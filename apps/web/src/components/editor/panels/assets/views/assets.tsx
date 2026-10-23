@@ -1,5 +1,7 @@
 "use client";
 
+import { LibraryView } from "@/cloud/components/library-view";
+import { useCloudReady } from "@/cloud/network";
 import { SphereBadge } from "@/vr/components/sphere-badge";
 import Image from "next/image";
 import { useMemo, useState } from "react";
@@ -76,6 +78,8 @@ export function MediaView() {
 	} = useAssetsPanelStore();
 
 	const [isProcessing, setIsProcessing] = useState(false);
+	const cloudReady = useCloudReady();
+	const [source, setSource] = useState<"project" | "library">("project");
 	const [progress, setProgress] = useState(0);
 
 	const processFiles = async ({ files }: { files: File[] }) => {
@@ -209,7 +213,33 @@ export function MediaView() {
 				contentClassName="h-full"
 				{...dragProps}
 			>
-				{isDragOver || filteredMediaItems.length === 0 ? (
+				{cloudReady && (
+					<div className="mb-2 grid grid-cols-2 gap-1" data-media-source>
+						{(
+							[
+								["project", "This project"],
+								["library", "Cloud library"],
+							] as const
+						).map(([value, label]) => (
+							<button
+								key={value}
+								type="button"
+								onClick={() => setSource(value)}
+								className={cn(
+									"h-7 rounded-md text-xs",
+									source === value
+										? "bg-secondary text-foreground"
+										: "text-muted-foreground hover:bg-accent/40",
+								)}
+							>
+								{label}
+							</button>
+						))}
+					</div>
+				)}
+				{cloudReady && source === "library" ? (
+					<LibraryView />
+				) : isDragOver || filteredMediaItems.length === 0 ? (
 					<MediaDragOverlay
 						isVisible={true}
 						isProcessing={isProcessing}

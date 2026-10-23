@@ -1,5 +1,6 @@
 "use client";
 
+import { useCloudReady } from "../network";
 import { useState } from "react";
 import {
 	Cloud,
@@ -43,6 +44,7 @@ function timeAgo(iso: string | null): string {
 export function CloudSyncButton() {
 	const editor = useEditor();
 	const { state } = useWorksuiteAccount();
+	const cloudReady = useCloudReady();
 	const project = useEditor((e) => e.project.getActiveOrNull());
 	const projectId = project?.metadata.id ?? "";
 	const link = useCloudSync((s) => s.links[projectId]);
@@ -51,7 +53,7 @@ export function CloudSyncButton() {
 	const [sharing, setSharing] = useState(false);
 	useCloudSync((s) => s.cloudProjects);
 
-	if (state?.status !== "signed-in" || !project) return null;
+	if (state?.status !== "signed-in" || !cloudReady || !project) return null;
 
 	const synced = !!link;
 	const busy = status.state === "syncing";
