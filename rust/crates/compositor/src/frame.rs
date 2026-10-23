@@ -38,6 +38,24 @@ pub struct LayerDescriptor {
     #[serde(default)]
     pub effect_pass_groups: Vec<Vec<EffectPassDescriptor>>,
     pub mask: Option<LayerMaskDescriptor>,
+    /// Draws the source as a 360° sphere instead of a placed quad.
+    #[serde(default)]
+    pub projection: Option<ProjectionDescriptor>,
+}
+
+/// Virtual camera for equirectangular sources, angles in degrees.
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ProjectionDescriptor {
+    pub yaw: f32,
+    pub pitch: f32,
+    pub roll: f32,
+    pub fov: f32,
+    /// 0 natural, 1 wide, 2 stereographic; fractions blend.
+    pub lens: f32,
+    /// Keep the output equirectangular (reorient only).
+    #[serde(default)]
+    pub equirectangular: bool,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

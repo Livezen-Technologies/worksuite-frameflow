@@ -1,4 +1,5 @@
 import { toast } from "sonner";
+import { unsupportedSphereFormat } from "@/vr/spherical";
 import { getMediaTypeFromFile } from "@/media/media-utils";
 import { formatStorageBytes } from "@/services/storage/quota";
 import { storageService } from "@/services/storage/service";
@@ -97,6 +98,15 @@ export async function processMediaAssets({
 
 	for (const file of fileArray) {
 		const fileType = getMediaTypeFromFile({ file });
+		// 360° camera originals that need the vendor's app first (VR-02, VR-03).
+		const sphereFormat = unsupportedSphereFormat(file.name);
+		if (sphereFormat) {
+			toast.error(`Can't open ${file.name} yet`, {
+				description: sphereFormat,
+				duration: 12_000,
+			});
+			continue;
+		}
 
 		if (!fileType) {
 			toast.error(`Unsupported file type: ${file.name}`);
@@ -152,9 +162,7 @@ export async function processMediaAssets({
 					}
 				} catch (error) {
 					const message =
-						error instanceof Error
-							? error.message
-							: "Could not process video";
+						error instanceof Error ? error.message : "Could not process video";
 
 					toast.error(`Couldn't process ${file.name}`, {
 						description: message,

@@ -1,3 +1,9 @@
+import {
+	findReframeEffect,
+	type ProjectionDescriptor,
+	projectionFromParams,
+	REFRAME_EFFECT_TYPE,
+} from "@/vr/projection";
 import { mediaTimeToSeconds, roundMediaTime, TICKS_PER_SECOND } from "@/wasm";
 import {
 	graphemeCount,
@@ -126,7 +132,7 @@ function resolveEffectPassGroups({
 	height: number;
 }): EffectPass[][] {
 	return (effects ?? [])
-		.filter((effect) => effect.enabled)
+		.filter((effect) => effect.enabled && effect.type !== REFRAME_EFFECT_TYPE)
 		.map((effect) => {
 			const resolvedParams = resolveEffectParamsAtTime({
 				effectId: effect.id,
@@ -146,6 +152,28 @@ function resolveEffectPassGroups({
 				time: localTime / TICKS_PER_SECOND,
 			});
 		});
+}
+
+/** The clip's 360° camera at this moment, if it has one (VR-08). */
+function resolveProjection({
+	effects,
+	animations,
+	localTime,
+}: {
+	effects: Effect[] | undefined;
+	animations: VisualNodeParams["animations"];
+	localTime: number;
+}): ProjectionDescriptor | null {
+	const effect = findReframeEffect(effects);
+	if (!effect?.enabled) return null;
+	return projectionFromParams(
+		resolveEffectParamsAtTime({
+			effectId: effect.id,
+			params: effect.params,
+			animations,
+			localTime,
+		}),
+	);
 }
 
 function resolveVisualState({
@@ -211,16 +239,22 @@ function resolveVisualState({
 			}
 		: transition.transform;
 	const opacity = transition.opacity * (animated?.opacity ?? 1);
+	const projection = resolveProjection({
+		effects: params.effects,
+		animations: params.animations,
+		localTime,
+	});
 	const containScale = Math.min(
 		context.renderer.width / sourceWidth,
 		context.renderer.height / sourceHeight,
 	);
-	const effectWidth = Math.round(
-		Math.abs(sourceWidth * containScale * transform.scaleX),
-	);
-	const effectHeight = Math.round(
-		Math.abs(sourceHeight * containScale * transform.scaleY),
-	);
+	// A 360° clip is drawn across the whole frame by its virtual camera.
+	const effectWidth = projection
+		? context.renderer.width
+		: Math.round(Math.abs(sourceWidth * containScale * transform.scaleX));
+	const effectHeight = projection
+		? context.renderer.height
+		: Math.round(Math.abs(sourceHeight * containScale * transform.scaleY));
 
 	const effectPasses = resolveEffectPassGroups({
 		effects: params.effects,
@@ -251,6 +285,7 @@ function resolveVisualState({
 		transform,
 		opacity,
 		effectPasses,
+		...(projection ? { projection } : {}),
 		...(transition.mask ? { maskOverride: transition.mask } : {}),
 	};
 }

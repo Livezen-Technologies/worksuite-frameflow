@@ -248,12 +248,16 @@ async function collectVisualSourceNode({
 		height: sourceHeight,
 	});
 
-	const transform = computeVisualTransform({
-		renderer,
-		resolved: node.resolved,
-		sourceWidth,
-		sourceHeight,
-	});
+	const projection =
+		"projection" in node.resolved ? node.resolved.projection : undefined;
+	const transform = projection
+		? fullCanvasTransform(renderer)
+		: computeVisualTransform({
+				renderer,
+				resolved: node.resolved,
+				sourceWidth,
+				sourceHeight,
+			});
 	const { mask, strokeLayer } = buildMaskArtifacts({
 		node,
 		renderer,
@@ -270,6 +274,7 @@ async function collectVisualSourceNode({
 		blendMode: node.params.blendMode ?? "normal",
 		effectPassGroups: node.resolved.effectPasses,
 		mask,
+		...(projection ? { projection } : {}),
 	});
 	if (strokeLayer) {
 		items.push(strokeLayer);

@@ -32,8 +32,9 @@ import { MasksTab } from "@/masks/components/masks-tab";
 import { SpeedTab } from "@/speed/components/speed-tab";
 import { GraphicTab } from "@/graphics/components/graphic-tab";
 import { OcShapesIcon } from "@/components/icons";
-import { Sparkles } from "lucide-react";
+import { Globe, Sparkles } from "lucide-react";
 import { AnimationTab } from "@/animation/components/animation-tab";
+import { SphereTab } from "@/vr/components/sphere-tab";
 
 const TRANSFORM_PARAM_KEYS = [
 	"transform.positionX",
@@ -201,6 +202,19 @@ function buildAnimationTab({
 	};
 }
 
+function buildSphereTab({
+	element,
+}: {
+	element: VideoElement;
+}): PropertiesTabDef {
+	return {
+		id: "sphere",
+		label: "360°",
+		icon: <Globe size={16} />,
+		content: ({ trackId }) => <SphereTab element={element} trackId={trackId} />,
+	};
+}
+
 function buildTextTab({ element }: { element: TextElement }): PropertiesTabDef {
 	return {
 		id: "text",
@@ -278,6 +292,7 @@ function getVideoConfig({
 			buildAnimationTab({ element, thumbnail: mediaAsset?.thumbnailUrl }),
 			...(showAudioTab ? [buildAudioTab({ element })] : []),
 			buildSpeedTab({ element }),
+			buildSphereTab({ element }),
 			buildBlendingTab({ element }),
 			buildMasksTab({ element }),
 			buildClipEffectsTab({ element }),

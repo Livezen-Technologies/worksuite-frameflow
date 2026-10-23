@@ -1,5 +1,7 @@
 "use client";
 
+import { useSphereProjectView } from "@/vr/components/sphere-menu";
+import { SphereGuides, SphereViewer } from "@/vr/components/sphere-viewer";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import useDeepCompareEffect from "use-deep-compare-effect";
 import { useEditor } from "@/editor/use-editor";
@@ -210,11 +212,9 @@ function PreviewCanvas({
 		lastSceneRef.current = renderTree;
 		lastFrameRef.current = frame;
 		lastPreviewGenerationRef.current = effectPreviewService.generation;
-		renderer
-			.render({ node: renderTree, time: renderTime })
-			.then(() => {
-				renderingRef.current = false;
-			});
+		renderer.render({ node: renderTree, time: renderTime }).then(() => {
+			renderingRef.current = false;
+		});
 	}, [renderer, renderTree, editor.playback, editor.timeline]);
 
 	useRafLoop(render);
@@ -304,6 +304,8 @@ function PreviewCanvas({
 		};
 	}, [canPan, panByScreenDelta, scaleZoom]);
 
+	const sphereView = useSphereProjectView();
+
 	return (
 		<PreviewViewportProvider value={viewport}>
 			<div className="flex size-full min-h-0 min-w-0 flex-col">
@@ -314,20 +316,20 @@ function PreviewCanvas({
 								ref={viewportRef}
 								className="relative flex size-full min-h-0 min-w-0 items-center justify-center overflow-hidden"
 							>
-							<div
-								ref={canvasMountRef}
-								className="absolute block border"
-								style={{
-									left: viewport.sceneLeft,
-									top: viewport.sceneTop,
-									width: viewport.sceneWidth,
-									height: viewport.sceneHeight,
-									background:
-										activeProject.settings.background.type === "blur"
-											? "transparent"
-											: activeProject?.settings.background.color,
-								}}
-							/>
+								<div
+									ref={canvasMountRef}
+									className="absolute block border"
+									style={{
+										left: viewport.sceneLeft,
+										top: viewport.sceneTop,
+										width: viewport.sceneWidth,
+										height: viewport.sceneHeight,
+										background:
+											activeProject.settings.background.type === "blur"
+												? "transparent"
+												: activeProject?.settings.background.color,
+									}}
+								/>
 								<PreviewOverlayLayer
 									instances={overlayInstances}
 									plane="under-interaction"
@@ -337,6 +339,24 @@ function PreviewCanvas({
 									instances={overlayInstances}
 									plane="over-interaction"
 								/>
+								{(sphereView.lookAround || sphereView.guides) && (
+									<div
+										className="absolute"
+										style={{
+											left: viewport.sceneLeft,
+											top: viewport.sceneTop,
+											width: viewport.sceneWidth,
+											height: viewport.sceneHeight,
+											pointerEvents: sphereView.lookAround ? "auto" : "none",
+										}}
+									>
+										{sphereView.lookAround ? (
+											<SphereViewer />
+										) : (
+											<SphereGuides />
+										)}
+									</div>
+								)}
 							</div>
 						</ContextMenuTrigger>
 						<PreviewContextMenu

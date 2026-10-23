@@ -1,5 +1,6 @@
 "use client";
 
+import { SphereWatcher } from "@/vr/components/sphere-watcher";
 import { TranscriptEditor } from "@/transcript/components/transcript-editor";
 import { useParams } from "next/navigation";
 import {
@@ -60,6 +61,7 @@ export default function Editor() {
 					<ChangelogNotification />
 					<CloudSyncRunner openProjectId={projectId} />
 					<FootageWatcher />
+					<SphereWatcher />
 				</div>
 			</EditorProvider>
 		</MobileGate>

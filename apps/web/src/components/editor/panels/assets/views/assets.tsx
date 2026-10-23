@@ -1,5 +1,6 @@
 "use client";
 
+import { SphereBadge } from "@/vr/components/sphere-badge";
 import Image from "next/image";
 import { useMemo, useState } from "react";
 import { PanelView } from "@/components/editor/panels/assets/views/base-panel";
@@ -475,6 +476,7 @@ function MediaPreview({
 					{shouldShowDurationBadge ? (
 						<MediaDurationBadge duration={item.duration} />
 					) : null}
+					<SphereBadge mediaId={item.id} />
 				</div>
 			);
 		}

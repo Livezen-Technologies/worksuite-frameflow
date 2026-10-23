@@ -1,5 +1,6 @@
 "use client";
 
+import { SphereMenu } from "@/vr/components/sphere-menu";
 import { useState, useEffect } from "react";
 import { useEditor } from "@/editor/use-editor";
 import { formatTimecode } from "opencut-wasm";
@@ -36,6 +37,7 @@ export function PreviewToolbar({
 			<TimecodeDisplay />
 			<PlayPauseButton />
 			<div className="justify-self-end flex items-center gap-2.5">
+				<SphereMenu />
 				<ZoomSelect />
 				<Separator orientation="vertical" className="h-4" />
 				{/* v0.4.0 */}

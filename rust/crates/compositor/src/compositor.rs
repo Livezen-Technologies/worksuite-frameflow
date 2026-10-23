@@ -18,6 +18,7 @@ use crate::{
 const LAYER_SHADER_SOURCE: &str = include_str!("shaders/layer.wgsl");
 const BLEND_SHADER_SOURCE: &str = include_str!("shaders/blend.wgsl");
 const MASK_SHADER_SOURCE: &str = include_str!("shaders/mask.wgsl");
+const PROJECTION_SHADER_SOURCE: &str = include_str!("shaders/projection.wgsl");
 
 pub struct RenderFrameOptions<'a, 'surface> {
     pub frame: &'a FrameDescriptor,
@@ -31,6 +32,7 @@ pub struct Compositor {
     masks: MaskFeatherPipeline,
     layer_uniform_bind_group_layout: wgpu::BindGroupLayout,
     layer_pipeline: wgpu::RenderPipeline,
+    projection_pipeline: wgpu::RenderPipeline,
     blend_uniform_bind_group_layout: wgpu::BindGroupLayout,
     blend_pipeline: wgpu::RenderPipeline,
     mask_uniform_bind_group_layout: wgpu::BindGroupLayout,
@@ -62,6 +64,17 @@ struct LayerUniformBuffer {
 
 #[repr(C)]
 #[derive(Clone, Copy, Pod, Zeroable)]
+struct ProjectionUniformBuffer {
+    angles: [f32; 4],
+    resolution: [f32; 2],
+    lens: f32,
+    mode: f32,
+    opacity: f32,
+    _padding: [f32; 3],
+}
+
+#[repr(C)]
+#[derive(Clone, Copy, Pod, Zeroable)]
 struct BlendUniformBuffer {
     blend_mode: u32,
     _padding: [u32; 3],
@@ -84,6 +97,10 @@ impl Compositor {
         let layer_shader = device.create_shader_module(wgpu::ShaderModuleDescriptor {
             label: Some("compositor-layer-shader"),
             source: wgpu::ShaderSource::Wgsl(LAYER_SHADER_SOURCE.into()),
+        });
+        let projection_shader = device.create_shader_module(wgpu::ShaderModuleDescriptor {
+            label: Some("compositor-projection-shader"),
+            source: wgpu::ShaderSource::Wgsl(PROJECTION_SHADER_SOURCE.into()),
         });
         let blend_shader = device.create_shader_module(wgpu::ShaderModuleDescriptor {
             label: Some("compositor-blend-shader"),
@@ -199,6 +216,39 @@ impl Compositor {
             multiview_mask: None,
             cache: None,
         });
+        let projection_pipeline = device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
+            label: Some("compositor-projection-pipeline"),
+            layout: Some(&layer_pipeline_layout),
+            vertex: wgpu::VertexState {
+                module: &fullscreen_shader,
+                entry_point: Some("vertex_main"),
+                buffers: &[wgpu::VertexBufferLayout {
+                    array_stride: std::mem::size_of::<[f32; 2]>() as u64,
+                    step_mode: wgpu::VertexStepMode::Vertex,
+                    attributes: &[wgpu::VertexAttribute {
+                        format: wgpu::VertexFormat::Float32x2,
+                        offset: 0,
+                        shader_location: 0,
+                    }],
+                }],
+                compilation_options: wgpu::PipelineCompilationOptions::default(),
+            },
+            fragment: Some(wgpu::FragmentState {
+                module: &projection_shader,
+                entry_point: Some("fragment_main"),
+                targets: &[Some(wgpu::ColorTargetState {
+                    format: context.texture_format(),
+                    blend: None,
+                    write_mask: wgpu::ColorWrites::ALL,
+                })],
+                compilation_options: wgpu::PipelineCompilationOptions::default(),
+            }),
+            primitive: wgpu::PrimitiveState::default(),
+            depth_stencil: None,
+            multisample: wgpu::MultisampleState::default(),
+            multiview_mask: None,
+            cache: None,
+        });
         let blend_pipeline = device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
             label: Some("compositor-blend-pipeline"),
             layout: Some(&blend_pipeline_layout),
@@ -273,6 +323,7 @@ impl Compositor {
             masks: MaskFeatherPipeline::new(context),
             layer_uniform_bind_group_layout,
             layer_pipeline,
+            projection_pipeline,
             blend_uniform_bind_group_layout,
             blend_pipeline,
             mask_uniform_bind_group_layout,
@@ -600,21 +651,39 @@ impl Compositor {
                     },
                 ],
             });
+        let layer_uniforms = LayerUniformBuffer {
+            resolution: [width as f32, height as f32],
+            center: [layer.transform.center_x, layer.transform.center_y],
+            size: [layer.transform.width, layer.transform.height],
+            rotation_radians: layer.transform.rotation_degrees.to_radians(),
+            opacity: layer.opacity,
+            flip_x: if layer.transform.flip_x { 1.0 } else { 0.0 },
+            flip_y: if layer.transform.flip_y { 1.0 } else { 0.0 },
+            _padding: [0.0; 2],
+        };
+        let projection_uniforms = layer.projection.map(|p| ProjectionUniformBuffer {
+            angles: [
+                p.yaw.to_radians(),
+                p.pitch.to_radians(),
+                p.roll.to_radians(),
+                p.fov.to_radians(),
+            ],
+            resolution: [width as f32, height as f32],
+            lens: p.lens,
+            mode: if p.equirectangular { 1.0 } else { 0.0 },
+            opacity: layer.opacity,
+            _padding: [0.0; 3],
+        });
+        let contents: &[u8] = match &projection_uniforms {
+            Some(uniforms) => bytemuck::bytes_of(uniforms),
+            None => bytemuck::bytes_of(&layer_uniforms),
+        };
         let uniform_buffer =
             context
                 .device()
                 .create_buffer_init(&wgpu::util::BufferInitDescriptor {
                     label: Some("compositor-layer-uniform-buffer"),
-                    contents: bytemuck::bytes_of(&LayerUniformBuffer {
-                        resolution: [width as f32, height as f32],
-                        center: [layer.transform.center_x, layer.transform.center_y],
-                        size: [layer.transform.width, layer.transform.height],
-                        rotation_radians: layer.transform.rotation_degrees.to_radians(),
-                        opacity: layer.opacity,
-                        flip_x: if layer.transform.flip_x { 1.0 } else { 0.0 },
-                        flip_y: if layer.transform.flip_y { 1.0 } else { 0.0 },
-                        _padding: [0.0; 2],
-                    }),
+                    contents,
                     usage: wgpu::BufferUsages::UNIFORM | wgpu::BufferUsages::COPY_DST,
                 });
         let uniform_bind_group = context
@@ -645,7 +714,11 @@ impl Compositor {
                 timestamp_writes: None,
                 multiview_mask: None,
             });
-            render_pass.set_pipeline(&self.layer_pipeline);
+            render_pass.set_pipeline(if projection_uniforms.is_some() {
+                &self.projection_pipeline
+            } else {
+                &self.layer_pipeline
+            });
             render_pass.set_vertex_buffer(0, context.fullscreen_quad().slice(..));
             render_pass.set_bind_group(0, &source_bind_group, &[]);
             render_pass.set_bind_group(1, &uniform_bind_group, &[]);
@@ -878,4 +951,31 @@ fn map_effect_passes(passes: &[EffectPassDescriptor]) -> Vec<EffectPass> {
                 .collect(),
         })
         .collect()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn compositor_shaders_are_valid_wgsl() {
+        for (id, source) in [
+            ("layer", LAYER_SHADER_SOURCE),
+            ("projection", PROJECTION_SHADER_SOURCE),
+        ] {
+            let module = wgpu::naga::front::wgsl::parse_str(source)
+                .unwrap_or_else(|error| panic!("{id}: {}", error.emit_to_string(source)));
+            wgpu::naga::valid::Validator::new(
+                wgpu::naga::valid::ValidationFlags::all(),
+                wgpu::naga::valid::Capabilities::default(),
+            )
+            .validate(&module)
+            .unwrap_or_else(|error| panic!("{id}: {error:?}"));
+        }
+    }
+
+    #[test]
+    fn projection_uniforms_match_wgsl_layout() {
+        assert_eq!(std::mem::size_of::<ProjectionUniformBuffer>(), 48);
+    }
 }

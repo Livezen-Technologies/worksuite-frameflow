@@ -1,3 +1,4 @@
+import type { ProjectionDescriptor } from "@/vr/projection";
 import type { BlendMode } from "@/rendering";
 import type { EffectPass } from "@/effects/types";
 
@@ -19,6 +20,7 @@ export type FrameItemDescriptor =
 			blendMode: BlendMode;
 			effectPassGroups: EffectPass[][];
 			mask: LayerMaskDescriptor | null;
+			projection?: ProjectionDescriptor;
 	  }
 	| {
 			type: "sceneEffect";

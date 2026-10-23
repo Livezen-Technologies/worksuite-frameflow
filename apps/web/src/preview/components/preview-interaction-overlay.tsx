@@ -8,6 +8,8 @@ import { SnapGuides } from "./snap-guides";
 import { TextEditOverlay } from "./text-edit-overlay";
 import { usePropertiesStore } from "@/components/editor/panels/properties/stores/properties-store";
 import { useEditor } from "@/editor/use-editor";
+import { isVisualElement } from "@/timeline/element-utils";
+import { useSphereDrag } from "@/vr/use-sphere-drag";
 
 export function PreviewInteractionOverlay() {
 	const [snapLines, setSnapLines] = useState<SnapLine[]>([]);
@@ -41,10 +43,18 @@ export function PreviewInteractionOverlay() {
 		isMaskMode,
 	});
 
+	const sphere = useSphereDrag({
+		target:
+			activeTrack && activeElement && isVisualElement(activeElement)
+				? { trackId: activeTrack.id, element: activeElement }
+				: null,
+	});
+
 	const handlePointerDown = (event: React.PointerEvent) => {
 		if (viewport.handlePanPointerDown({ event })) {
 			return;
 		}
+		if (sphere.onPointerDown(event)) return;
 
 		onPointerDown(event);
 	};
@@ -53,6 +63,7 @@ export function PreviewInteractionOverlay() {
 		if (viewport.handlePanPointerMove({ event })) {
 			return;
 		}
+		if (sphere.onPointerMove(event)) return;
 
 		onPointerMove(event);
 	};
@@ -61,6 +72,7 @@ export function PreviewInteractionOverlay() {
 		if (viewport.handlePanPointerUp({ event })) {
 			return;
 		}
+		if (sphere.onPointerUp()) return;
 
 		onPointerUp(event);
 	};
@@ -76,13 +88,17 @@ export function PreviewInteractionOverlay() {
 						? "grabbing"
 						: viewport.canPan
 							? "default"
-							: undefined,
+							: sphere.active
+								? "move"
+								: undefined,
 				}}
 				onPointerDown={handlePointerDown}
 				onPointerMove={handlePointerMove}
 				onPointerUp={handlePointerUp}
 				onPointerCancel={handlePointerUp}
 				onDoubleClick={onDoubleClick}
+				onWheel={sphere.active ? sphere.onWheel : undefined}
+				data-sphere-drag={sphere.active || undefined}
 				onDragStart={(e) => e.preventDefault()}
 			/>
 			{editingText ? (
@@ -92,7 +108,7 @@ export function PreviewInteractionOverlay() {
 					element={editingText.element}
 					onCommit={commitTextEdit}
 				/>
-			) : isMaskMode ? (
+			) : sphere.active ? null : isMaskMode ? (
 				<MaskHandles onSnapLinesChange={setSnapLines} />
 			) : (
 				<TransformHandles onSnapLinesChange={setSnapLines} />

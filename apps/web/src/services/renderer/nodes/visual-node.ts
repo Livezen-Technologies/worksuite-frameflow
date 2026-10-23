@@ -1,3 +1,4 @@
+import type { ProjectionDescriptor } from "@/vr/projection";
 import type { ParamValues } from "@/params";
 import type { ClipTransitionTiming } from "@/transitions/windows";
 import { BaseNode } from "./base-node";
@@ -35,6 +36,8 @@ export interface ResolvedVisualNodeState {
 	transform: Transform;
 	opacity: number;
 	effectPasses: EffectPass[][];
+	/** Draws a 360° source through a virtual camera (VR-08). */
+	projection?: ProjectionDescriptor;
 	/** Replaces the clip's own mask while a transition reveals it. */
 	maskOverride?: Mask;
 }

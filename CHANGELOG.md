@@ -8,6 +8,13 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 ## [Unreleased]
 
 ### Added
+- 360° video.
+  - 360° videos are recognised on import, from their 360° metadata or their 2:1 shape, and get a "360°" badge. Any clip can be marked "This is 360°" by hand.
+  - Reframe a 360° clip into normal video with a virtual camera: pan, tilt, roll, field of view and lens, all keyframeable. Drag the preview to aim and scroll to zoom. "Keyframe view" saves the current view in one click, and pans take the short way round.
+  - Projection styles: Natural, Wide, Tiny planet and Rabbit hole. The lens setting blends between them, so they can animate into each other. Effects, text and captions apply to the reframed picture, at any output size.
+  - 360° projects (4K, 5.7K or 8K, 2:1). Clips stay 360° and can be turned to set which way is front. The preview has a look-around view, plus horizon and front guides.
+  - 360° exports carry 360° metadata (Spherical Video V1 and V2), so YouTube, Facebook and VR headsets play them as 360°. Export presets: YouTube 360 5.7K and 4K, Facebook 360, VR headset.
+  - Insta360 .insv and GoPro MAX .360 originals get a message explaining how to export them as 360° MP4 first.
 - Record sidebar: record a voiceover, your screen, screen + camera, or your camera, straight onto the timeline.
   - Voiceovers start at the playhead while the video plays (timeline muted by default). They are saved as 48 kHz WAV, mono or stereo, and placed on a free audio track, lined up with the picture.
   - Screen recordings: pick a display or window, at 1080p 30, 1440p 60 or 4K 60, with optional system audio on Windows and Linux. The camera lands on its own track as a picture-in-picture you can move or resize, and the mic on its own audio track.

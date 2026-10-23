@@ -1,5 +1,7 @@
 "use client";
 
+import { finishSphereExport, SPHERE_EXPORT_PRESETS } from "@/vr/export";
+import { useSphereStore } from "@/vr/store";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { canEncodeVideo } from "mediabunny";
 import {
@@ -217,12 +219,16 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 	// Settings frozen at export time, so editing them doesn't restart an upload.
 	const [sharing, setSharing] = useState<ShareSettings | null>(null);
 
+	const sphereProject = useSphereStore(
+		(s) => !!s.sphereProjects[project.metadata.id],
+	);
+	const presets = sphereProject ? SPHERE_EXPORT_PRESETS : EXPORT_PRESETS;
 	const size = evenSize(
 		preset === "project"
 			? projectSize
 			: preset === "custom"
 				? custom
-				: (EXPORT_PRESETS.find((p) => p.id === preset) ?? projectSize),
+				: (presets.find((p) => p.id === preset) ?? projectSize),
 	);
 	const format = formatForCodec(codec);
 	const aspectDiffers =
@@ -288,6 +294,13 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 			return;
 		}
 		if (!exportResult.success || !exportResult.buffer) return;
+		if (sphereProject) {
+			exportResult.buffer = finishSphereExport({
+				buffer: exportResult.buffer,
+				format,
+				...size,
+			});
+		}
 
 		const name = `${fileName.trim() || project.metadata.name}${getExportFileExtension({ format })}`;
 		const srt =
@@ -381,7 +394,7 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 									label: "Project",
 									detail: `${projectSize.width} × ${projectSize.height}`,
 								},
-								...EXPORT_PRESETS.map((p) => ({
+								...presets.map((p) => ({
 									id: p.id,
 									label: p.label,
 									detail: `${p.width} × ${p.height}`,
