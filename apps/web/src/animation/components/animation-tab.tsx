@@ -9,24 +9,27 @@ import type { TimelineElement } from "@/timeline";
 import { cn } from "@/utils/ui";
 import {
 	type AnimationPreset,
+	CAPTION_ANIMATIONS,
 	COMBO_ANIMATIONS,
 	IN_ANIMATIONS,
 	OUT_ANIMATIONS,
 	animationState,
 } from "../clip-animation";
 
-type Mode = "in" | "out" | "combo";
+type Mode = "in" | "out" | "combo" | "caption";
 
 const MODES: { id: Mode; label: string; presets: AnimationPreset[] }[] = [
 	{ id: "in", label: "In", presets: IN_ANIMATIONS },
 	{ id: "out", label: "Out", presets: OUT_ANIMATIONS },
 	{ id: "combo", label: "Combo", presets: COMBO_ANIMATIONS },
+	{ id: "caption", label: "Caption", presets: CAPTION_ANIMATIONS },
 ];
 
 const PARAM: Record<Mode, string> = {
 	in: "animation.in",
 	out: "animation.out",
 	combo: "animation.combo",
+	caption: "animation.caption",
 };
 
 /** One looping preview: the preset plays on a small card while hovered. */
@@ -57,7 +60,9 @@ function PresetTile({
 		const paramsFor: ParamValues =
 			mode === "combo"
 				? { "animation.combo": preset.value, "animation.comboSpeed": 1 }
-				: {
+				: mode === "caption"
+					? { "animation.caption": preset.value }
+					: {
 						[PARAM[mode]]: preset.value,
 						"animation.inDuration": 0.9,
 						"animation.outDuration": 0.9,
@@ -178,8 +183,13 @@ export function AnimationTab({
 	return (
 		<div className="flex flex-col gap-4 p-4" data-animation-tab>
 			<span className="text-sm font-semibold">Animation</span>
-			<div className="bg-accent/60 grid grid-cols-3 gap-1 rounded-xl p-1">
-				{MODES.map((m) => (
+			<div
+				className={cn(
+					"bg-accent/60 grid gap-1 rounded-xl p-1",
+					isText ? "grid-cols-4" : "grid-cols-3",
+				)}
+			>
+				{MODES.filter((m) => isText || m.id !== "caption").map((m) => (
 					<button
 						key={m.id}
 						type="button"
@@ -191,7 +201,7 @@ export function AnimationTab({
 								: "text-muted-foreground hover:text-foreground",
 						)}
 					>
-						{m.label}
+						{isText && m.id === "combo" ? "Loop" : m.label}
 					</button>
 				))}
 			</div>
@@ -210,7 +220,7 @@ export function AnimationTab({
 						/>
 					))}
 			</div>
-			{selected !== "none" && (
+			{selected !== "none" && mode !== "caption" && (
 				<div className="flex flex-col gap-2 border-t pt-3">
 					<div className="flex justify-between text-xs">
 						<span className="text-muted-foreground">

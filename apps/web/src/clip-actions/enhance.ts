@@ -47,23 +47,30 @@ const NUMBER_PARAM: ParamDefinition = {
 	step: 0.001,
 };
 
-interface Samples {
+export interface Samples {
 	times: number[]; // local ticks
 	frames: Float32Array[];
 	width: number;
 	height: number;
 }
 
-async function sampleClip({
+export async function sampleClip({
 	editor,
 	clip,
 	perSecond,
 	onProgress,
+	fromSeconds = 0,
+	toSeconds,
+	analysisWidth = ANALYSIS_WIDTH,
 }: {
 	editor: EditorCore;
 	clip: ClipRef;
 	perSecond: number;
 	onProgress?: (fraction: number) => void;
+	/** Clip-local range to sample (default: the whole clip). */
+	fromSeconds?: number;
+	toSeconds?: number;
+	analysisWidth?: number;
 }): Promise<Samples> {
 	const asset = mediaOf({ editor, element: clip.element });
 	if (!asset?.url || asset.type !== "video")
@@ -81,10 +88,13 @@ async function sampleClip({
 	canvas.height = height;
 	const ctx = canvas.getContext("2d", { willReadFrequently: true });
 	if (!ctx) throw new Error("Canvas unavailable");
-	const seconds = clip.element.duration / TICKS_PER_SECOND;
-	const step = Math.max(1 / perSecond, seconds / 900);
+	const seconds = Math.min(
+		clip.element.duration / TICKS_PER_SECOND,
+		toSeconds ?? Number.POSITIVE_INFINITY,
+	);
+	const step = Math.max(1 / perSecond, (seconds - fromSeconds) / 900);
 	const samples: Samples = { times: [], frames: [], width, height };
-	for (let t = 0; t <= seconds; t += step) {
+	for (let t = fromSeconds; t <= seconds; t += step) {
 		await seek({
 			video,
 			seconds: sourceSecondsAt({
@@ -95,14 +105,14 @@ async function sampleClip({
 		ctx.drawImage(video, 0, 0, width, height);
 		samples.times.push(Math.round(t * TICKS_PER_SECOND));
 		samples.frames.push(toLuma(ctx.getImageData(0, 0, width, height).data));
-		onProgress?.(t / seconds);
+		onProgress?.((t - fromSeconds) / Math.max(1e-6, seconds - fromSeconds));
 	}
 	video.removeAttribute("src");
 	video.load();
 	return samples;
 }
 
-function keyframes({
+export function keyframesOn({
 	animations,
 	path,
 	times,
@@ -214,13 +224,13 @@ export async function setStabilize({
 		(srcW * contain * Math.abs(sx) * STABILIZE_ZOOM) / samples.width;
 	const baseX = Number(element.params["transform.positionX"] ?? 0);
 	const baseY = Number(element.params["transform.positionY"] ?? 0);
-	let animations = keyframes({
+	let animations = keyframesOn({
 		animations: element.animations,
 		path: "transform.positionX",
 		times: samples.times,
 		values: offsets.map((o) => baseX + o.x * toCanvas),
 	});
-	animations = keyframes({
+	animations = keyframesOn({
 		animations,
 		path: "transform.positionY",
 		times: samples.times,
@@ -299,7 +309,7 @@ export async function setDeflicker({
 				elementId: element.id,
 				patch: {
 					effects: [effect, ...cleaned.effects],
-					animations: keyframes({
+					animations: keyframesOn({
 						animations: cleaned.animations,
 						path: buildEffectParamPath({
 							effectId: effect.id,

@@ -8,6 +8,11 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 ## [Unreleased]
 
 ### Added
+- New text panel with Presets, Basic, Animation and Motion tracking tabs.
+  - **Presets:** 16 Styles (outline, highlight, neon, comic, fire, gold and more) and the Templates, each with Apply to all.
+  - **Basic:** the words, font, a format bar (size, bold, italic, underline, alignment, letter case, line and letter spacing), Fill, Stroke, Background and Shadow (each with its own settings), Glow, Opacity and Transform, with Apply to all.
+  - **Animation:** text gets a Loop tab (the Combo animations plus Shake, Breathe, Blink and Flicker) and a Caption tab: Word by word, Quick words, Line by line and Letter by letter.
+  - **Motion tracking:** text follows an object in the video under it from the playhead on, as position keyframes you can adjust.
 - Dual screen: the preview, media panel, timeline and properties can each move to their own window (hover a panel and click the window button in its corner), for example to put the preview on a second monitor. The windows stay on the same project: playback, selection, menus and keyboard shortcuts work in all of them. "Bring it back" or closing the window returns the panel.
 - Basic tab for video and image clips. It has Mask and Color adjustment shortcuts, Blend (mode and opacity), Transform, and three switches:
   - Stabilize smooths camera shake with position keyframes and a 10% zoom.

@@ -176,6 +176,23 @@ function resolveProjection({
 	);
 }
 
+/** Graphemes to show for a reveal, rounded to whole words or lines. */
+function revealCount({
+	content,
+	reveal,
+	unit,
+}: {
+	content: string;
+	reveal: number;
+	unit?: "word" | "line";
+}): number {
+	const total = graphemeCount(content);
+	if (!unit) return Math.round(reveal * total);
+	const parts = unit === "line" ? content.split(/(?<=\n)/) : content.split(/(?<=\s)(?=\S)/);
+	const shown = Math.ceil(reveal * parts.length - 1e-9);
+	return graphemeCount(parts.slice(0, Math.max(0, shown)).join(""));
+}
+
 function resolveVisualState({
 	params,
 	context,
@@ -552,9 +569,11 @@ function resolveTextNode({
 	});
 	if (animation.reveal < 1) {
 		const content = String(node.params.params.content ?? "");
-		styleEffects.revealGraphemes = Math.round(
-			animation.reveal * graphemeCount(content),
-		);
+		styleEffects.revealGraphemes = revealCount({
+			content,
+			reveal: animation.reveal,
+			unit: animation.revealUnit,
+		});
 	}
 	const transform = resolveTransformAtTime({
 		baseTransform: node.params.transform,

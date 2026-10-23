@@ -61,3 +61,29 @@ describe("stabilize and flicker analysis", () => {
 		expect(smooth({ values: [0, 3, 0], window: 3 })).toEqual([1.5, 1, 1.5]);
 	});
 });
+
+describe("motion tracking", () => {
+	test("follows a moving square", async () => {
+		const { trackPatch } = await import("../analysis");
+		const W = 80;
+		const H = 60;
+		const frames = Array.from({ length: 8 }, (_, t) => {
+			const f = new Float32Array(W * H).fill(0.2);
+			const ox = 20 + t * 4;
+			const oy = 20 + t * 2;
+			for (let y = oy - 4; y <= oy + 4; y++)
+				for (let x = ox - 4; x <= ox + 4; x++) f[y * W + x] = 0.9;
+			return f;
+		});
+		const path = trackPatch({
+			frames,
+			width: W,
+			height: H,
+			cx: 20,
+			cy: 20,
+			r: 6,
+			range: 8,
+		});
+		expect(path.at(-1)).toEqual({ x: 48, y: 34 });
+	});
+});

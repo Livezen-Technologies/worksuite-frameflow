@@ -48,6 +48,19 @@ export const COMBO_ANIMATIONS: AnimationPreset[] = [
 	{ value: "ken-burns", label: "Slow Zoom" },
 	{ value: "swing", label: "Swing" },
 	{ value: "heartbeat", label: "Heartbeat" },
+	{ value: "shake", label: "Shake" },
+	{ value: "breathe", label: "Breathe" },
+	{ value: "blink", label: "Blink" },
+	{ value: "flicker", label: "Flicker" },
+];
+
+/** Caption animations: the text appears word by word or line by line. */
+export const CAPTION_ANIMATIONS: AnimationPreset[] = [
+	{ value: "none", label: "None", textOnly: true },
+	{ value: "words", label: "Word by word", textOnly: true },
+	{ value: "words-fast", label: "Quick words", textOnly: true },
+	{ value: "lines", label: "Line by line", textOnly: true },
+	{ value: "letters", label: "Letter by letter", textOnly: true },
 ];
 
 const options = (presets: AnimationPreset[]) =>
@@ -91,6 +104,14 @@ export const ANIMATION_PARAMS: ParamDefinition[] = [
 		keyframable: false,
 	},
 	{
+		key: "animation.caption",
+		label: "Caption",
+		type: "select",
+		default: "none",
+		options: options(CAPTION_ANIMATIONS),
+		keyframable: false,
+	},
+	{
 		key: "animation.combo",
 		label: "Combo",
 		type: "select",
@@ -122,6 +143,8 @@ export interface AnimationState {
 	rotate: number;
 	/** 0–1 share of text revealed by a typewriter, or 1. */
 	reveal: number;
+	/** Round the reveal to whole words or lines (caption animations). */
+	revealUnit?: "word" | "line";
 }
 
 const clamp01 = (value: number) => Math.min(1, Math.max(0, value));
@@ -257,6 +280,22 @@ function applyCombo({
 			state.rotate += 8 * Math.sin(phase * 0.5);
 			state.offsetX += 0.03 * Math.sin(phase * 0.5);
 			break;
+		case "shake":
+			state.offsetX += 0.025 * Math.sin(phase * 3.1);
+			state.offsetY += 0.02 * Math.sin(phase * 4.3 + 1);
+			break;
+		case "breathe":
+			state.scale *= 1 + 0.04 * Math.sin(phase * 0.5);
+			state.opacity *= 0.85 + 0.15 * (0.5 + 0.5 * Math.sin(phase * 0.5));
+			break;
+		case "blink":
+			state.opacity *= (seconds * speed) % 1 < 0.75 ? 1 : 0;
+			break;
+		case "flicker": {
+			const n = Math.sin(Math.floor(seconds * speed * 12) * 12.9898) * 43758.5453;
+			state.opacity *= 0.55 + 0.45 * (n - Math.floor(n));
+			break;
+		}
 		case "heartbeat": {
 			const beat = (seconds * speed) % 1;
 			const kick = beat < 0.15 ? Math.sin((beat / 0.15) * Math.PI) : 0;
@@ -312,6 +351,14 @@ export function animationState({
 			speed: num({ params, key: "animation.comboSpeed", fallback: 1 }),
 		});
 	}
+	const caption = str({ params, key: "animation.caption" });
+	if (caption !== "none" && durationSeconds > 0) {
+		const span =
+			caption === "words-fast" ? 0.4 : caption === "letters" ? 0.6 : 0.85;
+		state.reveal = Math.min(state.reveal, clamp01(localSeconds / (durationSeconds * span)));
+		if (caption === "words" || caption === "words-fast") state.revealUnit = "word";
+		if (caption === "lines") state.revealUnit = "line";
+	}
 	if (inType !== "none" && inDuration > 0 && localSeconds < inDuration) {
 		applyEdge({
 			state,
@@ -333,7 +380,7 @@ export function animationState({
 }
 
 export function hasAnimation(params: ParamValues): boolean {
-	return ["animation.in", "animation.out", "animation.combo"].some(
+	return ["animation.in", "animation.out", "animation.combo", "animation.caption"].some(
 		(key) => str({ params, key }) !== "none",
 	);
 }

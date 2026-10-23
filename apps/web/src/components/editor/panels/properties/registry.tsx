@@ -32,7 +32,9 @@ import { MasksTab } from "@/masks/components/masks-tab";
 import { SpeedTab } from "@/speed/components/speed-tab";
 import { GraphicTab } from "@/graphics/components/graphic-tab";
 import { OcShapesIcon } from "@/components/icons";
-import { Film, Globe, Sparkles } from "lucide-react";
+import { Crosshair, Film, Globe, Sparkles, Type, Wand } from "lucide-react";
+import { TextBasicTab, TextPresetsTab } from "@/text/components/text-panel";
+import { TrackingTab } from "@/text/components/tracking-tab";
 import { BasicTab } from "@/clip-actions/components/basic-tab";
 import { AnimationTab } from "@/animation/components/animation-tab";
 import { SphereTab } from "@/vr/components/sphere-tab";
@@ -232,7 +234,7 @@ function buildSphereTab({
 function buildTextTab({ element }: { element: TextElement }): PropertiesTabDef {
 	return {
 		id: "text",
-		label: "Text",
+		label: "All settings",
 		icon: <HugeiconsIcon icon={TextFontIcon} size={16} />,
 		content: ({ trackId }) => (
 			<ElementParamsTab
@@ -281,12 +283,34 @@ function getTextConfig({
 	element: TextElement;
 }): ElementPropertiesConfig {
 	return {
-		defaultTab: "text",
+		defaultTab: "basic",
 		tabs: [
-			buildTextTab({ element }),
-			buildTransformTab({ element }),
+			{
+				id: "presets",
+				label: "Presets",
+				icon: <Wand size={16} />,
+				content: ({ trackId }) => (
+					<TextPresetsTab element={element} trackId={trackId} />
+				),
+			},
+			{
+				id: "basic",
+				label: "Basic",
+				icon: <Type size={16} />,
+				content: ({ trackId }) => (
+					<TextBasicTab element={element} trackId={trackId} />
+				),
+			},
 			buildAnimationTab({ element }),
-			buildBlendingTab({ element }),
+			{
+				id: "tracking",
+				label: "Motion tracking",
+				icon: <Crosshair size={16} />,
+				content: ({ trackId }) => (
+					<TrackingTab element={element} trackId={trackId} />
+				),
+			},
+			buildTextTab({ element }),
 		],
 	};
 }

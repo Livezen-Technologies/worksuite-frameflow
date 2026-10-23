@@ -178,3 +178,77 @@ export function flickerCorrection({
 		return Math.max(-1, Math.min(1, Math.log2(t / m)));
 	});
 }
+
+/**
+ * Motion tracking: follows a square patch (centre cx, cy; half-size r)
+ * through frames by searching ±range pixels around its last position for
+ * the best mean-removed match. The template adapts slowly so the object
+ * may change a little. Returns the patch centre in every frame.
+ */
+export function trackPatch({
+	frames,
+	width,
+	height,
+	cx,
+	cy,
+	r,
+	range = 12,
+}: {
+	frames: Float32Array[];
+	width: number;
+	height: number;
+	cx: number;
+	cy: number;
+	r: number;
+	range?: number;
+}): { x: number; y: number }[] {
+	const first = frames[0];
+	if (!first) return [];
+	const size = r * 2 + 1;
+	const readPatch = ({
+		f,
+		x,
+		y,
+	}: {
+		f: Float32Array;
+		x: number;
+		y: number;
+	}) => {
+		const out = new Float32Array(size * size);
+		let sum = 0;
+		for (let j = -r; j <= r; j++) {
+			for (let i = -r; i <= r; i++) {
+				const px = Math.min(width - 1, Math.max(0, x + i));
+				const py = Math.min(height - 1, Math.max(0, y + j));
+				const v = f[py * width + px] ?? 0;
+				out[(j + r) * size + (i + r)] = v;
+				sum += v;
+			}
+		}
+		const mean = sum / out.length;
+		for (let k = 0; k < out.length; k++) out[k] = (out[k] ?? 0) - mean;
+		return out;
+	};
+	let template = readPatch({ f: first, x: Math.round(cx), y: Math.round(cy) });
+	let x = Math.round(cx);
+	let y = Math.round(cy);
+	const path = [{ x, y }];
+	for (const frame of frames.slice(1)) {
+		let best = { x, y, err: Number.POSITIVE_INFINITY };
+		for (let dy = -range; dy <= range; dy++) {
+			for (let dx = -range; dx <= range; dx++) {
+				const candidate = readPatch({ f: frame, x: x + dx, y: y + dy });
+				let err = 0;
+				for (let k = 0; k < candidate.length; k += 2)
+					err += Math.abs((candidate[k] ?? 0) - (template[k] ?? 0));
+				if (err < best.err) best = { x: x + dx, y: y + dy, err };
+			}
+		}
+		x = Math.min(width - 1, Math.max(0, best.x));
+		y = Math.min(height - 1, Math.max(0, best.y));
+		const now = readPatch({ f: frame, x, y });
+		template = template.map((v, k) => v * 0.9 + (now[k] ?? 0) * 0.1);
+		path.push({ x, y });
+	}
+	return path;
+}
