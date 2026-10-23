@@ -20,6 +20,7 @@ const ai = require("./ai");
 const automation = require("./automation");
 const projectWindows = require("./project-windows");
 const nativeHelper = require("./native-helper");
+const masterExport = require("./master-export");
 
 const HOST = "127.0.0.1";
 let server = null;
@@ -356,6 +357,13 @@ function registerAccountIpc() {
 	handle("uploads:resume-all", () => uploadQueue.resumeAll());
 	handle("clipboard:write", (text) => clipboard.writeText(String(text)));
 	handle("helper:caps", () => nativeHelper.getCaps());
+	handle("master:codecs", () => (nativeHelper._test.ffmpegPath() ? masterExport.codecs() : []));
+	handle("master:start", (args) => masterExport.start(args ?? {}));
+	handle("master:frame", (args) => masterExport.frame(args ?? {}));
+	handle("master:finish", (args) => masterExport.finish(args ?? {}));
+	handle("master:cancel", (args) => masterExport.cancel(args ?? {}));
+	handle("master:save", (args) => masterExport.save(args ?? {}));
+	handle("master:encode-audio", (args) => masterExport.encodeAudio(args ?? {}));
 	handle("helper:configure", (args) => nativeHelper.configure(args ?? {}));
 	handle("helper:begin", () => nativeHelper.begin());
 	handle("helper:write", (args) => nativeHelper.write(args ?? {}));
