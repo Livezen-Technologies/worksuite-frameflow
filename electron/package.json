@@ -45,6 +45,7 @@
       "network.js",
       "upload-queue.js",
       "project-folders.js",
+      "ai.js",
       "preload.js",
       "package.json"
     ],

@@ -7,7 +7,10 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { useReducer, useRef, useState } from "react";
+import { useReducer, useRef, useState, useSyncExternalStore } from "react";
+import { aiBridge } from "@/ai/bridge";
+import { aiTranscribe } from "@/ai/tasks";
+import { useAiSettings } from "@/ai/store";
 import { extractTimelineAudio } from "@/media/mediabunny";
 import { useEditor } from "@/editor/use-editor";
 import { TRANSCRIPTION_DIAGNOSTICS_SCOPE } from "@/transcription/diagnostics";
@@ -88,14 +91,26 @@ function processingReducer(
 }
 /* eslint-enable opencut/prefer-object-params */
 
+const noSubscribe = () => () => {};
+
 export function Captions() {
 	const projectLanguage = useEditor(
 		(e) => e.project.getActiveOrNull()?.settings.defaults?.captionLanguage,
 	);
-	const [selectedLanguage, setSelectedLanguage] = useState<TranscriptionLanguage>(
-		() => TRANSCRIPTION_LANGUAGES.find((l) => l.code === projectLanguage)?.code ?? "auto",
-	);
+	const [selectedLanguage, setSelectedLanguage] =
+		useState<TranscriptionLanguage>(
+			() =>
+				TRANSCRIPTION_LANGUAGES.find((l) => l.code === projectLanguage)?.code ??
+				"auto",
+		);
 	const [processing, dispatch] = useReducer(processingReducer, IDLE_STATE);
+	const engine = useAiSettings((s) => s.transcribeEngine);
+	const setEngine = useAiSettings((s) => s.setTranscribeEngine);
+	const hasAi = useSyncExternalStore(
+		noSubscribe,
+		() => !!aiBridge(),
+		() => false,
+	);
 	const containerRef = useRef<HTMLDivElement>(null);
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const editor = useEditor();
@@ -145,11 +160,26 @@ export function Captions() {
 				sampleRate: DEFAULT_TRANSCRIPTION_SAMPLE_RATE,
 			});
 
-			const result = await transcriptionService.transcribe({
-				audioData: samples,
-				language: selectedLanguage === "auto" ? undefined : selectedLanguage,
-				onProgress: handleProgress,
-			});
+			const useGemini = engine === "gemini" && !!aiBridge();
+			const result = useGemini
+				? {
+						segments: await aiTranscribe({
+							samples,
+							sampleRate: DEFAULT_TRANSCRIPTION_SAMPLE_RATE,
+							language: selectedLanguage,
+							onProgress: (p) =>
+								dispatch({
+									type: "update_step",
+									step: `Transcribing with Gemini ${Math.round(p * 100)}%`,
+								}),
+						}),
+					}
+				: await transcriptionService.transcribe({
+						audioData: samples,
+						language:
+							selectedLanguage === "auto" ? undefined : selectedLanguage,
+						onProgress: handleProgress,
+					});
 
 			// Transcript first: the user fixes the text before any captions
 			// reach the timeline.
@@ -159,7 +189,7 @@ export function Captions() {
 			const nextTranscript = createTranscript({
 				segments: result.segments,
 				language: selectedLanguage,
-				engine: `Local Whisper ${modelName}`,
+				engine: useGemini ? "Gemini (cloud)" : `Local Whisper ${modelName}`,
 			});
 			if (nextTranscript.segments.length === 0) {
 				dispatch({
@@ -332,6 +362,28 @@ export function Captions() {
 								</SelectContent>
 							</Select>
 						</SectionField>
+						{hasAi && (
+							<SectionField label="Engine">
+								<Select
+									value={engine}
+									onValueChange={(value) =>
+										setEngine(value === "gemini" ? "gemini" : "local")
+									}
+								>
+									<SelectTrigger data-transcribe-engine>
+										<SelectValue />
+									</SelectTrigger>
+									<SelectContent>
+										<SelectItem value="local">
+											On this device (Whisper)
+										</SelectItem>
+										<SelectItem value="gemini">
+											Gemini (cloud, your key)
+										</SelectItem>
+									</SelectContent>
+								</Select>
+							</SectionField>
+						)}
 					</SectionFields>
 
 					{transcript && (
@@ -361,7 +413,10 @@ export function Captions() {
 						type="button"
 						className="mt-auto w-full"
 						onClick={handleGenerateTranscript}
-						disabled={isProcessing || activeDiagnostics.length > 0}
+						disabled={
+							isProcessing ||
+							(engine !== "gemini" && activeDiagnostics.length > 0)
+						}
 					>
 						{isProcessing && <Spinner className="mr-1" />}
 						{isProcessing

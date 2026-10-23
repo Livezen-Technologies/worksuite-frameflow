@@ -1,5 +1,6 @@
 "use client";
 
+import { TranscriptAiTools } from "@/ai/components/transcript-ai-tools";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -246,6 +247,7 @@ export function TranscriptEditor() {
 
 			<div className="flex min-h-0 flex-1 flex-wrap">
 				<aside className="bg-sidebar flex min-w-0 flex-[0_1_280px] flex-col gap-4 overflow-auto border-r p-4">
+					<TranscriptAiTools transcript={transcript} onChange={update} />
 					<section className="flex flex-col gap-1.5">
 						<h2 className="m-0 text-sm font-semibold">Transcription</h2>
 						<p className="text-muted-foreground m-0 leading-relaxed">

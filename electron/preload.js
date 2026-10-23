@@ -32,6 +32,14 @@ contextBridge.exposeInMainWorld("worksuite", {
 			return () => ipcRenderer.removeListener("uploads:changed", handler);
 		},
 	},
+	ai: {
+		getState: () => ipcRenderer.invoke("ai:get-state"),
+		setKey: (args) => ipcRenderer.invoke("ai:set-key", args),
+		clearKey: () => ipcRenderer.invoke("ai:clear-key"),
+		test: (args) => ipcRenderer.invoke("ai:test", args),
+		generate: (args) => ipcRenderer.invoke("ai:generate", args),
+		cancel: () => ipcRenderer.invoke("ai:cancel"),
+	},
 	folders: {
 		get: (args) => ipcRenderer.invoke("folders:get", args),
 		create: (args) => ipcRenderer.invoke("folders:create", args),

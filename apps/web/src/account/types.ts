@@ -1,3 +1,4 @@
+import type { AiBridge } from "@/ai/bridge";
 import type { ProjectFoldersBridge } from "@/project-folder/bridge";
 export type WorksuiteAccountStatus =
 	| "signed-out"
@@ -75,6 +76,7 @@ declare global {
 			network?: WorksuiteNetworkBridge;
 			uploads?: WorksuiteUploadsBridge;
 			folders?: ProjectFoldersBridge;
+			ai?: AiBridge;
 		};
 	}
 }

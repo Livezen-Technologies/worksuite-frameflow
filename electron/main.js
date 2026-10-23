@@ -14,6 +14,7 @@ const cloud = require("./cloud-upload");
 const cloudSync = require("./cloud-sync");
 const updates = require("./updater");
 const projectFolders = require("./project-folders");
+const ai = require("./ai");
 
 const HOST = "127.0.0.1";
 let server = null;
@@ -269,6 +270,12 @@ function registerAccountIpc() {
 	handle("uploads:pause-all", () => uploadQueue.pauseAll());
 	handle("uploads:resume-all", () => uploadQueue.resumeAll());
 	handle("clipboard:write", (text) => clipboard.writeText(String(text)));
+	handle("ai:get-state", () => ai.getState());
+	handle("ai:set-key", (args) => ai.setKey(args ?? {}));
+	handle("ai:clear-key", () => ai.clearKey());
+	handle("ai:test", (args) => ai.test(args));
+	handle("ai:generate", (args) => ai.generate(args));
+	handle("ai:cancel", () => ai.cancel());
 	handle("folders:get", (args) => projectFolders.get(args ?? {}));
 	handle("folders:create", (args) => projectFolders.create(args ?? {}));
 	handle("folders:open", () => projectFolders.open());
