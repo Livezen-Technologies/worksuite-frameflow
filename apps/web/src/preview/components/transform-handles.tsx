@@ -1,5 +1,6 @@
 "use client";
 
+import { ClipToolbar } from "@/clip-actions/components/clip-toolbar";
 import { usePreviewViewport } from "@/preview/components/preview-viewport";
 import { useTransformHandles } from "@/preview/hooks/use-transform-handles";
 import { isVisualElement } from "@/timeline/element-utils";
@@ -85,7 +86,6 @@ export function TransformHandles({
 	return (
 		<div
 			className="pointer-events-none absolute inset-0 overflow-hidden"
-			aria-hidden
 		>
 			<BoundingBoxOutline
 				center={center}
@@ -139,6 +139,11 @@ export function TransformHandles({
 				onPointerDown={(event) => handleRotationPointerDown({ event })}
 				onPointerMove={onPointerMove}
 				onPointerUp={onPointerUp}
+			/>
+			<ClipToolbar
+				clip={{ trackId: selectedWithBounds.trackId, element }}
+				x={center.x}
+				y={Math.min(rotationHandleScreen.y, center.y - outlineHeight / 2)}
 			/>
 		</div>
 	);

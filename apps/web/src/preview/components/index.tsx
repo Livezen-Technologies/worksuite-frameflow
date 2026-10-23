@@ -1,5 +1,6 @@
 "use client";
 
+import { AspectPicker } from "@/canvas/components/aspect-picker";
 import { useSphereProjectView } from "@/vr/components/sphere-menu";
 import { SphereGuides, SphereViewer } from "@/vr/components/sphere-viewer";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -335,6 +336,7 @@ function PreviewCanvas({
 									plane="under-interaction"
 								/>
 								<PreviewInteractionOverlay />
+								<AspectPicker />
 								<PreviewOverlayLayer
 									instances={overlayInstances}
 									plane="over-interaction"

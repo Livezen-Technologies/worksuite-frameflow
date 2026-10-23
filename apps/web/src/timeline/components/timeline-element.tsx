@@ -1,5 +1,6 @@
 "use client";
 
+import { TimelineClipMenuExtras } from "@/clip-actions/components/clip-menus";
 import { getTransitionDefinition } from "@/transitions/definitions";
 import { createContext, useContext } from "react";
 import { useEditor } from "@/editor/use-editor";
@@ -434,6 +435,12 @@ export function TimelineElement({
 						Split
 					</ActionMenuItem>
 					<CopyMenuItem />
+					{selectedElements.length <= 1 && (
+						<TimelineClipMenuExtras
+							clip={{ trackId: track.id, element }}
+							section="edit"
+						/>
+					)}
 					{selectedElements.length === 1 && (
 						<ActionMenuItem
 							action="duplicate-selected"
@@ -494,13 +501,13 @@ export function TimelineElement({
 							>
 								Reveal media
 							</ContextMenuItem>
-							<ContextMenuItem
-								icon={<HugeiconsIcon icon={Exchange01Icon} />}
-								disabled
-							>
-								Replace media
-							</ContextMenuItem>
 						</>
+					)}
+					{selectedElements.length <= 1 && (
+						<TimelineClipMenuExtras
+							clip={{ trackId: track.id, element }}
+							section="tools"
+						/>
 					)}
 					<ContextMenuSeparator />
 					<DeleteMenuItem

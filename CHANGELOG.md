@@ -8,6 +8,9 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 ## [Unreleased]
 
 ### Added
+- Clip toolbar over the selected clip in the preview: Replace, Fit/Fill, Crop, Overlay track, and a "…" menu with Copy, Cut, Paste, Duplicate, Delete, Replace, Crop, Flip (horizontal or vertical), Overlay and Add overlay.
+- Aspect-ratio picker at the top-left of the preview: original aspect ratio, 16:9, 4:3, 2:1, 9:16, 1:1, 3:4 and 4:5, each labelled with where it's used.
+- More in the timeline clip menu: Cut, Paste, Replace (keeps the clip's place and length), Download clip (original file or the frame at the playhead), Transcript-based editing, Split scene (cuts the clip at every shot change) and Freeze (holds the frame at the playhead for 3 seconds and moves the rest of the track along). Each is one undo step.
 - Offline mode (Settings › Network & sync) stops all network traffic from FrameFlow: cloud sync, sharing, sign-in, fonts and sound search. Update checks still run unless you turn them off. An "Offline" badge in the header turns it off again. Cloud features are hidden while offline or signed out.
 - Upload queue in the header: every cloud upload (project media, share links, library items) with its progress, pause and resume, and pause/resume all. A paused or interrupted upload carries on from its last finished part. Settings has an upload speed limit.
 - Settings sync: keyboard shortcuts, effect presets, title templates, workspaces, the brand kit, timeline and preview preferences, and camera-LUT choices follow your Worksuite account, setting by setting, newest change wins. It can be turned off or run now from Settings.
