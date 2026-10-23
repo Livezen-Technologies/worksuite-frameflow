@@ -12,10 +12,12 @@ import { MediaDragOverlay } from "@/components/editor/panels/assets/drag-overlay
 import { DraggableItem } from "@/components/editor/panels/assets/draggable-item";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import type { PhotoInfo } from "@/media/heif/exif";
 import {
 	ContextMenu,
 	ContextMenuContent,
 	ContextMenuItem,
+	ContextMenuSeparator,
 	ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 import {
@@ -357,6 +359,7 @@ function MediaItemWithContextMenu({
 		<ContextMenu>
 			<ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
 			<ContextMenuContent>
+				<PhotoInfoItems photo={item.photo} />
 				<ContextMenuItem>Export clips</ContextMenuItem>
 				<ContextMenuItem
 					variant="destructive"
@@ -368,6 +371,35 @@ function MediaItemWithContextMenu({
 				</ContextMenuItem>
 			</ContextMenuContent>
 		</ContextMenu>
+	);
+}
+
+/** Date, camera and place a photo was taken (HE-09). */
+function PhotoInfoItems({ photo }: { photo?: PhotoInfo }) {
+	if (!photo) return null;
+	const camera = [photo.make, photo.model].filter(Boolean).join(" ");
+	const taken = photo.takenAt?.replace(/^(\d{4}):(\d{2}):(\d{2})/, "$1-$2-$3");
+	const hasPlace = photo.latitude !== undefined && photo.longitude !== undefined;
+	return (
+		<>
+			{taken && <ContextMenuItem disabled data-photo-taken>Taken {taken}</ContextMenuItem>}
+			{camera && <ContextMenuItem disabled data-photo-camera>{camera}</ContextMenuItem>}
+			{hasPlace && (
+				<ContextMenuItem
+					data-photo-place
+					onClick={() =>
+						window.open(
+							`https://www.openstreetmap.org/?mlat=${photo.latitude}&mlon=${photo.longitude}#map=16/${photo.latitude}/${photo.longitude}`,
+							"_blank",
+							"noopener",
+						)
+					}
+				>
+					Show where it was taken ({photo.latitude?.toFixed(4)}, {photo.longitude?.toFixed(4)})
+				</ContextMenuItem>
+			)}
+			<ContextMenuSeparator />
+		</>
 	);
 }
 

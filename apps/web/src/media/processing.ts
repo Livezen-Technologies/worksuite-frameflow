@@ -2,7 +2,7 @@ import { toast } from "sonner";
 import { isHdrProject } from "@/hdr/settings";
 import { EditorCore } from "@/core";
 import type { MediaColorInfo } from "@/services/storage/types";
-import { convertHeif, findLivePhotoPairs, isHeif } from "./heif";
+import { convertHeif, findLivePhotoPairs, isHeif, type PhotoInfo } from "./heif";
 import { unsupportedSphereFormat } from "@/vr/spherical";
 import { convertSphereFile, spherePlanFor } from "@/vr/convert";
 import { helperBridge } from "@/proxy/bridge";
@@ -108,7 +108,8 @@ export async function processMediaAssets({
 		skip.add(asVideo ? still : movie);
 	}
 
-	const total = fileArray.length;
+	let total = fileArray.length;
+	const photoInfo = new Map<File, PhotoInfo>();
 	let completed = 0;
 
 	for (const original of fileArray) {
@@ -120,11 +121,29 @@ export async function processMediaAssets({
 		// HEIC/HEIF photos are decoded to JPEG/PNG in a worker (HE-01 – HE-03).
 		if (isHeif({ file })) {
 			try {
-				const converted = await convertHeif({ file });
-				file = converted.file;
-				if (converted.imageCount > 1)
+				let converted = await convertHeif({ file });
+				// Bursts and image collections: every picture, in order (HE-05).
+				if (
+					converted.imageCount > 1 &&
+					window.confirm(
+						`${original.name} holds ${converted.imageCount} pictures.\n\nOK: import all of them, in order.\nCancel: import the main picture only.`,
+					)
+				) {
+					converted = await convertHeif({ file, all: true });
+					for (const extra of converted.files.slice(1)) {
+						fileArray.push(extra);
+						if (converted.photo) photoInfo.set(extra, converted.photo);
+					}
+					total += converted.files.length - 1;
+				} else if (converted.imageCount > 1)
 					toast(`${original.name} holds ${converted.imageCount} pictures`, {
 						description: "The main picture was imported.",
+					});
+				file = converted.file;
+				if (converted.photo) photoInfo.set(file, converted.photo);
+				if (converted.convertedFromP3)
+					toast.info(`${original.name} uses wide-gamut colour (Display P3)`, {
+						description: "Its colours were converted to the project's sRGB.",
 					});
 			} catch (error) {
 				toast.error(`Couldn't open ${original.name}`, {
@@ -266,6 +285,7 @@ export async function processMediaAssets({
 				fps,
 				hasAudio,
 				color,
+				...(photoInfo.get(file) ? { photo: photoInfo.get(file) } : {}),
 			});
 
 			await new Promise((resolve) => setTimeout(resolve, 0));

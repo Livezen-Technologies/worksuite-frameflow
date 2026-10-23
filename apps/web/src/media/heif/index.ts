@@ -1,4 +1,7 @@
 import type { HeifRequest, HeifResponse } from "./heif.worker";
+import { type PhotoInfo, readHeifExif } from "./exif";
+
+export type { PhotoInfo } from "./exif";
 
 const HEIF_EXTENSION = /\.(heic|heif|hif)$/i;
 
@@ -29,31 +32,52 @@ export interface ConvertedHeif {
 	width: number;
 	height: number;
 	imageCount: number;
+	/** Every picture as its own file when `all` was asked for (HE-05). */
+	files: File[];
+	photo: PhotoInfo | null;
+	convertedFromP3: boolean;
 }
 
 /**
  * Turns a HEIC/HEIF photo into a JPEG (or PNG with transparency) the editor
  * can use, decoding in a worker so large photos don't freeze the app.
  */
-export async function convertHeif({ file }: { file: File }): Promise<ConvertedHeif> {
+export async function convertHeif({
+	file,
+	all = false,
+}: {
+	file: File;
+	all?: boolean;
+}): Promise<ConvertedHeif> {
 	const buffer = await file.arrayBuffer();
+	let photo: PhotoInfo | null = null;
+	try {
+		photo = readHeifExif(new Uint8Array(buffer));
+	} catch {
+		// EXIF is a bonus; a damaged block shouldn't stop the import.
+	}
 	const id = nextId++;
 	const response = await new Promise<HeifResponse>((resolve) => {
 		pending.set(id, resolve);
-		const request: HeifRequest = { id, buffer };
+		const request: HeifRequest = { id, buffer, all };
 		getWorker().postMessage(request, [buffer]);
 	});
 	if (!response.ok) throw new Error(response.error);
-	const extension = response.blob.type === "image/png" ? "png" : "jpg";
-	const name = file.name.replace(HEIF_EXTENSION, `.${extension}`);
+	const toFile = ({ blob, index }: { blob: Blob; index: number }) => {
+		const extension = blob.type === "image/png" ? "png" : "jpg";
+		const suffix = response.pictures.length > 1 ? ` ${index + 1}` : "";
+		const name = file.name.replace(HEIF_EXTENSION, `${suffix}.${extension}`);
+		return new File([blob], name, { type: blob.type, lastModified: file.lastModified });
+	};
+	const files = response.pictures.map(({ blob }, index) => toFile({ blob, index }));
 	return {
-		file: new File([response.blob], name, {
-			type: response.blob.type,
-			lastModified: file.lastModified,
-		}),
+		file: files[0],
 		width: response.width,
 		height: response.height,
 		imageCount: response.imageCount,
+		files,
+		photo,
+		convertedFromP3: response.convertedFromP3,
 	};
 }
 

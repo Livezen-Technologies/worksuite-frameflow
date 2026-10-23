@@ -1,3 +1,4 @@
+import type { PhotoInfo } from "@/media/heif/exif";
 import type { MediaType } from "@/media/types";
 import type {
 	TProject,
@@ -29,6 +30,8 @@ export interface MediaAssetData {
 	thumbnailUrl?: string;
 	/** Colour metadata of video, for HDR handling (HD-01). */
 	color?: MediaColorInfo;
+	/** Date, camera and place a photo was taken (HE-09). */
+	photo?: PhotoInfo;
 }
 
 export interface MediaColorInfo {

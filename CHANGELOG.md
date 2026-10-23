@@ -9,6 +9,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
+- HEIC photos: the date taken, camera and place (with a map link) now show in a photo's right-click menu in the media bin; files with several pictures (bursts, collections) can be imported whole, in order; and wide-gamut Display P3 photos are converted to the project's colours instead of looking washed out.
+
 - 360° subject tracking: aim a 360° clip's camera at someone or something and press **Follow subject** in its 360° tab; the camera's pan and tilt are keyframed to keep it centred to the end of the clip, even as it moves round behind the viewer.
 
 - The desktop app now opens 360° camera originals directly: Insta360 .insv (dual fisheye), GoPro MAX .360 and cubemap 360° videos are converted to standard 360° video (up to 4096×2048) on import, keeping 4-channel spatial sound.
