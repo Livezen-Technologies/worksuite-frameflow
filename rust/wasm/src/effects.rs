@@ -23,6 +23,8 @@ struct ApplyEffectPassesOptions {
 struct EffectPassInput {
     shader: String,
     uniforms: Vec<EffectUniformInput>,
+    #[serde(default)]
+    wrap: bool,
 }
 
 #[derive(Deserialize)]
@@ -83,6 +85,7 @@ fn map_effect_passes(effect_passes: Vec<EffectPassInput>) -> Vec<EffectPass> {
     effect_passes
         .into_iter()
         .map(|pass| EffectPass {
+            wrap: pass.wrap,
             shader: pass.shader,
             uniforms: pass
                 .uniforms

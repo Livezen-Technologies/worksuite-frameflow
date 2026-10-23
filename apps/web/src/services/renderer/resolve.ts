@@ -292,7 +292,10 @@ function resolveVisualState({
 		localTime,
 		width: effectWidth,
 		height: effectHeight,
-	});
+	}).map((group) =>
+		// A 360° clip kept as a sphere: its left and right edges meet (VR-18).
+		projection?.equirectangular ? group.map((pass) => ({ ...pass, wrap: true })) : group,
+	);
 	if (transition.blur > 0) {
 		effectPasses.push(
 			buildGaussianBlurPasses({

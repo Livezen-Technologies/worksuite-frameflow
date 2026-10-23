@@ -88,6 +88,9 @@ pub struct LayerMaskDescriptor {
 pub struct EffectPassDescriptor {
     pub shader: String,
     pub uniforms: HashMap<String, EffectUniformValueDescriptor>,
+    /// Wrap left/right for 360° frames (VR-18).
+    #[serde(default)]
+    pub wrap: bool,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

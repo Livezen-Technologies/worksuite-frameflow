@@ -12,6 +12,8 @@ export type EffectUniformValue = number | number[];
 export interface EffectPass {
 	shader: string;
 	uniforms: Record<string, EffectUniformValue>;
+	/** Sample across the left/right edge of a 360° frame (VR-18). */
+	wrap?: boolean;
 }
 
 export interface EffectPassTemplate {
@@ -49,6 +51,11 @@ export interface EffectDefinition {
 	name: string;
 	keywords: string[];
 	category?: EffectCategory;
+	/**
+	 * False for effects built around the frame's centre or edges (vignette,
+	 * mirror, wave), which can't wrap round a 360° sphere (VR-18).
+	 */
+	sphereSafe?: boolean;
 	params: ParamDefinition[];
 	renderer: EffectRendererConfig;
 }

@@ -426,7 +426,11 @@ impl EffectPipeline {
                             },
                             wgpu::BindGroupEntry {
                                 binding: 1,
-                                resource: wgpu::BindingResource::Sampler(context.linear_sampler()),
+                                resource: wgpu::BindingResource::Sampler(if pass.wrap {
+                                    context.wrap_sampler()
+                                } else {
+                                    context.linear_sampler()
+                                }),
                             },
                         ],
                     });
@@ -709,6 +713,7 @@ mod tests {
         assert_eq!(std::mem::size_of::<LutUniformBuffer>(), 16);
         let pass = EffectPass {
             shader: "lut3d:x".into(),
+            wrap: false,
             uniforms: [("u_intensity".to_string(), UniformValue::Number(0.5))]
                 .into_iter()
                 .collect(),
@@ -722,6 +727,7 @@ mod tests {
         for (id, _) in STYLISE_SHADERS {
             let pass = EffectPass {
                 shader: id.to_string(),
+                wrap: false,
                 uniforms: [(
                     "u_p0".to_string(),
                     UniformValue::Vector(vec![0.5, 0.0, 0.0, 0.0]),
@@ -737,6 +743,7 @@ mod tests {
         }
         let missing = EffectPass {
             shader: "vignette".into(),
+            wrap: false,
             uniforms: Default::default(),
         };
         assert!(pack_effect_uniforms(&missing, 640, 360).is_err());
@@ -748,6 +755,7 @@ mod tests {
         assert_eq!(std::mem::size_of::<ColorGradeUniformBuffer>(), 6 * 16);
         let pass = EffectPass {
             shader: COLOR_GRADE_SHADER_ID.to_string(),
+            wrap: false,
             uniforms: COLOR_GRADE_UNIFORMS
                 .iter()
                 .map(|name| {

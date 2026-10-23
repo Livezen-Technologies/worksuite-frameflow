@@ -50,6 +50,7 @@ pub struct GpuContext {
     surface_format: wgpu::TextureFormat,
     fullscreen_quad: wgpu::Buffer,
     linear_sampler: wgpu::Sampler,
+    wrap_sampler: wgpu::Sampler,
     nearest_sampler: wgpu::Sampler,
     texture_sampler_bind_group_layout: wgpu::BindGroupLayout,
     blit_pipeline: wgpu::RenderPipeline,
@@ -87,6 +88,16 @@ impl GpuContext {
         let linear_sampler = device.create_sampler(&wgpu::SamplerDescriptor {
             label: Some("gpu-linear-sampler"),
             address_mode_u: wgpu::AddressMode::ClampToEdge,
+            address_mode_v: wgpu::AddressMode::ClampToEdge,
+            address_mode_w: wgpu::AddressMode::ClampToEdge,
+            mag_filter: wgpu::FilterMode::Linear,
+            min_filter: wgpu::FilterMode::Linear,
+            mipmap_filter: wgpu::MipmapFilterMode::Nearest,
+            ..Default::default()
+        });
+        let wrap_sampler = device.create_sampler(&wgpu::SamplerDescriptor {
+            label: Some("gpu-wrap-sampler"),
+            address_mode_u: wgpu::AddressMode::Repeat,
             address_mode_v: wgpu::AddressMode::ClampToEdge,
             address_mode_w: wgpu::AddressMode::ClampToEdge,
             mag_filter: wgpu::FilterMode::Linear,
@@ -192,6 +203,7 @@ impl GpuContext {
             surface_format,
             fullscreen_quad,
             linear_sampler,
+            wrap_sampler,
             nearest_sampler,
             texture_sampler_bind_group_layout,
             blit_pipeline,
@@ -411,6 +423,11 @@ impl GpuContext {
 
     pub fn fullscreen_quad(&self) -> &wgpu::Buffer {
         &self.fullscreen_quad
+    }
+
+    /// Wraps left/right, clamps top/bottom: for equirectangular 360° frames (VR-18).
+    pub fn wrap_sampler(&self) -> &wgpu::Sampler {
+        &self.wrap_sampler
     }
 
     pub fn linear_sampler(&self) -> &wgpu::Sampler {

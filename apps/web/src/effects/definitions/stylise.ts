@@ -84,7 +84,10 @@ const percent = ({
 
 export const DENOISE_EFFECT_TYPE = "denoise";
 
-export const STYLISE_EFFECTS: EffectDefinition[] = [
+// Built around the frame's centre or its edges, so they can't wrap round a sphere.
+const NOT_SPHERE_SAFE = new Set(["vignette", "mirror", "wave"]);
+
+const STYLISE_LIST: EffectDefinition[] = [
 	stylise({
 		type: DENOISE_EFFECT_TYPE,
 		name: "Reduce noise",
@@ -463,3 +466,7 @@ export const STYLISE_EFFECTS: EffectDefinition[] = [
 		p0: (r) => [percent({ read: r, key: "amount" })],
 	}),
 ];
+
+export const STYLISE_EFFECTS: EffectDefinition[] = STYLISE_LIST.map((effect) =>
+	NOT_SPHERE_SAFE.has(effect.type) ? { ...effect, sphereSafe: false } : effect,
+);

@@ -1003,6 +1003,7 @@ fn map_effect_passes(passes: &[EffectPassDescriptor]) -> Vec<EffectPass> {
         .iter()
         .map(|pass| EffectPass {
             shader: pass.shader.clone(),
+            wrap: pass.wrap,
             uniforms: pass
                 .uniforms
                 .iter()

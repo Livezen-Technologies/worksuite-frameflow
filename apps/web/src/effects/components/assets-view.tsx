@@ -1,6 +1,7 @@
 "use client";
 
 import { hdrUnsupportedReason } from "@/effects/hdr-support";
+import { useSphereStore } from "@/vr/store";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { PanelView } from "@/components/editor/panels/assets/views/base-panel";
@@ -253,10 +254,19 @@ function EffectItem({
 	const colorSpace = useEditor(
 		(e) => e.project.getActiveOrNull()?.settings.colorSpace,
 	);
-	const hdrBlocked = hdrUnsupportedReason({
+	const sphereProject = useSphereStore((s) => {
+		const id = editor.project.getActiveOrNull()?.metadata.id;
+		return id ? !!s.sphereProjects[id] : false;
+	});
+	const hdrReason = hdrUnsupportedReason({
 		effectType: effect.type,
 		colorSpace,
 	});
+	const hdrBlocked = hdrReason
+		? `Not available in HDR projects. ${hdrReason}`
+		: sphereProject && effect.sphereSafe === false
+			? "Not available in 360° projects: it's built around the frame's centre or edges, which a sphere doesn't have."
+			: null;
 
 	const handleAddToTimeline = () => {
 		const currentTime = editor.playback.getCurrentTime();
@@ -274,9 +284,7 @@ function EffectItem({
 	return (
 		<div
 			className={cn("relative", hdrBlocked && "cursor-not-allowed opacity-40")}
-			title={
-				hdrBlocked ? `Not available in HDR projects. ${hdrBlocked}` : undefined
-			}
+			title={hdrBlocked ?? undefined}
 			aria-disabled={hdrBlocked ? true : undefined}
 			data-hdr-blocked={hdrBlocked ? effect.type : undefined}
 			onDoubleClick={() => {
