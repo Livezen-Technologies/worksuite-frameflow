@@ -77,6 +77,10 @@
       {
         "from": "vendor/ffmpeg/${platform}-${arch}",
         "to": "ffmpeg"
+      },
+      {
+        "from": "THIRD-PARTY-NOTICES.md",
+        "to": "licenses/THIRD-PARTY-NOTICES.md"
       }
     ],
     "asar": true,

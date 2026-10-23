@@ -1,5 +1,5 @@
 /// <reference lib="webworker" />
-import factory from "libheif-js/libheif-wasm/libheif-bundle.mjs";
+import type factory from "libheif-js/libheif-wasm/libheif-bundle.mjs";
 
 /**
  * Decodes HEIC/HEIF (SRS HE-01 – HE-03, HE-05) off the main thread with
@@ -21,9 +21,19 @@ export type HeifResponse =
 
 let library: ReturnType<typeof factory> | null = null;
 
+/**
+ * libheif is LGPL-3.0, so it's loaded at run time from its own file
+ * (copied by scripts/copy-libheif.mjs) rather than bundled: replacing
+ * public/vendor/libheif/libheif-bundle.mjs swaps the library (D-8).
+ */
+const LIBHEIF_URL = "/vendor/libheif/libheif-bundle.mjs";
+
 async function load() {
 	if (!library) {
-		library = factory();
+		const loaded: { default: typeof factory } = await import(
+			/* webpackIgnore: true */ /* turbopackIgnore: true */ LIBHEIF_URL
+		);
+		library = loaded.default();
 		await library.ready;
 	}
 	return library;

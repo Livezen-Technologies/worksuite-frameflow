@@ -4,6 +4,8 @@
   "private": true,
   "packageManager": "bun@1.2.18",
   "scripts": {
+    "predev": "node scripts/copy-libheif.mjs",
+    "prebuild": "node scripts/copy-libheif.mjs",
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
