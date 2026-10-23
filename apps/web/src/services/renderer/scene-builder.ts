@@ -1,4 +1,5 @@
 import { hasAnimation } from "@/animation/clip-animation";
+import type { Effect } from "@/effects/types";
 import type { ParamValues } from "@/params";
 import type { SceneTracks, TimelineTrack } from "@/timeline";
 import type { MediaAsset } from "@/media/types";
@@ -258,6 +259,8 @@ export type BuildSceneParams = {
 	duration: number;
 	background: TBackground;
 	isPreview?: boolean;
+	/** Timeline grade nodes (WS-12), drawn over every clip. */
+	grade?: Effect[];
 };
 
 function animationParams(params: ParamValues): ParamValues | undefined {
@@ -271,6 +274,7 @@ export function buildScene({
 	duration,
 	background,
 	isPreview,
+	grade,
 }: BuildSceneParams) {
 	const rootNode = new RootNode({ duration });
 	const mediaMap = new Map(mediaAssets.map((m) => [m.id, m]));
@@ -308,6 +312,19 @@ export function buildScene({
 
 	for (const node of allNodes) {
 		rootNode.add(node);
+	}
+
+	// The timeline grade works like full-length adjustment layers on top.
+	for (const effect of grade ?? []) {
+		if (!effect.enabled) continue;
+		rootNode.add(
+			new EffectLayerNode({
+				effectType: effect.type,
+				effectParams: effect.params,
+				timeOffset: 0,
+				duration,
+			}),
+		);
 	}
 
 	return rootNode;

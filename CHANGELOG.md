@@ -8,6 +8,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 ## [Unreleased]
 
 ### Added
+- Grades are a stack of nodes: add Wheels & sliders or Curves & HSL nodes to a clip, turn each on or off, and reorder them. Choose Whole timeline in the Color panel to grade every clip at once with its own node stack; it's saved with the sequence and used in exports.
 - Curves can be keyframed: add a key at the playhead in the Curves section, move the playhead and change the curve to add another, and the grade morphs between them. Click a key's time to jump to it.
 - Check setup in the Record panel tests your devices before you record: that each one opens, the resolution and frame rate it really delivers, whether the encoder keeps up with the chosen quality, and disk write speed, with advice for anything that falls short.
 - Multicam clips can sync by timecode: angles line up from the start timecode that cameras and recorders write into MOV and MP4 files, including drop-frame and recordings across midnight.
@@ -92,6 +93,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 - Platform guide icons no longer load logos from Brandfetch; they show a plain letter instead.
 
 ### Fixed
+- A sequence's own frame size (for example a 9:16 copy) is now kept when the project is saved and reopened.
 - Voice-over recordings no longer show a warning that the cursor couldn't be logged.
 - Editing the timeline while it plays no longer logs "Input has been disposed" errors from audio playback.
 - Creating a project through the automation API (`wve new`) now opens it in the editor window.

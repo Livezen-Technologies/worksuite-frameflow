@@ -1,3 +1,4 @@
+import { savedTimelineGrade } from "@/color/grade-target";
 import type { EditorCore } from "@/core";
 import type {
 	TProject,
@@ -697,6 +698,7 @@ export class ProjectManager {
 		const width = Math.max(2, Math.round(canvasSize.width * scale));
 		const height = Math.max(2, Math.round(canvasSize.height * scale));
 		const scene = buildScene({
+			grade: savedTimelineGrade(this.editor.scenes.getActiveScene().grade),
 			tracks,
 			mediaAssets,
 			duration: duration || 1,
@@ -738,6 +740,7 @@ export class ProjectManager {
 		const { canvasSize, background } = this.active.settings;
 
 		const scene = buildScene({
+			grade: savedTimelineGrade(this.editor.scenes.getActiveScene().grade),
 			tracks,
 			mediaAssets,
 			duration: duration || 1,

@@ -16,6 +16,7 @@ import { effectPreviewService } from "@/services/renderer/effect-preview";
 import { TICKS_PER_SECOND } from "@/wasm";
 import type { RootNode } from "@/services/renderer/nodes/root-node";
 import { buildScene } from "@/services/renderer/scene-builder";
+import { savedTimelineGrade, useTimelineGradePreview } from "@/color/grade-target";
 import { PreviewOverlayLayer } from "./overlay-layer";
 import { PreviewInteractionOverlay } from "./preview-interaction-overlay";
 import { ContextMenu, ContextMenuTrigger } from "@/components/ui/context-menu";
@@ -107,6 +108,9 @@ function RenderTreeController() {
 	const activeProject = useEditor((e) => e.project.getActive());
 
 	const { width, height } = usePreviewSize();
+	const savedGrade = useEditor((e) => e.scenes.getActiveSceneOrNull()?.grade);
+	const pendingGrade = useTimelineGradePreview((s) => s.effects);
+	const grade = pendingGrade ?? savedTimelineGrade(savedGrade);
 
 	useDeepCompareEffect(() => {
 		if (!activeProject) return;
@@ -119,10 +123,11 @@ function RenderTreeController() {
 			canvasSize: { width, height },
 			background: activeProject.settings.background,
 			isPreview: true,
+			grade,
 		});
 
 		editor.renderer.setRenderTree({ renderTree });
-	}, [tracks, mediaAssets, activeProject?.settings.background, width, height]);
+	}, [tracks, mediaAssets, activeProject?.settings.background, width, height, grade]);
 
 	return null;
 }

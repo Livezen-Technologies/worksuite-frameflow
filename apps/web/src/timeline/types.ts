@@ -32,8 +32,16 @@ export interface TScene {
 	bookmarks: Bookmark[];
 	/** This sequence's frame (ED-18); unset follows the project's. */
 	canvasSize?: TCanvasSize;
+	/** Grade over the whole sequence, applied on top of every clip (WS-12). */
+	grade?: TimelineGrade;
 	createdAt: Date;
 	updatedAt: Date;
+}
+
+export interface TimelineGrade {
+	enabled: boolean;
+	/** Colour nodes in order, the same effects clips use. */
+	effects: Effect[];
 }
 
 export type TrackType = "video" | "text" | "audio" | "graphic" | "effect";

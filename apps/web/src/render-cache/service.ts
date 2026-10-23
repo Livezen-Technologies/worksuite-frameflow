@@ -1,3 +1,4 @@
+import { savedTimelineGrade } from "@/color/grade-target";
 import type { EditorCore } from "@/core";
 import type { ExportCodec } from "@/export";
 import { evenSize } from "@/export/presets";
@@ -84,7 +85,9 @@ class RenderCacheService {
 	}): string | null {
 		const ctx = this.context(editor);
 		if (!ctx) return null;
-		const key = `${JSON.stringify(ctx.project.settings)}|${ctx.extra}`;
+		// The timeline grade colours every frame (WS-12).
+		const grade = JSON.stringify(savedTimelineGrade(editor.scenes.getActiveScene().grade));
+		const key = `${JSON.stringify(ctx.project.settings)}|${ctx.extra}|${grade}`;
 		if (key !== this.settingsKey) {
 			this.settingsKey = key;
 			this.fingerprints = new WeakMap();
@@ -101,7 +104,7 @@ class RenderCacheService {
 				settings: ctx.project.settings,
 				startTicks: (segment.startFrame - 1) * ctx.ticksPerFrame,
 				endTicks: (segment.endFrame + 1) * ctx.ticksPerFrame,
-				extra: `${ctx.extra}:${segment.startFrame}-${segment.endFrame}`,
+				extra: `${ctx.extra}:${segment.startFrame}-${segment.endFrame}:${grade}`,
 			});
 			byIndex.set(segment.index, hash);
 		}
@@ -198,6 +201,7 @@ class RenderCacheService {
 				status.update({ rendering: { done: index, total: todo.length } });
 				const duration = editor.timeline.getTotalDuration();
 				const scene = buildScene({
+					grade: savedTimelineGrade(editor.scenes.getActiveScene().grade),
 					tracks: ctx.tracks,
 					mediaAssets: editor.media.getAssets(),
 					duration,

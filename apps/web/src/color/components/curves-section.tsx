@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { useEditor } from "@/editor/use-editor";
+import type { GradeTarget } from "@/color/grade-target";
 import {
 	curvesAt,
 	keyFromCurves,
@@ -14,8 +15,6 @@ import {
 } from "@/color/curve-keys";
 import { mediaTimeFromSeconds, TICKS_PER_SECOND } from "@/wasm";
 import type { ParamValues } from "@/params";
-import type { VisualElement } from "@/timeline";
-import { useElementPreview } from "@/timeline/hooks/use-element-preview";
 import {
 	CURVES_EFFECT_TYPE,
 	readCurves,
@@ -207,25 +206,20 @@ function Row({
 	);
 }
 
-/** Curves and HSL qualifier for the selected clip (SRS WS-09). */
+/** Curves and HSL qualifier for a clip or the timeline grade (SRS WS-09, WS-12). */
 export function CurvesSection({
-	trackId,
-	element,
+	target,
+	effectId,
 }: {
-	trackId: string;
-	element: VisualElement;
+	target: GradeTarget;
+	/** The node to edit; the first Curves node when unset. */
+	effectId?: string;
 }) {
 	const editor = useEditor();
 	const [channel, setChannel] = useState<CurveChannel>("luma");
 	const playhead = useEditor((e) => e.playback.getCurrentTime());
-	const { renderElement, previewUpdates } = useElementPreview({
-		trackId,
-		elementId: element.id,
-		fallback: element,
-	});
-	const liveEffects =
-		(renderElement as VisualElement).effects ?? element.effects ?? [];
-	const effect = liveEffects.find((e) => e.type === CURVES_EFFECT_TYPE);
+	const liveEffects = target.effects;
+	const effect = liveEffects.find((e) => (effectId ? e.id === effectId : e.type === CURVES_EFFECT_TYPE));
 
 	if (!effect) {
 		return (
@@ -240,13 +234,7 @@ export function CurvesSection({
 					size="sm"
 					variant="secondary"
 					data-add-curves
-					onClick={() =>
-						editor.timeline.addClipEffect({
-							trackId,
-							elementId: element.id,
-							effectType: CURVES_EFFECT_TYPE,
-						})
-					}
+					onClick={() => target.add(CURVES_EFFECT_TYPE)}
 				>
 					Add
 				</Button>
@@ -259,22 +247,17 @@ export function CurvesSection({
 	const q = readQualifier(params);
 
 	const preview = (changes: ParamValues) =>
-		previewUpdates({
-			effects: liveEffects.map((e) =>
+		target.preview(
+			liveEffects.map((e) =>
 				e.id === effect.id ? { ...e, params: { ...e.params, ...changes } } : e,
 			),
-		});
+		);
 	const commit = (changes: ParamValues) =>
-		editor.timeline.updateClipEffectParams({
-			trackId,
-			elementId: element.id,
-			effectId: effect.id,
-			params: { ...params, ...changes },
-		});
+		target.setParams({ effectId: effect.id, params: { ...params, ...changes } });
 	const curveKey = `curve.${channel}`;
 	// Keyframed curves (WS-15): with keys, edits go into the key at the playhead.
 	const keys = parseCurveKeys(params["curve.keys"]);
-	const local = Math.max(0, (playhead - element.startTime) / TICKS_PER_SECOND);
+	const local = Math.max(0, (playhead - target.startTime) / TICKS_PER_SECOND);
 	const shown = keys.length ? curvesAt({ keys, t: local, fallback: curves }) : curves;
 	const curveChange = (points: CurvePoint[]): ParamValues =>
 		keys.length
@@ -394,7 +377,7 @@ export function CurvesSection({
 							title="Go to this key"
 							onClick={() =>
 								editor.playback.seek({
-									time: mediaTimeFromSeconds({ seconds: element.startTime / TICKS_PER_SECOND + k.t }),
+									time: mediaTimeFromSeconds({ seconds: target.startTime / TICKS_PER_SECOND + k.t }),
 								})
 							}
 						>

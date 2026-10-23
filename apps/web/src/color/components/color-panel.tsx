@@ -7,7 +7,6 @@ import { PanelView } from "@/components/editor/panels/assets/views/base-panel";
 import { Button } from "@/components/ui/button";
 import { useEditor } from "@/editor/use-editor";
 import { useElementSelection } from "@/timeline/hooks/element/use-element-selection";
-import { useElementPreview } from "@/timeline/hooks/use-element-preview";
 import { isVisualElement } from "@/timeline/element-utils";
 import type { TimelineElement, VisualElement } from "@/timeline";
 import type { ParamValues } from "@/params";
@@ -26,6 +25,13 @@ import { ColorWheel } from "./color-wheel";
 import { ScopesView } from "./scopes-view";
 import { LutSection } from "@/lut/components/lut-section";
 import { CurvesSection } from "./curves-section";
+import { CURVES_EFFECT_TYPE } from "@/effects/definitions/curves";
+import { LUT_EFFECT_TYPE } from "@/effects/definitions/lut";
+import {
+	type GradeTarget,
+	useClipGradeTarget,
+	useTimelineGradeTarget,
+} from "../grade-target";
 
 const NEUTRAL: ParamValues = Object.fromEntries(
 	colorGradeEffectDefinition.params.map((param) => [param.key, param.default]),
@@ -50,24 +56,58 @@ function num({ params, key }: { params: ParamValues; key: string }): number {
 	return typeof value === "number" && Number.isFinite(value) ? value : 0;
 }
 
+const useGradeScope = create<{ scope: "clip" | "timeline"; set: (scope: "clip" | "timeline") => void }>((set) => ({
+	scope: "clip",
+	set: (scope) => set({ scope }),
+}));
+
 /** Color tab of the tools panel (SRS 17.2, canvas screen 13). */
 export function ColorPanel() {
 	const editor = useEditor();
 	useEditor((e) => e.scenes.getActiveSceneOrNull());
 	const { selectedElements } = useElementSelection();
+	const scope = useGradeScope((s) => s.scope);
+	const setScope = useGradeScope((s) => s.set);
 	const selected = editor.timeline
 		.getElementsWithTracks({ elements: selectedElements })
 		.filter(({ element }) => isVisualElement(element));
 
 	const actions = <ScopesToggle />;
+	const scopeSwitch = (
+		<div className="mb-3 grid grid-cols-2 gap-1 rounded-md border p-0.5 text-xs" data-grade-scope>
+			{(["clip", "timeline"] as const).map((s) => (
+				<button
+					key={s}
+					type="button"
+					data-grade-scope-option={s}
+					aria-pressed={scope === s}
+					onClick={() => setScope(s)}
+					className={cn("rounded px-2 py-1", scope === s ? "bg-primary text-primary-foreground" : "hover:bg-accent")}
+				>
+					{s === "clip" ? "Clip" : "Whole timeline"}
+				</button>
+			))}
+		</div>
+	);
+
+	if (scope === "timeline") {
+		return (
+			<PanelView title="Color" actions={actions}>
+				<ScopesIfShown />
+				{scopeSwitch}
+				<TimelineGrade />
+			</PanelView>
+		);
+	}
 
 	if (selected.length === 0) {
 		return (
 			<PanelView title="Color" actions={actions}>
 				<ScopesIfShown />
+				{scopeSwitch}
 				<LutSection />
 				<p className="text-muted-foreground p-1 text-sm leading-relaxed">
-					Select a video or image clip on the timeline to grade it.
+					Select a video or image clip on the timeline to grade it, or grade the whole timeline.
 				</p>
 			</PanelView>
 		);
@@ -75,48 +115,33 @@ export function ColorPanel() {
 
 	const { element, track } = selected[0];
 	if (!isVisualElement(element)) return null;
-	const grade = findGrade(element);
 
 	return (
 		<PanelView title="Color" actions={actions}>
 			<ScopesIfShown />
+			{scopeSwitch}
 			<LutSection />
-			{grade ? (
-				<GradeControls
-					key={`${track.id}:${element.id}`}
-					trackId={track.id}
-					element={element}
-					effectId={grade.id}
-					selectionCount={selected.length}
-				/>
-			) : (
-				<div className="flex flex-col gap-3 p-1">
-					<p className="text-muted-foreground m-0 text-sm leading-relaxed">
-						{selected.length > 1
-							? `${selected.length} clips selected. The first one, “${element.name}”, has no grade yet.`
-							: `“${element.name}” has no grade yet.`}
-					</p>
-					<Button
-						onClick={() =>
-							editor.timeline.addClipEffect({
-								trackId: track.id,
-								elementId: element.id,
-								effectType: COLOR_GRADE_EFFECT_TYPE,
-							})
-						}
-					>
-						Add color grade
-					</Button>
-					<PasteGradeButton />
-				</div>
-			)}
-			<CurvesSection
-				key={`curves:${track.id}:${element.id}`}
-				trackId={track.id}
-				element={element}
-			/>
+			<ClipGrade key={`${track.id}:${element.id}`} trackId={track.id} element={element} selectionCount={selected.length} />
 		</PanelView>
 	);
+}
+
+function ClipGrade({
+	trackId,
+	element,
+	selectionCount,
+}: {
+	trackId: string;
+	element: VisualElement;
+	selectionCount: number;
+}) {
+	const target = useClipGradeTarget({ trackId, element });
+	return <GradeNodes target={target} selectionCount={selectionCount} />;
+}
+
+function TimelineGrade() {
+	const target = useTimelineGradeTarget();
+	return <GradeNodes target={target} selectionCount={0} />;
 }
 
 const useScopesShown = create<{ shown: boolean; toggle: () => void }>(
@@ -191,67 +216,161 @@ function PasteGradeButton() {
 	);
 }
 
+const NODE_TYPES = [
+	{ type: COLOR_GRADE_EFFECT_TYPE, label: "Wheels & sliders" },
+	{ type: CURVES_EFFECT_TYPE, label: "Curves & HSL" },
+] as const;
+const COLOUR_TYPES = new Set<string>([COLOR_GRADE_EFFECT_TYPE, CURVES_EFFECT_TYPE, LUT_EFFECT_TYPE]);
+const nodeLabel = (type: string) =>
+	type === LUT_EFFECT_TYPE ? "LUT" : (NODE_TYPES.find((n) => n.type === type)?.label ?? type);
+
+/** The grade as an ordered stack of nodes, applied top to bottom (WS-12). */
+function GradeNodes({ target, selectionCount }: { target: GradeTarget; selectionCount: number }) {
+	const nodes = target.effects
+		.map((effect, index) => ({ effect, index }))
+		.filter(({ effect }) => COLOUR_TYPES.has(effect.type));
+	const [chosen, setChosen] = useState<string | null>(null);
+	const active = nodes.find((n) => n.effect.id === chosen) ?? nodes[0];
+
+	return (
+		<div className="flex flex-col gap-3">
+			<section className="flex flex-col gap-1" data-grade-nodes>
+				<div className="flex items-center justify-between">
+					<h3 className="m-0 text-xs font-semibold">
+						{target.kind === "timeline" ? "Timeline grade" : "Grade nodes"}
+					</h3>
+					{target.kind === "timeline" && (
+						<span className="text-muted-foreground text-[11px]">Over every clip</span>
+					)}
+				</div>
+				{nodes.map(({ effect, index }, n) => (
+					<div
+						key={effect.id}
+						data-grade-node={effect.type}
+						className={cn(
+							"flex items-center gap-1 rounded border px-1.5 py-1 text-xs",
+							active?.effect.id === effect.id ? "border-primary bg-primary/10" : "",
+							!effect.enabled && "opacity-50",
+						)}
+					>
+						<button type="button" className="flex-1 truncate text-left" onClick={() => setChosen(effect.id)}>
+							{n + 1}. {nodeLabel(effect.type)}
+						</button>
+						<button
+							type="button"
+							className="hover:bg-accent rounded px-1"
+							title={effect.enabled ? "Turn off" : "Turn on"}
+							data-node-toggle
+							onClick={() => target.toggle(effect.id)}
+						>
+							{effect.enabled ? "On" : "Off"}
+						</button>
+						<button
+							type="button"
+							className="hover:bg-accent rounded px-1 disabled:opacity-30"
+							aria-label="Move up"
+							disabled={n === 0}
+							onClick={() => target.move({ fromIndex: index, toIndex: nodes[n - 1]!.index })}
+						>
+							↑
+						</button>
+						<button
+							type="button"
+							className="hover:bg-accent rounded px-1 disabled:opacity-30"
+							aria-label="Move down"
+							disabled={n === nodes.length - 1}
+							data-node-down
+							onClick={() => target.move({ fromIndex: index, toIndex: nodes[n + 1]!.index })}
+						>
+							↓
+						</button>
+						<button
+							type="button"
+							className="hover:bg-accent rounded px-1"
+							aria-label="Delete node"
+							onClick={() => target.remove(effect.id)}
+						>
+							×
+						</button>
+					</div>
+				))}
+				<div className="flex flex-wrap gap-1">
+					{NODE_TYPES.map((node) => (
+						<Button
+							key={node.type}
+							size="sm"
+							variant="outline"
+							className="h-6 text-[11px]"
+							data-add-node={node.type}
+							onClick={() => setChosen(target.add(node.type))}
+						>
+							+ {node.label}
+						</Button>
+					))}
+				</div>
+				{!nodes.length && target.kind === "clip" && <PasteGradeButton />}
+			</section>
+			{active?.effect.type === COLOR_GRADE_EFFECT_TYPE && (
+				<GradeControls key={active.effect.id} target={target} effectId={active.effect.id} selectionCount={selectionCount} />
+			)}
+			{active?.effect.type === CURVES_EFFECT_TYPE && (
+				<CurvesSection key={active.effect.id} target={target} effectId={active.effect.id} />
+			)}
+			{active?.effect.type === LUT_EFFECT_TYPE && (
+				<p className="text-muted-foreground m-0 text-xs">Change this LUT in the LUT section above.</p>
+			)}
+		</div>
+	);
+}
+
 function GradeControls({
-	trackId,
-	element,
+	target,
 	effectId,
 	selectionCount,
 }: {
-	trackId: string;
-	element: VisualElement;
+	target: GradeTarget;
 	effectId: string;
 	selectionCount: number;
 }) {
-	const editor = useEditor();
-	const { renderElement, previewUpdates, commit } = useElementPreview({
-		trackId,
-		elementId: element.id,
-		fallback: element,
-	});
 	const copyGrade = useGradeClipboard((s) => s.set);
 	const copied = useGradeClipboard((s) => s.grade);
 	const applyToSelection = useApplyGradeToSelection();
 	const [comparing, setComparing] = useState(false);
 
-	const liveEffects =
-		(renderElement as VisualElement).effects ?? element.effects ?? [];
+	const liveEffects = target.effects;
 	const effect = liveEffects.find((e) => e.id === effectId);
 	const params: ParamValues = { ...NEUTRAL, ...(effect?.params ?? {}) };
+	const commit = target.commitPreview;
 
 	const preview = (changes: ParamValues) => {
-		previewUpdates({
-			effects: liveEffects.map((existing) =>
+		target.preview(
+			liveEffects.map((existing) =>
 				existing.id === effectId
 					? { ...existing, params: { ...existing.params, ...changes } }
 					: existing,
 			),
-		});
+		);
 	};
 
-	const setAll = (next: ParamValues) => {
-		editor.timeline.updateClipEffectParams({
-			trackId,
-			elementId: element.id,
-			effectId,
-			params: next,
-		});
-	};
+	const setAll = (next: ParamValues) => target.setParams({ effectId, params: next });
+	const paste = (grade: ParamValues) =>
+		target.kind === "clip" ? applyToSelection(grade) : (setAll(grade), 1);
 
-	// Hold to see the clip without its grade. Only the preview changes; the
-	// project keeps the grade.
+	// Hold to see the picture without this node. Only the preview changes.
 	const startCompare = () => {
 		setComparing(true);
-		previewUpdates({
-			effects: liveEffects.map((existing) =>
+		target.preview(
+			liveEffects.map((existing) =>
 				existing.id === effectId ? { ...existing, enabled: false } : existing,
 			),
-		});
+		);
 	};
 	const endCompare = () => {
 		if (!comparing) return;
 		setComparing(false);
-		editor.timeline.discardPreview();
+		target.discardPreview();
 	};
+	const element = { name: target.name };
 
 	return (
 		<div className="flex flex-col gap-4 pb-4">
@@ -296,15 +415,17 @@ function GradeControls({
 					disabled={!copied}
 					onClick={() => {
 						if (!copied) return;
-						const count = applyToSelection(copied);
+						const count = paste(copied);
 						toast.success(
-							`Pasted the grade to ${count} clip${count === 1 ? "" : "s"}`,
+							target.kind === "timeline"
+								? "Pasted the grade to the timeline"
+								: `Pasted the grade to ${count} clip${count === 1 ? "" : "s"}`,
 						);
 					}}
 				>
 					Paste{selectionCount > 1 ? ` to ${selectionCount} selected` : ""}
 				</Button>
-				{selectionCount > 1 && (
+				{target.kind === "clip" && selectionCount > 1 && (
 					<Button
 						variant="outline"
 						size="sm"

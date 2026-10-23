@@ -1,3 +1,4 @@
+import { savedTimelineGrade } from "@/color/grade-target";
 import type { EditorCore } from "@/core";
 import type { RootNode } from "@/services/renderer/nodes/root-node";
 import type { ExportOptions, ExportResult } from "@/export";
@@ -250,6 +251,7 @@ export class RendererManager {
 			}
 
 			const scene = buildScene({
+				grade: savedTimelineGrade(this.editor.scenes.getActiveScene().grade),
 				tracks,
 				mediaAssets,
 				duration,

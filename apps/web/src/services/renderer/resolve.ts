@@ -795,6 +795,8 @@ function resolveEffectLayerNode({
 	}
 
 	const definition = effectsRegistry.get(node.params.effectType);
+	if (node.params.effectType === LUT_EFFECT_TYPE)
+		ensureLutUploaded(String(node.params.effectParams.lutId ?? ""));
 	const passes = resolveEffectPasses({
 		definition,
 		effectParams: node.params.effectParams,
