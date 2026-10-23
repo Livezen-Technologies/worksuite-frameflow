@@ -21,6 +21,48 @@ function num({
 	return typeof value === "number" && Number.isFinite(value) ? value : fallback;
 }
 
+/** Safe margin text centres are kept inside, as a fraction of the frame. */
+const TEXT_MARGIN = 0.06;
+
+/**
+ * Titles and captions on a new shape (PS-11, SP-03): text size is relative
+ * to the frame's height, so on a narrower frame it shrinks with the square
+ * root of the aspect change (16:9 → 9:16 gives 0.56, as the packs use), and
+ * its centre stays inside the safe margin. It never grows.
+ */
+export function reflowText({
+	params,
+	from,
+	to,
+	x,
+	y,
+	width,
+}: {
+	params: Record<string, unknown>;
+	from: TCanvasSize;
+	to: TCanvasSize;
+	x: number;
+	y: number;
+	/** The text's drawn width on the new frame at its current size, if known. */
+	width?: number;
+}): Record<string, number> {
+	const out: Record<string, number> = {};
+	const change = to.width / to.height / (from.width / from.height);
+	const fontSize = params.fontSize;
+	if (typeof fontSize === "number" && Number.isFinite(fontSize)) {
+		let factor = change < 1 ? Math.sqrt(change) : 1;
+		// A long line must still fit across the safe width.
+		const room = to.width * (1 - 2 * TEXT_MARGIN);
+		if (width && width * factor > room) factor = room / width;
+		if (factor < 1) out.fontSize = Math.floor(fontSize * factor * 10) / 10;
+	}
+	const limitX = to.width * (0.5 - TEXT_MARGIN);
+	const limitY = to.height * (0.5 - TEXT_MARGIN);
+	out["transform.positionX"] = Math.max(-limitX, Math.min(limitX, x));
+	out["transform.positionY"] = Math.max(-limitY, Math.min(limitY, y));
+	return out;
+}
+
 /**
  * Patches that keep the picture sensible on a new frame. Media is drawn
  * contained in the frame and offset in frame pixels, so:
@@ -34,12 +76,15 @@ export function reflowElements({
 	from,
 	to,
 	mode,
+	measureText,
 }: {
 	tracks: SceneTracks;
 	assets: MediaAsset[];
 	from: TCanvasSize;
 	to: TCanvasSize;
 	mode: ReflowMode;
+	/** Drawn width of a text clip on a frame of the given height (text needs a canvas). */
+	measureText?: (args: { element: TimelineElement; canvasHeight: number }) => number;
 }): ElementPatch[] {
 	if (from.width === to.width && from.height === to.height) return [];
 	const patches: ElementPatch[] = [];
@@ -87,6 +132,13 @@ export function reflowElements({
 			} else if (mode !== "keep") {
 				next["transform.positionX"] = px * sx;
 				next["transform.positionY"] = py * sy;
+				if (element.type === "text") {
+					const width = measureText?.({ element, canvasHeight: to.height });
+					Object.assign(
+						next,
+						reflowText({ params, from, to, x: px * sx, y: py * sy, width: width ? width * Math.abs(scaleX) : undefined }),
+					);
+				}
 			}
 			if (Object.keys(next).length === 0) continue;
 			patches.push({

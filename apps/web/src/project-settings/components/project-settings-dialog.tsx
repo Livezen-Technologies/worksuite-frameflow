@@ -31,6 +31,7 @@ import { useSphereStore } from "@/vr/store";
 import { DEFAULT_TONE_MAP } from "@/hdr/tonemap";
 import { PerformanceSettings } from "@/proxy/components/performance-settings";
 import { reflowElements, type ReflowMode } from "../reflow";
+import { getTextMeasurementContext, measureTextElement } from "@/text/measure-element";
 import { BUILT_IN_TEMPLATES, useProjectSettings } from "../store";
 
 const ASPECTS: { id: string; label: string; ratio: [number, number] }[] = [
@@ -231,6 +232,15 @@ function ProjectSettingsBody({ onClose }: { onClose: () => void }) {
 					from: settings.canvasSize,
 					to: size,
 					mode: reflow,
+					measureText: ({ element, canvasHeight }) =>
+						element.type === "text"
+							? measureTextElement({
+									element,
+									canvasHeight,
+									localTime: 0,
+									ctx: getTextMeasurementContext(),
+								}).visualRect.width
+							: 0,
 				})
 			: [];
 		// One undo step for everything (PS-25).

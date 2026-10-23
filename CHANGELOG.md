@@ -131,6 +131,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Fixed
 
+- Changing a project's shape (for example 16:9 to 9:16) with "Fit" now also resizes titles and captions so they fit inside the new frame's safe area, instead of running off the sides.
+
 - Pasting a HEIC photo (or an Insta360 / GoPro 360° file) copied from a file manager now imports it; before, files without a recognised type were ignored.
 
 - Clip analysis (tracking and other effects that read the video) now uses the sample size it asks for instead of always 320 pixels wide.

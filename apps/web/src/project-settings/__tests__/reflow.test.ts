@@ -70,3 +70,46 @@ describe("reflowElements", () => {
 		).toEqual([]);
 	});
 });
+
+describe("text on a new shape (PS-11)", () => {
+	test("16:9 → 9:16 shrinks text and keeps it inside the frame", async () => {
+		const { reflowText } = await import("../reflow");
+		const out = reflowText({
+			params: { fontSize: 40 },
+			from: { width: 1920, height: 1080 },
+			to: { width: 1080, height: 1920 },
+			x: 800 * (1080 / 1920),
+			y: 0,
+		});
+		expect(out.fontSize).toBeCloseTo(40 * Math.sqrt(0.31640625), 1);
+		expect(Math.abs(out["transform.positionX"])).toBeLessThanOrEqual(1080 * 0.44);
+	});
+
+	test("never grows on a wider frame; far-off positions are pulled in", async () => {
+		const { reflowText } = await import("../reflow");
+		const out = reflowText({
+			params: { fontSize: 20 },
+			from: { width: 1080, height: 1920 },
+			to: { width: 1920, height: 1080 },
+			x: 5000,
+			y: -5000,
+		});
+		expect(out.fontSize).toBeUndefined();
+		expect(out["transform.positionX"]).toBeCloseTo(1920 * 0.44);
+		expect(out["transform.positionY"]).toBeCloseTo(-1080 * 0.44);
+	});
+});
+
+test("a long line shrinks until it fits the safe width", async () => {
+	const { reflowText } = await import("../reflow");
+	const out = reflowText({
+		params: { fontSize: 20 },
+		from: { width: 1920, height: 1080 },
+		to: { width: 1080, height: 1920 },
+		x: 0,
+		y: 0,
+		width: 2400,
+	});
+	// 2400 px wide at size 20 → must fit in 1080 × 0.88 = 950 px.
+	expect(out.fontSize).toBeLessThanOrEqual((20 * 950.4) / 2400);
+});
