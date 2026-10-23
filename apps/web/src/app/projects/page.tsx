@@ -1,5 +1,6 @@
 "use client";
 
+import { RestoreSessionBanner } from "@/tabs/components/restore-session";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -120,6 +121,7 @@ export default function ProjectsPage() {
 			<SignInHandoff />
 			<CloudSyncRunner />
 			<ProjectsHeader />
+			<RestoreSessionBanner />
 			<div className="flex">
 				<ProjectsSidebar />
 				<div className="min-w-0 flex-1">

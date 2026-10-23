@@ -8,6 +8,17 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 ## [Unreleased]
 
 ### Added
+- Project tabs: open several projects at once, each in a tab above the editor.
+  - Each tab shows its name, Local or Cloud status, an unsaved dot and a close button. Drag to reorder.
+  - Shortcuts: Ctrl/Cmd+Tab and Ctrl/Cmd+1–9 switch, Ctrl/Cmd+W closes, Ctrl/Cmd+Shift+T reopens the last closed tab, and + opens another project.
+  - Each tab keeps its own undo history, playhead and selection.
+  - On the next start, Home offers to reopen the projects from last time.
+- Copy and paste between projects: clips pasted into another project bring their media into its Media bin.
+- Paste attributes (Ctrl/Cmd+Alt+V): choose what to copy from a clip onto the selected clips (effects, colour grade and LUTs, transform, speed, volume, text style, animations, keyframes), in one undo step.
+
+### Fixed
+- Undo no longer reaches into a project you had open before.
+- Videos from other cameras are no longer mistaken for DJI footage.
 - New text panel with Presets, Basic, Animation and Motion tracking tabs.
   - **Presets:** 16 Styles (outline, highlight, neon, comic, fire, gold and more) and the Templates, each with Apply to all.
   - **Basic:** the words, font, a format bar (size, bold, italic, underline, alignment, letter case, line and letter spacing), Fill, Stroke, Background and Shadow (each with its own settings), Glow, Opacity and Transform, with Apply to all.

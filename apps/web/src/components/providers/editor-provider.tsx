@@ -1,5 +1,7 @@
 "use client";
 
+import { restoreTabSession, saveTabSession } from "@/tabs/session";
+import { useProjectTabs } from "@/tabs/store";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
@@ -43,6 +45,11 @@ export function EditorProvider({ projectId, children }: EditorProviderProps) {
 				await editor.project.loadProject({ id: projectId });
 
 				if (cancelled) return;
+				// Project tabs (MP-05): bring back this tab's undo history,
+				// playhead and selection, and list it in the tab bar.
+				restoreTabSession({ editor, projectId });
+				const name = editor.project.getActiveOrNull()?.metadata.name ?? "Untitled";
+				useProjectTabs.getState().open({ id: projectId, name });
 
 				setIsLoading(false);
 				loadFontAtlas();
@@ -84,6 +91,7 @@ export function EditorProvider({ projectId, children }: EditorProviderProps) {
 
 		return () => {
 			cancelled = true;
+			saveTabSession({ editor, projectId });
 		};
 	}, [projectId, router]);
 

@@ -163,7 +163,17 @@ export function identifyFootage(header: Uint8Array): {
 		const b = header[i];
 		text += b >= 32 && b < 127 ? String.fromCharCode(b) : " ";
 	}
-	const camera = matchModel(text);
+	// Short model names ("M3", "Air 3") appear in unrelated files, so a
+	// model only counts when the maker's name is in the file too.
+	const brandInFile: CameraBrand | null = /DJI/.test(text)
+		? "DJI"
+		: /GoPro|GPMF/.test(text)
+			? "GoPro"
+			: /Insta360/i.test(text)
+				? "Insta360"
+				: null;
+	const matched = matchModel(text);
+	const camera = matched && matched.brand === brandInFile ? matched : null;
 	const brand: CameraBrand | null =
 		camera?.brand ??
 		(/\bDJI\b/.test(text)

@@ -1,6 +1,6 @@
 // Worksuite FrameFlow desktop shell: runs the bundled Next.js server on a
 // private loopback port and shows it in a window.
-const { app, BrowserWindow, clipboard, shell, dialog, ipcMain } = require("electron");
+const { app, BrowserWindow, clipboard, shell, dialog, ipcMain, Menu } = require("electron");
 const { spawn } = require("node:child_process");
 const capture = require("./capture");
 const network = require("./network");
@@ -300,6 +300,30 @@ if (!app.requestSingleInstanceLock()) {
 		.whenReady()
 		.then(() => {
 			registerAccountIpc();
+			// A menu without Close Window / Ctrl+Tab accelerators, so the editor's
+			// project tab shortcuts (Ctrl/Cmd+W, Ctrl+Tab, Ctrl+Shift+T) reach it.
+			Menu.setApplicationMenu(
+				Menu.buildFromTemplate([
+					...(process.platform === "darwin"
+						? [{ role: "appMenu" }]
+						: []),
+					{ role: "editMenu" },
+					{
+						label: "View",
+						submenu: [
+							{ role: "reload" },
+							{ role: "toggleDevTools" },
+							{ type: "separator" },
+							{ role: "resetZoom" },
+							{ role: "zoomIn" },
+							{ role: "zoomOut" },
+							{ type: "separator" },
+							{ role: "togglefullscreen" },
+						],
+					},
+					{ label: "Window", submenu: [{ role: "minimize" }] },
+				]),
+			);
 			account.init();
 			updates.init();
 			return createWindow();

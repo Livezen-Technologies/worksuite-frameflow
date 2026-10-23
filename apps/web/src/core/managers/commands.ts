@@ -4,6 +4,11 @@ import type { EditorSelectionSnapshot } from "@/selection/editor-selection";
 import { applyRippleAdjustments, computeRippleAdjustments } from "@/ripple";
 import type { SceneTracks } from "@/timeline/types";
 
+export interface CommandHistorySnapshot {
+	history: CommandHistoryEntry[];
+	redoStack: CommandHistoryEntry[];
+}
+
 interface CommandHistoryEntry {
 	command: Command;
 	previousSelection: EditorSelectionSnapshot;
@@ -17,6 +22,19 @@ export class CommandManager {
 	private reactors: Array<() => void> = [];
 
 	constructor(private editor: EditorCore) {}
+
+	/** Undo/redo of the open project, kept per project tab (SRS MP-05). */
+	takeHistory(): CommandHistorySnapshot {
+		const snapshot = { history: this.history, redoStack: this.redoStack };
+		this.history = [];
+		this.redoStack = [];
+		return snapshot;
+	}
+
+	restoreHistory(snapshot: CommandHistorySnapshot | null): void {
+		this.history = snapshot?.history ?? [];
+		this.redoStack = snapshot?.redoStack ?? [];
+	}
 
 	execute({ command }: { command: Command }): Command {
 		const beforeTracks = this.isRippleEnabled
