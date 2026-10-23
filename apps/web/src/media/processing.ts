@@ -6,6 +6,7 @@ import { convertHeif, findLivePhotoPairs, isHeif, type PhotoInfo } from "./heif"
 import { unsupportedSphereFormat } from "@/vr/spherical";
 import { convertSphereFile, spherePlanFor } from "@/vr/convert";
 import { helperBridge } from "@/proxy/bridge";
+import { masterBridge } from "@/export/master";
 import { getMediaTypeFromFile } from "@/media/media-utils";
 import { formatStorageBytes } from "@/services/storage/quota";
 import { storageService } from "@/services/storage/service";
@@ -146,12 +147,21 @@ export async function processMediaAssets({
 						description: "Its colours were converted to the project's sRGB.",
 					});
 			} catch (error) {
-				toast.error(`Couldn't open ${original.name}`, {
+				// Desktop: FFmpeg's own HEVC decoder may still read it (HE-11).
+				const fallback = await convertWithFfmpeg({ file: original });
+				if (fallback) {
+					file = fallback;
+					toast.info(`${original.name} was converted to JPEG`, {
+						description: "FrameFlow's HEIC reader couldn't open it, so it went through FFmpeg instead.",
+					});
+				} else toast.error(`Couldn't open ${original.name}`, {
 					description: `${error instanceof Error ? error.message : "Unknown error"} The file may be damaged or use a HEIF feature that isn't supported yet.`,
 					duration: 12_000,
 				});
-				completed += 1;
-				continue;
+				if (!fallback) {
+					completed += 1;
+					continue;
+				}
 			}
 		}
 		// 360° camera originals (.insv, GoPro .360, cubemap) become
@@ -303,6 +313,20 @@ export async function processMediaAssets({
 	}
 
 	return processedAssets;
+}
+
+async function convertWithFfmpeg({ file }: { file: File }): Promise<File | null> {
+	const convert = masterBridge()?.convertImage;
+	if (!convert) return null;
+	try {
+		const bytes = await convert({ data: await file.arrayBuffer() });
+		return new File([bytes], file.name.replace(/\.[^.]+$/, ".jpg"), {
+			type: "image/jpeg",
+			lastModified: file.lastModified,
+		});
+	} catch {
+		return null;
+	}
 }
 
 const getMediaDuration = ({ file }: { file: File }): Promise<number> => {

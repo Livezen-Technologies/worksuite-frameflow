@@ -26,6 +26,8 @@ export interface MasterExportBridge {
 		data: ArrayBuffer;
 		format: "mp3" | "m4a";
 	}) => Promise<ArrayBuffer>;
+	/** Any picture FFmpeg can read, as JPEG bytes (HE-11). */
+	convertImage?: (args: { data: ArrayBuffer }) => Promise<ArrayBuffer>;
 	/** Swaps in WAV sound, kept at its channel count (4-channel ambisonics). */
 	muxAudio?: (args: {
 		video: ArrayBuffer;

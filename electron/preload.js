@@ -68,6 +68,7 @@ contextBridge.exposeInMainWorld("worksuite", {
 		save: (args) => ipcRenderer.invoke("master:save", args),
 		encodeAudio: (args) => ipcRenderer.invoke("master:encode-audio", args),
 		muxAudio: (args) => ipcRenderer.invoke("master:mux-audio", args),
+		convertImage: (args) => ipcRenderer.invoke("master:convert-image", args),
 	},
 	helper: {
 		caps: () => ipcRenderer.invoke("helper:caps"),

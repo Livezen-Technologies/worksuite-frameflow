@@ -272,5 +272,29 @@ module.exports = {
 		}
 	},
 
+	/** A picture FrameFlow's own decoder can't read, as JPEG via FFmpeg (HE-11). */
+	async convertImage({ data }) {
+		const bin = nativeHelper._test.ffmpegPath();
+		if (!bin) throw new Error("FFmpeg isn't bundled with this build.");
+		await fs.promises.mkdir(tmpDir(), { recursive: true });
+		const id = crypto.randomUUID();
+		const input = path.join(tmpDir(), `${id}.heic`);
+		const output = path.join(tmpDir(), `${id}.jpg`);
+		await fs.promises.writeFile(input, Buffer.from(data));
+		try {
+			await new Promise((resolve, reject) => {
+				const child = spawn(bin, ["-hide_banner", "-loglevel", "error", "-y", "-i", input, "-frames:v", "1", "-q:v", "2", output]);
+				let err = "";
+				child.stderr.on("data", (d) => { err += d; });
+				child.on("close", (code) => (code === 0 ? resolve() : reject(new Error(err.trim() || `FFmpeg failed (${code})`))));
+			});
+			const bytes = await fs.promises.readFile(output);
+			return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength);
+		} finally {
+			await fs.promises.unlink(input).catch(() => {});
+			await fs.promises.unlink(output).catch(() => {});
+		}
+	},
+
 	_test: { masterArgs },
 };

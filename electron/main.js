@@ -368,6 +368,7 @@ function registerAccountIpc() {
 	handle("master:save", (args) => masterExport.save(args ?? {}));
 	handle("master:encode-audio", (args) => masterExport.encodeAudio(args ?? {}));
 	handle("master:mux-audio", (args) => masterExport.muxAudio(args ?? {}));
+	handle("master:convert-image", (args) => masterExport.convertImage(args ?? {}));
 	handle("helper:configure", (args) => nativeHelper.configure(args ?? {}));
 	handle("helper:begin", () => nativeHelper.begin());
 	handle("helper:write", (args) => nativeHelper.write(args ?? {}));
