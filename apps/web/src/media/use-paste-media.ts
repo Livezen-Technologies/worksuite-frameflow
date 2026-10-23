@@ -1,3 +1,4 @@
+import { isHeif } from "./heif";
 import { useEffect } from "react";
 import { useEditor } from "@/editor/use-editor";
 import { processMediaAssets } from "@/media/processing";
@@ -53,10 +54,11 @@ function extractMediaFilesFromClipboard({
 	const files: File[] = [];
 	for (const item of clipboardData.items) {
 		if (item.kind !== "file") continue;
-		if (!isMediaMimeType({ type: item.type })) continue;
-
 		const file = item.getAsFile();
-		if (file) files.push(file);
+		if (!file) continue;
+		// HEIC and 360° camera files often come without a MIME type (HE-01).
+		if (isMediaMimeType({ type: item.type }) || isHeif({ file }) || /\.(insv|360)$/i.test(file.name))
+			files.push(file);
 	}
 	return files;
 }

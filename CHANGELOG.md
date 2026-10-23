@@ -114,6 +114,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Fixed
 
+- Pasting a HEIC photo (or an Insta360 / GoPro 360° file) copied from a file manager now imports it; before, files without a recognised type were ignored.
+
 - Clip analysis (tracking and other effects that read the video) now uses the sample size it asks for instead of always 320 pixels wide.
 - A sequence's own frame size (for example a 9:16 copy) is now kept when the project is saved and reopened.
 - Voice-over recordings no longer show a warning that the cursor couldn't be logged.
