@@ -108,6 +108,8 @@ export class RendererManager {
 				height: canvasSize.height,
 				fps,
 			});
+			// Stills you keep use the original media, not proxies.
+			renderer.useProxies = false;
 
 			const tempCanvas = document.createElement("canvas");
 			tempCanvas.width = canvasSize.width;
@@ -234,7 +236,9 @@ export class RendererManager {
 				coverImage,
 				// HDR projects export 10-bit VP9 with HLG/PQ signalling (HD-14).
 				hdrOutput:
-					!forceSdr && format === "webm" && (colorSpace === "hlg" || colorSpace === "pq")
+					!forceSdr &&
+					format === "webm" &&
+					(colorSpace === "hlg" || colorSpace === "pq")
 						? colorSpace
 						: undefined,
 				subtitlesVtt:

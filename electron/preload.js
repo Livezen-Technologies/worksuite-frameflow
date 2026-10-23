@@ -32,6 +32,20 @@ contextBridge.exposeInMainWorld("worksuite", {
 			return () => ipcRenderer.removeListener("uploads:changed", handler);
 		},
 	},
+	helper: {
+		caps: () => ipcRenderer.invoke("helper:caps"),
+		configure: (args) => ipcRenderer.invoke("helper:configure", args),
+		begin: () => ipcRenderer.invoke("helper:begin"),
+		write: (args) => ipcRenderer.invoke("helper:write", args),
+		proxy: (args) => ipcRenderer.invoke("helper:proxy", args),
+		read: (args) => ipcRenderer.invoke("helper:read", args),
+		release: (args) => ipcRenderer.invoke("helper:release", args),
+		onProgress: (listener) => {
+			const handler = (_event, payload) => listener(payload);
+			ipcRenderer.on("helper:progress", handler);
+			return () => ipcRenderer.removeListener("helper:progress", handler);
+		},
+	},
 	automation: {
 		getState: () => ipcRenderer.invoke("automation:get-state"),
 		setEnabled: (enabled) => ipcRenderer.invoke("automation:set-enabled", enabled),

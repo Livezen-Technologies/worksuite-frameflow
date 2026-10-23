@@ -21,7 +21,8 @@
     "dist": "electron-builder --publish never",
     "dist:mac": "electron-builder --mac --publish never",
     "dist:win": "electron-builder --win --publish never",
-    "dist:linux": "electron-builder --linux --publish never"
+    "dist:linux": "electron-builder --linux --publish never",
+    "fetch-ffmpeg": "node scripts/fetch-ffmpeg.mjs"
   },
   "devDependencies": {
     "electron": "38.2.2",
@@ -48,7 +49,8 @@
       "ai.js",
       "automation.js",
       "preload.js",
-      "package.json"
+      "package.json",
+      "native-helper.js"
     ],
     "extraResources": [
       {
@@ -71,6 +73,10 @@
           "wve",
           "wve.cmd"
         ]
+      },
+      {
+        "from": "vendor/ffmpeg/${platform}-${arch}",
+        "to": "ffmpeg"
       }
     ],
     "asar": true,

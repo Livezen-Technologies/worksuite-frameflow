@@ -29,6 +29,7 @@ import { LANGUAGES } from "@/transcription/languages";
 import { cn } from "@/utils/ui";
 import { useSphereStore } from "@/vr/store";
 import { DEFAULT_TONE_MAP } from "@/hdr/tonemap";
+import { PerformanceSettings } from "@/proxy/components/performance-settings";
 import { reflowElements, type ReflowMode } from "../reflow";
 import { BUILT_IN_TEMPLATES, useProjectSettings } from "../store";
 
@@ -587,19 +588,7 @@ function ProjectSettingsBody({ onClose }: { onClose: () => void }) {
 						)}
 					</>
 				)}
-				{tab === "performance" && (
-					<div className="text-muted-foreground flex flex-col gap-3 py-3 text-sm">
-						<p>
-							Playback uses the GPU compositor at full project size, and the
-							browser&apos;s hardware video decoding is always on.
-						</p>
-						<p>
-							Proxies, preview quality, render cache, GPU choice and background
-							task priority (PS-12 – PS-16) need the native media helper and are
-							not available yet.
-						</p>
-					</div>
-				)}
+				{tab === "performance" && <PerformanceSettings />}
 				{tab === "defaults" && (
 					<>
 						<Field label="Still image length">

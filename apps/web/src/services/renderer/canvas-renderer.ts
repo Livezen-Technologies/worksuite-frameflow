@@ -28,6 +28,8 @@ export class CanvasRenderer {
 	 * else (preview, thumbnails, SDR export) is tone-mapped for SDR (HD-09).
 	 */
 	purpose: "display" | "export" = "display";
+	/** Draw editing proxies instead of the original files (never on export). */
+	useProxies = true;
 
 	constructor({ width, height, fps }: CanvasRendererParams) {
 		this.width = width;

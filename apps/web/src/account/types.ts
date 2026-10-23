@@ -1,3 +1,4 @@
+import type { NativeHelperBridge } from "@/proxy/bridge";
 import type { AutomationBridge } from "@/automation/bridge";
 import type { AiBridge } from "@/ai/bridge";
 import type { ProjectFoldersBridge } from "@/project-folder/bridge";
@@ -79,6 +80,7 @@ declare global {
 			folders?: ProjectFoldersBridge;
 			ai?: AiBridge;
 			automation?: AutomationBridge;
+			helper?: NativeHelperBridge;
 		};
 	}
 }

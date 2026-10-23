@@ -106,6 +106,8 @@ export class SceneExporter extends EventEmitter<SceneExporterEvents> {
 		this.coverImage = coverImage;
 		this.hdrOutput = hdrOutput;
 		if (hdrOutput) this.renderer.purpose = "export";
+		// Exports always read the original media.
+		this.renderer.useProxies = false;
 	}
 
 	/**

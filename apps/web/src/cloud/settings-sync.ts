@@ -2,6 +2,7 @@
 
 import { useLocale } from "@/i18n/store";
 import { useAiSettings } from "@/ai/store";
+import { useProxySettings } from "@/proxy/store";
 import type { SyncedSetting } from "@/account/types";
 import { useKeybindingsStore } from "@/actions/keybindings-store";
 import { useBrandKit } from "@/brand/store";

@@ -16,6 +16,7 @@ const updates = require("./updater");
 const projectFolders = require("./project-folders");
 const ai = require("./ai");
 const automation = require("./automation");
+const nativeHelper = require("./native-helper");
 
 const HOST = "127.0.0.1";
 let server = null;
@@ -271,6 +272,13 @@ function registerAccountIpc() {
 	handle("uploads:pause-all", () => uploadQueue.pauseAll());
 	handle("uploads:resume-all", () => uploadQueue.resumeAll());
 	handle("clipboard:write", (text) => clipboard.writeText(String(text)));
+	handle("helper:caps", () => nativeHelper.getCaps());
+	handle("helper:configure", (args) => nativeHelper.configure(args ?? {}));
+	handle("helper:begin", () => nativeHelper.begin());
+	handle("helper:write", (args) => nativeHelper.write(args ?? {}));
+	handle("helper:proxy", (args) => nativeHelper.proxy(args ?? {}));
+	handle("helper:read", (args) => nativeHelper.read(args ?? {}));
+	handle("helper:release", (args) => nativeHelper.release(args ?? {}));
 	handle("automation:get-state", () => automation.getState());
 	handle("automation:set-enabled", (enabled) => automation.setEnabled(!!enabled));
 	handle("ai:get-state", () => ai.getState());
@@ -324,6 +332,7 @@ if (!app.requestSingleInstanceLock()) {
 		.then(() => {
 			registerAccountIpc();
 			void automation.init();
+			void nativeHelper.init();
 			// A menu without Close Window / Ctrl+Tab accelerators, so the editor's
 			// project tab shortcuts (Ctrl/Cmd+W, Ctrl+Tab, Ctrl+Shift+T) reach it.
 			Menu.setApplicationMenu(

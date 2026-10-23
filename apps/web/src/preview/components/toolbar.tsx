@@ -1,6 +1,7 @@
 "use client";
 
 import { SphereMenu } from "@/vr/components/sphere-menu";
+import { ProxyToggle } from "@/proxy/components/proxy-toggle";
 import { ToneMappedLabel } from "@/hdr/components/tone-mapped-label";
 import { useState, useEffect } from "react";
 import { useEditor } from "@/editor/use-editor";
@@ -40,6 +41,7 @@ export function PreviewToolbar({
 			<div className="justify-self-end flex items-center gap-2.5">
 				<ToneMappedLabel />
 				<SphereMenu />
+				<ProxyToggle />
 				<ZoomSelect />
 				<Separator orientation="vertical" className="h-4" />
 				{/* v0.4.0 */}

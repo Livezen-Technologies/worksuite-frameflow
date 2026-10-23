@@ -4,6 +4,7 @@ import {
 	projectionFromParams,
 	REFRAME_EFFECT_TYPE,
 } from "@/vr/projection";
+import { previewSource } from "@/proxy/registry";
 import { mediaTimeToSeconds, roundMediaTime, TICKS_PER_SECOND } from "@/wasm";
 import {
 	graphemeCount,
@@ -188,7 +189,8 @@ function revealCount({
 }): number {
 	const total = graphemeCount(content);
 	if (!unit) return Math.round(reveal * total);
-	const parts = unit === "line" ? content.split(/(?<=\n)/) : content.split(/(?<=\s)(?=\S)/);
+	const parts =
+		unit === "line" ? content.split(/(?<=\n)/) : content.split(/(?<=\s)(?=\S)/);
 	const shown = Math.ceil(reveal * parts.length - 1e-9);
 	return graphemeCount(parts.slice(0, Math.max(0, shown)).join(""));
 }
@@ -420,9 +422,14 @@ async function resolveVideoNode({
 			clipTime,
 			retime: node.params.retime,
 		});
-	const frame = await videoCache.getFrameAt({
+	const source = previewSource({
 		mediaId: node.params.mediaId,
 		file: node.params.file,
+		useProxies: context.renderer.useProxies,
+	});
+	const frame = await videoCache.getFrameAt({
+		mediaId: source.mediaId,
+		file: source.file,
 		time: mediaTimeToSeconds({
 			time: roundMediaTime({ time: sourceTimeTicks }),
 		}),

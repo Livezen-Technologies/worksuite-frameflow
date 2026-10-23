@@ -16,7 +16,10 @@ import { UpdateProjectSettingsCommand } from "@/commands/project";
 import { DEFAULT_BACKGROUND_COLOR } from "@/background/color";
 import { DEFAULT_CANVAS_SIZE } from "@/canvas/sizes";
 import { DEFAULT_FPS } from "@/fps/defaults";
-import { buildDefaultScene, getProjectDurationFromScenes } from "@/timeline/scenes";
+import {
+	buildDefaultScene,
+	getProjectDurationFromScenes,
+} from "@/timeline/scenes";
 import { buildScene } from "@/services/renderer/scene-builder";
 import { CanvasRenderer } from "@/services/renderer/canvas-renderer";
 import {
@@ -703,6 +706,8 @@ export class ProjectManager {
 			height: canvasSize.height,
 			fps: project.settings.fps,
 		});
+		// Stills you keep use the original media, not proxies.
+		renderer.useProxies = false;
 		const full = document.createElement("canvas");
 		full.width = canvasSize.width;
 		full.height = canvasSize.height;
@@ -741,6 +746,8 @@ export class ProjectManager {
 			height: canvasSize.height,
 			fps: this.active.settings.fps,
 		});
+		// Stills you keep use the original media, not proxies.
+		renderer.useProxies = false;
 
 		const tempCanvas = document.createElement("canvas");
 		tempCanvas.width = canvasSize.width;
