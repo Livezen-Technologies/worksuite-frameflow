@@ -66,6 +66,12 @@ import {
 } from "./nodes/graphic-node";
 import { ImageNode, loadImageSource } from "./nodes/image-node";
 import { StickerNode, loadStickerSource } from "./nodes/sticker-node";
+import {
+	getDriftAsset,
+	lottieSecondsAt,
+	renderLottieFrame,
+	type DriftAsset,
+} from "@/stickers";
 import { TextNode, type ResolvedTextNodeState } from "./nodes/text-node";
 import { VideoNode } from "./nodes/video-node";
 import type {
@@ -575,6 +581,10 @@ async function resolveStickerNode({
 	node: StickerNode;
 	context: ResolveContext;
 }): Promise<ResolvedVisualSourceNodeState | null> {
+	const driftAsset = await getDriftAsset({ stickerId: node.params.stickerId });
+	if (driftAsset) {
+		return resolveDriftStickerNode({ node, context, asset: driftAsset });
+	}
 	const source = await loadStickerSource({ stickerId: node.params.stickerId });
 	const sourceWidth = node.params.intrinsicWidth ?? source.width;
 	const sourceHeight = node.params.intrinsicHeight ?? source.height;
@@ -591,6 +601,44 @@ async function resolveStickerNode({
 	return {
 		...visualState,
 		source: source.source,
+		sourceWidth,
+		sourceHeight,
+	};
+}
+
+async function resolveDriftStickerNode({
+	node,
+	context,
+	asset,
+}: {
+	node: StickerNode;
+	context: ResolveContext;
+	asset: DriftAsset;
+}): Promise<ResolvedVisualSourceNodeState | null> {
+	const sourceWidth = node.params.intrinsicWidth ?? asset.width;
+	const sourceHeight = node.params.intrinsicHeight ?? asset.height;
+	const visualState = resolveVisualState({
+		params: node.params,
+		context,
+		sourceWidth,
+		sourceHeight,
+	});
+	if (!visualState) {
+		return null;
+	}
+
+	const { trimStart, trimEnd, duration } = node.params;
+	const source = await renderLottieFrame({
+		asset,
+		seconds: lottieSecondsAt({
+			asset,
+			clipSeconds: (visualState.localTime + trimStart) / TICKS_PER_SECOND,
+			clipLength: (trimStart + duration + trimEnd) / TICKS_PER_SECOND,
+		}),
+	});
+	return {
+		...visualState,
+		source,
 		sourceWidth,
 		sourceHeight,
 	};

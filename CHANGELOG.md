@@ -10,6 +10,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 ### Added
 
 - Sinhala and Tamil typing now also works in the text box on the preview (double-click a title), with the same suggestions as the side panel.
+- Animated stickers: the new **Drift** tab in Stickers has 870 Lottie animations (lower thirds, call-to-action buttons, callouts, reactions, app UI, broadcast frames, transitions and more), searchable by name or tag. They play in the preview and in exports; looping ones repeat, and ones with an outro hold until the end of the clip and then play out. The animations are CC BY-NC-SA 4.0.
 
 - Sinhala and Tamil typing: a Tamil99 keyboard (Typing language menu → Tamil keyboard), next-word suggestions learned from what you type (press 1–5 after a space), much bigger built-in word lists (about 3,600 Sinhala and 63,000 Tamil words), and **Check spelling…** for the text box you are typing in, with replacements and Add to dictionary.
 
