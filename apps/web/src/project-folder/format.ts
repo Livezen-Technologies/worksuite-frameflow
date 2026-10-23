@@ -130,6 +130,22 @@ export function entryFileName(entry: FolderMediaEntry): string {
 }
 
 /**
+ * Files in the folder's media/ that no media item uses any more: media
+ * deleted from the project (PR-03). An undo brings the item back and the
+ * next save writes the file again.
+ */
+export function orphanedMediaFiles({
+	existing,
+	media,
+}: {
+	existing: string[];
+	media: FolderMediaEntry[];
+}): string[] {
+	const used = new Set(media.map(entryFileName));
+	return existing.filter((name) => !used.has(name));
+}
+
+/**
  * Pair missing media with files the user picked: same name first, then
  * same size, so a renamed copy of the original still relinks.
  */

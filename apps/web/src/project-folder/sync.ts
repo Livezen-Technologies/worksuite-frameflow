@@ -5,6 +5,7 @@ import {
 	buildManifest,
 	buildMediaIndex,
 	entryFileName,
+	orphanedMediaFiles,
 	FolderFormatError,
 	parseManifest,
 	parseMediaIndex,
@@ -72,6 +73,9 @@ export async function writeProjectFolder({
 				data: await file.arrayBuffer(),
 			});
 		}
+		// Media deleted from the project leaves the folder too.
+		for (const fileName of orphanedMediaFiles({ existing: [...existing.keys()], media }))
+			await bridge.removeMedia({ projectId, fileName });
 		await bridge.writeJson({
 			projectId,
 			name: "media.json",

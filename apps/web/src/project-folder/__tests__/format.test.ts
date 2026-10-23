@@ -102,3 +102,15 @@ describe("project folder format", () => {
 		expect(plan.get("b")).toBe(0);
 	});
 });
+
+describe("deleted media leaves the folder (PR-03)", () => {
+	test("files no media item uses are orphans", async () => {
+		const { orphanedMediaFiles } = await import("../format");
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- partial entries
+		const media = [
+			{ id: "a", file: "media/clip.mp4" },
+			{ id: "b", file: "media/photo.jpg" },
+		] as unknown as Parameters<typeof orphanedMediaFiles>[0]["media"];
+		expect(orphanedMediaFiles({ existing: ["clip.mp4", "photo.jpg", "old.mov"], media })).toEqual(["old.mov"]);
+	});
+});

@@ -133,6 +133,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Fixed
 
+- Media deleted from a project saved as a project folder is now also removed from the folder's media folder on the next save.
+
 - Changing a project's shape (for example 16:9 to 9:16) with "Fit" now also resizes titles and captions so they fit inside the new frame's safe area, instead of running off the sides.
 
 - Pasting a HEIC photo (or an Insta360 / GoPro 360° file) copied from a file manager now imports it; before, files without a recognised type were ignored.
