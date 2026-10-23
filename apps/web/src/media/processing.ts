@@ -4,6 +4,8 @@ import { EditorCore } from "@/core";
 import type { MediaColorInfo } from "@/services/storage/types";
 import { convertHeif, findLivePhotoPairs, isHeif } from "./heif";
 import { unsupportedSphereFormat } from "@/vr/spherical";
+import { convertSphereFile, spherePlanFor } from "@/vr/convert";
+import { helperBridge } from "@/proxy/bridge";
 import { getMediaTypeFromFile } from "@/media/media-utils";
 import { formatStorageBytes } from "@/services/storage/quota";
 import { storageService } from "@/services/storage/service";
@@ -133,8 +135,34 @@ export async function processMediaAssets({
 				continue;
 			}
 		}
+		// 360° camera originals (.insv, GoPro .360, cubemap) become
+		// equirectangular video through the desktop app's FFmpeg (VR-02, VR-03).
+		const plan = helperBridge()?.sphere ? await spherePlanFor(file) : null;
+		if (plan) {
+			const id = toast.loading(`Converting ${file.name} to 360° video…`);
+			try {
+				const converted = await convertSphereFile({
+					file,
+					plan,
+					onProgress: (p) =>
+						toast.loading(`Converting ${file.name} to 360° video… ${Math.round(p * 100)}%`, { id }),
+				});
+				if (converted) {
+					file = converted;
+					toast.success(`${original.name} converted to 360° video`, { id });
+				} else toast.dismiss(id);
+			} catch (error) {
+				toast.error(`Couldn't convert ${original.name}`, {
+					id,
+					description: error instanceof Error ? error.message : String(error),
+					duration: 12_000,
+				});
+				completed += 1;
+				continue;
+			}
+		}
 		const fileType = getMediaTypeFromFile({ file });
-		// 360° camera originals that need the vendor's app first (VR-02, VR-03).
+		// Without the desktop app, these need the vendor's app first.
 		const sphereFormat = unsupportedSphereFormat(file.name);
 		if (sphereFormat) {
 			toast.error(`Can't open ${file.name} yet`, {

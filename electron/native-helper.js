@@ -122,6 +122,42 @@ function proxyArgs({ input, output, height, encoder, hasAudio }) {
 	return args;
 }
 
+/**
+ * FFmpeg filters that turn 360° camera originals into equirectangular video
+ * (SRS VR-02, VR-03). `videoTracks` is how many video streams the file has.
+ */
+function sphereFilter({ layout, height, videoTracks }) {
+	const h = Math.max(960, Math.min(2880, Math.round(height / 2) * 2));
+	const out = `v360=input=%IN%:output=e:w=${h * 2}:h=${h}:interp=cubic,format=yuv420p,setsar=1`;
+	if (layout === "eac") return { graph: `[0:v:0]${out.replace("%IN%", "eac")}[v]` };
+	if (layout === "c3x2") return { graph: `[0:v:0]${out.replace("%IN%", "c3x2")}[v]` };
+	if (layout === "dfisheye") {
+		// Insta360: both lenses side by side in one stream, or one stream per lens.
+		const fisheye = out.replace("%IN%", "dfisheye:ih_fov=200:iv_fov=200");
+		return videoTracks > 1
+			? { graph: `[0:v:0][0:v:1]hstack=inputs=2,${fisheye}[v]` }
+			: { graph: `[0:v:0]${fisheye}[v]` };
+	}
+	if (layout === "gopro") {
+		// GoPro MAX: two 4096×1344 streams of three 1344 faces with overlap
+		// strips between them; drop the strips and stack into an EAC frame.
+		const faces = (i) =>
+			`[0:v:${i}]split=3[a${i}][b${i}][c${i}];[a${i}]crop=1344:1344:0:0[l${i}];[b${i}]crop=1344:1344:1376:0[m${i}];[c${i}]crop=1344:1344:2752:0[r${i}];[l${i}][m${i}][r${i}]hstack=inputs=3[row${i}]`;
+		return { graph: `${faces(0)};${faces(1)};[row0][row1]vstack=inputs=2,${out.replace("%IN%", "eac")}[v]` };
+	}
+	throw new Error(`Unknown 360° layout ${layout}`);
+}
+
+function sphereArgs({ input, output, layout, height, videoTracks, encoder }) {
+	const { graph } = sphereFilter({ layout, height, videoTracks });
+	const args = ["-hide_banner", "-nostdin", "-y", "-loglevel", "error", "-progress", "pipe:1", "-nostats"];
+	args.push("-i", input, "-filter_complex", graph, "-map", "[v]", "-map", "0:a:0?", "-sn", "-dn");
+	args.push("-c:v", encoder.encoder, ...encoder.args, "-b:v", `${Math.round((height / 1440) * 40)}M`);
+	// Keep every audio channel: 4-channel ambisonics stays spatial (VR-21).
+	args.push("-c:a", "aac", "-b:a", "384k", "-movflags", "+faststart", "-f", "mp4", output);
+	return args;
+}
+
 function next() {
 	while (running < settings.concurrency && queue.length) {
 		const task = queue.shift();
@@ -140,6 +176,7 @@ function job(id) {
 }
 
 module.exports = {
+	_sphereArgs: sphereArgs,
 	async init() {
 		await fs.promises.rm(tmpDir(), { recursive: true, force: true }).catch(() => {});
 	},
@@ -212,6 +249,51 @@ module.exports = {
 				await fs.promises.rm(j.input, { force: true });
 				j.size = (await fs.promises.stat(j.output)).size;
 				resolve({ size: j.size, encoder: used.encoder });
+			});
+			next();
+		});
+	},
+
+	/** Converts a 360° camera original to equirectangular H.264 (VR-02, VR-03). */
+	sphere({ jobId, layout, height = 1920, videoTracks = 1, duration }) {
+		const j = job(jobId);
+		return new Promise((resolve, reject) => {
+			queue.push(async () => {
+				if (j.cancelled) return reject(Object.assign(new Error("Cancelled"), { code: "cancelled" }));
+				const caps = await getCaps();
+				if (!caps.cpu) return reject(new Error(caps.reason ?? "No encoder"));
+				let args;
+				try {
+					args = sphereArgs({ input: j.input, output: j.output, layout, height, videoTracks, encoder: CPU });
+				} catch (error) {
+					return reject(error);
+				}
+				const result = await new Promise((done) => {
+					const child = spawn(ffmpegPath(), args, { windowsHide: true });
+					j.child = child;
+					lowerPriority(child.pid);
+					let errors = "";
+					let buf = "";
+					child.stderr.on("data", (d) => (errors = (errors + d).slice(-2000)));
+					child.stdout.on("data", (d) => {
+						buf += d;
+						let nl;
+						while ((nl = buf.indexOf("\n")) >= 0) {
+							const [key, value] = buf.slice(0, nl).split("=");
+							buf = buf.slice(nl + 1);
+							if (key === "out_time_us" && duration > 0)
+								broadcast("helper:progress", { jobId, progress: Math.min(1, Number(value) / 1e6 / duration) });
+						}
+					});
+					child.on("close", (code) => done({ code, errors }));
+					child.on("error", (error) => done({ code: -1, errors: error.message }));
+				});
+				j.child = null;
+				if (j.cancelled) return reject(Object.assign(new Error("Cancelled"), { code: "cancelled" }));
+				if (result.code !== 0) return reject(new Error(result.errors.trim().split("\n").pop() || `FFmpeg exited with ${result.code}`));
+				await fs.promises.rm(j.input, { force: true });
+				j.size = (await fs.promises.stat(j.output)).size;
+				resolve({ size: j.size });
 			});
 			next();
 		});

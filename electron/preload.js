@@ -75,6 +75,7 @@ contextBridge.exposeInMainWorld("worksuite", {
 		begin: () => ipcRenderer.invoke("helper:begin"),
 		write: (args) => ipcRenderer.invoke("helper:write", args),
 		proxy: (args) => ipcRenderer.invoke("helper:proxy", args),
+		sphere: (args) => ipcRenderer.invoke("helper:sphere", args),
 		read: (args) => ipcRenderer.invoke("helper:read", args),
 		release: (args) => ipcRenderer.invoke("helper:release", args),
 		onProgress: (listener) => {

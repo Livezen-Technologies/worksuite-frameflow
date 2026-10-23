@@ -9,6 +9,8 @@ export type HelperGpu =
 	| "windows"
 	| "vaapi";
 
+export type SphereLayout = "eac" | "c3x2" | "dfisheye" | "gopro";
+
 export interface HelperCaps {
 	available: boolean;
 	reason: string | null;
@@ -32,6 +34,14 @@ export interface NativeHelperBridge {
 		duration?: number;
 		hasAudio?: boolean;
 	}) => Promise<{ size: number; encoder: string }>;
+	/** 360° camera original → equirectangular MP4 (VR-02, VR-03). */
+	sphere?: (args: {
+		jobId: string;
+		layout: SphereLayout;
+		height?: number;
+		videoTracks?: number;
+		duration?: number;
+	}) => Promise<{ size: number }>;
 	read: (args: {
 		jobId: string;
 		offset: number;

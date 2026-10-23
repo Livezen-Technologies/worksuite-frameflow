@@ -372,6 +372,7 @@ function registerAccountIpc() {
 	handle("helper:begin", () => nativeHelper.begin());
 	handle("helper:write", (args) => nativeHelper.write(args ?? {}));
 	handle("helper:proxy", (args) => nativeHelper.proxy(args ?? {}));
+	handle("helper:sphere", (args) => nativeHelper.sphere(args ?? {}));
 	handle("helper:read", (args) => nativeHelper.read(args ?? {}));
 	handle("helper:release", (args) => nativeHelper.release(args ?? {}));
 	handle("automation:get-state", () => automation.getState());
