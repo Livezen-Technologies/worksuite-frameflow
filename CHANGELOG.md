@@ -8,6 +8,12 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 ## [Unreleased]
 
 ### Added
+- HEIC/HEIF photo import (.heic, .heif, .hif) from the Import button and drag and drop.
+  - Photos are decoded off the editor thread, including iPhone tiled images, rotation and mirroring.
+  - Photos with transparency stay transparent. For files holding several pictures, the main one is imported.
+  - When a Live Photo is imported together with its .mov, you choose the video clip or the photo.
+  - Damaged files show a clear message.
+  - The libheif decoder (LGPL-3.0) ships with its licence.
 - Project settings: open from the W menu or the project switcher. Saving applies everything as one undo step.
   - Details: name, aspect ratio (including Original, from the first clip), resolution 720p–8K or custom, frame rate (23.976–60), colour space (Rec. 709/2020 SDR), audio sample rate and channels (used for export), and 360° project.
   - When the frame changes, existing clips can scale to fit, scale to fill, or keep their size.

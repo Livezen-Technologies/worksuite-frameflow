@@ -1,5 +1,6 @@
 "use client";
 
+import { HEIF_ACCEPT } from "@/media/heif";
 import { LibraryView } from "@/cloud/components/library-view";
 import { useCloudReady } from "@/cloud/network";
 import { SphereBadge } from "@/vr/components/sphere-badge";
@@ -122,7 +123,7 @@ export function MediaView() {
 
 	const { isDragOver, dragProps, openFilePicker, fileInputProps } =
 		useFileUpload({
-			accept: "image/*,video/*,audio/*",
+			accept: `image/*,video/*,audio/*,${HEIF_ACCEPT}`,
 			multiple: true,
 			onFilesSelected: (files) => processFiles({ files }),
 		});

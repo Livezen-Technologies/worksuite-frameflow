@@ -1,5 +1,6 @@
 "use client";
 
+import { HEIF_ACCEPT } from "@/media/heif";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
 	Building2,
@@ -182,7 +183,7 @@ export function LibraryView() {
 					type="file"
 					multiple
 					className="hidden"
-					accept="image/*,video/*,audio/*,.cube,.zip"
+					accept={`image/*,video/*,audio/*,.cube,.zip,${HEIF_ACCEPT}`}
 					data-library-input
 					onChange={(e) => {
 						void upload(e.target.files);

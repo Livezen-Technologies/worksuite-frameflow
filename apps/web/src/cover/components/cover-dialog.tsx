@@ -1,5 +1,6 @@
 "use client";
 
+import { convertHeif, HEIF_ACCEPT, isHeif } from "@/media/heif";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -24,7 +25,8 @@ async function fitUpload({
 	width: number;
 	height: number;
 }): Promise<string> {
-	const bitmap = await createImageBitmap(file);
+	const source = isHeif({ file }) ? (await convertHeif({ file })).file : file;
+	const bitmap = await createImageBitmap(source);
 	const scale = Math.min(1, COVER_SIZE / Math.max(width, height));
 	const canvas = document.createElement("canvas");
 	canvas.width = Math.round(width * scale);
@@ -187,7 +189,7 @@ export function CoverDialog({
 					<input
 						ref={fileRef}
 						type="file"
-						accept="image/*"
+						accept={`image/*,${HEIF_ACCEPT}`}
 						className="hidden"
 						onChange={(e) => {
 							const file = e.target.files?.[0];

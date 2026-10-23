@@ -1,4 +1,5 @@
 import { toast } from "sonner";
+import { convertHeif, findLivePhotoPairs, isHeif } from "./heif";
 import { unsupportedSphereFormat } from "@/vr/spherical";
 import { getMediaTypeFromFile } from "@/media/media-utils";
 import { formatStorageBytes } from "@/services/storage/quota";
@@ -93,10 +94,42 @@ export async function processMediaAssets({
 	const fileArray = Array.from(files);
 	const processedAssets: ProcessedMediaAsset[] = [];
 
+	// Live Photos: the still and its .mov chosen together (HE-06).
+	const skip = new Set<File>();
+	for (const [still, movie] of findLivePhotoPairs({ files: fileArray })) {
+		const asVideo = window.confirm(
+			`${still.name} is a Live Photo.\n\nOK: import the ${movie.name} video clip.\nCancel: import the photo only.`,
+		);
+		skip.add(asVideo ? still : movie);
+	}
+
 	const total = fileArray.length;
 	let completed = 0;
 
-	for (const file of fileArray) {
+	for (const original of fileArray) {
+		if (skip.has(original)) {
+			completed += 1;
+			continue;
+		}
+		let file = original;
+		// HEIC/HEIF photos are decoded to JPEG/PNG in a worker (HE-01 – HE-03).
+		if (isHeif({ file })) {
+			try {
+				const converted = await convertHeif({ file });
+				file = converted.file;
+				if (converted.imageCount > 1)
+					toast(`${original.name} holds ${converted.imageCount} pictures`, {
+						description: "The main picture was imported.",
+					});
+			} catch (error) {
+				toast.error(`Couldn't open ${original.name}`, {
+					description: `${error instanceof Error ? error.message : "Unknown error"} The file may be damaged or use a HEIF feature that isn't supported yet.`,
+					duration: 12_000,
+				});
+				completed += 1;
+				continue;
+			}
+		}
 		const fileType = getMediaTypeFromFile({ file });
 		// 360° camera originals that need the vendor's app first (VR-02, VR-03).
 		const sphereFormat = unsupportedSphereFormat(file.name);
