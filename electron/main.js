@@ -381,7 +381,7 @@ function registerAccountIpc() {
 	handle("automation:set-enabled", (enabled) => automation.setEnabled(!!enabled));
 	handle("ai:get-state", () => ai.getState());
 	handle("ai:set-key", (args) => ai.setKey(args ?? {}));
-	handle("ai:clear-key", () => ai.clearKey());
+	handle("ai:clear-key", (args) => ai.clearKey(args ?? {}));
 	handle("ai:test", (args) => ai.test(args));
 	handle("ai:generate", (args) => ai.generate(args));
 	handle("ai:cancel", () => ai.cancel());

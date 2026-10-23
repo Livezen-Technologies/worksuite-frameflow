@@ -47,6 +47,7 @@
       "upload-queue.js",
       "project-folders.js",
       "ai.js",
+			"ai-providers.js",
       "automation.js",
       "preload.js",
       "package.json",
@@ -152,6 +153,7 @@
     "afterPack": "scripts/after-pack.cjs"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^1.3.0",
     "electron-updater": "6.6.2",
     "uiohook-napi": "1.5.4"
   }

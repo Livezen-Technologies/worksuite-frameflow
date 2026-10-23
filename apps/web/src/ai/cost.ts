@@ -16,6 +16,9 @@ export const DEFAULT_PRICES: Record<string, ModelPrices> = {
 	"gemini-2.5-flash": { input: 0.3, audio: 1, output: 2.5 },
 	"gemini-2.5-flash-lite": { input: 0.1, audio: 0.3, output: 0.4 },
 	"gemini-2.5-pro": { input: 1.25, audio: 1.25, output: 10 },
+	"claude-opus-5-5": { input: 4, audio: 4, output: 20 },
+	"claude-sonnet-5-5": { input: 2, audio: 2, output: 10 },
+	"claude-haiku-5-5": { input: 0.1, audio: 0.1, output: 0.5 },
 };
 
 /** Gemini counts 32 tokens per second of audio and about 4 characters per token. */

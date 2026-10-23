@@ -10,9 +10,10 @@ import type { Transcript } from "@/transcript/types";
 import { aiBridge } from "../bridge";
 import { EditorCore } from "@/core";
 import { aiCleanUp, aiTranslate, cancelAi, estimateTextJob } from "../tasks";
+import { aiProvider } from "../provider";
 import { AiCostNote } from "./ai-spending";
 
-/** Transcript editor: translate and clean up with Gemini, with undo. */
+/** Transcript editor: translate and clean up with the AI provider, with undo. */
 export function TranscriptAiTools({
 	transcript,
 	onChange,
@@ -67,7 +68,7 @@ export function TranscriptAiTools({
 
 	return (
 		<section className="flex flex-col gap-2" data-transcript-ai>
-			<h2 className="m-0 text-sm font-semibold">AI (Gemini)</h2>
+			<h2 className="m-0 text-sm font-semibold">AI ({aiProvider().name})</h2>
 			<div className="flex gap-2">
 				<select
 					aria-label="Translate to"

@@ -109,7 +109,7 @@ contextBridge.exposeInMainWorld("worksuite", {
 	ai: {
 		getState: () => ipcRenderer.invoke("ai:get-state"),
 		setKey: (args) => ipcRenderer.invoke("ai:set-key", args),
-		clearKey: () => ipcRenderer.invoke("ai:clear-key"),
+		clearKey: (args) => ipcRenderer.invoke("ai:clear-key", args),
 		test: (args) => ipcRenderer.invoke("ai:test", args),
 		generate: (args) => ipcRenderer.invoke("ai:generate", args),
 		cancel: () => ipcRenderer.invoke("ai:cancel"),

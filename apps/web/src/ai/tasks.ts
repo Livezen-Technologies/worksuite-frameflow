@@ -87,7 +87,7 @@ export async function aiTranslate({
 	});
 	if (!results.size)
 		throw new AiError({
-			message: "Gemini returned no translation.",
+			message: `${aiProvider().name} returned no translation.`,
 			code: "empty",
 		});
 	return applyTextResults({
@@ -95,7 +95,7 @@ export async function aiTranslate({
 		results,
 		language: target,
 		translatedTo: target,
-		engine: `${transcript.engine} · translated to ${languageName(target)} by Gemini`,
+		engine: `${transcript.engine} · translated to ${languageName(target)} by ${aiProvider().name}`,
 	});
 }
 

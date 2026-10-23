@@ -2,12 +2,13 @@ const { app, net, safeStorage } = require("electron");
 const fs = require("node:fs");
 const path = require("node:path");
 const network = require("./network");
+const providers = require("./ai-providers");
 
 /**
- * Gemini access for the AI features (SRS AI-01–AI-06). The user's own API
- * key is kept here, encrypted with the OS keychain, and never sent to the
- * page; the page sends a prompt and a response schema, this module adds
- * the key and calls Google's Generative Language API, nothing else.
+ * AI access for the AI features (SRS AI-01–AI-06, AI-51): Gemini, Claude
+ * or OpenAI. The user's own API key for each is kept here, encrypted with
+ * the OS keychain, and never sent to the page; the page sends a prompt and
+ * a response schema, this module adds the key and calls that provider.
  */
 
 const ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models";
@@ -15,14 +16,17 @@ const DEFAULT_MODEL = "gemini-2.5-flash";
 const MODEL_PATTERN = /^gemini-[a-z0-9.\-]+$/;
 const MAX_REQUEST_BYTES = 19 * 1024 * 1024; // inline data limit is 20 MB
 
-const keyFile = () => path.join(app.getPath("userData"), "ai-key.bin");
-let sessionKey = null; // used when the OS can't encrypt
+const PROVIDERS = ["gemini", "claude", "openai"];
+const providerOf = (value) => (PROVIDERS.includes(value) ? value : "gemini");
+const keyFile = (provider = "gemini") =>
+	path.join(app.getPath("userData"), provider === "gemini" ? "ai-key.bin" : `ai-key-${provider}.bin`);
+const sessionKeys = new Map(); // used when the OS can't encrypt
 let controllers = new Set();
 
-function readKey() {
-	if (sessionKey) return sessionKey;
+function readKey(provider = "gemini") {
+	if (sessionKeys.has(provider)) return sessionKeys.get(provider);
 	try {
-		const data = fs.readFileSync(keyFile());
+		const data = fs.readFileSync(keyFile(provider));
 		return safeStorage.decryptString(data);
 	} catch {
 		return null;
@@ -67,17 +71,20 @@ function retryDelaySeconds(body) {
  */
 const MAX_ATTEMPTS = 4;
 
-async function call({ model, body }) {
+async function call({ model, body, provider = "gemini", request }) {
 	let lastError = null;
-	for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+	// The Claude SDK retries on its own.
+	const attempts = provider === "claude" ? 1 : MAX_ATTEMPTS;
+	for (let attempt = 1; attempt <= attempts; attempt++) {
 		try {
-			const result = await callOnce({ model, body });
+			const result =
+				provider === "gemini" ? await callOnce({ model, body }) : await callProvider({ provider, model, request });
 			return { ...result, attempts: attempt };
 		} catch (error) {
 			lastError = error;
 			const retryable =
 				(error.code === "quota" && !/per.?day|daily/i.test(error.message)) || error.code === "server";
-			if (!retryable || attempt === MAX_ATTEMPTS) throw error;
+			if (!retryable || attempt === attempts) throw error;
 			const hinted = error.retryAfter ?? null;
 			const wait = Math.min(60, hinted ?? 2 ** attempt) * 1000 + Math.random() * 250;
 			const controller = new AbortController();
@@ -132,6 +139,23 @@ async function callOnce({ model, body }) {
 	}
 }
 
+async function callProvider({ provider, model, request }) {
+	const key = readKey(provider);
+	if (!key)
+		throw Object.assign(new Error(`Add your ${providers.NAMES[provider]} API key in Settings → AI.`), { code: "no-key" });
+	network.assertOnline();
+	const controller = new AbortController();
+	controllers.add(controller);
+	try {
+		return await providers[provider]({ key, model, ...request, signal: controller.signal });
+	} catch (error) {
+		if (error.name === "AbortError") throw Object.assign(new Error("Cancelled"), { code: "cancelled" });
+		throw error;
+	} finally {
+		controllers.delete(controller);
+	}
+}
+
 /** Results go back as {ok,...} so error codes survive IPC. */
 const wrap = (fn) => async (args) => {
 	try {
@@ -143,34 +167,49 @@ const wrap = (fn) => async (args) => {
 
 module.exports = {
 	getState() {
+		const keys = Object.fromEntries(
+			PROVIDERS.map((p) => [
+				p,
+				{ hasKey: !!readKey(p), remembered: !sessionKeys.has(p) && fs.existsSync(keyFile(p)) },
+			]),
+		);
 		return {
-			hasKey: !!readKey(),
-			remembered: !sessionKey && fs.existsSync(keyFile()),
+			hasKey: keys.gemini.hasKey,
+			remembered: keys.gemini.remembered,
 			encryption: safeStorage.isEncryptionAvailable(),
 			defaultModel: DEFAULT_MODEL,
+			keys,
+			defaultModels: { gemini: DEFAULT_MODEL, ...providers.DEFAULT_MODELS },
 		};
 	},
 
-	async setKey({ key }) {
+	async setKey({ key, provider }) {
+		const which = providerOf(provider);
 		const value = String(key ?? "").trim();
 		if (!value) throw new Error("Empty key");
 		if (safeStorage.isEncryptionAvailable()) {
-			await fs.promises.writeFile(keyFile(), safeStorage.encryptString(value), { mode: 0o600 });
-			sessionKey = null;
+			await fs.promises.writeFile(keyFile(which), safeStorage.encryptString(value), { mode: 0o600 });
+			sessionKeys.delete(which);
 		} else {
 			// No keychain: keep it for this session only rather than in plain text.
-			sessionKey = value;
+			sessionKeys.set(which, value);
 		}
 		return module.exports.getState();
 	},
 
-	async clearKey() {
-		sessionKey = null;
-		await fs.promises.rm(keyFile(), { force: true });
+	async clearKey({ provider } = {}) {
+		const which = providerOf(provider);
+		sessionKeys.delete(which);
+		await fs.promises.rm(keyFile(which), { force: true });
 		return module.exports.getState();
 	},
 
-	test: wrap(async ({ model }) => {
+	test: wrap(async ({ model, provider }) => {
+		const which = providerOf(provider);
+		if (which !== "gemini") {
+			await call({ provider: which, model, request: { parts: [{ text: "Reply with OK." }] } });
+			return {};
+		}
 		await call({ model, body: { contents: [{ role: "user", parts: [{ text: "Reply with OK." }] }] } });
 		return {};
 	}),
@@ -179,7 +218,14 @@ module.exports = {
 	 * parts: [{ text }] or [{ data: ArrayBuffer, mimeType }]; schema is a
 	 * Gemini response schema, so the answer comes back as JSON.
 	 */
-	generate: wrap(async ({ model, system, parts, schema, temperature }) => {
+	generate: wrap(async ({ provider, model, system, parts, schema, temperature }) => {
+		const which = providerOf(provider);
+		if (which !== "gemini")
+			return call({
+				provider: which,
+				model,
+				request: { system, parts: Array.isArray(parts) ? parts : [], schema },
+			});
 		const body = {
 			contents: [
 				{

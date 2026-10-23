@@ -1,4 +1,4 @@
-import { aiBridge, type AiPart } from "./bridge";
+import { aiBridge, type AiPart, type AiProviderId } from "./bridge";
 import { cacheKey, readCache, writeCache } from "./cache";
 import {
 	costFromUsage,
@@ -20,14 +20,20 @@ export class AiError extends Error {
 	}
 }
 
-const MESSAGES: Record<string, string> = {
-	"no-key": "Add your Gemini API key in Settings → AI.",
-	key: "Gemini didn't accept the API key. Check it in Settings → AI.",
-	quota:
-		"Your Gemini quota is used up for now. Try again later or check your Google AI plan.",
-	offline: "You're working offline. Turn off offline mode to use AI features.",
-	server: "Gemini is having trouble right now. Try again in a minute.",
+const NAMES: Record<AiProviderId, string> = { gemini: "Gemini", claude: "Claude", openai: "OpenAI" };
+const DEFAULT_MODELS: Record<AiProviderId, string> = {
+	gemini: "gemini-2.5-flash",
+	claude: "claude-opus-5-5",
+	openai: "gpt-5",
 };
+
+const messages = (name: string): Record<string, string> => ({
+	"no-key": `Add your ${name} API key in Settings → AI.`,
+	key: `${name} didn't accept the API key. Check it in Settings → AI.`,
+	quota: `Your ${name} quota is used up for now. Try again later or check your plan.`,
+	offline: "You're working offline. Turn off offline mode to use AI features.",
+	server: `${name} is having trouble right now. Try again in a minute.`,
+});
 
 export interface AiRequest {
 	system: string;
@@ -62,12 +68,17 @@ export interface AiProvider {
 	}) => Promise<AiAnswer>;
 }
 
-class GeminiProvider implements AiProvider {
-	readonly id = "gemini";
-	readonly name = "Gemini";
+/** A provider reached through the desktop app's bridge (electron/ai.js). */
+class BridgeProvider implements AiProvider {
+	readonly name: string;
+	constructor(readonly id: AiProviderId) {
+		this.name = NAMES[id];
+	}
 
 	private model(): string {
-		return useAiSettings.getState().model || "gemini-2.5-flash";
+		const settings = useAiSettings.getState();
+		const picked = this.id === "gemini" ? settings.model : settings.providerModels[this.id];
+		return picked || DEFAULT_MODELS[this.id];
 	}
 
 	estimateCost(size: JobSize): CostEstimate {
@@ -108,13 +119,14 @@ class GeminiProvider implements AiProvider {
 				message: `This would go over your AI spending cap (${formatUsd(cap.remaining ?? 0)} left this month, ${aboutUsd(estimate.usd)} needed). Raise the cap in Settings → AI.`,
 			});
 		const result = await bridge.generate({
+			provider: this.id,
 			model: model || undefined,
 			system: request.system,
 			parts,
 			schema: request.schema,
 		});
 		if (!result.ok)
-			throw new AiError({ message: MESSAGES[result.code] ?? result.message, code: result.code });
+			throw new AiError({ message: messages(this.name)[result.code] ?? result.message, code: result.code });
 		const prices = pricesFor({
 			model: result.model ?? model,
 			overrides: useAiSpend.getState().prices,
@@ -133,7 +145,9 @@ class GeminiProvider implements AiProvider {
 	}: {
 		request: AiRequest;
 		audio: { data: ArrayBuffer; mimeType: string; seconds: number };
-	}) {
+	}): Promise<AiAnswer> {
+		// Only Gemini takes audio; Claude and OpenAI hand transcription to it.
+		if (this.id !== "gemini") return providers.gemini.transcribe({ request, audio });
 		return this.run({
 			kind: "transcribe",
 			request,
@@ -170,9 +184,13 @@ class GeminiProvider implements AiProvider {
 	}
 }
 
-let current: AiProvider | null = null;
+const providers: Record<AiProviderId, BridgeProvider> = {
+	gemini: new BridgeProvider("gemini"),
+	claude: new BridgeProvider("claude"),
+	openai: new BridgeProvider("openai"),
+};
 
-/** The provider in use; Gemini today, others plug in behind the same interface. */
+/** The provider picked in Settings → AI (AI-51). */
 export function aiProvider(): AiProvider {
-	return (current ??= new GeminiProvider());
+	return providers[useAiSettings.getState().provider] ?? providers.gemini;
 }
