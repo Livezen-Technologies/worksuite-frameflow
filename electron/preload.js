@@ -32,6 +32,20 @@ contextBridge.exposeInMainWorld("worksuite", {
 			return () => ipcRenderer.removeListener("uploads:changed", handler);
 		},
 	},
+	folders: {
+		get: (args) => ipcRenderer.invoke("folders:get", args),
+		create: (args) => ipcRenderer.invoke("folders:create", args),
+		open: () => ipcRenderer.invoke("folders:open"),
+		attach: (args) => ipcRenderer.invoke("folders:attach", args),
+		unlink: (args) => ipcRenderer.invoke("folders:unlink", args),
+		writeJson: (args) => ipcRenderer.invoke("folders:write-json", args),
+		listMedia: (args) => ipcRenderer.invoke("folders:list-media", args),
+		writeMedia: (args) => ipcRenderer.invoke("folders:write-media", args),
+		readMedia: (args) => ipcRenderer.invoke("folders:read-media", args),
+		removeMedia: (args) => ipcRenderer.invoke("folders:remove-media", args),
+		show: (args) => ipcRenderer.invoke("folders:show", args),
+		move: (args) => ipcRenderer.invoke("folders:move", args),
+	},
 	files: {
 		saveExport: (args) => ipcRenderer.invoke("files:save-export", args),
 		show: (filePath) => ipcRenderer.invoke("files:show", filePath),

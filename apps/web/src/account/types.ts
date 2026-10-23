@@ -1,3 +1,4 @@
+import type { ProjectFoldersBridge } from "@/project-folder/bridge";
 export type WorksuiteAccountStatus =
 	| "signed-out"
 	| "signing-in"
@@ -73,6 +74,7 @@ declare global {
 			capture?: WorksuiteCaptureBridge;
 			network?: WorksuiteNetworkBridge;
 			uploads?: WorksuiteUploadsBridge;
+			folders?: ProjectFoldersBridge;
 		};
 	}
 }

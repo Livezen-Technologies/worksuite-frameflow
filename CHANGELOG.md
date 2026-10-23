@@ -8,6 +8,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 ## [Unreleased]
 
 ### Added
+- Projects can be saved as a portable folder (`.ffproj`) with all their media copied in, so they open on any computer. Use Save as project folder in the project menu; edits save to the folder automatically. Open folder on the Projects page brings one back, and asks you to find any media that's missing.
 - The interface can now be shown in Sinhala or Tamil. Pick a language under Settings → Project info; it follows your system language the first time and syncs with your other settings.
 - Curves and HSL in the Color panel (Curves & HSL effect).
   - Curves: luma, red, green and blue, plus hue vs hue and hue vs saturation. Click to add a point, drag it, and double-click to remove it.

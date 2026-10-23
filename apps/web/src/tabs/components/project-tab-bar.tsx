@@ -1,10 +1,19 @@
 "use client";
 
 import { useProjectSettings } from "@/project-settings/store";
+import { FolderMenuItems } from "@/project-folder/components/folder-menu-items";
 import { Settings } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { Check, ChevronDown, Cloud, CloudOff, Loader2, Plus, X } from "lucide-react";
+import {
+	Check,
+	ChevronDown,
+	Cloud,
+	CloudOff,
+	Loader2,
+	Plus,
+	X,
+} from "lucide-react";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -112,7 +121,11 @@ export function ProjectTabBar() {
 					<ChevronDown className="text-muted-foreground size-3.5 shrink-0" />
 				</button>
 			</DropdownMenuTrigger>
-			<DropdownMenuContent align="start" className="w-80 p-1.5" data-project-tabs>
+			<DropdownMenuContent
+				align="start"
+				className="w-80 p-1.5"
+				data-project-tabs
+			>
 				{tabs.map((tab, index) => {
 					const active = tab.id === activeId;
 					const link = links[tab.id];
@@ -128,7 +141,9 @@ export function ProjectTabBar() {
 							onDragOver={(e) => e.preventDefault()}
 							onDrop={() => {
 								if (dragFrom.current !== null)
-									useProjectTabs.getState().move({ from: dragFrom.current, to: index });
+									useProjectTabs
+										.getState()
+										.move({ from: dragFrom.current, to: index });
 								dragFrom.current = null;
 							}}
 							onSelect={() => {
@@ -142,16 +157,27 @@ export function ProjectTabBar() {
 							{state === "syncing" ? (
 								<Loader2 className="size-3.5 shrink-0 animate-spin" />
 							) : link ? (
-								<Cloud className="size-3.5 shrink-0 text-sky-400" aria-label="Local + Cloud" />
+								<Cloud
+									className="size-3.5 shrink-0 text-sky-400"
+									aria-label="Local + Cloud"
+								/>
 							) : (
-								<CloudOff className="size-3.5 shrink-0 opacity-50" aria-label="Local" />
+								<CloudOff
+									className="size-3.5 shrink-0 opacity-50"
+									aria-label="Local"
+								/>
 							)}
 							<span className="min-w-0 flex-1 truncate">{tab.name}</span>
 							{index < 9 ? (
-								<span className="text-muted-foreground text-[10px]">Ctrl+{index + 1}</span>
+								<span className="text-muted-foreground text-[10px]">
+									Ctrl+{index + 1}
+								</span>
 							) : null}
 							{active && dirty ? (
-								<span className="size-1.5 shrink-0 rounded-full bg-amber-400" title="Saving…" />
+								<span
+									className="size-1.5 shrink-0 rounded-full bg-amber-400"
+									title="Saving…"
+								/>
 							) : null}
 							{active ? (
 								<Check className="text-primary size-4 shrink-0" />
@@ -180,13 +206,23 @@ export function ProjectTabBar() {
 				>
 					<Settings className="size-4" /> Project settings
 				</DropdownMenuItem>
-				<DropdownMenuItem onSelect={() => void go(null)} data-new-tab className="gap-2.5 px-3">
+				<FolderMenuItems projectId={activeId ?? null} />
+				<DropdownMenuItem
+					onSelect={() => void go(null)}
+					data-new-tab
+					className="gap-2.5 px-3"
+				>
 					<Plus className="size-4" /> Open another project
 				</DropdownMenuItem>
 				{activeId ? (
-					<DropdownMenuItem onSelect={() => void close(activeId)} className="gap-2.5 px-3">
+					<DropdownMenuItem
+						onSelect={() => void close(activeId)}
+						className="gap-2.5 px-3"
+					>
 						<X className="size-4" /> Close this project
-						<span className="text-muted-foreground ml-auto text-[10px]">Ctrl+W</span>
+						<span className="text-muted-foreground ml-auto text-[10px]">
+							Ctrl+W
+						</span>
 					</DropdownMenuItem>
 				) : null}
 			</DropdownMenuContent>

@@ -13,6 +13,7 @@ const account = require("./account");
 const cloud = require("./cloud-upload");
 const cloudSync = require("./cloud-sync");
 const updates = require("./updater");
+const projectFolders = require("./project-folders");
 
 const HOST = "127.0.0.1";
 let server = null;
@@ -268,6 +269,18 @@ function registerAccountIpc() {
 	handle("uploads:pause-all", () => uploadQueue.pauseAll());
 	handle("uploads:resume-all", () => uploadQueue.resumeAll());
 	handle("clipboard:write", (text) => clipboard.writeText(String(text)));
+	handle("folders:get", (args) => projectFolders.get(args ?? {}));
+	handle("folders:create", (args) => projectFolders.create(args ?? {}));
+	handle("folders:open", () => projectFolders.open());
+	handle("folders:attach", (args) => projectFolders.attach(args ?? {}));
+	handle("folders:unlink", (args) => projectFolders.unlink(args ?? {}));
+	handle("folders:write-json", (args) => projectFolders.writeJson(args ?? {}));
+	handle("folders:list-media", (args) => projectFolders.listMedia(args ?? {}));
+	handle("folders:write-media", (args) => projectFolders.writeMedia(args ?? {}));
+	handle("folders:read-media", (args) => projectFolders.readMedia(args ?? {}));
+	handle("folders:remove-media", (args) => projectFolders.removeMedia(args ?? {}));
+	handle("folders:show", (args) => projectFolders.show(args ?? {}));
+	handle("folders:move", (args) => projectFolders.move(args ?? {}));
 	// Only files this session exported can be revealed.
 	handle("files:show", (filePath) => {
 		if (savedExports.has(filePath)) shell.showItemInFolder(filePath);

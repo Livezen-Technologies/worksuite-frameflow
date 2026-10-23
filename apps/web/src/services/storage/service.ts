@@ -131,6 +131,45 @@ class StorageService {
 		};
 	}
 
+	private changeListeners = new Set<(projectId: string) => void>();
+
+	/** Called after a project or its media is saved (project folders mirror these). */
+	onProjectChanged(listener: (projectId: string) => void): () => void {
+		this.changeListeners.add(listener);
+		return () => this.changeListeners.delete(listener);
+	}
+
+	private emitChanged(projectId: string) {
+		for (const listener of this.changeListeners) listener(projectId);
+	}
+
+	async listMediaMetadata({
+		projectId,
+	}: {
+		projectId: string;
+	}): Promise<MediaAssetData[]> {
+		const { mediaMetadataAdapter } = this.getProjectMediaAdapters({
+			projectId,
+		});
+		const ids = await mediaMetadataAdapter.list();
+		const items = await Promise.all(
+			ids.map((id) => mediaMetadataAdapter.get(id)),
+		);
+		return items.filter((item): item is MediaAssetData => !!item);
+	}
+
+	async loadMediaFile({
+		projectId,
+		id,
+	}: {
+		projectId: string;
+		id: string;
+	}): Promise<File | null> {
+		return this.getProjectMediaAdapters({ projectId }).mediaAssetsAdapter.get(
+			id,
+		);
+	}
+
 	async saveProject({ project }: { project: TProject }): Promise<void> {
 		const duration =
 			project.metadata.duration ??
@@ -165,6 +204,7 @@ class StorageService {
 			key: project.metadata.id,
 			value: serializedProject,
 		});
+		this.emitChanged(project.metadata.id);
 	}
 
 	async loadProject({
@@ -344,6 +384,7 @@ class StorageService {
 				key: mediaAsset.id,
 				value: metadata,
 			});
+			this.emitChanged(projectId);
 		} catch (error) {
 			try {
 				await mediaAssetsAdapter.remove(mediaAsset.id);
@@ -446,6 +487,7 @@ class StorageService {
 			mediaAssetsAdapter.remove(id),
 			mediaMetadataAdapter.remove(id),
 		]);
+		this.emitChanged(projectId);
 	}
 
 	async deleteProjectMedia({

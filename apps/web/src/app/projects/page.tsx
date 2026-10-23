@@ -1,7 +1,11 @@
 "use client";
 
 import { ChevronDown } from "lucide-react";
-import { BUILT_IN_TEMPLATES, useProjectSettings, type SettingsTemplate } from "@/project-settings/store";
+import {
+	BUILT_IN_TEMPLATES,
+	useProjectSettings,
+	type SettingsTemplate,
+} from "@/project-settings/store";
 import { RestoreSessionBanner } from "@/tabs/components/restore-session";
 import Image from "next/image";
 import Link from "next/link";
@@ -13,6 +17,7 @@ import type { EditorCore } from "@/core";
 import { MigrationDialog } from "@/project/components/migration-dialog";
 import { StoragePersistenceDialog } from "@/services/storage/components/storage-persistence-dialog";
 import { Button } from "@/components/ui/button";
+import { OpenFolderButton } from "@/project-folder/components/open-folder-button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -561,34 +566,42 @@ function NewProjectButton() {
 	};
 
 	return (
-		<div className="flex">
-			<Button
-				size="lg"
-				className="flex rounded-r-none px-5 md:px-6"
-				onClick={() => void handleCreateProject()}
-			>
-				<span className="text-sm font-medium hidden md:block">New project</span>
-				<span className="text-sm font-medium block md:hidden">New</span>
-			</Button>
-			<DropdownMenu>
-				<DropdownMenuTrigger asChild>
-					<Button
-						size="lg"
-						className="rounded-l-none border-l border-black/20 px-2"
-						aria-label="New project from a template"
-						data-new-from-template
-					>
-						<ChevronDown className="size-4" />
-					</Button>
-				</DropdownMenuTrigger>
-				<DropdownMenuContent align="end" className="w-64">
-					{[...BUILT_IN_TEMPLATES, ...templates].map((t) => (
-						<DropdownMenuItem key={t.id} onClick={() => void handleCreateProject(t)}>
-							{t.name}
-						</DropdownMenuItem>
-					))}
-				</DropdownMenuContent>
-			</DropdownMenu>
+		<div className="flex gap-2">
+			<OpenFolderButton />
+			<div className="flex">
+				<Button
+					size="lg"
+					className="flex rounded-r-none px-5 md:px-6"
+					onClick={() => void handleCreateProject()}
+				>
+					<span className="text-sm font-medium hidden md:block">
+						New project
+					</span>
+					<span className="text-sm font-medium block md:hidden">New</span>
+				</Button>
+				<DropdownMenu>
+					<DropdownMenuTrigger asChild>
+						<Button
+							size="lg"
+							className="rounded-l-none border-l border-black/20 px-2"
+							aria-label="New project from a template"
+							data-new-from-template
+						>
+							<ChevronDown className="size-4" />
+						</Button>
+					</DropdownMenuTrigger>
+					<DropdownMenuContent align="end" className="w-64">
+						{[...BUILT_IN_TEMPLATES, ...templates].map((t) => (
+							<DropdownMenuItem
+								key={t.id}
+								onClick={() => void handleCreateProject(t)}
+							>
+								{t.name}
+							</DropdownMenuItem>
+						))}
+					</DropdownMenuContent>
+				</DropdownMenu>
+			</div>
 		</div>
 	);
 }
