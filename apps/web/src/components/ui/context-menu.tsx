@@ -1,5 +1,6 @@
 "use client";
 
+import { usePortalContainer } from "@/components/ui/portal-container";
 import * as React from "react";
 import { ContextMenu as ContextMenuPrimitive } from "radix-ui";
 import { cva, type VariantProps } from "class-variance-authority";
@@ -106,18 +107,21 @@ const ContextMenuContent = React.forwardRef<
 	React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.Content> & {
 		container?: HTMLElement | null;
 	}
->(({ className, container, ...props }, ref) => (
-	<ContextMenuPrimitive.Portal container={container ?? undefined}>
-		<ContextMenuPrimitive.Content
-			ref={ref}
-			className={cn(
-				"bg-popover text-popover-foreground z-50 min-w-48 overflow-hidden rounded-md border shadow-xl p-1",
-				className,
-			)}
-			{...props}
-		/>
-	</ContextMenuPrimitive.Portal>
-));
+>(({ className, container, ...props }, ref) => {
+	const fallback = usePortalContainer();
+	return (
+		<ContextMenuPrimitive.Portal container={container ?? fallback}>
+			<ContextMenuPrimitive.Content
+				ref={ref}
+				className={cn(
+					"bg-popover text-popover-foreground z-50 min-w-48 overflow-hidden rounded-md border shadow-xl p-1",
+					className,
+				)}
+				{...props}
+			/>
+		</ContextMenuPrimitive.Portal>
+	);
+});
 ContextMenuContent.displayName = ContextMenuPrimitive.Content.displayName;
 
 const ContextMenuItem = React.forwardRef<

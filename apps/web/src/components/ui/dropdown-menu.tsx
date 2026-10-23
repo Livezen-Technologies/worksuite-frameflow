@@ -1,5 +1,6 @@
 "use client";
 
+import { usePortalContainer } from "@/components/ui/portal-container";
 import * as React from "react";
 import { DropdownMenu as DropdownMenuPrimitive } from "radix-ui";
 import { Check, ChevronRight, Circle } from "lucide-react";
@@ -95,7 +96,7 @@ const DropdownMenuContent = React.forwardRef<
 	React.ElementRef<typeof DropdownMenuPrimitive.Content>,
 	React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Content>
 >(({ className, sideOffset = 4, ...props }, ref) => (
-	<DropdownMenuPrimitive.Portal>
+	<DropdownMenuPrimitive.Portal container={usePortalContainer()}>
 		<DropdownMenuPrimitive.Content
 			ref={ref}
 			sideOffset={sideOffset}

@@ -1,5 +1,6 @@
 "use client";
 
+import { usePortalContainer } from "@/components/ui/portal-container";
 import * as React from "react";
 import { Dialog as DialogPrimitive } from "radix-ui";
 import { X } from "lucide-react";
@@ -49,7 +50,7 @@ const DialogContent = React.forwardRef<
 	React.ElementRef<typeof DialogPrimitive.Content>,
 	React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
 >(({ className, children, ...props }, ref) => (
-	<DialogPortal>
+	<DialogPortal container={usePortalContainer()}>
 		<DialogOverlay />
 		<DialogPrimitive.Content
 			ref={ref}

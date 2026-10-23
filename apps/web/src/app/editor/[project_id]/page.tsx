@@ -1,5 +1,6 @@
 "use client";
 
+import { PopoutPanel } from "@/popout/popout-panel";
 import { SphereWatcher } from "@/vr/components/sphere-watcher";
 import { TranscriptEditor } from "@/transcript/components/transcript-editor";
 import { useParams } from "next/navigation";
@@ -195,7 +196,9 @@ function EditorLayout() {
 						maxSize={40}
 						className="min-w-0"
 					>
-						<AssetsPanel />
+						<PopoutPanel id="media">
+							<AssetsPanel />
+						</PopoutPanel>
 					</ResizablePanel>
 
 					<ResizableHandle withHandle />
@@ -205,11 +208,13 @@ function EditorLayout() {
 						minSize={30}
 						className="min-h-0 min-w-0 flex-1"
 					>
-						<PreviewPanel
-							overlayControls={overlayControls}
-							overlayInstances={overlaySource.instances}
-							onOverlayVisibilityChange={setOverlayVisibility}
-						/>
+						<PopoutPanel id="preview">
+							<PreviewPanel
+								overlayControls={overlayControls}
+								overlayInstances={overlaySource.instances}
+								onOverlayVisibilityChange={setOverlayVisibility}
+							/>
+						</PopoutPanel>
 					</ResizablePanel>
 
 					<ResizableHandle withHandle />
@@ -220,7 +225,9 @@ function EditorLayout() {
 						maxSize={40}
 						className="min-w-0"
 					>
-						<PropertiesPanel />
+						<PopoutPanel id="properties">
+							<PropertiesPanel />
+						</PopoutPanel>
 					</ResizablePanel>
 				</ResizablePanelGroup>
 			</ResizablePanel>
@@ -233,7 +240,9 @@ function EditorLayout() {
 				maxSize={70}
 				className="min-h-0 px-3 pb-3"
 			>
-				<Timeline />
+				<PopoutPanel id="timeline">
+					<Timeline />
+				</PopoutPanel>
 			</ResizablePanel>
 		</ResizablePanelGroup>
 	);

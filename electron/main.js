@@ -142,7 +142,21 @@ async function createWindow() {
 	});
 
 	// Keep the app on its own origin; open everything else in the system browser.
-	win.webContents.setWindowOpenHandler(({ url }) => {
+	win.webContents.setWindowOpenHandler(({ url, frameName }) => {
+		// Editor panels moved to their own window for a second monitor
+		// (WS-03): same-origin blank windows the editor renders into.
+		if (url === "about:blank" && /^frameflow-[a-z]+$/.test(frameName)) {
+			return {
+				action: "allow",
+				overrideBrowserWindowOptions: {
+					title: "Worksuite FrameFlow",
+					backgroundColor: "#0F172A",
+					autoHideMenuBar: true,
+					icon: path.join(__dirname, "build", "icon.png"),
+					webPreferences: { contextIsolation: true, sandbox: true },
+				},
+			};
+		}
 		shell.openExternal(url);
 		return { action: "deny" };
 	});

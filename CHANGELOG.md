@@ -8,6 +8,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 ## [Unreleased]
 
 ### Added
+- Dual screen: the preview, media panel, timeline and properties can each move to their own window (hover a panel and click the window button in its corner), for example to put the preview on a second monitor. The windows stay on the same project: playback, selection, menus and keyboard shortcuts work in all of them. "Bring it back" or closing the window returns the panel.
 - Basic tab for video and image clips. It has Mask and Color adjustment shortcuts, Blend (mode and opacity), Transform, and three switches:
   - Stabilize smooths camera shake with position keyframes and a 10% zoom.
   - Reduce image noise adds an edge-preserving GPU denoise.
