@@ -1,4 +1,8 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import { cn } from "@/utils/ui";
+import { TICKS_PER_SECOND } from "@/wasm";
+import { readCurve } from "../apply-curve";
+import { SpeedCurvePanel } from "./speed-curve";
 import { useEditor } from "@/editor/use-editor";
 import { NumberField } from "@/components/ui/number-field";
 import { Switch } from "@/components/ui/switch";
@@ -58,6 +62,58 @@ function buildRetime({
 }
 
 export function SpeedTab({
+	element,
+	trackId,
+}: {
+	element: AudioElement | VideoElement;
+	trackId: string;
+}) {
+	const hasCurve = !!readCurve(element);
+	const [mode, setMode] = useState<"normal" | "curve">(
+		hasCurve ? "curve" : "normal",
+	);
+	return (
+		<div className="flex flex-col">
+			<div className="grid grid-cols-2 gap-1 px-4 pt-3" data-speed-mode>
+				{(
+					[
+						["normal", "Normal"],
+						["curve", "Curve"],
+					] as const
+				).map(([value, label]) => (
+					<button
+						key={value}
+						type="button"
+						onClick={() => setMode(value)}
+						data-speed-tab={value}
+						className={cn(
+							"h-8 rounded-md text-sm",
+							mode === value
+								? "bg-secondary text-foreground font-semibold"
+								: "text-muted-foreground hover:bg-accent/40",
+						)}
+					>
+						{label}
+					</button>
+				))}
+			</div>
+			{mode === "curve" ? (
+				<div className="p-4">
+					<SpeedCurvePanel element={element} trackId={trackId} />
+				</div>
+			) : hasCurve ? (
+				<p className="text-muted-foreground m-0 p-4 text-xs leading-relaxed">
+					This clip has a speed curve. Choose None under Curve to go back to one
+					speed.
+				</p>
+			) : (
+				<NormalSpeed element={element} trackId={trackId} />
+			)}
+		</div>
+	);
+}
+
+function NormalSpeed({
 	element,
 	trackId,
 }: {
@@ -138,6 +194,33 @@ export function SpeedTab({
 							}
 							isDefault={rate === DEFAULT_RETIME_RATE}
 						/>
+					</SectionField>
+					<SectionField label="Duration">
+						<div className="flex items-center gap-2">
+							<input
+								type="number"
+								min={0.1}
+								step={0.1}
+								key={`${element.id}:${element.duration}`}
+								defaultValue={(element.duration / TICKS_PER_SECOND).toFixed(1)}
+								data-speed-duration
+								onKeyDown={(e) => {
+									if (e.key === "Enter") e.currentTarget.blur();
+								}}
+								onBlur={(e) => {
+									const seconds = Number(e.currentTarget.value);
+									if (!(seconds > 0)) return;
+									const sourceSeconds =
+										(element.duration / TICKS_PER_SECOND) * rate;
+									commitRetime({
+										rate: clampRetimeRate({ rate: sourceSeconds / seconds }),
+										maintainPitch,
+									});
+								}}
+								className="bg-background h-8 w-24 rounded-md border px-2 text-sm"
+							/>
+							<span className="text-muted-foreground text-xs">seconds</span>
+						</div>
 					</SectionField>
 					<div className="flex items-center justify-between">
 						<span className="text-sm">Change pitch</span>
