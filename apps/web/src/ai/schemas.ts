@@ -36,6 +36,8 @@ export const SuggestionItem = z.object({
 	x: z.coerce.number().min(0).max(1).optional(),
 	y: z.coerce.number().min(0).max(1).optional(),
 	text: z.string().max(2000).optional(),
+	layout: z.enum(["vertical", "landscape", "square"]).optional(),
+	captionStyle: z.enum(["word highlight", "word by word", "plain"]).optional(),
 });
 
 export const SuggestionsAnswer = z.object({

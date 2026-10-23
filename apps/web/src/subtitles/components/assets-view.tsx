@@ -11,6 +11,7 @@ import { useMemo, useReducer, useRef, useState, useSyncExternalStore } from "rea
 import { aiBridge } from "@/ai/bridge";
 import { aiTranscribe, estimateTranscription } from "@/ai/tasks";
 import { AiCostNote } from "@/ai/components/ai-spending";
+import { AiSuggestionsPanel } from "@/ai-suggest/components/suggestions-panel";
 import { useAiSettings } from "@/ai/store";
 import { extractTimelineAudio } from "@/media/mediabunny";
 import { narrationSources, onlyTrack } from "@/captions/narration";
@@ -427,6 +428,7 @@ export function Captions() {
 						)}
 					</SectionFields>
 
+					{hasAi && <AiSuggestionsPanel />}
 					{transcript && (
 						<div className="bg-card flex flex-col gap-2 rounded-lg border p-3">
 							<div className="text-sm font-medium">Transcript</div>

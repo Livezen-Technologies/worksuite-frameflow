@@ -1,5 +1,6 @@
 "use client";
 
+import { SuggestionMarks } from "@/ai-suggest/components/suggestion-marks";
 import { useEffect, useState } from "react";
 import type { EditorCore } from "@/core";
 import { useEditor } from "@/editor/use-editor";
@@ -114,6 +115,7 @@ export function TimelineBookmarksRow({
 						onBookmarkMouseDown={onBookmarkMouseDown}
 					/>
 				))}
+				<SuggestionMarks zoomLevel={zoomLevel} />
 			</button>
 		</div>
 	);

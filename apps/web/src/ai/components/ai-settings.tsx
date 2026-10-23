@@ -1,6 +1,7 @@
 "use client";
 
 import { AiSpendingSection } from "./ai-spending";
+import { PlatformLimitsSection } from "@/ai-suggest/components/platform-limits";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -133,6 +134,8 @@ export function AiSettings() {
 			</section>
 
 			<AiSpendingSection />
+
+			<PlatformLimitsSection />
 
 			<section className="flex flex-col gap-2">
 				<h3 className="text-sm font-semibold">Vocabulary</h3>

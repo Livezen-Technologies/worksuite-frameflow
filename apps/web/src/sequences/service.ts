@@ -1,5 +1,6 @@
 import type { EditorCore } from "@/core";
 import type { TCanvasSize } from "@/project/types";
+import type { SceneTracks } from "@/timeline/types";
 import { reflowElements, type ReflowMode } from "@/project-settings/reflow";
 import { applyPatches, copyTracks } from "./copy";
 
@@ -54,14 +55,31 @@ export async function createSequence({
 			mode,
 		}),
 	});
-	const id = await editor.scenes.createScene({
+	return addSequence({
+		editor,
 		name: `${source.name.replace(/ \(\d+:\d+\)$/, "")} (${shape.id})`,
-		isMain: false,
+		tracks,
+		size: to,
 	});
+}
+
+/** Adds a sequence with these tracks and frame, then opens it. */
+export async function addSequence({
+	editor,
+	name,
+	tracks,
+	size,
+}: {
+	editor: EditorCore;
+	name: string;
+	tracks: SceneTracks;
+	size: TCanvasSize;
+}): Promise<string> {
+	const id = await editor.scenes.createScene({ name, isMain: false });
 	editor.scenes.setScenes({
 		scenes: editor.scenes
 			.getScenes()
-			.map((s) => (s.id === id ? { ...s, tracks, canvasSize: to } : s)),
+			.map((s) => (s.id === id ? { ...s, tracks, canvasSize: size } : s)),
 	});
 	await editor.scenes.switchToScene({ sceneId: id });
 	return id;
