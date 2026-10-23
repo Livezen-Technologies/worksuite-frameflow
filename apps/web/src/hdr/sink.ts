@@ -13,6 +13,29 @@ export function isHdrSignalSource(source: CanvasImageSource): boolean {
 }
 
 /**
+ * Full-precision pixels behind a decoded canvas (HD-14): while a 16-bit
+ * export runs, 10-bit frames also keep their half-float RGBA so the engine
+ * gets them without the 8-bit canvas in between.
+ */
+export interface DeepPixels {
+	data: Uint16Array;
+	width: number;
+	height: number;
+	version: number;
+}
+const deepPixels = new WeakMap<CanvasImageSource, DeepPixels>();
+let deepDecode = false;
+let deepVersion = 0;
+
+export function setDeepDecode(on: boolean): void {
+	deepDecode = on;
+}
+
+export function deepPixelsFor(source: CanvasImageSource): DeepPixels | undefined {
+	return deepPixels.get(source);
+}
+
+/**
  * Drop-in for mediabunny's CanvasSink for HDR tracks: decodes each frame,
  * reads its raw 10-bit planes and tone-maps them with our own operator,
  * instead of letting the browser squeeze HDR into an 8-bit canvas.
@@ -91,10 +114,22 @@ export class HdrCanvasSink {
 					output: this.options.output,
 				});
 				ctx.drawImage(mapped, 0, 0, width, height);
+				const deep = deepDecode
+					? this.mapper.renderDeep({
+							frame: planar,
+							transfer: this.options.transfer,
+							settings: this.options.settings,
+							output: this.options.output,
+						})
+					: null;
+				if (deep && planar.width === width && planar.height === height)
+					deepPixels.set(canvas, { data: deep, width, height, version: ++deepVersion });
+				else deepPixels.delete(canvas);
 				if (this.options.output === "hlg") hdrSignalCanvases.add(canvas);
 				else hdrSignalCanvases.delete(canvas);
 			} else {
 				ctx.drawImage(frame, 0, 0, width, height);
+				deepPixels.delete(canvas);
 			}
 			return { canvas, timestamp: sample.timestamp, duration: sample.duration };
 		} finally {

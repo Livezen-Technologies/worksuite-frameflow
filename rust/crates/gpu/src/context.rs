@@ -335,6 +335,51 @@ impl GpuContext {
         })
     }
 
+    /// A render texture filled from half-float RGBA bits (HD-14), top row
+    /// first; on 8-bit engines the values are rounded to 8 bits.
+    pub fn create_texture_from_rgba16f(
+        &self,
+        width: u32,
+        height: u32,
+        half: &[u16],
+        label: &'static str,
+    ) -> wgpu::Texture {
+        let texture = self.create_render_texture(width, height, label);
+        let float = self.texture_format == wgpu::TextureFormat::Rgba16Float;
+        let bytes: Vec<u8> = if float {
+            half.iter().flat_map(|h| h.to_le_bytes()).collect()
+        } else {
+            let to8 = |h: u16| (f16_bits_to_f32(h).clamp(0.0, 1.0) * 255.0).round() as u8;
+            let bgra = self.texture_format == wgpu::TextureFormat::Bgra8Unorm;
+            half.chunks_exact(4)
+                .flat_map(|p| {
+                    let [r, g, b, a] = [to8(p[0]), to8(p[1]), to8(p[2]), to8(p[3])];
+                    if bgra { [b, g, r, a] } else { [r, g, b, a] }
+                })
+                .collect()
+        };
+        self.queue.write_texture(
+            wgpu::TexelCopyTextureInfo {
+                texture: &texture,
+                mip_level: 0,
+                origin: wgpu::Origin3d::ZERO,
+                aspect: wgpu::TextureAspect::All,
+            },
+            &bytes,
+            wgpu::TexelCopyBufferLayout {
+                offset: 0,
+                bytes_per_row: Some(width * if float { 8 } else { 4 }),
+                rows_per_image: Some(height),
+            },
+            wgpu::Extent3d {
+                width,
+                height,
+                depth_or_array_layers: 1,
+            },
+        );
+        texture
+    }
+
     pub fn instance(&self) -> &wgpu::Instance {
         &self.instance
     }

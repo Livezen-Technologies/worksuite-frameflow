@@ -2,6 +2,7 @@ import EventEmitter from "eventemitter3";
 
 import { LightLevelMeter } from "@/hdr/light-level";
 import { injectHdrMetadata } from "@/hdr/webm-hdr-metadata";
+import { setDeepDecode } from "@/hdr/sink";
 import {
 	Output,
 	Mp4OutputFormat,
@@ -345,6 +346,8 @@ export class SceneExporter extends EventEmitter<SceneExporterEvents> {
 				? { audioWav: audioBufferToWav(this.audioBuffer) }
 				: {}),
 		});
+		// 10-bit HDR footage keeps its precision into the engine (HD-14).
+		setDeepDecode(deep);
 		try {
 			for (let i = 0; i < frameCount; i++) {
 				if (this.isCancelled) {
@@ -377,6 +380,8 @@ export class SceneExporter extends EventEmitter<SceneExporterEvents> {
 		} catch (error) {
 			await master.bridge.cancel({ id: job.id }).catch(() => {});
 			throw error;
+		} finally {
+			setDeepDecode(false);
 		}
 		this.masterJobId = job.id;
 		const marker = new ArrayBuffer(0);

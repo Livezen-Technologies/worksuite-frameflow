@@ -7,7 +7,9 @@ import {
 	renderFrameRgba16,
 	resizeCompositor,
 	uploadTexture,
+	uploadTextureRgba16f,
 } from "opencut-wasm";
+import { deepPixelsFor } from "@/hdr/sink";
 import { forgetUploadedLuts } from "@/lut/library";
 import {
 	incrementCounter,
@@ -39,6 +41,8 @@ type ExternalCacheEntry = {
 	source: CanvasImageSource;
 	width: number;
 	height: number;
+	/** Which full-precision frame was uploaded, if any (HD-14). */
+	deepVersion?: number;
 };
 
 class WasmCompositor {
@@ -107,11 +111,14 @@ class WasmCompositor {
 
 	private syncExternalTexture(texture: ExternalTextureDescriptor) {
 		const previous = this.cache.get(texture.id);
+		const deep = deepPixelsFor(texture.source);
+		const deepFits = deep && deep.width === texture.width && deep.height === texture.height;
 		if (
 			previous?.kind === "external" &&
 			previous.source === texture.source &&
 			previous.width === texture.width &&
-			previous.height === texture.height
+			previous.height === texture.height &&
+			previous.deepVersion === (deepFits ? deep.version : undefined)
 		) {
 			incrementCounter({ name: "textureCacheHit" });
 			return;
@@ -122,22 +129,28 @@ class WasmCompositor {
 			name: "textureUploadPixels",
 			by: texture.width * texture.height,
 		});
-		uploadTexture({
-			id: texture.id,
-			source: ensureOffscreenCanvas({
-				source: texture.source,
+		if (deepFits) {
+			// 10-bit frame kept at full precision, not squeezed through the canvas.
+			uploadTextureRgba16f(texture.id, deep.data, deep.width, deep.height);
+		} else {
+			uploadTexture({
+				id: texture.id,
+				source: ensureOffscreenCanvas({
+					source: texture.source,
+					width: texture.width,
+					height: texture.height,
+					label: `texture upload ${texture.id}`,
+				}),
 				width: texture.width,
 				height: texture.height,
-				label: `texture upload ${texture.id}`,
-			}),
-			width: texture.width,
-			height: texture.height,
-		});
+			});
+		}
 		this.cache.set(texture.id, {
 			kind: "external",
 			source: texture.source,
 			width: texture.width,
 			height: texture.height,
+			...(deepFits ? { deepVersion: deep.version } : {}),
 		});
 	}
 

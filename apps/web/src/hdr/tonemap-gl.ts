@@ -162,6 +162,7 @@ export class ToneMapper {
 	private gl: WebGL2RenderingContext;
 	private program: WebGLProgram;
 	private textures: WebGLTexture[];
+	private deep: { fbo: WebGLFramebuffer; texture: WebGLTexture; width: number; height: number } | null = null;
 
 	constructor() {
 		this.canvas = document.createElement("canvas");
@@ -280,5 +281,45 @@ export class ToneMapper {
 		gl.viewport(0, 0, width, height);
 		gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 		return this.canvas;
+	}
+
+	/**
+	 * The same picture at full precision (HD-14): drawn into a half-float
+	 * target and read back as half-float RGBA bits, top row first. Null when
+	 * the GPU can't render to float.
+	 */
+	renderDeep(args: Parameters<ToneMapper["render"]>[0]): Uint16Array | null {
+		const { gl } = this;
+		if (!gl.getExtension("EXT_color_buffer_float")) return null;
+		const { width, height } = args.frame;
+		if (!this.deep || this.deep.width !== width || this.deep.height !== height) {
+			if (this.deep) {
+				gl.deleteFramebuffer(this.deep.fbo);
+				gl.deleteTexture(this.deep.texture);
+			}
+			const texture = gl.createTexture();
+			const fbo = gl.createFramebuffer();
+			if (!texture || !fbo) return null;
+			gl.bindTexture(gl.TEXTURE_2D, texture);
+			gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA16F, width, height, 0, gl.RGBA, gl.HALF_FLOAT, null);
+			gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+			gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
+			if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) !== gl.FRAMEBUFFER_COMPLETE) {
+				gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+				return null;
+			}
+			this.deep = { fbo, texture, width, height };
+		}
+		gl.bindFramebuffer(gl.FRAMEBUFFER, this.deep.fbo);
+		this.render(args);
+		const flipped = new Uint16Array(width * height * 4);
+		gl.readPixels(0, 0, width, height, gl.RGBA, gl.HALF_FLOAT, flipped);
+		gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+		// GL rows start at the bottom.
+		const out = new Uint16Array(flipped.length);
+		const row = width * 4;
+		for (let y = 0; y < height; y++)
+			out.set(flipped.subarray((height - 1 - y) * row, (height - y) * row), y * row);
+		return out;
 	}
 }

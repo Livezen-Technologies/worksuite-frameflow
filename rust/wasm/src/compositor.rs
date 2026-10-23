@@ -137,6 +137,38 @@ pub fn upload_texture(options: JsValue) -> Result<(), JsValue> {
     })
 }
 
+/// Uploads a frame decoded at full precision (HD-14) as half-float RGBA bits.
+#[wasm_bindgen(js_name = uploadTextureRgba16f)]
+pub fn upload_texture_rgba16f(
+    id: String,
+    data: js_sys::Uint16Array,
+    width: u32,
+    height: u32,
+) -> Result<(), JsValue> {
+    if data.length() != width * height * 4 {
+        return Err(JsValue::from_str("uploadTextureRgba16f: wrong pixel count"));
+    }
+    let half = data.to_vec();
+    with_gpu_runtime(|gpu_runtime| {
+        COMPOSITOR_RUNTIME.with(|runtime| {
+            let mut borrow = runtime.borrow_mut();
+            let Some(runtime) = borrow.as_mut() else {
+                return Err(JsValue::from_str(
+                    "Compositor is not initialized. Call initCompositor() first.",
+                ));
+            };
+            let texture = gpu_runtime.context.create_texture_from_rgba16f(
+                width,
+                height,
+                &half,
+                "compositor-upload-texture-16f",
+            );
+            runtime.compositor.upsert_texture(id, texture);
+            Ok(())
+        })
+    })
+}
+
 /// Called by `uploadLut`; a compositor that isn't created yet gets the LUT
 /// when the editor uploads it again on its next use.
 pub(crate) fn upload_lut_to_compositor(
