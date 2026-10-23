@@ -8,6 +8,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 ## [Unreleased]
 
 ### Added
+
+- 360° projects keep 4-channel ambisonic sound from 360° cameras and tag it as spatial audio in MP4 exports, so YouTube and headsets play it as sound that turns with the view (desktop app; the browser exports it as stereo).
 - In 360° projects, titles, logos and pictures can be pinned to the sphere (360° menu → Pin selected titles to the sphere): they curve correctly in the 360° video and face the viewer from the direction you set. Direction, height, tilt and size are in the item's new 360° tab and can be keyframed.
 - In 360° projects, blurs, glows and other effects wrap across the left/right edge of the sphere, so no line shows where the picture's ends meet. Vignette, Mirror and Wave can't wrap and are greyed out there.
 - 360° projects can hide the tripod or selfie stick: the 360° menu covers the bottom of every 360° clip with a blurred patch (size, soft edge, blur or colour in the clip's Effects), or lays your logo flat under the viewer on its own track.

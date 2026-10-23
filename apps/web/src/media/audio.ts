@@ -27,6 +27,8 @@ import {
 } from "@/media/waveform-summary";
 
 const MAX_AUDIO_CHANNELS = 2;
+/** First-order ambisonics (AmbiX: ACN order W Y Z X, SN3D) from 360° cameras (VR-21). */
+export const AMBISONIC_CHANNELS = 4;
 const EXPORT_SAMPLE_RATE = 44100;
 
 export interface CollectedAudioElement {
@@ -137,10 +139,12 @@ export async function collectAudioElements({
 	tracks,
 	mediaAssets,
 	audioContext,
+	maxChannels = MAX_AUDIO_CHANNELS,
 }: {
 	tracks: SceneTracks;
 	mediaAssets: MediaAsset[];
 	audioContext: AudioContext;
+	maxChannels?: number;
 }): Promise<CollectedAudioElement[]> {
 	const candidates = collectAudibleCandidates({ tracks, mediaAssets });
 	const mediaMap = new Map<string, MediaAsset>(
@@ -155,6 +159,7 @@ export async function collectAudioElements({
 					element,
 					mediaMap,
 					audioContext,
+					maxChannels,
 				}).then((audioBuffer) => {
 					if (!audioBuffer) return null;
 					return {
@@ -184,6 +189,7 @@ export async function collectAudioElements({
 				resolveAudioBufferForAsset({
 					asset: mediaAsset,
 					audioContext,
+					maxChannels,
 				}).then((audioBuffer) => {
 					if (!audioBuffer) return null;
 					return {
@@ -218,16 +224,22 @@ async function resolveAudioBufferForElement({
 	element,
 	mediaMap,
 	audioContext,
+	maxChannels,
 }: {
 	element: AudioElement;
 	mediaMap: Map<string, MediaAsset>;
 	audioContext: AudioContext;
+	maxChannels: number;
 }): Promise<AudioBuffer | null> {
 	try {
 		if (element.sourceType === "upload") {
 			const asset = mediaMap.get(element.mediaId);
 			if (!asset) return null;
-			return await resolveAudioBufferForAsset({ asset, audioContext });
+			return await resolveAudioBufferForAsset({
+				asset,
+				audioContext,
+				maxChannels,
+			});
 		}
 
 		if (element.buffer) return element.buffer;
@@ -248,9 +260,11 @@ async function resolveAudioBufferForElement({
 async function resolveAudioBufferForAsset({
 	asset,
 	audioContext,
+	maxChannels = MAX_AUDIO_CHANNELS,
 }: {
 	asset: MediaAsset;
 	audioContext: AudioContext;
+	maxChannels?: number;
 }): Promise<AudioBuffer | null> {
 	if (asset.type === "audio") {
 		try {
@@ -285,10 +299,7 @@ async function resolveAudioBufferForAsset({
 		if (chunks.length === 0) return null;
 
 		const nativeSampleRate = chunks[0].sampleRate;
-		const numChannels = Math.min(
-			MAX_AUDIO_CHANNELS,
-			chunks[0].numberOfChannels,
-		);
+		const numChannels = Math.min(maxChannels, chunks[0].numberOfChannels);
 
 		const nativeChannels = Array.from(
 			{ length: numChannels },
@@ -628,6 +639,7 @@ export async function createTimelineAudioBuffer({
 	duration,
 	sampleRate = EXPORT_SAMPLE_RATE,
 	channels = 2,
+	sphere = false,
 	audioContext,
 }: {
 	tracks: SceneTracks;
@@ -636,6 +648,11 @@ export async function createTimelineAudioBuffer({
 	sampleRate?: number;
 	/** 1 mixes the stereo result down to mono (PS-09). */
 	channels?: 1 | 2;
+	/**
+	 * A 360° project: when a clip carries 4-channel ambisonic sound the mix
+	 * stays ambisonic (VR-21) and other sound is added to W, heard everywhere.
+	 */
+	sphere?: boolean;
 	audioContext?: AudioContext;
 }): Promise<AudioBuffer | null> {
 	const context = audioContext ?? createAudioContext({ sampleRate });
@@ -644,11 +661,17 @@ export async function createTimelineAudioBuffer({
 		tracks,
 		mediaAssets,
 		audioContext: context,
+		maxChannels: sphere ? AMBISONIC_CHANNELS : MAX_AUDIO_CHANNELS,
 	});
 
 	if (audioElements.length === 0) return null;
 
-	const outputChannels = 2;
+	const ambisonic =
+		sphere &&
+		audioElements.some(
+			(e) => !e.muted && e.buffer.numberOfChannels === AMBISONIC_CHANNELS,
+		);
+	const outputChannels = ambisonic ? AMBISONIC_CHANNELS : 2;
 	const durationSeconds = duration / TICKS_PER_SECOND;
 	const outputLength = Math.ceil(durationSeconds * sampleRate);
 	const outputBuffer = context.createBuffer(
@@ -674,9 +697,14 @@ export async function createTimelineAudioBuffer({
 				})
 			: undefined;
 
+		const source = renderedBuffer ?? element.buffer;
 		mixAudioChannels({
 			element,
-			buffer: renderedBuffer ?? element.buffer,
+			buffer: ambisonic
+				? toAmbisonic({ context, buffer: source })
+				: source.numberOfChannels > 2
+					? firstChannels({ context, buffer: source, count: 2 })
+					: source,
 			trimStart: renderedBuffer ? 0 : element.trimStart,
 			retime: renderedBuffer ? undefined : element.retime,
 			outputBuffer,
@@ -686,13 +714,67 @@ export async function createTimelineAudioBuffer({
 	}
 
 	const mastered = await applyAudioMasteringToBuffer({ audioBuffer: outputBuffer });
-	if (channels === 2) return mastered;
+	if (channels === 2 || ambisonic) return mastered;
 	const mono = context.createBuffer(1, mastered.length, mastered.sampleRate);
 	const out = mono.getChannelData(0);
 	const left = mastered.getChannelData(0);
 	const right = mastered.numberOfChannels > 1 ? mastered.getChannelData(1) : left;
 	for (let i = 0; i < out.length; i++) out[i] = (left[i] + right[i]) / 2;
 	return mono;
+}
+
+function firstChannels({
+	context,
+	buffer,
+	count,
+}: {
+	context: BaseAudioContext;
+	buffer: AudioBuffer;
+	count: number;
+}): AudioBuffer {
+	const out = context.createBuffer(count, buffer.length, buffer.sampleRate);
+	for (let c = 0; c < count; c++)
+		out.copyToChannel(buffer.getChannelData(c), c);
+	return out;
+}
+
+/**
+ * Ambisonic clips pass through channel for channel; anything else is
+ * averaged into W (omni) with silent Y/Z/X, so it plays from all around.
+ */
+export function toAmbisonic({
+	context,
+	buffer,
+}: {
+	context: BaseAudioContext;
+	buffer: AudioBuffer;
+}): AudioBuffer {
+	if (buffer.numberOfChannels === AMBISONIC_CHANNELS) return buffer;
+	const out = context.createBuffer(
+		AMBISONIC_CHANNELS,
+		buffer.length,
+		buffer.sampleRate,
+	);
+	const w = out.getChannelData(0);
+	const n = buffer.numberOfChannels;
+	for (let c = 0; c < n; c++) {
+		const data = buffer.getChannelData(c);
+		for (let i = 0; i < w.length; i++) w[i] += data[i] / n;
+	}
+	return out;
+}
+
+/** W (omni) in both ears: a stereo stand-in for ambisonic sound. */
+export function omniStereo(buffer: AudioBuffer): AudioBuffer {
+	const out = new AudioBuffer({
+		numberOfChannels: 2,
+		length: buffer.length,
+		sampleRate: buffer.sampleRate,
+	});
+	const w = buffer.getChannelData(0);
+	out.copyToChannel(w, 0);
+	out.copyToChannel(w, 1);
+	return out;
 }
 
 function collectPeakRange({
@@ -843,7 +925,7 @@ function mixAudioChannels({
 	const outputStartSample = Math.floor(startTime * sampleRate);
 	const renderedLength = Math.ceil(elementDuration * sampleRate);
 
-	const outputChannels = 2;
+	const outputChannels = outputBuffer.numberOfChannels;
 	for (let channel = 0; channel < outputChannels; channel++) {
 		const outputData = outputBuffer.getChannelData(channel);
 		const sourceChannel = Math.min(channel, buffer.numberOfChannels - 1);

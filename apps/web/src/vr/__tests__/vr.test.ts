@@ -79,6 +79,22 @@ describe("360° metadata injection", () => {
 		const twice = injectSphericalMetadata(once);
 		expect(twice.length).toBe(once.length);
 	});
+
+	test("tags 4-channel sound as ambisonic (VR-21), not stereo", () => {
+		const count = (bytes: Uint8Array) =>
+			new TextDecoder("latin1").decode(bytes).split("SA3D").length - 1;
+		expect(count(injectSphericalMetadata(fixture("flat-end.mp4")))).toBe(0);
+		const input = fixture("ambisonic.mp4");
+		const once = injectSphericalMetadata(input);
+		const twice = injectSphericalMetadata(once);
+		expect(count(once)).toBe(1);
+		expect(twice.length).toBe(once.length);
+		const at = new TextDecoder("latin1").decode(once).indexOf("SA3D") + 4;
+		const view = new DataView(once.buffer, once.byteOffset + at);
+		expect(view.getUint32(2)).toBe(1);
+		expect(view.getUint32(8)).toBe(4);
+		expect(view.getUint32(24)).toBe(3);
+	});
 });
 
 describe("360° detection", () => {

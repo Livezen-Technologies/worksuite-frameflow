@@ -26,6 +26,11 @@ export interface MasterExportBridge {
 		data: ArrayBuffer;
 		format: "mp3" | "m4a";
 	}) => Promise<ArrayBuffer>;
+	/** Swaps in WAV sound, kept at its channel count (4-channel ambisonics). */
+	muxAudio?: (args: {
+		video: ArrayBuffer;
+		wav: ArrayBuffer;
+	}) => Promise<ArrayBuffer>;
 }
 
 export const MASTER_CODECS: {

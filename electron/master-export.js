@@ -244,5 +244,33 @@ module.exports = {
 		}
 	},
 
+	/**
+	 * Puts 4-channel ambisonic sound into a finished MP4 (VR-21): browser
+	 * encoders stop at stereo, FFmpeg's AAC takes all four channels.
+	 */
+	async muxAudio({ video, wav }) {
+		const bin = nativeHelper._test.ffmpegPath();
+		if (!bin) throw new Error("FFmpeg isn't bundled with this build.");
+		await fs.promises.mkdir(tmpDir(), { recursive: true });
+		const id = crypto.randomUUID();
+		const inVideo = path.join(tmpDir(), `${id}-v.mp4`);
+		const inAudio = path.join(tmpDir(), `${id}.wav`);
+		const output = path.join(tmpDir(), `${id}.mp4`);
+		await fs.promises.writeFile(inVideo, Buffer.from(video));
+		await fs.promises.writeFile(inAudio, Buffer.from(wav));
+		try {
+			await new Promise((resolve, reject) => {
+				const child = spawn(bin, ["-hide_banner", "-loglevel", "error", "-y", "-i", inVideo, "-i", inAudio, "-map", "0:v", "-map", "1:a", "-c:v", "copy", "-c:a", "aac", "-b:a", "512k", "-shortest", output]);
+				let err = "";
+				child.stderr.on("data", (d) => { err += d; });
+				child.on("close", (code) => (code === 0 ? resolve() : reject(new Error(err.trim() || `FFmpeg failed (${code})`))));
+			});
+			const bytes = await fs.promises.readFile(output);
+			return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength);
+		} finally {
+			for (const f of [inVideo, inAudio, output]) await fs.promises.unlink(f).catch(() => {});
+		}
+	},
+
 	_test: { masterArgs },
 };

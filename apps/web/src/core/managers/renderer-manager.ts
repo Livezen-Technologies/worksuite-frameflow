@@ -10,11 +10,20 @@ import {
 import { CanvasRenderer } from "@/services/renderer/canvas-renderer";
 import { SceneExporter } from "@/services/renderer/scene-exporter";
 import { buildScene } from "@/services/renderer/scene-builder";
-import { createTimelineAudioBuffer } from "@/media/audio";
+import {
+	AMBISONIC_CHANNELS,
+	createTimelineAudioBuffer,
+	omniStereo,
+} from "@/media/audio";
+import { useSphereStore } from "@/vr/store";
 import { formatTimecode } from "opencut-wasm";
 import { frameRateToFloat } from "@/fps/utils";
 import { downloadBlob } from "@/utils/browser";
-import { masterBridge, type MasterExportBridge } from "@/export/master";
+import {
+	audioBufferToWav,
+	masterBridge,
+	type MasterExportBridge,
+} from "@/export/master";
 import type { Upscaler } from "@/ai-export/upscale";
 import type { Interpolator } from "@/ai-export/interpolate";
 
@@ -247,7 +256,19 @@ export class RendererManager {
 					duration,
 					sampleRate: activeProject.settings.audio?.sampleRate,
 					channels: activeProject.settings.audio?.channels,
+					sphere: !!useSphereStore.getState().sphereProjects[
+						activeProject.metadata.id
+					],
 				});
+			}
+
+			// Browser encoders stop at stereo: 4-channel ambisonic sound is
+			// muxed in by the desktop FFmpeg afterwards, or folded to stereo W.
+			let ambisonic: AudioBuffer | null = null;
+			if (audioBuffer?.numberOfChannels === AMBISONIC_CHANNELS) {
+				const muxer = masterBridge()?.muxAudio;
+				if (format === "mp4" && !master && muxer) ambisonic = audioBuffer;
+				audioBuffer = omniStereo(audioBuffer);
 			}
 
 			const scene = buildScene({
@@ -315,10 +336,15 @@ export class RendererManager {
 				if (!buffer) {
 					return { success: false, error: "Export failed to produce buffer" };
 				}
+				const muxAudio = masterBridge()?.muxAudio;
+				const finalBuffer =
+					ambisonic && muxAudio
+						? await muxAudio({ video: buffer, wav: audioBufferToWav(ambisonic) })
+						: buffer;
 
 				return {
 					success: true,
-					buffer,
+					buffer: finalBuffer,
 					captions: captionCues.flat().sort((a, b) => a.start - b.start),
 					...(exporter.masterJobId ? { masterJobId: exporter.masterJobId } : {}),
 				};

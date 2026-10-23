@@ -6,6 +6,7 @@
 
 const CONTAINERS = new Set(["moov", "trak", "mdia", "minf", "stbl"]);
 const VISUAL_SAMPLE_ENTRY_HEADER = 8 + 78;
+const AUDIO_SAMPLE_ENTRY_HEADER = 8 + 28;
 const V1_UUID = [
 	0xff, 0xcc, 0x82, 0x63, 0xf8, 0x55, 0x4a, 0x93, 0x88, 0x14, 0x58, 0x7a, 0x02,
 	0x52, 0x1f, 0xdd,
@@ -98,6 +99,23 @@ export function sphericalV1Box(): Uint8Array {
 	});
 }
 
+/**
+ * Spatial Audio box (VR-21): first-order periphonic ambisonics, ACN channel
+ * order, SN3D normalisation — what YouTube and headsets expect.
+ */
+export function spatialAudioBox(): Uint8Array {
+	const body = new Uint8Array(2 + 4 + 2 + 4 + 4 * 4);
+	const view = new DataView(body.buffer);
+	view.setUint8(0, 0); // version
+	view.setUint8(1, 0); // periphonic
+	view.setUint32(2, 1); // order
+	view.setUint8(6, 0); // ACN
+	view.setUint8(7, 0); // SN3D
+	view.setUint32(8, 4);
+	for (let i = 0; i < 4; i++) view.setUint32(12 + i * 4, i);
+	return box({ type: "SA3D", body: [body] });
+}
+
 function concat(parts: Uint8Array[]): Uint8Array {
 	const out = new Uint8Array(parts.reduce((n, p) => n + p.length, 0));
 	let offset = 0;
@@ -133,6 +151,23 @@ function isV1Box({ bytes, at }: { bytes: Uint8Array; at: Box }): boolean {
 		at.start + at.headerSize + 16,
 	);
 	return V1_UUID.every((b, i) => id[i] === b);
+}
+
+function handlerOf({ bytes, trak }: { bytes: Uint8Array; trak: Box }) {
+	const mdia = readBoxes({
+		bytes,
+		start: trak.start + trak.headerSize,
+		end: trak.start + trak.size,
+	}).find((b) => b.type === "mdia");
+	if (!mdia) return "";
+	const hdlr = readBoxes({
+		bytes,
+		start: mdia.start + mdia.headerSize,
+		end: mdia.start + mdia.size,
+	}).find((b) => b.type === "hdlr");
+	if (!hdlr) return "";
+	const at = hdlr.start + hdlr.headerSize + 8;
+	return String.fromCharCode(...bytes.subarray(at, at + 4));
 }
 
 function isVideoTrack({ bytes, trak }: { bytes: Uint8Array; trak: Box }) {
@@ -174,7 +209,19 @@ function rewriteContainer({
 	return rebuild({ bytes, at: container, body: concat(parts) });
 }
 
-function rewriteStsd({ bytes, stsd }: { bytes: Uint8Array; stsd: Box }) {
+function rewriteStsd({
+	bytes,
+	stsd,
+	audio = false,
+}: {
+	bytes: Uint8Array;
+	stsd: Box;
+	audio?: boolean;
+}) {
+	const headerSize = audio
+		? AUDIO_SAMPLE_ENTRY_HEADER
+		: VISUAL_SAMPLE_ENTRY_HEADER;
+	const dropped = audio ? ["SA3D"] : ["st3d", "sv3d"];
 	const bodyStart = stsd.start + stsd.headerSize;
 	const entries = readBoxes({
 		bytes,
@@ -183,22 +230,25 @@ function rewriteStsd({ bytes, stsd }: { bytes: Uint8Array; stsd: Box }) {
 	});
 	const parts = entries.map((entry, i) => {
 		const raw = bytes.slice(entry.start, entry.start + entry.size);
-		if (i > 0 || entry.size < VISUAL_SAMPLE_ENTRY_HEADER) return raw;
+		if (i > 0 || entry.size < headerSize) return raw;
+		// Only 4-channel sound is ambisonic; stereo stays plain.
+		if (audio && dataView(bytes).getUint16(entry.start + 24) !== 4) return raw;
 		const kept = readBoxes({
 			bytes,
-			start: entry.start + VISUAL_SAMPLE_ENTRY_HEADER,
+			start: entry.start + headerSize,
 			end: entry.start + entry.size,
 		})
-			.filter((b) => b.type !== "st3d" && b.type !== "sv3d")
+			.filter((b) => !dropped.includes(b.type))
 			.map((b) => bytes.slice(b.start, b.start + b.size));
-		const fixed = bytes.slice(
-			entry.start + entry.headerSize,
-			entry.start + VISUAL_SAMPLE_ENTRY_HEADER,
-		);
+		const fixed = bytes.slice(entry.start + entry.headerSize, entry.start + headerSize);
 		return rebuild({
 			bytes,
 			at: entry,
-			body: concat([fixed, ...kept, ...sphericalV2Boxes()]),
+			body: concat([
+				fixed,
+				...kept,
+				...(audio ? [spatialAudioBox()] : sphericalV2Boxes()),
+			]),
 		});
 	});
 	return rebuild({
@@ -207,6 +257,9 @@ function rewriteStsd({ bytes, stsd }: { bytes: Uint8Array; stsd: Box }) {
 		body: concat([bytes.slice(bodyStart, bodyStart + 8), ...parts]),
 	});
 }
+
+const dataView = (bytes: Uint8Array) =>
+	new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
 
 function shiftChunkOffsets({
 	moov,
@@ -243,28 +296,35 @@ export function injectSphericalMetadata(input: Uint8Array): Uint8Array {
 	const moov = top.find((b) => b.type === "moov");
 	if (!moov || moov.headerSize !== 8) return input;
 
-	const visit = (child: Box): Uint8Array | null => {
-		if (child.type === "stsd")
-			return rewriteStsd({ bytes: input, stsd: child });
-		if (CONTAINERS.has(child.type)) {
-			return rewriteContainer({
-				bytes: input,
-				container: child,
-				transform: visit,
-			});
-		}
-		return null;
+	const visitor = (audio: boolean) => {
+		const visit = (child: Box): Uint8Array | null => {
+			if (child.type === "stsd")
+				return rewriteStsd({ bytes: input, stsd: child, audio });
+			if (CONTAINERS.has(child.type)) {
+				return rewriteContainer({
+					bytes: input,
+					container: child,
+					transform: visit,
+				});
+			}
+			return null;
+		};
+		return visit;
 	};
+	const visit = visitor(false);
 	const newMoov = rewriteContainer({
 		bytes: input,
 		container: moov,
 		transform: (child) => {
-			if (
-				child.type !== "trak" ||
-				!isVideoTrack({ bytes: input, trak: child })
-			) {
-				return null;
+			if (child.type !== "trak") return null;
+			if (handlerOf({ bytes: input, trak: child }) === "soun") {
+				return rewriteContainer({
+					bytes: input,
+					container: child,
+					transform: visitor(true),
+				});
 			}
+			if (!isVideoTrack({ bytes: input, trak: child })) return null;
 			const rewritten = rewriteContainer({
 				bytes: input,
 				container: child,
