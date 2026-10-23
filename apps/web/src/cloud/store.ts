@@ -19,7 +19,11 @@ export interface CloudLink {
 	media: Record<string, CloudMediaLink>;
 	/** Fingerprint of the content last synced, to tell real edits from re-saves. */
 	contentHash?: string;
+	/** "manual": only syncs when the user presses Sync now (PS-22). */
+	mode?: CloudSyncMode;
 }
+
+export type CloudSyncMode = "auto" | "manual";
 
 export type CloudSyncStatus =
 	| { state: "idle" }

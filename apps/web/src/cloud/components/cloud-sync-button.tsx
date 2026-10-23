@@ -28,6 +28,7 @@ import {
 	enableSync,
 	pullProject,
 	syncProject,
+	setSyncMode,
 } from "../sync";
 import { ShareProjectDialog } from "./share-project-dialog";
 
@@ -106,6 +107,20 @@ export function CloudSyncButton() {
 						}}
 					/>
 				</div>
+				{synced && link && (
+					<label className="flex items-center justify-between gap-2 text-xs">
+						<span>Sync</span>
+						<select
+							className="bg-background h-7 rounded-md border px-2 text-xs"
+							value={link.mode ?? "auto"}
+							onChange={(e) => setSyncMode({ projectId, mode: e.target.value === "manual" ? "manual" : "auto" })}
+							data-sync-mode
+						>
+							<option value="auto">Automatically</option>
+							<option value="manual">Only when I press Sync now</option>
+						</select>
+					</label>
+				)}
 				{synced && (
 					<div
 						className="flex flex-col gap-2 border-t pt-3 text-xs"

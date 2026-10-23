@@ -1,5 +1,6 @@
 "use client";
 
+import type { CloudSyncMode } from "./store";
 import type {
 	CloudSyncOperations,
 	CloudSyncResult,
@@ -532,7 +533,9 @@ export async function syncPendingProjects({
 	await refreshCloudProjects();
 	const metadata = await storageService.loadAllProjectsMetadata();
 	const remote = new Map(store().cloudProjects.map((p) => [p.id, p.revision]));
-	for (const id of ids) {
+	// Projects set to sync by hand are left alone here (PS-22).
+	const automatic = ids.filter((id) => links[id].mode !== "manual");
+	for (const id of automatic) {
 		const known = links[id];
 		const remoteRevision = remote.get(known.cloudId);
 		if (
@@ -543,7 +546,7 @@ export async function syncPendingProjects({
 			await pullProject({ projectId: id });
 		}
 	}
-	for (const id of ids) {
+	for (const id of automatic) {
 		const meta = metadata.find((m) => m.id === id);
 		const link = store().links[id];
 		if (!link) continue;
@@ -558,4 +561,10 @@ export async function syncPendingProjects({
 			await syncProject({ projectId: id }).catch(() => {});
 		}
 	}
+}
+
+/** Sync automatically, or only when Sync now is pressed (PS-22). */
+export function setSyncMode({ projectId, mode }: { projectId: string; mode: CloudSyncMode }) {
+	const link = store().links[projectId];
+	if (link) store().setLink({ projectId, link: { ...link, mode } });
 }
