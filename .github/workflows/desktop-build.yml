@@ -104,6 +104,13 @@ jobs:
         working-directory: electron
         run: npm run prepare-web
 
+      # LGPL FFmpeg for proxies; macOS needs FFMPEG_DARWIN_URL (repo variable) or ships without it.
+      - name: Fetch FFmpeg for the media helper
+        working-directory: electron
+        env:
+          FFMPEG_DARWIN_URL: ${{ vars.FFMPEG_DARWIN_URL }}
+        run: npm run fetch-ffmpeg
+
       - name: Package installers
         working-directory: electron
         run: npm run ${{ matrix.target }}
