@@ -9,6 +9,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
+- Template packs: **Fill host and guest from the transcript** (Text → Packs → Your details) reads speaker names from captions or the transcript ("Name:" lines or WebVTT voice tags) and fills the host and guest lower thirds.
+
 - THIRD-PARTY-NOTICES now lists the fonts used by titles, captions and template packs, with their licences.
 
 - Text styles can now go to every text on the same track (Apply to → every text on this track), so a caption look reaches a whole caption track without touching titles; "Copy this style now" applies the current look straight away.

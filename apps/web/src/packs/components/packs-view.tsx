@@ -3,7 +3,10 @@
 import { useMemo, useState } from "react";
 import { Star } from "lucide-react";
 import { toast } from "sonner";
+import type { EditorCore } from "@/core";
 import { useBrandKit } from "@/brand/store";
+import { useTranscriptStore } from "@/transcript/store";
+import { hostAndGuest } from "../speakers";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -56,6 +59,19 @@ const FIELDS: { key: string; label: string }[] = [
 	{ key: "discount", label: "Discount" },
 	{ key: "part", label: "Part" },
 ];
+
+/** Lines of every text clip and the project's transcript, for speaker names (SP-06). */
+function speakerLines(editor: EditorCore): string[] {
+	const tracks = editor.scenes.getActiveScene().tracks;
+	const lines: string[] = [];
+	for (const track of [...tracks.overlay, tracks.main])
+		for (const el of track.elements)
+			if (el.type === "text" && typeof el.params.content === "string") lines.push(el.params.content);
+	const projectId = editor.project.getActive().metadata.id;
+	const transcript = useTranscriptStore.getState().byProject[projectId];
+	for (const segment of transcript?.segments ?? []) lines.push(segment.text);
+	return lines;
+}
 
 function nearestAspect({
 	width,
@@ -366,6 +382,25 @@ export function PacksView() {
 				</div>
 				{showFields && (
 					<div className="grid grid-cols-2 gap-1.5" data-pack-fields>
+						<Button
+							variant="text"
+							className="col-span-2 h-6 justify-start px-0 text-xs"
+							data-names-from-transcript
+							onClick={() => {
+								const found = hostAndGuest({ lines: speakerLines(editor) });
+								if (!found.host) {
+									toast.info("No speaker names found", {
+										description: "Captions or a transcript with \"Name:\" lines or WebVTT voice tags are needed.",
+									});
+									return;
+								}
+								store.setField({ key: "host", value: found.host });
+								if (found.guest) store.setField({ key: "guest", value: found.guest });
+								toast.success(`Host: ${found.host}${found.guest ? `, guest: ${found.guest}` : ""}`);
+							}}
+						>
+							Fill host and guest from the transcript
+						</Button>
 						{FIELDS.map((f) => (
 							<Input
 								key={f.key}

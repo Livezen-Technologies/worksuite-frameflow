@@ -135,3 +135,27 @@ describe("brand logo layers (SP-05)", () => {
 		expect(Math.abs(logo.y ?? 0) + logo.height / 2).toBeLessThan(0.5);
 	});
 });
+
+describe("speaker names (SP-06)", () => {
+	test("from voice tags and Name: prefixes, most frequent first", async () => {
+		const { speakersIn, hostAndGuest } = await import("../speakers");
+		const lines = [
+			"<v Kasun Perera>Welcome to the show",
+			"Nimali: Thanks for having me",
+			"Kasun Perera: So tell us",
+			"<v Kasun Perera>And then?",
+			"Nimali: Well, it started",
+			"Nimali: in 2019",
+			"Nimali: with a camera",
+			"Note: this is not a name line? It is.",
+			"https://example.com",
+			"මහේෂ්: ආයුබෝවන්",
+		];
+		const found = speakersIn({ lines });
+		expect(found[0]).toEqual({ name: "Nimali", count: 4 });
+		expect(found[1]).toEqual({ name: "Kasun Perera", count: 3 });
+		expect(found.some((s) => s.name === "මහේෂ්")).toBe(true);
+		expect(found.some((s) => /note|https/i.test(s.name))).toBe(false);
+		expect(hostAndGuest({ lines })).toEqual({ host: "Nimali", guest: "Kasun Perera" });
+	});
+});
