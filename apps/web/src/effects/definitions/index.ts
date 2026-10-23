@@ -3,12 +3,14 @@ import { blurEffectDefinition } from "./blur";
 import { colorGradeEffectDefinition } from "./color-grade";
 import { STYLISE_EFFECTS } from "./stylise";
 import { lutEffectDefinition } from "./lut";
+import { curvesEffectDefinition } from "./curves";
 import { reframeEffectDefinition } from "@/vr/projection";
 
 const defaultEffects = [
 	blurEffectDefinition,
 	colorGradeEffectDefinition,
 	lutEffectDefinition,
+	curvesEffectDefinition,
 	reframeEffectDefinition,
 	...STYLISE_EFFECTS,
 ];

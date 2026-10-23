@@ -222,6 +222,24 @@ export function ensureLutUploaded(id: string): void {
 		.finally(() => pending.delete(id));
 }
 
+/**
+ * Uploads a LUT made in code (curves, HSL) under `id`, once; `make` runs
+ * only when the engine doesn't have it yet.
+ */
+export function ensureGeneratedLutUploaded({
+	id,
+	size,
+	make,
+}: {
+	id: string;
+	size: number;
+	make: () => Uint8Array;
+}): void {
+	if (uploaded.has(id)) return;
+	uploadLut(id, size, make());
+	uploaded.add(id);
+}
+
 /** The compositor was (re)created and lost its LUTs: upload again on use. */
 export function forgetUploadedLuts(): void {
 	uploaded.clear();

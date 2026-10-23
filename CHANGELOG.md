@@ -8,6 +8,9 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 ## [Unreleased]
 
 ### Added
+- Curves and HSL in the Color panel (Curves & HSL effect).
+  - Curves: luma, red, green and blue, plus hue vs hue and hue vs saturation. Click to add a point, drag it, and double-click to remove it.
+  - HSL qualifier: pick a colour by hue, saturation and luminance range with softness, invert, or show the selection in black and white. Then shift its hue, saturation and lightness, for example skin tones or a sky.
 - HDR projects (Rec. 2100 HLG or PQ/HDR10), set in Project settings or with "Make HDR project" when you import HDR footage.
   - HDR clips keep their highlights, while SDR clips, photos, titles and captions sit at graphics white (203 nits by default, adjustable).
   - On SDR screens the preview is tone-mapped and labelled.

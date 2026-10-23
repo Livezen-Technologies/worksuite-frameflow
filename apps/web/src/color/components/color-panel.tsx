@@ -25,6 +25,7 @@ import { COLOR_LOOKS } from "../looks";
 import { ColorWheel } from "./color-wheel";
 import { ScopesView } from "./scopes-view";
 import { LutSection } from "@/lut/components/lut-section";
+import { CurvesSection } from "./curves-section";
 
 const NEUTRAL: ParamValues = Object.fromEntries(
 	colorGradeEffectDefinition.params.map((param) => [param.key, param.default]),
@@ -109,6 +110,11 @@ export function ColorPanel() {
 					<PasteGradeButton />
 				</div>
 			)}
+			<CurvesSection
+				key={`curves:${track.id}:${element.id}`}
+				trackId={track.id}
+				element={element}
+			/>
 		</PanelView>
 	);
 }
