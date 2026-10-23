@@ -117,7 +117,8 @@ export function TextEditOverlay({
 		>
 			<div
 				ref={divRef}
-				contentEditable
+				// Plain text only, so typing (and the input method, TI-01) sees text nodes.
+				contentEditable="plaintext-only"
 				suppressContentEditableWarning
 				tabIndex={0}
 				role="textbox"

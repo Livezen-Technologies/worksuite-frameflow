@@ -6,6 +6,7 @@ import { nextWordSuggestions, suggest, wordBefore } from "./candidates";
 import { legacyToUnicode, looksLikeLegacy } from "./legacy";
 import { useInputMethod } from "./store";
 import { isTamil99Key, tamil99FromKeys } from "./tamil99";
+import { editableField, type TextFieldLike } from "./editable";
 
 /** Layouts that type letters key by key, with no suggestions (Wijesekara, Tamil99). */
 function directLayout(): "wijesekara" | "tamil99" | null {
@@ -22,7 +23,12 @@ function directLayout(): "wijesekara" | "tamil99" | null {
  * Tamil spelling as each key lands, so no OS keyboard is needed.
  */
 
-type Field = HTMLInputElement | HTMLTextAreaElement;
+type Field = HTMLInputElement | HTMLTextAreaElement | TextFieldLike;
+
+/** An input, textarea or contentEditable element the input method can type into. */
+export function toField(target: EventTarget | null): Field | null {
+	return isTextField(target) ? target : editableField(target);
+}
 
 interface Composition {
 	field: Field;
@@ -81,7 +87,9 @@ export function typeIntoLastField({ text }: { text: string }) {
 
 const TEXT_TYPES = new Set(["text", "search", ""]);
 
-export function isTextField(target: EventTarget | null): target is Field {
+export function isTextField(
+	target: EventTarget | null,
+): target is HTMLInputElement | HTMLTextAreaElement {
 	// Tag checks rather than instanceof: pop-out windows have their own globals.
 	if (!target || !("tagName" in target)) return false;
 	const readOnly = "readOnly" in target && target.readOnly === true;
@@ -225,8 +233,8 @@ export function handleKeyDown(event: KeyboardEvent) {
 		store.cycleMode();
 		return;
 	}
-	const field = event.target;
-	if (!isTextField(field) || store.mode === "en" || event.isComposing) return;
+	const field = toField(event.target);
+	if (!field || store.mode === "en" || event.isComposing) return;
 	if (event.ctrlKey || event.metaKey || event.altKey) {
 		commit();
 		return;
@@ -346,8 +354,8 @@ export function handleKeyDown(event: KeyboardEvent) {
 }
 
 export function handlePaste(event: ClipboardEvent) {
-	const field = event.target;
-	if (!isTextField(field)) return;
+	const field = toField(event.target);
+	if (!field) return;
 	const text = event.clipboardData?.getData("text/plain") ?? "";
 	if (!text || !looksLikeLegacy({ text })) return;
 	event.preventDefault();
@@ -367,10 +375,11 @@ export function handlePaste(event: ClipboardEvent) {
 /** Adds the input method to a document; returns the remover. */
 export function installInputMethod({ doc }: { doc: Document }): () => void {
 	const onFocus = (event: FocusEvent) => {
-		if (isTextField(event.target)) lastField = event.target;
+		const field = toField(event.target);
+		if (field) lastField = field;
 	};
 	const onBlur = (event: FocusEvent) => {
-		if (composition && event.target === composition.field) commit();
+		if (composition && toField(event.target) === composition.field) commit();
 	};
 	doc.addEventListener("keydown", handleKeyDown, true);
 	doc.addEventListener("paste", handlePaste, true);
