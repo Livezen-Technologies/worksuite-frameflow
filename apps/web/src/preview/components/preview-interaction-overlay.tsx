@@ -6,6 +6,7 @@ import { TransformHandles } from "./transform-handles";
 import { MaskHandles } from "./mask-handles";
 import { SnapGuides } from "./snap-guides";
 import { TextEditOverlay } from "./text-edit-overlay";
+import { RegionHandles } from "@/privacy/components/region-handles";
 import { usePropertiesStore } from "@/components/editor/panels/properties/stores/properties-store";
 import { useEditor } from "@/editor/use-editor";
 import { isVisualElement } from "@/timeline/element-utils";
@@ -108,7 +109,9 @@ export function PreviewInteractionOverlay() {
 					element={editingText.element}
 					onCommit={commitTextEdit}
 				/>
-			) : sphere.active ? null : isMaskMode ? (
+			) : sphere.active ? null : activeTrack && activeElement?.type === "effect" && activeElement.region ? (
+				<RegionHandles trackId={activeTrack.id} element={activeElement} />
+			) : isMaskMode ? (
 				<MaskHandles onSnapLinesChange={setSnapLines} />
 			) : (
 				<TransformHandles onSnapLinesChange={setSnapLines} />

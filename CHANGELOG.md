@@ -9,6 +9,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
+- Blur and pixelate areas can be dragged on the preview: drag inside the box to move it, drag a corner to resize; each drag is one undo step.
+
 - Transition presets: set up a transition (type, duration, easing, direction, alignment) and **Save as preset**; presets appear under My presets in Transitions — click to load, double-click to apply to the selected cut.
 
 - GIF export can start anywhere: Export → GIF → Start at, with Beginning, Playhead and Selected clips (which also sets the length to the selection).
