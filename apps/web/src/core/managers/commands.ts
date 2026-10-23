@@ -4,6 +4,7 @@ import type { EditorSelectionSnapshot } from "@/selection/editor-selection";
 import { applyRippleAdjustments, computeRippleAdjustments } from "@/ripple";
 import type { SceneTracks } from "@/timeline/types";
 import { toast } from "sonner";
+import type { TracksStep } from "@/history/persisted";
 
 /** Elements of each locked track, to spot edits that touch them (ED-14). */
 function lockedSnapshot(tracks: SceneTracks | null): Map<string, string> {
@@ -40,6 +41,8 @@ export interface CommandHistorySnapshot {
 
 interface CommandHistoryEntry {
 	command: Command;
+	/** Tracks before and after, for undo after a restart (ED-16). */
+	tracks?: TracksStep | null;
 	previousSelection: EditorSelectionSnapshot;
 	selectionOverride?: EditorSelectionSnapshot;
 }
@@ -49,6 +52,7 @@ export class CommandManager {
 	private history: CommandHistoryEntry[] = [];
 	private redoStack: CommandHistoryEntry[] = [];
 	private reactors: Array<() => void> = [];
+	private historyListeners = new Set<() => void>();
 
 	constructor(private editor: EditorCore) {}
 
@@ -65,6 +69,57 @@ export class CommandManager {
 		this.redoStack = snapshot?.redoStack ?? [];
 	}
 
+	/** Called whenever undo history changes. */
+	onHistoryChange(listener: () => void): () => void {
+		this.historyListeners.add(listener);
+		return () => this.historyListeners.delete(listener);
+	}
+
+	private historyChanged(): void {
+		for (const listener of this.historyListeners) listener();
+	}
+
+	/** Timeline steps of the history, oldest first (null = not a timeline step). */
+	tracksSteps(): { history: (TracksStep | null)[]; redo: (TracksStep | null)[] } {
+		return {
+			history: this.history.map((e) => e.tracks ?? null),
+			redo: this.redoStack.map((e) => e.tracks ?? null),
+		};
+	}
+
+	/** Puts back history saved before a restart, as snapshot commands. */
+	restoreSteps({
+		history,
+		redo,
+		makeCommand,
+	}: {
+		history: TracksStep[];
+		redo: TracksStep[];
+		makeCommand: (step: TracksStep) => Command;
+	}): void {
+		const selection = this.getSelectionSnapshot();
+		const entry = (step: TracksStep): CommandHistoryEntry => ({
+			command: makeCommand(step),
+			previousSelection: selection,
+			tracks: step,
+		});
+		this.history = history.map(entry);
+		this.redoStack = redo.map(entry);
+		this.historyChanged();
+	}
+
+	private currentTracks() {
+		const scene = this.editor.scenes.getActiveSceneOrNull();
+		return scene ? { sceneId: scene.id, tracks: scene.tracks } : null;
+	}
+
+	private stepFrom(before: ReturnType<CommandManager["currentTracks"]>): TracksStep | null {
+		const after = this.currentTracks();
+		if (!before || !after || before.sceneId !== after.sceneId || before.tracks === after.tracks)
+			return null;
+		return { sceneId: after.sceneId, before: before.tracks, after: after.tracks };
+	}
+
 	execute({ command }: { command: Command }): Command {
 		const beforeTracks = this.isRippleEnabled
 			? (this.editor.scenes.getActiveSceneOrNull()?.tracks ?? null)
@@ -73,6 +128,7 @@ export class CommandManager {
 		const locked = lockedSnapshot(
 			this.editor.scenes.getActiveSceneOrNull()?.tracks ?? null,
 		);
+		const start = this.currentTracks();
 		const result = command.execute();
 		if (
 			touchesLocked({
@@ -93,8 +149,10 @@ export class CommandManager {
 			command,
 			previousSelection,
 			selectionOverride,
+			tracks: this.stepFrom(start),
 		});
 		this.redoStack = [];
+		this.historyChanged();
 		return command;
 	}
 
@@ -104,6 +162,7 @@ export class CommandManager {
 			previousSelection: this.getSelectionSnapshot(),
 		});
 		this.redoStack = [];
+		this.historyChanged();
 	}
 
 	registerReactor(reactor: () => void): void {
@@ -126,6 +185,7 @@ export class CommandManager {
 				});
 			}
 			this.redoStack.push(entry);
+			this.historyChanged();
 		}
 	}
 
@@ -149,7 +209,9 @@ export class CommandManager {
 			command: entry.command,
 			previousSelection,
 			selectionOverride,
+			tracks: entry.tracks,
 		});
+		this.historyChanged();
 	}
 
 	canUndo(): boolean {
@@ -163,6 +225,7 @@ export class CommandManager {
 	clear(): void {
 		this.history = [];
 		this.redoStack = [];
+		this.historyChanged();
 	}
 
 	private getSelectionSnapshot(): EditorSelectionSnapshot {

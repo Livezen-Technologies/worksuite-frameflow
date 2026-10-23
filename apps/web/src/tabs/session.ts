@@ -1,6 +1,7 @@
 "use client";
 
 import type { EditorCore } from "@/core";
+import { allowHistoryWrites, restorePersistedHistory } from "@/history/persist";
 import { tabSessions } from "./store";
 
 /** Keeps the leaving project's undo history, playhead and selection. */
@@ -32,7 +33,12 @@ export function restoreTabSession({
 }) {
 	const session = tabSessions.get(projectId);
 	editor.command.restoreHistory(session?.history ?? null);
-	if (!session) return;
+	// First open since the app started: undo history from disk (ED-16).
+	if (!session) {
+		void restorePersistedHistory({ editor, projectId });
+		return;
+	}
+	allowHistoryWrites(projectId);
 	editor.playback.seek({ time: session.playhead });
 	editor.selection.setSelectedElements({ elements: session.selection });
 }

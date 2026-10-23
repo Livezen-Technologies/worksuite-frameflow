@@ -9,6 +9,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
+- Undo now survives a restart: reopen a project and Ctrl+Z steps back through your last 50 timeline edits, and redo works too.
 - Translation memory: when you correct an AI translation, FrameFlow shows Gemini your wording the next time it translates into that language, this project's corrections first. See how many it holds, or clear them, in Settings → AI.
 - **Arrange layers → Free tracks** in Project settings: clips stay where you drop them on every track, instead of the main track pulling them to the start.
 - Each synced project can sync automatically or only when you press Sync now.
