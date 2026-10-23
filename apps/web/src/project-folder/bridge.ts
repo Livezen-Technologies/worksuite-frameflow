@@ -21,23 +21,29 @@ export interface ProjectFoldersBridge {
 	}) => Promise<void>;
 	listMedia: (args: {
 		projectId: string;
+		folder?: FolderFiles;
 	}) => Promise<{ name: string; size: number }[]>;
 	writeMedia: (args: {
 		projectId: string;
 		fileName: string;
 		data: ArrayBuffer;
+		folder?: FolderFiles;
 	}) => Promise<void>;
 	readMedia: (args: {
 		root?: string;
 		projectId?: string;
 		fileName: string;
+		folder?: FolderFiles;
 	}) => Promise<ArrayBuffer>;
-	removeMedia: (args: { projectId: string; fileName: string }) => Promise<void>;
+	removeMedia: (args: { projectId: string; fileName: string; folder?: FolderFiles }) => Promise<void>;
 	show: (args: { projectId: string }) => Promise<void>;
 	move: (args: {
 		projectId: string;
 	}) => Promise<{ moved: boolean; path?: string; error?: string }>;
 }
+
+/** Sub-folders of a project folder that hold files (default media). */
+export type FolderFiles = "media" | "proxies" | "waveforms";
 
 export function foldersBridge(): ProjectFoldersBridge | null {
 	if (typeof window === "undefined") return null;

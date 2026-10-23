@@ -10,6 +10,9 @@ const path = require("node:path");
  */
 
 const SUBFOLDERS = ["media", "proxies", "waveforms", "captions", "thumbnails"];
+/** Folders the page may list, write and remove files in. */
+const FILE_FOLDERS = new Set(["media", "proxies", "waveforms"]);
+const sub = (name) => (FILE_FOLDERS.has(name) ? name : "media");
 const JSON_FILES = new Set(["project.json", "media.json"]);
 const linksFile = () => path.join(app.getPath("userData"), "project-folders.json");
 
@@ -118,8 +121,8 @@ module.exports = {
 		await fs.promises.rename(`${target}.tmp`, target);
 	},
 
-	async listMedia({ projectId }) {
-		const dir = path.join(folderOf(projectId), "media");
+	async listMedia({ projectId, folder }) {
+		const dir = path.join(folderOf(projectId), sub(folder));
 		const names = await fs.promises.readdir(dir).catch(() => []);
 		const out = [];
 		for (const name of names) {
@@ -129,21 +132,21 @@ module.exports = {
 		return out;
 	},
 
-	async writeMedia({ projectId, fileName, data }) {
-		const dir = path.join(folderOf(projectId), "media");
+	async writeMedia({ projectId, fileName, data, folder }) {
+		const dir = path.join(folderOf(projectId), sub(folder));
 		await fs.promises.mkdir(dir, { recursive: true });
 		await fs.promises.writeFile(path.join(dir, safeName(fileName)), Buffer.from(data));
 	},
 
-	async readMedia({ root, projectId, fileName }) {
+	async readMedia({ root, projectId, fileName, folder }) {
 		const base = projectId ? folderOf(projectId) : root;
 		if (!projectId && !opened.has(base)) throw new Error("Folder was not opened this session");
-		const data = await fs.promises.readFile(path.join(base, "media", safeName(fileName)));
+		const data = await fs.promises.readFile(path.join(base, sub(folder), safeName(fileName)));
 		return data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength);
 	},
 
-	async removeMedia({ projectId, fileName }) {
-		await fs.promises.rm(path.join(folderOf(projectId), "media", safeName(fileName)), { force: true });
+	async removeMedia({ projectId, fileName, folder }) {
+		await fs.promises.rm(path.join(folderOf(projectId), sub(folder), safeName(fileName)), { force: true });
 	},
 
 	show({ projectId }) {

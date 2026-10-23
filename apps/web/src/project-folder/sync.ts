@@ -1,3 +1,4 @@
+import { OPFSAdapter } from "@/services/storage/opfs-adapter";
 import { storageService } from "@/services/storage/service";
 import { generateUUID } from "@/utils/id";
 import { foldersBridge } from "./bridge";
@@ -33,6 +34,24 @@ export async function refreshFolderLink({
  * already there at the same size), then media.json, then project.json,
  * so the manifest never points at a file that isn't written yet.
  */
+/** Editing proxies go to the folder's proxies/, named by media id (PR-03). */
+async function writeProxies({ projectId, mediaIds }: { projectId: string; mediaIds: Set<string> }) {
+	const bridge = foldersBridge();
+	if (!bridge) return;
+	const proxies = new OPFSAdapter(`proxies-${projectId}`);
+	const stored = await proxies.list().catch(() => [] as string[]);
+	const existing = new Map((await bridge.listMedia({ projectId, folder: "proxies" })).map((f) => [f.name, f.size]));
+	for (const id of stored) {
+		if (!mediaIds.has(id)) continue;
+		const file = await proxies.get(id);
+		if (!file || existing.get(`${id}.mp4`) === file.size) continue;
+		await bridge.writeMedia({ projectId, fileName: `${id}.mp4`, data: await file.arrayBuffer(), folder: "proxies" });
+	}
+	// Proxies of deleted media leave the folder too.
+	for (const name of existing.keys())
+		if (!mediaIds.has(name.replace(/\.mp4$/, ""))) await bridge.removeMedia({ projectId, fileName: name, folder: "proxies" });
+}
+
 export async function writeProjectFolder({
 	projectId,
 }: {
@@ -76,6 +95,7 @@ export async function writeProjectFolder({
 		// Media deleted from the project leaves the folder too.
 		for (const fileName of orphanedMediaFiles({ existing: [...existing.keys()], media }))
 			await bridge.removeMedia({ projectId, fileName });
+		await writeProxies({ projectId, mediaIds: new Set(media.map((m) => m.id)) });
 		await bridge.writeJson({
 			projectId,
 			name: "media.json",
@@ -238,6 +258,16 @@ export async function openProjectFolder(): Promise<{
 			});
 		} catch {
 			missing.push(entry);
+		}
+	}
+	// Proxies saved in the folder come back too, so they needn't be made again.
+	const proxies = new OPFSAdapter(`proxies-${projectId}`);
+	for (const entry of media) {
+		try {
+			const data = await bridge.readMedia({ root: result.path, fileName: `${entry.id}.mp4`, folder: "proxies" });
+			await proxies.set({ key: entry.id, value: new File([data], `${entry.id}.mp4`, { type: "video/mp4" }) });
+		} catch {
+			// No proxy for this one: it is made again if needed.
 		}
 	}
 	await storageService.putSerializedProject({

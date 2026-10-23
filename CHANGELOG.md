@@ -9,6 +9,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
+- Project folders now keep editing proxies in their proxies/ folder, so a project opened from its folder on another computer doesn't need to make them again; proxies of deleted media are removed.
+
 - Automation API events: clients can `events.subscribe` to project.opened, project.saved, timeline.changed, export.started and export.finished and get them pushed on the same connection; `wve events [topic…]` prints them as JSON lines.
 
 - Blur and pixelate areas can be dragged on the preview: drag inside the box to move it, drag a corner to resize; each drag is one undo step.
