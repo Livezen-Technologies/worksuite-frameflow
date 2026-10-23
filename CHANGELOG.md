@@ -117,6 +117,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
   - Stabilize and Remove flicker analyse the clip and write ordinary keyframes, so the result stays editable.
 
 ### Changed
+- 10-bit SDR footage (for example 10-bit H.264, HEVC Main 10, VP9 or AV1, such as camera log clips) is now decoded at full precision and stays 10-bit into 10-bit exports.
 - 10-bit HDR footage (HLG and PQ) keeps its full precision all the way into 10-bit desktop exports, instead of passing through 8 bits on the way.
 - 10-bit desktop exports (ProRes, FFV1, AV1 and HEVC 10-bit) now take frames straight from the 16-bit engine, so gradients, grades and scaled images keep their in-between shades instead of 8-bit steps.
 - Effects and grades are now worked out in 16-bit float on GPUs that support it, so stacked grades and strong adjustments no longer band (smooth gradients keep all their steps).

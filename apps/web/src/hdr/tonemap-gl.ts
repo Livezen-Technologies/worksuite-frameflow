@@ -32,7 +32,7 @@ uniform float maxCode;
 uniform float rolloff;
 uniform float saturation;
 uniform float exposure;
-uniform int outputMode; // 0 SDR (tone-mapped), 1 HLG signal for HDR projects
+uniform int outputMode; // 0 SDR (tone-mapped), 1 HLG signal for HDR projects, 2 pass-through (10-bit SDR)
 
 const vec3 LUMA = vec3(0.2627, 0.678, 0.0593);
 
@@ -88,6 +88,11 @@ void main() {
 		y = (y * maxCode - 64.0 * maxCode / 1023.0) / (876.0 * maxCode / 1023.0);
 		u = (u * maxCode - 512.0 * maxCode / 1023.0) / (896.0 * maxCode / 1023.0);
 		v = (v * maxCode - 512.0 * maxCode / 1023.0) / (896.0 * maxCode / 1023.0);
+	}
+	if (outputMode == 2) {
+		// 10-bit SDR: BT.709 decode only, the signal is left as it is.
+		color = vec4(clamp(vec3(y + 1.5748 * v, y - 0.18732 * u - 0.46812 * v, y + 1.8556 * u), 0.0, 1.0), 1.0);
+		return;
 	}
 	vec3 rgb = clamp(vec3(y + 1.4746 * v, y - 0.16455 * u - 0.57135 * v, y + 1.8814 * u), 0.0, 1.0);
 
@@ -226,7 +231,7 @@ export class ToneMapper {
 		frame: PlanarFrame;
 		transfer: Transfer;
 		settings: ToneMapSettings;
-		output?: "sdr" | "hlg";
+		output?: "sdr" | "hlg" | "passthrough";
 	}): HTMLCanvasElement {
 		const { gl, program } = this;
 		const { width, height } = frame;
@@ -277,7 +282,7 @@ export class ToneMapper {
 		gl.uniform1f(set("rolloff"), settings.rolloff);
 		gl.uniform1f(set("saturation"), settings.saturation);
 		gl.uniform1f(set("exposure"), settings.exposure);
-		gl.uniform1i(set("outputMode"), output === "hlg" ? 1 : 0);
+		gl.uniform1i(set("outputMode"), output === "hlg" ? 1 : output === "passthrough" ? 2 : 0);
 		gl.viewport(0, 0, width, height);
 		gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 		return this.canvas;

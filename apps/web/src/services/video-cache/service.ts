@@ -6,6 +6,7 @@ import {
 	type WrappedCanvas,
 } from "mediabunny";
 import { HdrCanvasSink } from "@/hdr/sink";
+import { bitDepthFromCodec } from "@/hdr/bit-depth";
 import {
 	onHdrSettingsChange,
 	resolveMediaHdr,
@@ -301,14 +302,18 @@ export class VideoCache {
 				mediaId,
 				detected: transferFromColorSpace(colorSpace?.transfer),
 			});
+			// 10-bit SDR footage is read at full precision too (HD-14).
+			const tenBit =
+				hdr.transfer === "sdr" &&
+				bitDepthFromCodec(await videoTrack.getCodecParameterString().catch(() => null)) > 8;
 			const sink =
-				hdr.transfer === "sdr"
+				hdr.transfer === "sdr" && !tenBit
 					? new CanvasSink(videoTrack, { poolSize: 3, fit: "contain" })
 					: new HdrCanvasSink({
 							track: videoTrack,
 							transfer: hdr.transfer,
 							settings: hdr.settings,
-							output: hdr.output,
+							output: tenBit ? "passthrough" : hdr.output,
 							fullRange: colorSpace?.fullRange ?? false,
 						});
 

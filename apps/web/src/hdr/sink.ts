@@ -36,7 +36,7 @@ export function deepPixelsFor(source: CanvasImageSource): DeepPixels | undefined
 }
 
 /**
- * Drop-in for mediabunny's CanvasSink for HDR tracks: decodes each frame,
+ * Drop-in for mediabunny's CanvasSink for HDR and 10-bit tracks: decodes each frame,
  * reads its raw 10-bit planes and tone-maps them with our own operator,
  * instead of letting the browser squeeze HDR into an 8-bit canvas.
  * Frames in other formats (e.g. from a hardware decoder) are drawn by the
@@ -53,7 +53,7 @@ export class HdrCanvasSink {
 		transfer: Transfer;
 		settings: ToneMapSettings;
 		fullRange: boolean;
-		output: "sdr" | "hlg";
+		output: "sdr" | "hlg" | "passthrough";
 	};
 
 	constructor({
@@ -64,8 +64,8 @@ export class HdrCanvasSink {
 		transfer: Transfer;
 		settings: ToneMapSettings;
 		fullRange: boolean;
-		/** "hlg" keeps HDR as HLG signal for an HDR project. */
-		output?: "sdr" | "hlg";
+		/** "hlg" keeps HDR as HLG signal for an HDR project; "passthrough" decodes 10-bit SDR as is. */
+		output?: "sdr" | "hlg" | "passthrough";
 	}) {
 		this.samples = new VideoSampleSink(track);
 		this.options = { ...options, output: options.output ?? "sdr" };
