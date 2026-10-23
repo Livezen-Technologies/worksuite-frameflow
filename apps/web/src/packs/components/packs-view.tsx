@@ -75,7 +75,7 @@ function nearestAspect({
 }
 
 /** A small live drawing of the compiled template at its midpoint. */
-function MiniPreview({ template }: { template: ProjectTemplate }) {
+function MiniPreview({ template, logoUrl }: { template: ProjectTemplate; logoUrl?: string }) {
 	const { width, height } = template.aspect;
 	const at = Math.min(
 		1.2,
@@ -95,6 +95,17 @@ function MiniPreview({ template }: { template: ProjectTemplate }) {
 					if (layer.kind === "media") return null;
 					const left = `${((layer.x ?? 0) + 0.5) * 100}%`;
 					const top = `${((layer.y ?? 0) + 0.5) * 100}%`;
+					if (layer.kind === "logo")
+						return logoUrl ? (
+							<img
+								key={i}
+								alt=""
+								src={logoUrl}
+								data-pack-logo
+								className="absolute -translate-x-1/2 -translate-y-1/2 object-contain"
+								style={{ left, top, width: `${layer.width * 100}%`, height: `${layer.height * 100}%` }}
+							/>
+						) : null;
 					if (layer.kind === "shape")
 						return (
 							<div
@@ -438,7 +449,7 @@ export function PacksView() {
 									className="relative rounded-md ring-offset-2 hover:ring-2 hover:ring-primary"
 									title={`Add “${t.name}” at the playhead`}
 								>
-									<MiniPreview template={compiled} />
+									<MiniPreview template={compiled} logoUrl={brand?.logo?.dataUrl} />
 								</button>
 								<div className="flex items-center gap-1">
 									<span className="min-w-0 flex-1 truncate text-[11px]">

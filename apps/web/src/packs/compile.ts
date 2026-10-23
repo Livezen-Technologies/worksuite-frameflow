@@ -37,6 +37,8 @@ const TEXT_SCALE: Record<AspectId, number> = {
 
 export interface PackBrand {
 	palette?: Partial<Record<ColorRole, string>>;
+	/** First brand kit logo, for logo layers (SP-05). */
+	logo?: { name: string; dataUrl: string };
 	headingFont?: string;
 	bodyFont?: string;
 }
@@ -189,6 +191,16 @@ export function compilePackTemplate({
 				y,
 				cornerRadius: layer.radius,
 				opacity: layer.opacity,
+				animation: layer.animation,
+				...timing,
+			};
+		if (layer.kind === "logo")
+			return {
+				kind: "logo",
+				width: box.width,
+				height: box.height,
+				x,
+				y,
 				animation: layer.animation,
 				...timing,
 			};

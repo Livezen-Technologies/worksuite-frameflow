@@ -112,6 +112,26 @@ describe("packs", () => {
 	});
 
 	test("no template bundles a logo or image", () => {
-		expect(JSON.stringify(PACKS)).not.toMatch(/logo|brandfetch|\.svg|\.png/i);
+		// Logo layers only take the user's own brand kit logo (SP-05), so the
+		// layer kind is allowed; no logo file or name may be bundled.
+		const data = JSON.stringify(PACKS).replaceAll('"kind":"logo"', "");
+		expect(data).not.toMatch(/logo|brandfetch|\.svg|\.png/i);
+	});
+});
+
+describe("brand logo layers (SP-05)", () => {
+	test("logo layers compile to a box inside the safe area", async () => {
+		const { PACKS } = await import("../data");
+		const { compilePackTemplate } = await import("../compile");
+		const pack = PACKS.find((p) => p.id === "youtube");
+		const template = pack?.templates.find((t) => t.layers.some((l) => l.kind === "logo"));
+		if (!pack || !template) throw new Error("no logo template");
+		const compiled = compilePackTemplate({ pack, template, aspect: "9:16", language: "en" });
+		const logo = compiled.layers.find((l) => l.kind === "logo");
+		expect(logo?.kind).toBe("logo");
+		if (logo?.kind !== "logo") return;
+		expect(logo.width).toBeGreaterThan(0);
+		expect(Math.abs(logo.x ?? 0) + logo.width / 2).toBeLessThan(0.5);
+		expect(Math.abs(logo.y ?? 0) + logo.height / 2).toBeLessThan(0.5);
 	});
 });

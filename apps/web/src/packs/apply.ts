@@ -5,7 +5,9 @@ import type { EditorCore } from "@/core";
 import { loadFonts } from "@/fonts/google-fonts";
 import type { BrandKit } from "@/brand/store";
 import type { ProjectTemplate } from "@/templates/project-templates";
-import { buildTemplateCommand } from "@/templates/apply-template";
+import { buildTemplateCommand, type TemplateLogo } from "@/templates/apply-template";
+import { AddMediaAssetCommand } from "@/commands/media";
+import { processMediaAssets } from "@/media/processing";
 import { usePreviewStore } from "@/preview/preview-store";
 import { isGuideId } from "@/guides";
 import {
@@ -25,11 +27,13 @@ import type { AspectId, Pack, PackLanguage, PackTemplate } from "./types";
 export function brandForPacks({
 	kit,
 }: {
-	kit: Pick<BrandKit, "colors" | "headingFont" | "bodyFont">;
+	kit: Pick<BrandKit, "colors" | "headingFont" | "bodyFont"> & Partial<Pick<BrandKit, "logos">>;
 }): PackBrand {
 	const [primary, dark, light, accent] = kit.colors;
+	const [logo] = kit.logos ?? [];
 	return {
 		palette: { primary, dark, light, accent: accent ?? primary },
+		...(logo ? { logo: { name: logo.name, dataUrl: logo.dataUrl } } : {}),
 		headingFont: kit.headingFont,
 		bodyFont: kit.bodyFont,
 	};
@@ -106,6 +110,25 @@ export async function applyPackTemplates({
 		))
 			families.add(f);
 	await loadFonts({ families: [...families] }).catch(() => {});
+	// The brand logo goes into the project once, for every logo layer (SP-05).
+	let logo: TemplateLogo | undefined;
+	const wantsLogo = placements.some((p) => p.template.layers.some((l) => l.kind === "logo"));
+	if (brand?.logo && wantsLogo) {
+		const blob = await (await fetch(brand.logo.dataUrl)).blob();
+		const [asset] = await processMediaAssets({
+			files: [new File([blob], brand.logo.name, { type: blob.type || "image/png" })],
+		});
+		if (asset) {
+			const add = new AddMediaAssetCommand({ projectId: editor.project.getActive().metadata.id, asset });
+			commands.push(add);
+			logo = {
+				mediaId: add.getAssetId(),
+				width: asset.width ?? 512,
+				height: asset.height ?? 512,
+				name: brand.logo.name,
+			};
+		}
+	}
 	for (const placement of placements) {
 		const compiled = compilePackTemplate({
 			pack,
@@ -121,6 +144,7 @@ export async function applyPackTemplates({
 				template: compiled,
 				media,
 				at: placement.at,
+				logo,
 			}),
 		);
 	}

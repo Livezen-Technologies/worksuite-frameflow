@@ -66,6 +66,11 @@ export type PackLayer =
 			slot: number;
 			color: PackColor;
 			animation?: ParamValues;
+	  })
+	| (Placement & {
+			/** The brand kit's logo, fitted in the box; left out without one (SP-05). */
+			kind: "logo";
+			animation?: ParamValues;
 	  });
 
 export interface PackTemplate {

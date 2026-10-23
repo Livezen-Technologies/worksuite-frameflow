@@ -72,19 +72,57 @@ function position({
 	};
 }
 
+/** A logo already added to the project, for logo layers (SP-05). */
+export interface TemplateLogo {
+	mediaId: string;
+	width: number;
+	height: number;
+	name: string;
+}
+
 function buildLayer({
 	layer,
 	media,
 	frame,
 	at,
+	logo,
 }: {
 	layer: TemplateLayer;
 	media: MediaAsset[];
 	frame: Frame;
 	at: MediaTime;
-}): { trackType: TrackType; element: CreateTimelineElement } {
+	logo?: TemplateLogo;
+}): { trackType: TrackType; element: CreateTimelineElement; own?: boolean } | null {
 	const startTime = roundMediaTime({ time: at + seconds(layer.start) });
 	const duration = seconds(layer.duration);
+
+	if (layer.kind === "logo") {
+		if (!logo) return null;
+		const built = buildElementFromMedia({
+			mediaId: logo.mediaId,
+			mediaType: "image",
+			name: logo.name,
+			duration,
+			startTime,
+		});
+		// Images are drawn contained in the frame at scale 1: fit that in the box.
+		const contain = Math.min(frame.width / logo.width, frame.height / logo.height);
+		const scale = Math.min(
+			(layer.width * frame.width) / (logo.width * contain),
+			(layer.height * frame.height) / (logo.height * contain),
+		);
+		const element = {
+			...built,
+			params: {
+				...built.params,
+				"transform.scaleX": scale,
+				"transform.scaleY": scale,
+				...position({ frame, x: layer.x, y: layer.y }),
+				...(layer.animation ?? {}),
+			},
+		} as CreateTimelineElement;
+		return { trackType: "video", element, own: true };
+	}
 
 	if (layer.kind === "text") {
 		const element = buildTextElement({
@@ -194,16 +232,19 @@ export function buildTemplateCommand({
 	template,
 	media,
 	at,
+	logo,
 }: {
 	editor: EditorCore;
 	template: ProjectTemplate;
 	media: MediaAsset[];
 	at: MediaTime;
+	logo?: TemplateLogo;
 }): Command {
 	const frame = editor.project.getActive().settings.canvasSize;
-	const built = template.layers.map((layer) =>
-		buildLayer({ layer, media, frame, at }),
-	);
+	const built = template.layers.flatMap((layer) => {
+		const one = buildLayer({ layer, media, frame, at, logo });
+		return one ? [one] : [];
+	});
 
 	// Media slides share a track (their transitions need neighbours); shapes
 	// and texts get one track each so overlapping layers stack in order.
@@ -211,9 +252,9 @@ export function buildTemplateCommand({
 	const inserts: Command[] = [];
 	let mediaTrack: string | null = null;
 	let index = 0;
-	for (const { trackType, element } of built.reverse()) {
+	for (const { trackType, element, own } of built.reverse()) {
 		let trackId: string;
-		const isSlide = trackType === "video";
+		const isSlide = trackType === "video" && !own;
 		if (isSlide && mediaTrack) {
 			trackId = mediaTrack;
 		} else {

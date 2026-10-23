@@ -9,6 +9,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
+- Template packs now use your brand kit logo: the YouTube intro, Thanks card and Podcast outro place it (fitted, on its own track) when "Brand kit" is ticked, and leave it out when the kit has no logo.
+
 - Sinhala and Tamil typing now also works in the text box on the preview (double-click a title), with the same suggestions as the side panel.
 - Animated stickers: the new **Drift** tab in Stickers has 870 Lottie animations (lower thirds, call-to-action buttons, callouts, reactions, app UI, broadcast frames, transitions and more), searchable by name or tag. They play in the preview and in exports; looping ones repeat, and ones with an outro hold until the end of the clip and then play out. The animations are CC BY-NC-SA 4.0.
 

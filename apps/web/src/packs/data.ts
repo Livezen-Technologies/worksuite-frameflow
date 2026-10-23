@@ -147,6 +147,17 @@ function text(
 	};
 }
 
+/** The brand kit logo, fitted in the box (SP-05). */
+function logo(box: Box): PackLayer {
+	return {
+		kind: "logo",
+		animation: fade,
+		start: box.start ?? 0,
+		duration: box.duration ?? 4.4,
+		...box,
+	};
+}
+
 function shape(
 	box: Box,
 	look: {
@@ -234,6 +245,7 @@ export const PACKS: Pack[] = [
 						{ anchor: "c", w: 1.2, h: 1.2 },
 						{ color: "dark", opacity: 0.55 },
 					),
+					logo({ anchor: "c", w: 0.14, h: 0.16, dy: -0.24, start: 0.3 }),
 					text(
 						same("{title}"),
 						{ anchor: "c", w: 0.9, h: 0.3 },
@@ -737,6 +749,7 @@ export const PACKS: Pack[] = [
 				purpose: "end-screen",
 				layers: [
 					shape({ anchor: "c", w: 1.2, h: 1.2 }, { color: "dark" }),
+					logo({ anchor: "c", w: 0.14, h: 0.16, dy: 0.22, start: 0.4 }),
 					text(
 						L("Thank you!", "ස්තූතියි!", "Thank you!"),
 						{ anchor: "c", w: 0.8, h: 0.16, dy: -0.05 },
@@ -1257,6 +1270,7 @@ export const PACKS: Pack[] = [
 						{ anchor: "c", w: 1.2, h: 1.2, duration: 6 },
 						{ color: "dark" },
 					),
+					logo({ anchor: "c", w: 0.14, h: 0.16, dy: -0.24, start: 0.3, duration: 6 }),
 					text(
 						L(
 							"Thanks for listening",

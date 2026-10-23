@@ -59,6 +59,15 @@ export type TemplateLayer =
 			y?: number;
 	  })
 	| (LayerTiming & {
+			/** The brand logo fitted in a box (fractions of the frame); skipped without one. */
+			kind: "logo";
+			width: number;
+			height: number;
+			x?: number;
+			y?: number;
+			animation?: ParamValues;
+	  })
+	| (LayerTiming & {
 			kind: "shape";
 			definitionId: "rectangle" | "ellipse";
 			fill: string;
