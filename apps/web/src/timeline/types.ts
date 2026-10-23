@@ -1,3 +1,4 @@
+import type { MulticamTag } from "@/multicam/types";
 import type { ScreenZoom } from "@/screen-zoom/types";
 import type { ClipTransition } from "@/transitions/types";
 import type { ElementAnimations } from "@/animation/types";
@@ -128,6 +129,8 @@ export interface VideoElement extends BaseTimelineElement {
 	transitionIn?: ClipTransition;
 	/** Auto or manual zoom, with the cursor log for screen recordings (SC-11–SC-18). */
 	screenZoom?: ScreenZoom;
+	/** Part of a multicam clip (SC-24–SC-30). */
+	multicam?: MulticamTag;
 }
 
 export interface ImageElement extends BaseTimelineElement {

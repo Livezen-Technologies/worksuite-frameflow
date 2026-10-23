@@ -1,4 +1,5 @@
 import { useEditor } from "@/editor/use-editor";
+import { MulticamButton } from "@/multicam/components/multicam-button";
 import { CoverButton } from "@/cover/components/cover-dialog";
 import { useElementSelection } from "@/timeline/hooks/element/use-element-selection";
 import {
@@ -204,6 +205,7 @@ function ToolbarLeftSection() {
 				<div className="bg-border mx-1 h-6 w-px" />
 
 				<CoverButton />
+				<MulticamButton />
 
 				<Tooltip>
 					<ToolbarButton

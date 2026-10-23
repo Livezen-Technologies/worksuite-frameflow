@@ -231,7 +231,25 @@ export class AudioManager {
 		this.queuedSources.clear();
 	}
 
-	private async runClipIterator({
+	/**
+	 * Editing during playback disposes the clip inputs; a read that was in
+	 * flight then rejects. That's expected, so only other errors are logged.
+	 */
+	private async runClipIterator(args: {
+		clip: AudioClipSource;
+		startTime: number;
+		sessionId: number;
+	}): Promise<void> {
+		try {
+			await this.runClipIteratorUnguarded(args);
+		} catch (error) {
+			const disposed = error instanceof Error && /disposed/i.test(error.message);
+			if (!disposed && args.sessionId === this.playbackSessionId)
+				console.error("Audio clip playback failed:", error);
+		}
+	}
+
+	private async runClipIteratorUnguarded({
 		clip,
 		startTime,
 		sessionId,

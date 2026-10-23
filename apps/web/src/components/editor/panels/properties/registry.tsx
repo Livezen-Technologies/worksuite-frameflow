@@ -40,7 +40,9 @@ import {
 	Type,
 	Wand,
 	ZoomIn,
+	Clapperboard,
 } from "lucide-react";
+import { MulticamTab } from "@/multicam/components/multicam-tab";
 import { ZoomTab } from "@/screen-zoom/components/zoom-tab";
 import { TextBasicTab, TextPresetsTab } from "@/text/components/text-panel";
 import { TrackingTab } from "@/text/components/tracking-tab";
@@ -333,7 +335,7 @@ function getVideoConfig({
 }): ElementPropertiesConfig {
 	const showAudioTab = mediaAsset?.hasAudio !== false;
 	return {
-		defaultTab: "basic",
+		defaultTab: element.multicam ? "multicam" : "basic",
 		tabs: [
 			buildBasicTab({ element }),
 			buildTransformTab({ element }),
@@ -345,7 +347,23 @@ function getVideoConfig({
 			buildMasksTab({ element }),
 			buildClipEffectsTab({ element }),
 			buildZoomTab({ element }),
+			...(element.multicam && element.multicam.role !== "audio"
+				? [buildMulticamTab({ element })]
+				: []),
 		],
+	};
+}
+
+function buildMulticamTab({
+	element,
+}: {
+	element: VideoElement;
+}): PropertiesTabDef {
+	return {
+		id: "multicam",
+		label: "Multicam",
+		icon: <Clapperboard size={16} />,
+		content: () => <MulticamTab element={element} />,
 	};
 }
 

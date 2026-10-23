@@ -8,6 +8,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 ## [Unreleased]
 
 ### Added
+- Multicam: make a multicam clip from 2–9 camera angles (Multicam button on the timeline toolbar), synced by sound, recording time or by hand. Cut between angles live in the angle viewer (click or press 1–9 while playing), change any cut's angle afterwards, take audio from one angle or follow the picture, copy a grade to every cut of an angle, and let it cut to whoever is speaking.
 - Screen recordings now log the cursor, clicks and typing (as data, not in the video) and zoom in on the action automatically. Change each zoom's level, length, ease and focus, follow the cursor smoothly, add zooms by hand on any video, or re-generate them in the clip's new Zoom tab.
 - Floating recording bar with timer, pause, marker, mic mute, discard and stop, kept out of the recording, plus shortcuts that work in any app (Ctrl/Cmd+Shift+R start/stop, +P pause, +M marker; change them in the Record panel).
 - Render cache: click Render on the preview toolbar (or let it run automatically when idle) to pre-render the timeline in 2-second parts so effects-heavy sections play smoothly. The strip under the button shows rendered (green) and changed (red) parts; an edit only re-renders the parts it touches. Choose the mode and preview quality in Project settings → Performance. Export never uses the cache.
@@ -72,6 +73,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 - Platform guide icons no longer load logos from Brandfetch; they show a plain letter instead.
 
 ### Fixed
+- Editing the timeline while it plays no longer logs "Input has been disposed" errors from audio playback.
 - Creating a project through the automation API (`wve new`) now opens it in the editor window.
 - A project started at a chosen size (custom size or a size template) no longer switches to the size of the first photo or video you add.
 - Adjustment-layer effects no longer fail to reach the renderer (a field name mismatch with the engine).

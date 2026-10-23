@@ -31,6 +31,11 @@ export const proxyRegistry = {
 	},
 };
 
+/** A clip's proxy if one is ready (angle viewer, SC-30). */
+export function proxyFileFor(mediaId: string): File | null {
+	return ready.get(mediaId) ?? null;
+}
+
 /** The file the preview should decode: the proxy when there is one and proxies are on. */
 export function previewSource({
 	mediaId,
