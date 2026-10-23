@@ -8,6 +8,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 ## [Unreleased]
 
 ### Added
+- Punch-in voice-over: set In and Out points and the take replaces only that range, stopping at Out. Each take over the same range is kept, and you switch between takes in the clip's Voice tab.
 - Audio clips have a Voice tab: Clean up voice removes background noise, makes speech clearer and levels it to about −16 LUFS (Use original puts the recording back).
 - Trim silence cuts the quiet start and end of a voice clip and can shorten long pauses; later clips on the track move up.
 - Duck music under this voice lowers clips on other audio tracks while the voice speaks, with smooth ramps you can edit as volume keyframes.

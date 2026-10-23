@@ -43,6 +43,8 @@ export interface SessionManifest {
 	/** Marker times in recorded seconds (SC-36). */
 	markers: number[];
 	duration: number;
+	/** Punch-in range in timeline seconds (AR-05): the take replaces it. */
+	punch?: { start: number; end: number };
 }
 
 interface RecordingSessionsStore {

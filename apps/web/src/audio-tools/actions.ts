@@ -7,6 +7,7 @@ import type { EditorCore } from "@/core";
 import { audioBufferToWav } from "@/export/master";
 import { processMediaAssets } from "@/media/processing";
 import type { AudioElement, SceneTracks } from "@/timeline/types";
+import { withTake } from "@/recording/punch";
 import { generateUUID } from "@/utils/id";
 import { TICKS_PER_SECOND } from "@/wasm";
 import { duckKeys, silencePlan, speechRanges } from "./dsp";
@@ -213,4 +214,14 @@ export async function duckUnderVoice({
 	};
 	if (count) editor.command.execute({ command: new ApplyTracksCommand(next) });
 	return count;
+}
+
+/** Switch the clip to another take (AR-06). */
+export function switchTake({ editor, element, index }: { editor: EditorCore; element: AudioElement; index: number }) {
+	const tracks = mapElement({
+		tracks: editor.scenes.getActiveScene().tracks,
+		elementId: element.id,
+		change: (e) => (e.sourceType === "upload" ? withTake({ element: e, index }) : e),
+	});
+	editor.command.execute({ command: new ApplyTracksCommand(tracks) });
 }

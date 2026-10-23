@@ -23,7 +23,7 @@ import { PanelView } from "@/components/editor/panels/assets/views/base-panel";
 import { Button } from "@/components/ui/button";
 import { useEditor } from "@/editor/use-editor";
 import { cn } from "@/utils/ui";
-import { TICKS_PER_SECOND } from "@/wasm";
+import { mediaTimeFromSeconds, TICKS_PER_SECOND } from "@/wasm";
 import { placeRecording } from "../place";
 import {
 	bytesPerMinute,
@@ -185,6 +185,11 @@ export function RecordView() {
 		typeof window !== "undefined" ? window.worksuite?.capture : undefined;
 
 	const mode = settings.mode;
+	// Punch-in range in timeline seconds (AR-05).
+	const [punch, setPunch] = useState<{ on: boolean; start: number; end: number }>({ on: false, start: 0, end: 5 });
+	const punchActive = mode === "voiceover" && punch.on && punch.end > punch.start;
+	const stopRef = useRef<() => void>(() => {});
+	const playheadSeconds = () => editor.playback.getCurrentTime() / TICKS_PER_SECOND;
 	const mics = devices.filter((d) => d.kind === "audioinput");
 	const cameras = devices.filter((d) => d.kind === "videoinput");
 	const needsScreen = mode === "screen" || mode === "screen-camera";
@@ -238,6 +243,9 @@ export function RecordView() {
 			const recorder = recorderRef.current;
 			const seconds = recorder?.clock.elapsed() ?? 0;
 			setElapsed(seconds);
+			// A punch-in stops at the out point.
+			const range = recorder?.options.punch;
+			if (range && seconds >= range.end - range.start) stopRef.current();
 			void capture?.barState?.({
 				elapsed: seconds,
 				paused: recorder?.clock.paused ?? false,
@@ -286,7 +294,8 @@ export function RecordView() {
 			recorder = await Recorder.open({
 				mode,
 				projectId,
-				timelineStart: editor.playback.getCurrentTime() / TICKS_PER_SECOND,
+				timelineStart: punchActive ? punch.start : playheadSeconds(),
+				...(punchActive ? { punch: { start: punch.start, end: punch.end } } : {}),
 				profile: settings.profile,
 				micId: settings.micId,
 				cameraId: settings.cameraId,
@@ -330,6 +339,8 @@ export function RecordView() {
 			await new Promise((r) => setTimeout(r, 1000));
 			if (recorderRef.current !== recorder) return;
 		}
+		if (punchActive)
+			editor.playback.seek({ time: mediaTimeFromSeconds({ seconds: punch.start }) });
 		if (mode === "voiceover") {
 			wasMuted.current = editor.playback.isMuted();
 			if (settings.muteTimeline) editor.playback.mute();
@@ -387,7 +398,7 @@ export function RecordView() {
 			autoZoom: settings.autoZoom,
 			cleanCursor: !!capture?.cursorStart,
 		});
-		if (capture?.cursorStart && !cursorLog)
+		if (needsScreen && capture?.cursorStart && !cursorLog)
 			toast.warning("The cursor couldn't be logged, so this recording has no cursor.");
 		await deleteSessionData(session.id);
 		toast.success(
@@ -419,6 +430,10 @@ export function RecordView() {
 			reset();
 		}
 	};
+
+	useEffect(() => {
+		stopRef.current = () => void stop();
+	});
 
 	const discard = async () => {
 		const recorder = recorderRef.current;
@@ -869,10 +884,56 @@ export function RecordView() {
 						}`}
 				</div>
 
+				{mode === "voiceover" && (
+					<div className="flex flex-col gap-2 rounded-lg border px-3 py-2 text-xs" data-punch>
+						<label className="flex items-center gap-2">
+							<input
+								type="checkbox"
+								checked={punch.on}
+								onChange={(e) => setPunch({ ...punch, on: e.target.checked })}
+								data-punch-toggle
+							/>
+							Punch in: replace only a range
+						</label>
+						{punch.on && (
+							<div className="grid grid-cols-2 gap-2">
+								{(["start", "end"] as const).map((key) => (
+									<div key={key} className="flex flex-col gap-1">
+										<label htmlFor={`punch-${key}`} className="text-muted-foreground">
+											{key === "start" ? "In (s)" : "Out (s)"}
+										</label>
+										<div className="flex gap-1">
+											<input
+												id={`punch-${key}`}
+												type="number"
+												step={0.1}
+												min={0}
+												value={Number(punch[key].toFixed(2))}
+												onChange={(e) => setPunch({ ...punch, [key]: Math.max(0, Number(e.target.value) || 0) })}
+												className="bg-background h-7 w-full rounded-md border px-2"
+											/>
+											<button
+												type="button"
+												className="hover:bg-accent h-7 rounded-md border px-2"
+												onClick={() => setPunch({ ...punch, [key]: playheadSeconds() })}
+											>
+												Playhead
+											</button>
+										</div>
+									</div>
+								))}
+								<span className="text-muted-foreground col-span-2">
+									Recording starts at In and stops at Out. Each take over the same range is kept; switch takes in the clip&apos;s Voice tab.
+								</span>
+							</div>
+						)}
+					</div>
+				)}
+
 				<Button
 					className="bg-red-600 text-white hover:bg-red-700"
 					onClick={() => void start()}
-					disabled={needsScreen && !!capture && !settings.sourceId}
+					disabled={(needsScreen && !!capture && !settings.sourceId) || (mode === "voiceover" && punch.on && !punchActive)}
 					data-start-recording
 				>
 					<Circle className="fill-current" />

@@ -12,6 +12,7 @@ import {
 	duckUnderVoice,
 	trimClipSilence,
 	restoreOriginalVoice,
+	switchTake,
 } from "../actions";
 
 type Job = "clean" | "trim" | "duck" | null;
@@ -49,6 +50,24 @@ export function VoiceTab({
 
 	return (
 		<div className="flex flex-col gap-5 p-4 text-sm" data-voice-tab>
+			{element.takes && element.takes.length > 1 && (
+				<section className="flex flex-col gap-2" data-takes>
+					<h3 className="font-medium">Takes</h3>
+					<div className="flex flex-wrap gap-1">
+						{element.takes.map((take, index) => (
+							<Button
+								key={`${take.mediaId}-${index}`}
+								size="sm"
+								variant={(element.activeTake ?? element.takes!.length - 1) === index ? "default" : "outline"}
+								data-take={index}
+								onClick={() => switchTake({ editor, element, index })}
+							>
+								{take.label}
+							</Button>
+						))}
+					</div>
+				</section>
+			)}
 			<section className="flex flex-col gap-2">
 				<h3 className="font-medium">Clean up voice</h3>
 				<p className="text-muted-foreground text-xs">

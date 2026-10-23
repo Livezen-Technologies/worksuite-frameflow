@@ -38,6 +38,8 @@ export interface RecorderOptions {
 	mode: RecordingMode;
 	projectId: string;
 	timelineStart: number;
+	/** Punch-in range in timeline seconds (AR-05). */
+	punch?: { start: number; end: number };
 	profile: QualityProfile;
 	micId: string | null;
 	cameraId: string | null;
@@ -358,6 +360,7 @@ export class Recorder {
 			mode,
 			startedAt: Date.now(),
 			timelineStart,
+			...(this.options.punch ? { punch: this.options.punch } : {}),
 			tracks,
 			markers: [],
 			duration: 0,

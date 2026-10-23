@@ -102,6 +102,16 @@ interface BaseAudioElement extends BaseTimelineElement {
 	retime?: RetimeConfig;
 	/** Voice clean-up made a new file from this one (AR-15). */
 	voiceCleanup?: { originalMediaId: string };
+	/** Takes recorded over this range (AR-06); the active one is what plays. */
+	takes?: AudioTake[];
+	activeTake?: number;
+}
+
+export interface AudioTake {
+	label: string;
+	mediaId: string;
+	trimStart: MediaTime;
+	trimEnd: MediaTime;
 }
 
 export interface UploadAudioElement extends BaseAudioElement {

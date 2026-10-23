@@ -14,6 +14,9 @@ import type { Bookmark, TScene } from "@/timeline";
 import { buildElementFromMedia } from "@/timeline/element-utils";
 import { updateSceneInArray } from "@/timeline/scenes";
 import { mediaTimeFromSeconds, roundMediaTime } from "@/wasm";
+import { ApplyTracksCommand } from "@/commands/timeline/apply-tracks";
+import { generateUUID } from "@/utils/id";
+import { punchIn } from "./punch";
 import type { RecordedFile, SessionManifest } from "./storage";
 
 /** Adds the take's markers as timeline bookmarks (SC-36), undoable. */
@@ -103,7 +106,19 @@ export async function placeRecording({
 			}),
 			startTime,
 		});
-		if (recorded.role === "mic") {
+		const punched =
+			recorded.role === "mic" && session.punch && element.type === "audio" && element.sourceType === "upload"
+				? punchIn({
+						tracks: editor.scenes.getActiveScene().tracks,
+						start: mediaTimeFromSeconds({ seconds: session.punch.start }),
+						end: mediaTimeFromSeconds({ seconds: session.punch.end }),
+						take: { element: { ...element, id: generateUUID() }, length: element.duration },
+						makeId: generateUUID,
+					})
+				: null;
+		if (punched) {
+			commands.push(new ApplyTracksCommand(punched.tracks));
+		} else if (recorded.role === "mic") {
 			commands.push(
 				new InsertElementCommand({
 					element,
