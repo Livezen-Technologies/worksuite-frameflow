@@ -42,12 +42,18 @@ pub struct GpuContext {
     adapter: wgpu::Adapter,
     device: wgpu::Device,
     queue: wgpu::Queue,
+    /// Working format for everything drawn inside the engine: 16-bit float when
+    /// the GPU can render, blend and filter it (WS-14), so grades stacked on
+    /// grades don't band. Frames leave through `surface_format`.
     texture_format: wgpu::TextureFormat,
+    /// 8-bit format of the canvases frames are shown and exported through.
+    surface_format: wgpu::TextureFormat,
     fullscreen_quad: wgpu::Buffer,
     linear_sampler: wgpu::Sampler,
     nearest_sampler: wgpu::Sampler,
     texture_sampler_bind_group_layout: wgpu::BindGroupLayout,
     blit_pipeline: wgpu::RenderPipeline,
+    working_blit_pipeline: wgpu::RenderPipeline,
     supports_external_texture_copies: bool,
     /// The HTML canvas that the WebGL context is bound to. Only populated on the WebGL
     /// fallback path. Used by render_texture_via_gl_canvas to output frames on WebGL.
@@ -63,10 +69,15 @@ impl GpuContext {
         let (instance, adapter, device, queue, gl_canvas) = Self::acquire_device().await?;
         #[cfg(not(all(feature = "wasm", target_arch = "wasm32")))]
         let (instance, adapter, device, queue) = Self::acquire_device().await?;
-        let texture_format = if adapter.get_info().backend == wgpu::Backend::Gl {
+        let surface_format = if adapter.get_info().backend == wgpu::Backend::Gl {
             wgpu::TextureFormat::Rgba8Unorm
         } else {
             wgpu::TextureFormat::Bgra8Unorm
+        };
+        let texture_format = if supports_float_rendering(&adapter) {
+            wgpu::TextureFormat::Rgba16Float
+        } else {
+            surface_format
         };
         let fullscreen_quad = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
             label: Some("gpu-fullscreen-quad-buffer"),
@@ -128,39 +139,44 @@ impl GpuContext {
             bind_group_layouts: &[Some(&texture_sampler_bind_group_layout)],
             immediate_size: 0,
         });
-        let blit_pipeline = device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
-            label: Some("gpu-blit-pipeline"),
-            layout: Some(&blit_pipeline_layout),
-            vertex: wgpu::VertexState {
-                module: &vertex_shader_module,
-                entry_point: Some("vertex_main"),
-                buffers: &[wgpu::VertexBufferLayout {
-                    array_stride: std::mem::size_of::<[f32; 2]>() as u64,
-                    step_mode: wgpu::VertexStepMode::Vertex,
-                    attributes: &[wgpu::VertexAttribute {
-                        format: wgpu::VertexFormat::Float32x2,
-                        offset: 0,
-                        shader_location: 0,
+        let make_blit = |format: wgpu::TextureFormat| {
+            device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
+                label: Some("gpu-blit-pipeline"),
+                layout: Some(&blit_pipeline_layout),
+                vertex: wgpu::VertexState {
+                    module: &vertex_shader_module,
+                    entry_point: Some("vertex_main"),
+                    buffers: &[wgpu::VertexBufferLayout {
+                        array_stride: std::mem::size_of::<[f32; 2]>() as u64,
+                        step_mode: wgpu::VertexStepMode::Vertex,
+                        attributes: &[wgpu::VertexAttribute {
+                            format: wgpu::VertexFormat::Float32x2,
+                            offset: 0,
+                            shader_location: 0,
+                        }],
                     }],
-                }],
-                compilation_options: wgpu::PipelineCompilationOptions::default(),
-            },
-            fragment: Some(wgpu::FragmentState {
-                module: &blit_shader_module,
-                entry_point: Some("fragment_main"),
-                targets: &[Some(wgpu::ColorTargetState {
-                    format: texture_format,
-                    blend: None,
-                    write_mask: wgpu::ColorWrites::ALL,
-                })],
-                compilation_options: wgpu::PipelineCompilationOptions::default(),
-            }),
-            primitive: wgpu::PrimitiveState::default(),
-            depth_stencil: None,
-            multisample: wgpu::MultisampleState::default(),
-            multiview_mask: None,
-            cache: None,
-        });
+                    compilation_options: wgpu::PipelineCompilationOptions::default(),
+                },
+                fragment: Some(wgpu::FragmentState {
+                    module: &blit_shader_module,
+                    entry_point: Some("fragment_main"),
+                    targets: &[Some(wgpu::ColorTargetState {
+                        format,
+                        blend: None,
+                        write_mask: wgpu::ColorWrites::ALL,
+                    })],
+                    compilation_options: wgpu::PipelineCompilationOptions::default(),
+                }),
+                primitive: wgpu::PrimitiveState::default(),
+                depth_stencil: None,
+                multisample: wgpu::MultisampleState::default(),
+                multiview_mask: None,
+                cache: None,
+            })
+        };
+        // To canvases (8-bit), and between the engine's own textures (WS-14).
+        let blit_pipeline = make_blit(surface_format);
+        let working_blit_pipeline = make_blit(texture_format);
 
         let supports_external_texture_copies = adapter
             .get_downlevel_capabilities()
@@ -173,11 +189,13 @@ impl GpuContext {
             device,
             queue,
             texture_format,
+            surface_format,
             fullscreen_quad,
             linear_sampler,
             nearest_sampler,
             texture_sampler_bind_group_layout,
             blit_pipeline,
+            working_blit_pipeline,
             supports_external_texture_copies,
             #[cfg(all(feature = "wasm", target_arch = "wasm32"))]
             gl_canvas,
@@ -337,6 +355,15 @@ impl GpuContext {
         self.texture_format
     }
 
+    pub fn surface_format(&self) -> wgpu::TextureFormat {
+        self.surface_format
+    }
+
+    /// Whether the engine composites in 16-bit float (WS-14).
+    pub fn high_precision(&self) -> bool {
+        self.texture_format == wgpu::TextureFormat::Rgba16Float
+    }
+
     pub fn fullscreen_quad(&self) -> &wgpu::Buffer {
         &self.fullscreen_quad
     }
@@ -407,7 +434,13 @@ impl GpuContext {
             .create_command_encoder(&wgpu::CommandEncoderDescriptor {
                 label: Some("gpu-surface-blit-encoder"),
             });
-        self.encode_texture_blit_to_view(&mut encoder, texture, &target_view, "gpu-surface-blit");
+        self.encode_texture_blit_to_view(
+            &mut encoder,
+            texture,
+            &target_view,
+            self.surface_format,
+            "gpu-surface-blit",
+        );
         self.queue.submit([encoder.finish()]);
         surface_texture.present();
         Ok(())
@@ -431,13 +464,13 @@ impl GpuContext {
         height: u32,
     ) -> Result<wgpu::SurfaceConfiguration, GpuError> {
         let caps = surface.get_capabilities(&self.adapter);
-        if !caps.formats.contains(&self.texture_format) {
+        if !caps.formats.contains(&self.surface_format) {
             return Err(GpuError::UnsupportedSurfaceFormat);
         }
 
         Ok(wgpu::SurfaceConfiguration {
             usage: wgpu::TextureUsages::RENDER_ATTACHMENT,
-            format: self.texture_format,
+            format: self.surface_format,
             width,
             height,
             present_mode: wgpu::PresentMode::Fifo,
@@ -471,6 +504,7 @@ impl GpuContext {
         encoder: &mut wgpu::CommandEncoder,
         texture: &wgpu::Texture,
         target_view: &wgpu::TextureView,
+        target_format: wgpu::TextureFormat,
         label: &'static str,
     ) {
         let source_view = texture.create_view(&wgpu::TextureViewDescriptor::default());
@@ -505,7 +539,11 @@ impl GpuContext {
             timestamp_writes: None,
             multiview_mask: None,
         });
-        render_pass.set_pipeline(&self.blit_pipeline);
+        render_pass.set_pipeline(if target_format == self.surface_format {
+            &self.blit_pipeline
+        } else {
+            &self.working_blit_pipeline
+        });
         render_pass.set_vertex_buffer(0, self.fullscreen_quad.slice(..));
         render_pass.set_bind_group(0, &bind_group, &[]);
         render_pass.draw(0..6, 0..1);
@@ -554,7 +592,10 @@ impl GpuContext {
                 .expect("Failed to read pixel data from canvas");
             let rgba_bytes = image_data.data();
 
-            let pixel_bytes = if self.texture_format == wgpu::TextureFormat::Bgra8Unorm {
+            let float = self.texture_format == wgpu::TextureFormat::Rgba16Float;
+            let pixel_bytes = if float {
+                rgba8_to_rgba16f(&rgba_bytes)
+            } else if self.texture_format == wgpu::TextureFormat::Bgra8Unorm {
                 let mut bytes = rgba_bytes.to_vec();
                 for pixel in bytes.chunks_exact_mut(4) {
                     pixel.swap(0, 2);
@@ -574,7 +615,7 @@ impl GpuContext {
                 &pixel_bytes,
                 wgpu::TexelCopyBufferLayout {
                     offset: 0,
-                    bytes_per_row: Some(width * 4),
+                    bytes_per_row: Some(width * if float { 8 } else { 4 }),
                     rows_per_image: Some(height),
                 },
                 wgpu::Extent3d {
@@ -701,5 +742,75 @@ impl GpuContext {
             .map_err(|_| GpuError::AdapterUnavailable)?;
 
         Ok(())
+    }
+}
+
+/// The GPU can draw into, blend and filter 16-bit float textures.
+fn supports_float_rendering(adapter: &wgpu::Adapter) -> bool {
+    let features = adapter.get_texture_format_features(wgpu::TextureFormat::Rgba16Float);
+    features
+        .allowed_usages
+        .contains(wgpu::TextureUsages::RENDER_ATTACHMENT | wgpu::TextureUsages::TEXTURE_BINDING)
+        && features.flags.contains(
+            wgpu::TextureFormatFeatureFlags::FILTERABLE
+                | wgpu::TextureFormatFeatureFlags::BLENDABLE,
+        )
+}
+
+/// 8-bit RGBA to 16-bit float RGBA bytes, for the CPU upload fallback.
+pub fn rgba8_to_rgba16f(rgba: &[u8]) -> Vec<u8> {
+    let mut out = Vec::with_capacity(rgba.len() * 2);
+    for &v in rgba {
+        out.extend_from_slice(&f32_to_f16_bits(v as f32 / 255.0).to_le_bytes());
+    }
+    out
+}
+
+/// IEEE half-precision bits for a value in 0..=1 (exact for 8-bit inputs to 1/2048).
+pub fn f32_to_f16_bits(value: f32) -> u16 {
+    let bits = value.to_bits();
+    let sign = ((bits >> 16) & 0x8000) as u16;
+    let exponent = ((bits >> 23) & 0xff) as i32 - 127 + 15;
+    let mantissa = bits & 0x7f_ffff;
+    if value == 0.0 {
+        return sign;
+    }
+    if exponent <= 0 {
+        // Subnormal half.
+        let m = (mantissa | 0x80_0000) >> (1 - exponent + 13);
+        return sign | m as u16;
+    }
+    if exponent >= 31 {
+        return sign | 0x7c00;
+    }
+    // Round to nearest.
+    let rounded = mantissa + 0x1000;
+    if rounded & 0x80_0000 != 0 {
+        return sign | (((exponent + 1) as u16) << 10);
+    }
+    sign | ((exponent as u16) << 10) | (rounded >> 13) as u16
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn half_floats() {
+        assert_eq!(f32_to_f16_bits(0.0), 0x0000);
+        assert_eq!(f32_to_f16_bits(1.0), 0x3c00);
+        assert_eq!(f32_to_f16_bits(0.5), 0x3800);
+        // Every 8-bit level survives the round trip.
+        for v in 0..=255u32 {
+            let h = f32_to_f16_bits(v as f32 / 255.0);
+            let e = ((h >> 10) & 0x1f) as i32;
+            let m = (h & 0x3ff) as f32;
+            let back = if e == 0 {
+                m / 1024.0 * 2f32.powi(-14)
+            } else {
+                (1.0 + m / 1024.0) * 2f32.powi(e - 15)
+            };
+            assert_eq!((back * 255.0).round() as u32, v);
+        }
     }
 }

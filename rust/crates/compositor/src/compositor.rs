@@ -509,6 +509,7 @@ impl Compositor {
             &mut encoder,
             &scene,
             &surface_view,
+            context.surface_format(),
             "compositor-present-pass",
         );
         context.queue().submit([encoder.finish()]);
@@ -554,7 +555,8 @@ impl Compositor {
         }
 
         if let Some(mask) = &layer.mask {
-            current = self.mask_layer(context, encoder, &current, mask, frame.width, frame.height)?;
+            current =
+                self.mask_layer(context, encoder, &current, mask, frame.width, frame.height)?;
         }
 
         Ok(current)
@@ -569,11 +571,12 @@ impl Compositor {
         width: u32,
         height: u32,
     ) -> Result<wgpu::Texture, CompositorError> {
-        let mask_source = self.textures.get(&mask.texture_id).ok_or_else(|| {
-            CompositorError::MissingTexture {
-                texture_id: mask.texture_id.clone(),
-            }
-        })?;
+        let mask_source =
+            self.textures
+                .get(&mask.texture_id)
+                .ok_or_else(|| CompositorError::MissingTexture {
+                    texture_id: mask.texture_id.clone(),
+                })?;
         let mask_source_texture = mask_source.texture().clone();
         let mask_texture = if mask.feather > 0.0 {
             self.masks.apply_mask_feather_with_encoder(
@@ -985,7 +988,13 @@ impl Compositor {
         target: &wgpu::Texture,
     ) {
         let target_view = target.create_view(&wgpu::TextureViewDescriptor::default());
-        context.encode_texture_blit_to_view(encoder, source, &target_view, "compositor-blit-pass");
+        context.encode_texture_blit_to_view(
+            encoder,
+            source,
+            &target_view,
+            target.format(),
+            "compositor-blit-pass",
+        );
     }
 }
 

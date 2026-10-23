@@ -1,11 +1,13 @@
 import {
 	applyEffectPasses,
 	applyMaskFeather as applyMaskFeatherWasm,
+	gpuPrecision,
 	initializeGpu,
 } from "opencut-wasm";
 import type { EffectPass, EffectUniformValue } from "@/effects/types";
 
 let gpuAvailable = false;
+let gpuHighPrecision = false;
 let initPromise: Promise<void> | null = null;
 
 export function initializeGpuRenderer(): Promise<void> {
@@ -13,6 +15,14 @@ export function initializeGpuRenderer(): Promise<void> {
 		initPromise = initializeGpu()
 			.then(() => {
 				gpuAvailable = true;
+				const info: unknown = gpuPrecision();
+				gpuHighPrecision =
+					typeof info === "object" && info !== null && "highPrecision" in info && info.highPrecision === true;
+				console.info(
+					gpuHighPrecision
+						? "GPU effects work in 16-bit float"
+						: "GPU effects work in 8-bit (this GPU can't render to 16-bit float)",
+				);
 			})
 			.catch((error: unknown) => {
 				gpuAvailable = false;
@@ -21,6 +31,11 @@ export function initializeGpuRenderer(): Promise<void> {
 			});
 	}
 	return initPromise;
+}
+
+/** Effects and grades are computed in 16-bit float on this GPU (WS-14). */
+export function isGpuHighPrecision(): boolean {
+	return gpuHighPrecision;
 }
 
 export function isGpuAvailable(): boolean {

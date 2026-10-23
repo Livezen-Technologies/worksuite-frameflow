@@ -62,6 +62,25 @@ pub async fn initialize_gpu() -> Result<(), JsValue> {
     Ok(())
 }
 
+/// The engine's working precision (WS-14), for the status line and tests.
+#[wasm_bindgen(js_name = gpuPrecision)]
+pub fn gpu_precision() -> Result<JsValue, JsValue> {
+    with_gpu_runtime(|runtime| {
+        let info = Object::new();
+        Reflect::set(
+            &info,
+            &"highPrecision".into(),
+            &runtime.context.high_precision().into(),
+        )?;
+        Reflect::set(
+            &info,
+            &"format".into(),
+            &format!("{:?}", runtime.context.texture_format()).into(),
+        )?;
+        Ok(info.into())
+    })
+}
+
 /// Like `with_gpu_runtime`, for actions that change the runtime (e.g. LUTs).
 pub(crate) fn with_gpu_runtime_mut<T>(
     action: impl FnOnce(&mut GpuRuntime) -> Result<T, JsValue>,

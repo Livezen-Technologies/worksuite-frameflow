@@ -116,6 +116,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
   - Stabilize and Remove flicker analyse the clip and write ordinary keyframes, so the result stays editable.
 
 ### Changed
+- Effects and grades are now worked out in 16-bit float on GPUs that support it, so stacked grades and strong adjustments no longer band (smooth gradients keep all their steps).
 - The HEIC photo decoder (libheif, LGPL) now ships as its own replaceable file, and the installer includes notices for its LGPL components (libheif and FFmpeg) with their source and how to swap in your own build.
 - The app's description and copyright line no longer say "Based on OpenCut". OpenCut's MIT licence ships with the app in licenses/OpenCut-LICENSE.txt.
 - Speed has Normal and Curve tabs. Normal sets speed, duration and pitch. Curve adds speed ramps: Montage, Hero, Bullet, Jump Cut, Flash In, Flash Out, or Custom (five points). The clip is played in 16 short pieces at changing speeds, in one undo step, and None turns it back into one clip.
