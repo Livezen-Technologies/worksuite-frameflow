@@ -43,8 +43,16 @@ export async function runExportQueue({ editor }: { editor: EditorCore }) {
 				if (!result.success || !result.buffer)
 					throw new Error(result.error || "The export didn't finish.");
 				const files = window.worksuite?.files;
+				const master = window.worksuite?.master;
 				let path: string | undefined;
-				if (files?.saveToFolder) {
+				if (result.masterJobId && master) {
+					const saved = await master.save({
+						id: result.masterJobId,
+						suggestedName: job.fileName,
+						toFolder: true,
+					});
+					path = saved.path;
+				} else if (files?.saveToFolder) {
 					const saved = await files.saveToFolder({
 						fileName: job.fileName,
 						data: result.buffer,

@@ -13,6 +13,33 @@ import { createTimelineAudioBuffer } from "@/media/audio";
 import { formatTimecode } from "opencut-wasm";
 import { frameRateToFloat } from "@/fps/utils";
 import { downloadBlob } from "@/utils/browser";
+import { masterBridge, type MasterExportBridge } from "@/export/master";
+import type { Upscaler } from "@/ai-export/upscale";
+import type { Interpolator } from "@/ai-export/interpolate";
+
+/** Opens the AI models the export asked for (EX-20, EX-21). */
+async function loadAiStages({
+	ai,
+}: {
+	ai?: { upscale?: boolean; interpolate?: boolean };
+}): Promise<{ upscaler?: Upscaler; interpolator?: Interpolator }> {
+	if (!ai?.upscale && !ai?.interpolate) return {};
+	const { readModel, modelFor } = await import("@/ai-export/models");
+	const stages: { upscaler?: Upscaler; interpolator?: Interpolator } = {};
+	if (ai.upscale) {
+		const bytes = await readModel(modelFor("upscale").id);
+		if (!bytes) throw new Error("Download the AI Ultra HD model in Settings → Local models first.");
+		const { Upscaler } = await import("@/ai-export/upscale");
+		stages.upscaler = await Upscaler.create(bytes);
+	}
+	if (ai.interpolate) {
+		const bytes = await readModel(modelFor("interpolate").id);
+		if (!bytes) throw new Error("Download the optical flow model in Settings → Local models first.");
+		const { Interpolator } = await import("@/ai-export/interpolate");
+		stages.interpolator = await Interpolator.create(bytes);
+	}
+	return stages;
+}
 
 type SnapshotResult =
 	| { success: true; blob: Blob; filename: string }
@@ -169,9 +196,17 @@ export class RendererManager {
 			videoBitrate,
 			coverImage,
 			forceSdr = false,
+			gif,
+			master,
+			ai,
 		} = options;
+		let aiStages: Awaited<ReturnType<typeof loadAiStages>> = {};
+		const bridge: MasterExportBridge | null = master ? masterBridge() : null;
+		if (master && !bridge)
+			return { success: false, error: "ProRes and FFV1 need the desktop app." };
 
 		try {
+			aiStages = await loadAiStages({ ai });
 			const allTracks = this.editor.scenes.getActiveScene().tracks;
 			const captionCues = captionTracksToCues([
 				...allTracks.overlay,
@@ -245,6 +280,9 @@ export class RendererManager {
 					embedCaptions && captionCues[0]?.length
 						? cuesToVtt(captionCues[0])
 						: undefined,
+				gif,
+				...(master && bridge ? { master: { bridge, codec: master } } : {}),
+				ai: aiStages,
 			});
 
 			exporter.on("progress", (progress) => {
@@ -280,9 +318,12 @@ export class RendererManager {
 					success: true,
 					buffer,
 					captions: captionCues.flat().sort((a, b) => a.start - b.start),
+					...(exporter.masterJobId ? { masterJobId: exporter.masterJobId } : {}),
 				};
 			} finally {
 				clearInterval(cancelInterval);
+				aiStages.upscaler?.release();
+				aiStages.interpolator?.release();
 			}
 		} catch (error) {
 			console.error("Export failed:", error);

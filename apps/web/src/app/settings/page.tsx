@@ -16,11 +16,13 @@ import {
 	SettingsSyncSection,
 } from "@/cloud/components/network-section";
 import { UpdatesSection } from "@/updates/components/updates-section";
+import { LocalModelsSection } from "@/ai-export/components/local-models";
 
 const SECTIONS = [
 	{ id: "account", label: "Account & cloud" },
 	{ id: "network", label: "Network & sync" },
 	{ id: "updates", label: "Updates" },
+	{ id: "models", label: "Local models" },
 	{ id: "about", label: "About" },
 ] as const;
 
@@ -87,6 +89,10 @@ export default function SettingsPage() {
 							</p>
 						</Section>
 					</>
+				) : section === "models" ? (
+					<Section title="Local models">
+						<LocalModelsSection />
+					</Section>
 				) : section === "updates" ? (
 					<Section title="Updates">
 						<UpdatesSection />

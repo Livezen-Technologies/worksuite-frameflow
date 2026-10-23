@@ -9,6 +9,25 @@ import {
 	type AudioExportFormat,
 } from "@/export/audio-export";
 import { createTimelineAudioBuffer } from "@/media/audio";
+import { DEFAULT_GIF_OPTIONS, estimateGifBytes, type GifOptions } from "@/export/gif";
+import { GifOptionsRows } from "@/export/components/gif-options";
+import {
+	audioBufferToWav,
+	MASTER_CODECS,
+	masterBridge,
+	type MasterCodec,
+} from "@/export/master";
+import {
+	estimateExportSeconds,
+	formatEstimate,
+	useRenderSpeed,
+} from "@/export/time-estimate";
+import { featureAccess } from "@/export/plan";
+import { useWorksuiteAccount } from "@/account/use-worksuite-account";
+import {
+	AiExportOptions,
+	type AiChoice,
+} from "@/ai-export/components/ai-export-options";
 import { ExportQueueHost, ExportQueueList } from "@/export/queue/queue-list";
 import { useExportQueue } from "@/export/queue/store";
 import { generateUUID } from "@/utils/id";
@@ -234,6 +253,7 @@ const VIDEO_LEVELS = [
 	{ value: 1080, label: "1080p" },
 	{ value: 1440, label: "2K" },
 	{ value: 2160, label: "4K" },
+	{ value: 4320, label: "8K" },
 ];
 const GIF_LEVELS = [
 	{ value: 240, label: "240p" },
@@ -310,9 +330,27 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 		() => new Set(["wav"]),
 	);
 	const [otherBusy, setOtherBusy] = useState(false);
+	const bridge = masterBridge();
+	const [masterCodecs, setMasterCodecs] = useState<MasterCodec[]>([]);
 	useEffect(() => {
-		void supportedAudioFormats().then(setAudioSupported);
-	}, []);
+		void supportedAudioFormats().then((web) => {
+			// The desktop app encodes MP3 and M4A with its FFmpeg (EX-12).
+			setAudioSupported(
+				bridge ? new Set<AudioExportFormat>(["wav", "mp3", "m4a"]) : web,
+			);
+		});
+		void bridge?.codecs().then(setMasterCodecs).catch(() => {});
+	}, [bridge]);
+	const [master, setMaster] = useState<MasterCodec | null>(null);
+	const [gifOptions, setGifOptions] = useState<GifOptions>(DEFAULT_GIF_OPTIONS);
+	const [ai, setAi] = useState<AiChoice>({ upscale: false, interpolate: false });
+	const [aiExtraMs, setAiExtraMs] = useState(0);
+	const msPerFrame = useRenderSpeed({ editor });
+	const account = useWorksuiteAccount();
+	const access8k = featureAccess({
+		profile: account.state?.profile ?? null,
+		feature: "export-8k",
+	});
 	const [gifLevel, setGifLevel] = useState(480);
 	const [gifFps, setGifFps] = useState(15);
 	/** Mbps chosen on the slider; null follows the quality setting. */
@@ -428,7 +466,19 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 			: kind === "frame"
 				? projectSize.width * projectSize.height * (frameFormat === "png" ? 1.5 : 0.3)
 				: kind === "gif"
-			? size.width * size.height * gifFps * durationSeconds * 0.35
+			? estimateGifBytes({
+					...size,
+					fps: gifFps,
+					seconds: durationSeconds,
+					options: gifOptions,
+				})
+			: master
+				? (size.width *
+						size.height *
+						fps *
+						durationSeconds *
+						(MASTER_CODECS.find((m) => m.id === master)?.bitsPerPixel ?? 2)) /
+					8
 			: bitrate !== null
 				? ((bitrate * 1e6 + (includeAudio ? 192000 : 0)) * durationSeconds) / 8
 				: estimateExportBytes({
@@ -440,6 +490,23 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 						includeAudio,
 					});
 	const isDesktop = typeof window !== "undefined" && !!window.worksuite?.files;
+	const is8k = Math.min(size.width, size.height) > 2160;
+	const blocked8k = kind === "video" && is8k && !access8k.allowed;
+	const aiActive = kind === "video" && !hdrExport && (ai.upscale || ai.interpolate);
+	const exportFrames = Math.ceil(
+		durationSeconds * (kind === "gif" ? gifFps : fps),
+	);
+	const timeEstimate =
+		msPerFrame === null || kind === "audio" || kind === "frame"
+			? null
+			: estimateExportSeconds({
+					msPerFrame,
+					frames: exportFrames,
+					pixelRatio:
+						(size.width * size.height) /
+						Math.max(1, projectSize.width * projectSize.height),
+					extraMsPerFrame: aiActive ? aiExtraMs : 0,
+				});
 
 	/** Audio-only and still-frame export (EX-12). */
 	const exportOther = async () => {
@@ -460,7 +527,14 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 					toast.error("There's no audio on the timeline.");
 					return;
 				}
-				data = await encodeAudioFile({ buffer, format: audioFormat });
+				const webEncodes = (await supportedAudioFormats()).has(audioFormat);
+				data =
+					audioFormat !== "wav" && !webEncodes && bridge
+						? await bridge.encodeAudio({
+								data: audioBufferToWav(buffer),
+								format: audioFormat,
+							})
+						: await encodeAudioFile({ buffer, format: audioFormat });
 				({ extension, mimeType } = audioFormatInfo(audioFormat));
 			} else {
 				const canvas = await editor.project.renderFrame({
@@ -515,7 +589,14 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 			kind === "video" && bitrate !== null ? bitrate * 1e6 : undefined,
 		coverImage: useCover && cover ? cover.image : undefined,
 		forceSdr: hdrProject && hdrMode === "sdr",
+		...(kind === "gif" ? { gif: gifOptions } : {}),
+		...(kind === "video" && master ? { master } : {}),
+		...(aiActive ? { ai } : {}),
 	});
+	const fileExtension = () =>
+		kind === "video" && master
+			? `.${MASTER_CODECS.find((m) => m.id === master)?.container ?? "mov"}`
+			: getExportFileExtension({ format });
 
 	/** Adds this export to the queue (EX-14) and keeps the dialog open. */
 	const addToQueue = () => {
@@ -523,7 +604,7 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 			id: generateUUID(),
 			projectId: project.metadata.id,
 			projectName: project.metadata.name,
-			fileName: `${fileName.trim() || project.metadata.name}${getExportFileExtension({ format })}`,
+			fileName: `${fileName.trim() || project.metadata.name}${fileExtension()}`,
 			options: exportOptions(),
 		});
 		toast.success("Added to the export queue");
@@ -539,7 +620,7 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 				projectId: project.metadata.id,
 				projectName: project.metadata.name,
 				sceneId: scene.id,
-				fileName: `${base} - ${scene.name}${getExportFileExtension({ format })}`,
+				fileName: `${base} - ${scene.name}${fileExtension()}`,
 				options,
 			});
 		}
@@ -555,26 +636,23 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 		setSavedPath(null);
 		setSharing(null);
 		const exportResult = await editor.project.export({
-			options: {
-				format,
-				codec,
-				quality,
-				fps:
-					exportRate === projectFps
-						? project.settings.fps
-						: floatToFrameRate(exportRate),
-				includeAudio: kind === "video" && includeAudio,
-				resolution: size,
-				burnInCaptions: burnIn,
-				embedCaptions: kind === "video" && embed,
-				videoBitrate:
-					kind === "video" && bitrate !== null ? bitrate * 1e6 : undefined,
-				coverImage: useCover && cover ? cover.image : undefined,
-				forceSdr: hdrProject && hdrMode === "sdr",
-			},
+			options: exportOptions(),
 		});
 		if (exportResult.cancelled) {
 			editor.project.clearExportState();
+			return;
+		}
+		// Production exports stay on disk until saved (EX-13, EX-15).
+		if (exportResult.success && exportResult.masterJobId && bridge) {
+			const saved = await bridge.save({
+				id: exportResult.masterJobId,
+				suggestedName: `${fileName.trim() || project.metadata.name}${fileExtension()}`,
+			});
+			editor.project.clearExportState();
+			if (saved.saved && saved.path) {
+				setSavedPath(saved.path);
+				toast.success(t("Export saved"));
+			}
 			return;
 		}
 		if (!exportResult.success || !exportResult.buffer) return;
@@ -665,11 +743,14 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 	}
 
 	return (
-		<DialogContent className="max-w-2xl" aria-describedby={undefined}>
+		<DialogContent
+			className="flex max-h-[calc(100vh-2rem)] max-w-2xl flex-col"
+			aria-describedby={undefined}
+		>
 			<DialogHeader className="py-4">
 				<DialogTitle>{isExporting ? "Exporting…" : "Export"}</DialogTitle>
 			</DialogHeader>
-			<DialogBody className="min-w-0 gap-3 py-4">
+			<DialogBody className="min-h-0 min-w-0 flex-1 gap-3 overflow-y-auto py-4">
 				{isExporting ? (
 					<div className="flex flex-col gap-2 py-6">
 						<div className="text-muted-foreground flex justify-between text-sm">
@@ -721,6 +802,12 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 							<p className="text-muted-foreground text-xs" data-export-summary>
 								Duration {formatDuration(durationSeconds)} · Estimated size{" "}
 								{formatBytes(estimate)}
+								{timeEstimate !== null && (
+									<span data-export-time>
+										{" "}
+										· Estimated time {formatEstimate(timeEstimate)}
+									</span>
+								)}
 								{isDesktop ? " · Saving to Videos/Worksuite" : ""}
 							</p>
 						</div>
@@ -779,9 +866,10 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 										onChange={setGifFps}
 									/>
 								</Row>
+								<GifOptionsRows value={gifOptions} onChange={setGifOptions} />
 								<p className="text-muted-foreground text-xs">
-									GIFs have no sound and use 256 colours per frame. Keep them
-									short.
+									GIFs have no sound and at most 256 colours per frame. Keep
+									them short.
 								</p>
 							</>
 						) : (
@@ -880,6 +968,14 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 											{size.width} × {size.height}
 										</span>
 									)}
+									{is8k && access8k.label && (
+										<span
+											className="rounded-full border px-1.5 text-[10px]"
+											data-plan-label="export-8k"
+										>
+											{access8k.label}
+										</span>
+									)}
 									{aspectDiffers && (
 										<span className="text-muted-foreground text-[11px]">
 											Different shape from the project — it will be letterboxed.
@@ -940,19 +1036,60 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 									{EXPORT_CODEC_VALUES.map((c) => (
 										<Pill
 											key={c}
-											active={codec === c}
+											active={codec === c && !master}
 											disabled={!supported[c] || (hdrExport && c !== "vp9")}
 											title={
 												supported[c]
 													? `${EXPORT_CODEC_LABELS[c]} in ${formatForCodec(c).toUpperCase()}`
 													: `This computer can't encode ${EXPORT_CODEC_LABELS[c]} at ${size.width} × ${size.height}`
 											}
-											onClick={() => setCodec(c)}
+											onClick={() => {
+												setCodec(c);
+												setMaster(null);
+											}}
 										>
 											{EXPORT_CODEC_LABELS[c]}
 										</Pill>
 									))}
+									{!hdrExport &&
+										MASTER_CODECS.filter((m) => masterCodecs.includes(m.id)).map(
+											(m) => (
+												<Pill
+													key={m.id}
+													active={master === m.id}
+													title={m.detail}
+													onClick={() => setMaster(m.id)}
+												>
+													{m.label} (.{m.container})
+												</Pill>
+											),
+										)}
+									{master && (
+										<span
+											className="text-muted-foreground w-full text-[11px]"
+											data-master-note
+										>
+											{MASTER_CODECS.find((m) => m.id === master)?.detail}.
+											Made with the bundled FFmpeg; files are large.
+										</span>
+									)}
 								</Row>
+								{!hdrExport && (
+									<AiExportOptions
+										value={ai}
+										onChange={setAi}
+										outputSize={size}
+										projectSize={projectSize}
+										exportFps={fps}
+										projectFps={projectFps}
+										frames={exportFrames}
+										onExtraMs={setAiExtraMs}
+										onSuggestLevel={(value) => {
+											setCustom(sizeForLevel({ level: value, project: projectSize }));
+											setPreset("custom");
+										}}
+									/>
+								)}
 								<Row label="Quality">
 									{QUALITY_CHOICES.map((q) => (
 										<Pill
@@ -1100,7 +1237,7 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 						<Button
 							onClick={handleExport}
 							className="gap-2"
-							disabled={otherBusy}
+							disabled={otherBusy || blocked8k}
 							data-export-go
 						>
 							<Download className="size-4" />

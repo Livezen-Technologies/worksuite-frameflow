@@ -56,6 +56,16 @@ contextBridge.exposeInMainWorld("worksuite", {
 			return () => ipcRenderer.removeListener("windows:navigate", handler);
 		},
 	},
+	// Production exports through the bundled FFmpeg (EX-15) and MP3/M4A (EX-12).
+	master: {
+		codecs: () => ipcRenderer.invoke("master:codecs"),
+		start: (args) => ipcRenderer.invoke("master:start", args),
+		frame: (args) => ipcRenderer.invoke("master:frame", args),
+		finish: (args) => ipcRenderer.invoke("master:finish", args),
+		cancel: (args) => ipcRenderer.invoke("master:cancel", args),
+		save: (args) => ipcRenderer.invoke("master:save", args),
+		encodeAudio: (args) => ipcRenderer.invoke("master:encode-audio", args),
+	},
 	helper: {
 		caps: () => ipcRenderer.invoke("helper:caps"),
 		configure: (args) => ipcRenderer.invoke("helper:configure", args),

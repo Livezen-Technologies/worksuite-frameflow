@@ -1,4 +1,5 @@
 import type { ProjectWindowsBridge } from "@/windows/bridge";
+import type { MasterExportBridge } from "@/export/master";
 import type { CursorLog } from "@/screen-zoom/types";
 import type { NativeHelperBridge } from "@/proxy/bridge";
 import type { AutomationBridge } from "@/automation/bridge";
@@ -80,6 +81,7 @@ declare global {
 				show: (filePath: string) => Promise<void>;
 			};
 			cloud?: WorksuiteCloudBridge;
+			master?: MasterExportBridge;
 			updates?: WorksuiteUpdatesBridge;
 			capture?: WorksuiteCaptureBridge;
 			network?: WorksuiteNetworkBridge;

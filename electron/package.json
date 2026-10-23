@@ -54,7 +54,8 @@
       "cursor-log.js",
       "capture-controls.js",
       "capture-bar/**",
-      "project-windows.js"
+      "project-windows.js",
+      "master-export.js"
     ],
     "extraResources": [
       {

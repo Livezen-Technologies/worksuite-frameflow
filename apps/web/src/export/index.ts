@@ -1,3 +1,5 @@
+import type { GifOptions } from "./gif";
+import type { MasterCodec } from "./master";
 import type { CaptionCue } from "./caption-files";
 import type { FrameRate } from "opencut-wasm";
 import { EXPORT_MIME_TYPES } from "./mime-types";
@@ -37,6 +39,12 @@ export interface ExportOptions {
 	coverImage?: string;
 	/** In an HDR project, export SDR (tone-mapped) instead of 10-bit HDR (HD-16, HD-17). */
 	forceSdr?: boolean;
+	/** GIF tab options (EX-25). */
+	gif?: GifOptions;
+	/** Desktop production export (ProRes .mov / FFV1 .mkv, 10-bit; EX-15). */
+	master?: MasterCodec;
+	/** On-device AI after the composite (EX-20, EX-21). */
+	ai?: { upscale?: boolean; interpolate?: boolean };
 }
 
 export interface ExportResult {
@@ -46,6 +54,8 @@ export interface ExportResult {
 	captions?: CaptionCue[];
 	error?: string;
 	cancelled?: boolean;
+	/** Production exports stay on disk; this is the desktop job to save. */
+	masterJobId?: string;
 }
 
 export interface ExportState {
