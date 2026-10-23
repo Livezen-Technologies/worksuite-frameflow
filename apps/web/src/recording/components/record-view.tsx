@@ -26,6 +26,8 @@ import { cn } from "@/utils/ui";
 import { mediaTimeFromSeconds, TICKS_PER_SECOND } from "@/wasm";
 import { placeRecording } from "../place";
 import { AreaPicker } from "./area-picker";
+import { runPreflight } from "../preflight-run";
+import type { CheckRow } from "../preflight";
 import { findProtected, parsePatterns } from "../privacy";
 import {
 	bytesPerMinute,
@@ -195,6 +197,9 @@ export function RecordView() {
 	const [punch, setPunch] = useState<{ on: boolean; start: number; end: number }>({ on: false, start: 0, end: 5 });
 	const punchActive = mode === "voiceover" && punch.on && punch.end > punch.start;
 	const stopRef = useRef<() => void>(() => {});
+	// Setup test results (PF-01).
+	const [checks, setChecks] = useState<CheckRow[] | null>(null);
+	const [checking, setChecking] = useState<string | null>(null);
 	const playheadSeconds = () => editor.playback.getCurrentTime() / TICKS_PER_SECOND;
 	const mics = devices.filter((d) => d.kind === "audioinput");
 	const cameras = devices.filter((d) => d.kind === "videoinput");
@@ -384,6 +389,32 @@ export function RecordView() {
 				?.cursorStart?.({ sourceId: settings.sourceId })
 				.catch(() => null);
 		setPhase("recording");
+	};
+
+	const checkSetup = async () => {
+		setChecks(null);
+		setChecking("Starting");
+		try {
+			setChecks(
+				await runPreflight({
+					options: {
+						mode,
+						projectId,
+						timelineStart: 0,
+						profile: settings.profile,
+						micId: settings.micId,
+						cameraId: settings.cameraId,
+						sourceId: settings.sourceId,
+						area: needsScreen ? settings.area : null,
+						systemAudio: needsScreen && settings.systemAudio && !isMac,
+						channelCount: settings.channelCount,
+					},
+					onStep: setChecking,
+				}),
+			);
+		} finally {
+			setChecking(null);
+		}
 	};
 
 	const togglePause = () => {
@@ -971,6 +1002,36 @@ export function RecordView() {
 						</div>
 					</details>
 				)}
+
+				<div className="flex flex-col gap-2 rounded-lg border px-3 py-2 text-xs" data-setup-check>
+					<button
+						type="button"
+						className="hover:bg-accent h-7 rounded-md border"
+						disabled={checking !== null || (needsScreen && !!capture && !settings.sourceId)}
+						onClick={() => void checkSetup()}
+						data-check-setup
+					>
+						{checking ? `${checking}…` : "Check setup"}
+					</button>
+					{checks && (
+						<ul className="flex flex-col gap-1" data-check-results>
+							{checks.map((row, i) => (
+								<li key={`${row.id}-${i}`} className="flex gap-2" data-check={row.status}>
+									<span
+										className={cn(
+											"mt-1 size-2 shrink-0 rounded-full",
+											row.status === "ok" ? "bg-green-500" : row.status === "warn" ? "bg-amber-500" : "bg-red-500",
+										)}
+									/>
+									<span>
+										<span className="font-medium">{row.label}:</span>{" "}
+										<span className="text-muted-foreground">{row.detail}</span>
+									</span>
+								</li>
+							))}
+						</ul>
+					)}
+				</div>
 
 				<div
 					className={cn(

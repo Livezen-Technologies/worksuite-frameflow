@@ -8,6 +8,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 ## [Unreleased]
 
 ### Added
+- Check setup in the Record panel tests your devices before you record: that each one opens, the resolution and frame rate it really delivers, whether the encoder keeps up with the chosen quality, and disk write speed, with advice for anything that falls short.
 - Multicam clips can sync by timecode: angles line up from the start timecode that cameras and recorders write into MOV and MP4 files, including drop-frame and recordings across midnight.
 - Screen recordings pause by themselves while a protected app is open (password managers by default; edit the list in the Record panel) and carry on when it closes. Protected windows can't be picked as the source. Do not disturb holds notification pop-ups back while recording on Windows and GNOME; it's put back when you stop.
 - Record part of the screen: drag a box on the screen's picture in the Record panel (Whole screen to undo). The video is only that area, and zooms and the clean cursor line up with it.
