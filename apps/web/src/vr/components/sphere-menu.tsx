@@ -16,6 +16,8 @@ import { useEditor } from "@/editor/use-editor";
 import { isVisualElement } from "@/timeline/element-utils";
 import { findReframeEffect } from "../projection";
 import { useSphereStore } from "../store";
+import { addNadirLogo, coverTripod } from "../nadir-actions";
+import { useRef } from "react";
 
 const SIZES = [
 	{ width: 3840, height: 1920, label: "4K 360° · 3840×1920" },
@@ -31,6 +33,7 @@ export function SphereMenu() {
 	const on = useSphereStore((s) => !!s.sphereProjects[projectId]);
 	const lookAround = useSphereStore((s) => s.lookAround);
 	const guides = useSphereStore((s) => s.guides);
+	const logoInput = useRef<HTMLInputElement>(null);
 	if (!project) return null;
 	const size = project.settings.canvasSize;
 
@@ -124,6 +127,27 @@ export function SphereMenu() {
 							Horizon and front guides
 						</DropdownMenuCheckboxItem>
 						<DropdownMenuSeparator />
+						<DropdownMenuLabel className="text-muted-foreground text-xs">
+							Hide the tripod or selfie stick
+						</DropdownMenuLabel>
+						<DropdownMenuItem
+							data-cover-tripod
+							onClick={() => {
+								const n = coverTripod({ editor });
+								toast.success(
+									n
+										? `Nadir patch added to ${n} clip${n === 1 ? "" : "s"}`
+										: "Every 360° clip already has a nadir patch",
+									{ description: "Change its size, fill and colour in the clip's Effects." },
+								);
+							}}
+						>
+							Cover with a blurred patch
+						</DropdownMenuItem>
+						<DropdownMenuItem data-nadir-logo onClick={() => logoInput.current?.click()}>
+							Add a logo at the bottom…
+						</DropdownMenuItem>
+						<DropdownMenuSeparator />
 						<DropdownMenuItem
 							onClick={() => {
 								useSphereStore
@@ -137,6 +161,23 @@ export function SphereMenu() {
 					</>
 				)}
 			</DropdownMenuContent>
+			<input
+				ref={logoInput}
+				type="file"
+				accept="image/png,image/jpeg,image/webp,image/svg+xml"
+				className="hidden"
+				data-nadir-logo-input
+				onChange={(e) => {
+					const file = e.target.files?.[0];
+					e.target.value = "";
+					if (!file) return;
+					void addNadirLogo({ editor, file })
+						.then(() => toast.success("Nadir logo added on a new top track"))
+						.catch((error: unknown) =>
+							toast.error(error instanceof Error ? error.message : "Couldn't add the logo"),
+						);
+				}}
+			/>
 		</DropdownMenu>
 	);
 }

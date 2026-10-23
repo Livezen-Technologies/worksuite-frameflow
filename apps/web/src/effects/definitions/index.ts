@@ -5,6 +5,7 @@ import { STYLISE_EFFECTS } from "./stylise";
 import { lutEffectDefinition } from "./lut";
 import { curvesEffectDefinition } from "./curves";
 import { reframeEffectDefinition } from "@/vr/projection";
+import { nadirEffectDefinition } from "@/vr/nadir";
 
 const defaultEffects = [
 	blurEffectDefinition,
@@ -12,6 +13,7 @@ const defaultEffects = [
 	lutEffectDefinition,
 	curvesEffectDefinition,
 	reframeEffectDefinition,
+	nadirEffectDefinition,
 	...STYLISE_EFFECTS,
 ];
 

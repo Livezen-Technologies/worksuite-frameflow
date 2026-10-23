@@ -8,6 +8,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 ## [Unreleased]
 
 ### Added
+- 360° projects can hide the tripod or selfie stick: the 360° menu covers the bottom of every 360° clip with a blurred patch (size, soft edge, blur or colour in the clip's Effects), or lays your logo flat under the viewer on its own track.
 - Desktop exports can be AV1 10-bit (.mp4) and, where the computer has a hardware HEVC encoder, HEVC 10-bit (.mp4). Both also work for HDR projects, tagged HLG or PQ with BT.2020 so YouTube and players show them as HDR.
 - A colour-accuracy check for camera LUTs: it measures FrameFlow's result against the camera maker's own result (CIEDE2000), ready for DJI D-Log M test footage.
 - Imported LUTs now follow your Worksuite account: the files upload with settings sync and appear, ready to use, on your other devices.
