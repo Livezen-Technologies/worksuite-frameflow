@@ -290,7 +290,9 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 	const [bitrate, setBitrate] = useState<number | null>(null);
 	const cover = project.metadata.cover;
 	const [useCover, setUseCover] = useState(!!cover);
-	const [preset, setPreset] = useState<string>("project");
+	const [preset, setPreset] = useState<string>(
+		project.settings.defaults?.exportPreset ?? "project",
+	);
 	const [custom, setCustom] = useState({ ...projectSize });
 	const [fps, setFps] = useState(projectFps);
 	const [codec, setCodec] = useState<ExportCodec>("avc");

@@ -80,7 +80,14 @@ export class ProjectManager {
 		await this.storageMigrationPromise;
 	}
 
-	async createNewProject({ name }: { name: string }): Promise<string> {
+	async createNewProject({
+		name,
+		settings,
+	}: {
+		name: string;
+		/** From a settings template (PS-24). */
+		settings?: Partial<TProjectSettings>;
+	}): Promise<string> {
 		const mainScene = buildDefaultScene({ name: "Main scene", isMain: true });
 		const newProject: TProject = {
 			metadata: {
@@ -102,6 +109,8 @@ export class ProjectManager {
 					type: "color",
 					color: DEFAULT_BACKGROUND_COLOR,
 				},
+				...settings,
+				...(settings?.canvasSize ? { canvasSizeMode: "custom" as const } : {}),
 			},
 			version: CURRENT_PROJECT_VERSION,
 		};
@@ -688,11 +697,24 @@ export class ProjectManager {
 			canvasSize,
 			background,
 		});
-		const renderer = new CanvasRenderer({ width, height, fps: project.settings.fps });
+		// Positions are in project pixels, so draw full size and then scale down.
+		const renderer = new CanvasRenderer({
+			width: canvasSize.width,
+			height: canvasSize.height,
+			fps: project.settings.fps,
+		});
+		const full = document.createElement("canvas");
+		full.width = canvasSize.width;
+		full.height = canvasSize.height;
+		await renderer.renderToCanvas({ node: scene, time, targetCanvas: full });
+		if (scale === 1) return full;
 		const canvas = document.createElement("canvas");
 		canvas.width = width;
 		canvas.height = height;
-		await renderer.renderToCanvas({ node: scene, time, targetCanvas: canvas });
+		const ctx = canvas.getContext("2d");
+		if (!ctx) return full;
+		ctx.imageSmoothingQuality = "high";
+		ctx.drawImage(full, 0, 0, width, height);
 		return canvas;
 	}
 

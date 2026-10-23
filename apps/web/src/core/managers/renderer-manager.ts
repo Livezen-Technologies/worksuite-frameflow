@@ -205,6 +205,8 @@ export class RendererManager {
 					tracks,
 					mediaAssets,
 					duration,
+					sampleRate: activeProject.settings.audio?.sampleRate,
+					channels: activeProject.settings.audio?.channels,
 				});
 			}
 

@@ -1,5 +1,7 @@
 "use client";
 
+import { ChevronDown } from "lucide-react";
+import { BUILT_IN_TEMPLATES, useProjectSettings, type SettingsTemplate } from "@/project-settings/store";
 import { RestoreSessionBanner } from "@/tabs/components/restore-session";
 import Image from "next/image";
 import Link from "next/link";
@@ -548,22 +550,46 @@ function NewProjectButton() {
 	const editor = useEditor();
 	const router = useRouter();
 
-	const handleCreateProject = async () => {
+	const templates = useProjectSettings((s) => s.templates);
+
+	const handleCreateProject = async (template?: SettingsTemplate) => {
 		const projectId = await editor.project.createNewProject({
 			name: "New project",
+			settings: template?.settings,
 		});
 		router.push(`/editor/${projectId}`);
 	};
 
 	return (
-		<Button
-			size="lg"
-			className="flex px-5 md:px-6"
-			onClick={handleCreateProject}
-		>
-			<span className="text-sm font-medium hidden md:block">New project</span>
-			<span className="text-sm font-medium block md:hidden">New</span>
-		</Button>
+		<div className="flex">
+			<Button
+				size="lg"
+				className="flex rounded-r-none px-5 md:px-6"
+				onClick={() => void handleCreateProject()}
+			>
+				<span className="text-sm font-medium hidden md:block">New project</span>
+				<span className="text-sm font-medium block md:hidden">New</span>
+			</Button>
+			<DropdownMenu>
+				<DropdownMenuTrigger asChild>
+					<Button
+						size="lg"
+						className="rounded-l-none border-l border-black/20 px-2"
+						aria-label="New project from a template"
+						data-new-from-template
+					>
+						<ChevronDown className="size-4" />
+					</Button>
+				</DropdownMenuTrigger>
+				<DropdownMenuContent align="end" className="w-64">
+					{[...BUILT_IN_TEMPLATES, ...templates].map((t) => (
+						<DropdownMenuItem key={t.id} onClick={() => void handleCreateProject(t)}>
+							{t.name}
+						</DropdownMenuItem>
+					))}
+				</DropdownMenuContent>
+			</DropdownMenu>
+		</div>
 	);
 }
 

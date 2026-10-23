@@ -1,5 +1,7 @@
 "use client";
 
+import { ProjectSettingsDialog } from "@/project-settings/components/project-settings-dialog";
+import { ProjectDefaultsSync } from "@/project-settings/components/project-defaults-sync";
 import { PasteAttributesDialog } from "@/tabs/components/paste-attributes-dialog";
 import { PopoutPanel } from "@/popout/popout-panel";
 import { SphereWatcher } from "@/vr/components/sphere-watcher";
@@ -59,6 +61,8 @@ export default function Editor() {
 					</div>
 					<Onboarding />
 					<TranscriptEditor />
+					<ProjectSettingsDialog />
+					<ProjectDefaultsSync />
 					<MigrationDialog />
 					<ChangelogNotification />
 					<CloudSyncRunner openProjectId={projectId} />

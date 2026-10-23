@@ -1,5 +1,7 @@
 "use client";
 
+import { useProjectSettings } from "@/project-settings/store";
+import { Settings } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Check, ChevronDown, Cloud, CloudOff, Loader2, Plus, X } from "lucide-react";
@@ -172,6 +174,12 @@ export function ProjectTabBar() {
 					);
 				})}
 				<DropdownMenuSeparator />
+				<DropdownMenuItem
+					onSelect={() => useProjectSettings.getState().setOpen(true)}
+					className="gap-2.5 px-3"
+				>
+					<Settings className="size-4" /> Project settings
+				</DropdownMenuItem>
 				<DropdownMenuItem onSelect={() => void go(null)} data-new-tab className="gap-2.5 px-3">
 					<Plus className="size-4" /> Open another project
 				</DropdownMenuItem>

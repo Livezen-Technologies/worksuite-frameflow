@@ -43,6 +43,23 @@ export interface TProjectSettings {
 	lastCustomCanvasSize?: TCanvasSize | null;
 	originalCanvasSize?: TCanvasSize | null;
 	background: TBackground;
+	/** Project colour space (PS-07); HDR ones need the HDR pipeline (section 24). */
+	colorSpace?: TProjectColorSpace;
+	/** Export audio format (PS-09). */
+	audio?: { sampleRate: 44100 | 48000; channels: 1 | 2 };
+	/** Per-project defaults (PS-17 – PS-23). */
+	defaults?: TProjectDefaults;
+}
+
+export type TProjectColorSpace = "rec709" | "rec2020" | "hlg" | "pq";
+
+export interface TProjectDefaults {
+	stillSeconds?: number;
+	transitionSeconds?: number;
+	captionLanguage?: string;
+	inputMode?: "en" | "si" | "ta";
+	autosaveSeconds?: number;
+	exportPreset?: string;
 }
 
 export interface TTimelineViewState {

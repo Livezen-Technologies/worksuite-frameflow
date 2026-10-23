@@ -89,8 +89,12 @@ function processingReducer(
 /* eslint-enable opencut/prefer-object-params */
 
 export function Captions() {
-	const [selectedLanguage, setSelectedLanguage] =
-		useState<TranscriptionLanguage>("auto");
+	const projectLanguage = useEditor(
+		(e) => e.project.getActiveOrNull()?.settings.defaults?.captionLanguage,
+	);
+	const [selectedLanguage, setSelectedLanguage] = useState<TranscriptionLanguage>(
+		() => TRANSCRIPTION_LANGUAGES.find((l) => l.code === projectLanguage)?.code ?? "auto",
+	);
 	const [processing, dispatch] = useReducer(processingReducer, IDLE_STATE);
 	const containerRef = useRef<HTMLDivElement>(null);
 	const fileInputRef = useRef<HTMLInputElement>(null);

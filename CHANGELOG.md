@@ -8,6 +8,11 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 ## [Unreleased]
 
 ### Added
+- Project settings: open from the W menu or the project switcher. Saving applies everything as one undo step.
+  - Details: name, aspect ratio (including Original, from the first clip), resolution 720p–8K or custom, frame rate (23.976–60), colour space (Rec. 709/2020 SDR), audio sample rate and channels (used for export), and 360° project.
+  - When the frame changes, existing clips can scale to fit, scale to fill, or keep their size.
+  - Defaults per project: still image length, transition length, caption language, typing language, and export preset.
+  - Settings templates: built-in YouTube, TikTok and Instagram templates, plus Save as template. Start a new project from a template with the arrow next to New project.
 - Add cover: pick a frame from the video on a filmstrip, or upload a picture. The cover becomes the project thumbnail and can be the first frame of the export. Open it from Cover in the timeline toolbar.
 - Export: Video and GIF tabs.
   - Video adds sliders for resolution (480p–4K), frame rate (24–60) and bitrate (5–100 Mbps), with a recommended bitrate and the estimated file size.

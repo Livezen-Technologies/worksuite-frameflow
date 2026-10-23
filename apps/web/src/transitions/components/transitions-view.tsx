@@ -89,7 +89,13 @@ export function TransitionsView() {
 	const [query, setQuery] = useState("");
 	const [category, setCategory] = useState<TransitionCategory | "All">("All");
 	const [type, setType] = useState<TransitionType>("cross-dissolve");
-	const [settings, setSettings] = useState(DEFAULT_TRANSITION);
+	const projectTransition = useEditor(
+		(e) => e.project.getActiveOrNull()?.settings.defaults?.transitionSeconds,
+	);
+	const [settings, setSettings] = useState(() => ({
+		...DEFAULT_TRANSITION,
+		duration: projectTransition ?? DEFAULT_TRANSITION.duration,
+	}));
 	const [hovered, setHovered] = useState<TransitionType | null>(null);
 
 	const selection = editor.timeline.getElementsWithTracks({

@@ -1,5 +1,7 @@
 "use client";
 
+import { useProjectSettings } from "@/project-settings/store";
+import { Settings } from "lucide-react";
 import { Button } from "../ui/button";
 import { useRef, useState } from "react";
 import {
@@ -144,6 +146,14 @@ function ProjectDropdown() {
 						icon={<HugeiconsIcon icon={Logout05Icon} />}
 					>
 						Exit project
+					</DropdownMenuItem>
+
+					<DropdownMenuItem
+						onClick={() => useProjectSettings.getState().setOpen(true)}
+						icon={<Settings className="size-4" />}
+						data-open-project-settings
+					>
+						Project settings
 					</DropdownMenuItem>
 
 					<DropdownMenuItem

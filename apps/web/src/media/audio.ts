@@ -627,12 +627,15 @@ export async function createTimelineAudioBuffer({
 	mediaAssets,
 	duration,
 	sampleRate = EXPORT_SAMPLE_RATE,
+	channels = 2,
 	audioContext,
 }: {
 	tracks: SceneTracks;
 	mediaAssets: MediaAsset[];
 	duration: number;
 	sampleRate?: number;
+	/** 1 mixes the stereo result down to mono (PS-09). */
+	channels?: 1 | 2;
 	audioContext?: AudioContext;
 }): Promise<AudioBuffer | null> {
 	const context = audioContext ?? createAudioContext({ sampleRate });
@@ -682,7 +685,14 @@ export async function createTimelineAudioBuffer({
 		});
 	}
 
-	return await applyAudioMasteringToBuffer({ audioBuffer: outputBuffer });
+	const mastered = await applyAudioMasteringToBuffer({ audioBuffer: outputBuffer });
+	if (channels === 2) return mastered;
+	const mono = context.createBuffer(1, mastered.length, mastered.sampleRate);
+	const out = mono.getChannelData(0);
+	const left = mastered.getChannelData(0);
+	const right = mastered.numberOfChannels > 1 ? mastered.getChannelData(1) : left;
+	for (let i = 0; i < out.length; i++) out[i] = (left[i] + right[i]) / 2;
+	return mono;
 }
 
 function collectPeakRange({
