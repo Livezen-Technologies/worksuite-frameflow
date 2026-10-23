@@ -1,6 +1,8 @@
 "use client";
 
-import { Crosshair, Globe, RotateCcw, Trash2 } from "lucide-react";
+import { Crosshair, Globe, Mountain, RotateCcw, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 import { buildEffectParamPath } from "@/animation";
 import { useElementPlayhead } from "@/components/editor/panels/properties/hooks/use-element-playhead";
 import { useKeyframedParamProperty } from "@/components/editor/panels/properties/hooks/use-keyframed-param-property";
@@ -13,6 +15,7 @@ import {
 	SectionTitle,
 } from "@/components/section";
 import { Button } from "@/components/ui/button";
+import type { EditorCore } from "@/core";
 import { useEditor } from "@/editor/use-editor";
 import type { Effect } from "@/effects/types";
 import { resolveEffectParamsAtTime } from "@/animation";
@@ -23,6 +26,8 @@ import { generateUUID } from "@/utils/id";
 import { cn } from "@/utils/ui";
 import type { MediaTime } from "@/wasm";
 import { cameraAtPlayhead, CAMERA_KEYS, setCamera } from "../camera";
+import { applyHorizonLock } from "../horizon-actions";
+import type { HorizonMode } from "../horizon";
 import {
 	findSpherePlaceEffect,
 	SPHERE_PLACE_PARAMS,
@@ -263,6 +268,7 @@ export function SphereTab({
 							<RotateCcw /> Reset view
 						</Button>
 					</div>
+					<HorizonButtons editor={editor} target={target} />
 					<Button
 						size="sm"
 						variant="text"
@@ -273,6 +279,48 @@ export function SphereTab({
 					</Button>
 				</SectionContent>
 			</Section>
+		</div>
+	);
+}
+
+/**
+ * Horizon lock from the camera's motion data (VR-04, VR-12): keyframes the
+ * 360° camera so the horizon stays level, or the view stays steady.
+ */
+function HorizonButtons({
+	editor,
+	target,
+}: {
+	editor: EditorCore;
+	target: Parameters<typeof applyHorizonLock>[0]["target"];
+}) {
+	const [busy, setBusy] = useState(false);
+	const run = async (mode: HorizonMode) => {
+		setBusy(true);
+		try {
+			const result = await applyHorizonLock({ editor, target, mode });
+			if (result.ok)
+				toast.success(
+					mode === "level" ? "Horizon levelled" : "View locked",
+					{ description: `${result.keyframes} keyframes from the camera's motion data.` },
+				);
+			else
+				toast.error("No motion data in this clip", {
+					description:
+						"Horizon lock reads the gyro data GoPro cameras record (GPMF). Exports from other apps usually drop it — use the camera's original file.",
+				});
+		} finally {
+			setBusy(false);
+		}
+	};
+	return (
+		<div className="mt-2 grid grid-cols-2 gap-2">
+			<Button size="sm" variant="outline" disabled={busy} data-horizon-level onClick={() => run("level")}>
+				<Mountain /> Level horizon
+			</Button>
+			<Button size="sm" variant="outline" disabled={busy} data-horizon-lock onClick={() => run("lock")}>
+				<Crosshair /> Lock view
+			</Button>
 		</div>
 	);
 }

@@ -9,6 +9,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
+- 360° horizon lock: in a 360° clip's 360° tab, **Level horizon** reads the motion data GoPro cameras record (GPMF orientation, gravity or gyro) and keyframes the 360° camera so the horizon stays level while the view still follows where the camera turned; **Lock view** also holds the direction steady.
+
 - 360° projects keep 4-channel ambisonic sound from 360° cameras and tag it as spatial audio in MP4 exports, so YouTube and headsets play it as sound that turns with the view (desktop app; the browser exports it as stereo).
 - In 360° projects, titles, logos and pictures can be pinned to the sphere (360° menu → Pin selected titles to the sphere): they curve correctly in the 360° video and face the viewer from the direction you set. Direction, height, tilt and size are in the item's new 360° tab and can be keyframed.
 - In 360° projects, blurs, glows and other effects wrap across the left/right edge of the sphere, so no line shows where the picture's ends meet. Vignette, Mirror and Wave can't wrap and are greyed out there.

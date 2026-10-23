@@ -12,14 +12,14 @@ const V1_UUID = [
 	0x52, 0x1f, 0xdd,
 ];
 
-interface Box {
+export interface Box {
 	type: string;
 	start: number;
 	headerSize: number;
 	size: number;
 }
 
-function readBoxes({
+export function readBoxes({
 	bytes,
 	start,
 	end,
