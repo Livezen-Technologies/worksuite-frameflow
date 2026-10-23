@@ -44,7 +44,57 @@ function errorFrom({ status, body }) {
 	return Object.assign(new Error(message), { code });
 }
 
+const sleep = (ms, signal) =>
+	new Promise((resolve, reject) => {
+		const timer = setTimeout(resolve, ms);
+		signal?.addEventListener("abort", () => {
+			clearTimeout(timer);
+			reject(Object.assign(new Error("Cancelled"), { name: "AbortError" }));
+		});
+	});
+
+/** Seconds Gemini asks us to wait (RetryInfo), if it says. */
+function retryDelaySeconds(body) {
+	const info = body?.error?.details?.find?.((d) => String(d["@type"] ?? "").endsWith("RetryInfo"));
+	const value = parseFloat(String(info?.retryDelay ?? ""));
+	return Number.isFinite(value) ? value : null;
+}
+
+/**
+ * Rate limits and server hiccups are retried with backoff (SRS AI-48). A
+ * used-up daily quota is not. Failed requests aren't billed by Gemini, so
+ * a retry never charges twice; only the final answer's usage is reported.
+ */
+const MAX_ATTEMPTS = 4;
+
 async function call({ model, body }) {
+	let lastError = null;
+	for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+		try {
+			const result = await callOnce({ model, body });
+			return { ...result, attempts: attempt };
+		} catch (error) {
+			lastError = error;
+			const retryable =
+				(error.code === "quota" && !/per.?day|daily/i.test(error.message)) || error.code === "server";
+			if (!retryable || attempt === MAX_ATTEMPTS) throw error;
+			const hinted = error.retryAfter ?? null;
+			const wait = Math.min(60, hinted ?? 2 ** attempt) * 1000 + Math.random() * 250;
+			const controller = new AbortController();
+			controllers.add(controller);
+			try {
+				await sleep(wait, controller.signal);
+			} catch {
+				throw Object.assign(new Error("Cancelled"), { code: "cancelled" });
+			} finally {
+				controllers.delete(controller);
+			}
+		}
+	}
+	throw lastError;
+}
+
+async function callOnce({ model, body }) {
 	const key = readKey();
 	if (!key) throw Object.assign(new Error("Add your Gemini API key in Settings → AI."), { code: "no-key" });
 	network.assertOnline();
@@ -61,14 +111,19 @@ async function call({ model, body }) {
 			signal: controller.signal,
 		});
 		const json = await res.json().catch(() => null);
-		if (!res.ok) throw errorFrom({ status: res.status, body: json });
+		if (!res.ok) {
+			const error = errorFrom({ status: res.status, body: json });
+			const header = parseFloat(res.headers.get("retry-after") ?? "");
+			error.retryAfter = Number.isFinite(header) ? header : retryDelaySeconds(json);
+			throw error;
+		}
 		const candidate = json?.candidates?.[0];
 		const text = candidate?.content?.parts?.map((p) => p.text ?? "").join("") ?? "";
 		if (!text) {
 			const reason = candidate?.finishReason ?? json?.promptFeedback?.blockReason ?? "empty";
 			throw Object.assign(new Error(`Gemini gave no answer (${reason})`), { code: "empty" });
 		}
-		return { text, usage: json.usageMetadata ?? null };
+		return { text, usage: json.usageMetadata ?? null, model: name };
 	} catch (error) {
 		if (error.name === "AbortError") throw Object.assign(new Error("Cancelled"), { code: "cancelled" });
 		throw error;

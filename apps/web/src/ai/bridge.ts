@@ -24,7 +24,20 @@ export interface AiBridge {
 		parts: AiPart[];
 		schema?: object;
 		temperature?: number;
-	}) => Promise<AiResult<{ text: string }>>;
+	}) => Promise<
+		AiResult<{
+			text: string;
+			/** Token counts the provider reports (AI-47). */
+			usage?: {
+				promptTokenCount?: number;
+				candidatesTokenCount?: number;
+				thoughtsTokenCount?: number;
+			} | null;
+			model?: string;
+			/** Tries it took, after rate-limit retries (AI-48). */
+			attempts?: number;
+		}>
+	>;
 	cancel: () => Promise<void>;
 }
 

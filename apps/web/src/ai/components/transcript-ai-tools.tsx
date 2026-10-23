@@ -8,7 +8,8 @@ import { Label } from "@/components/ui/label";
 import { LANGUAGES } from "@/transcription/languages";
 import type { Transcript } from "@/transcript/types";
 import { aiBridge } from "../bridge";
-import { aiCleanUp, aiTranslate, cancelAi } from "../tasks";
+import { aiCleanUp, aiTranslate, cancelAi, estimateTextJob } from "../tasks";
+import { AiCostNote } from "./ai-spending";
 
 /** Transcript editor: translate and clean up with Gemini, with undo. */
 export function TranscriptAiTools({
@@ -125,6 +126,7 @@ export function TranscriptAiTools({
 			>
 				Clean up text
 			</Button>
+			<AiCostNote estimate={estimateTextJob({ transcript })} />
 			{running && (
 				<div
 					className="text-muted-foreground flex items-center justify-between text-xs"

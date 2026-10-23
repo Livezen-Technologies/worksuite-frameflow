@@ -9,11 +9,13 @@ import {
 } from "@/components/ui/select";
 import { useMemo, useReducer, useRef, useState, useSyncExternalStore } from "react";
 import { aiBridge } from "@/ai/bridge";
-import { aiTranscribe } from "@/ai/tasks";
+import { aiTranscribe, estimateTranscription } from "@/ai/tasks";
+import { AiCostNote } from "@/ai/components/ai-spending";
 import { useAiSettings } from "@/ai/store";
 import { extractTimelineAudio } from "@/media/mediabunny";
 import { narrationSources, onlyTrack } from "@/captions/narration";
 import { useEditor } from "@/editor/use-editor";
+import { TICKS_PER_SECOND } from "@/wasm";
 import { TRANSCRIPTION_DIAGNOSTICS_SCOPE } from "@/transcription/diagnostics";
 import { DEFAULT_TRANSCRIPTION_SAMPLE_RATE } from "@/transcription/audio";
 import { TRANSCRIPTION_LANGUAGES } from "@/transcription/supported-languages";
@@ -121,6 +123,9 @@ export function Captions() {
 	const openTranscriptEditor = useTranscriptStore((s) => s.openEditor);
 
 	const isProcessing = processing.status === "processing";
+	const totalSeconds = useEditor(
+		(e) => e.timeline.getTotalDuration() / TICKS_PER_SECOND,
+	);
 	const sceneTracks = useEditor((e) => e.scenes.getActiveScene().tracks);
 	const sources = useMemo(() => narrationSources(sceneTracks), [sceneTracks]);
 	const [narration, setNarration] = useState<string>("all");
@@ -411,6 +416,13 @@ export function Captions() {
 										</SelectItem>
 									</SelectContent>
 								</Select>
+								{engine === "gemini" && (
+									<AiCostNote
+										estimate={estimateTranscription({
+											seconds: totalSeconds,
+										})}
+									/>
+								)}
 							</SectionField>
 						)}
 					</SectionFields>

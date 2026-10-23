@@ -14,57 +14,27 @@ import {
 	type TextRequest,
 } from "./prompts";
 import { useAiSettings } from "./store";
+import { AiError, aiProvider } from "./provider";
 
-export class AiError extends Error {
-	readonly code: string;
-	constructor({ message, code }: { message: string; code: string }) {
-		super(message);
-		this.code = code;
-	}
+export { AiError };
+
+/** Cost estimates shown before a job runs (SRS AI-47). */
+export function estimateTextJob({ transcript }: { transcript: Transcript }) {
+	const chars = transcript.segments.reduce((n, s) => n + s.text.length + 40, 0);
+	return aiProvider().estimateCost({ textChars: chars, outputChars: chars });
 }
 
-const MESSAGES: Record<string, string> = {
-	"no-key": "Add your Gemini API key in Settings → AI.",
-	key: "Gemini didn't accept the API key. Check it in Settings → AI.",
-	quota:
-		"Your Gemini quota is used up for now. Try again later or check your Google AI plan.",
-	offline: "You're working offline. Turn off offline mode to use AI features.",
-	server: "Gemini is having trouble right now. Try again in a minute.",
-};
-
-async function generate({
-	request,
-	parts,
-}: {
-	request: { system: string; schema: object };
-	parts: ({ text: string } | { data: ArrayBuffer; mimeType: string })[];
-}): Promise<string> {
-	const bridge = aiBridge();
-	if (!bridge)
-		throw new AiError({
-			message: "AI features need the desktop app.",
-			code: "unavailable",
-		});
-	const { model } = useAiSettings.getState();
-	const result = await bridge.generate({
-		model: model || undefined,
-		system: request.system,
-		parts,
-		schema: request.schema,
-	});
-	if (!result.ok)
-		throw new AiError({
-			message: MESSAGES[result.code] ?? result.message,
-			code: result.code,
-		});
-	return result.text;
+export function estimateTranscription({ seconds }: { seconds: number }) {
+	return aiProvider().estimateCost({ audioSeconds: seconds, outputChars: seconds * 18 });
 }
 
 async function runTextBatches({
 	transcript,
 	build,
 	onProgress,
+	kind,
 }: {
+	kind: string;
 	transcript: Transcript;
 	build: (segments: Transcript["segments"]) => TextRequest;
 	onProgress?: (progress: number) => void;
@@ -74,7 +44,7 @@ async function runTextBatches({
 	for (const [index, group] of groups.entries()) {
 		onProgress?.(index / groups.length);
 		const request = build(group);
-		const text = await generate({ request, parts: [{ text: request.text }] });
+		const { text } = await aiProvider().rewriteText({ request, kind });
 		for (const [id, value] of parseTextResults(text)) results.set(id, value);
 	}
 	onProgress?.(1);
@@ -95,6 +65,7 @@ export async function aiTranslate({
 	const results = await runTextBatches({
 		transcript,
 		onProgress,
+		kind: "translate",
 		build: (segments) =>
 			buildTranslateRequest({ segments, target, vocabulary }),
 	});
@@ -125,6 +96,7 @@ export async function aiCleanUp({
 	const results = await runTextBatches({
 		transcript,
 		onProgress,
+		kind: "clean-up",
 		build: (segments) =>
 			buildCleanupRequest({
 				segments,
@@ -155,18 +127,16 @@ export async function aiTranscribe({
 		onProgress?.(index / chunks.length);
 		const duration = (chunk.end - chunk.start) / sampleRate;
 		const request = buildTranscribeRequest({ language, vocabulary, duration });
-		const text = await generate({
+		const { text } = await aiProvider().transcribe({
 			request,
-			parts: [
-				{
-					data: encodeWav({
-						samples: samples.subarray(chunk.start, chunk.end),
-						sampleRate,
-					}),
-					mimeType: "audio/wav",
-				},
-				{ text: request.text },
-			],
+			audio: {
+				data: encodeWav({
+					samples: samples.subarray(chunk.start, chunk.end),
+					sampleRate,
+				}),
+				mimeType: "audio/wav",
+				seconds: duration,
+			},
 		});
 		segments.push(
 			...parseTranscribeResult({

@@ -1,3 +1,11 @@
+import {
+	parseAnswer,
+	TextResultItem,
+	TextResultsAnswer,
+	TranscribeAnswer,
+	TranscribeItem,
+	validItems,
+} from "./schemas";
 import type { Transcript, TranscriptSegment } from "@/transcript/types";
 import type { TranscriptionSegment } from "@/transcription/types";
 import { LANGUAGES } from "@/transcription/languages";
@@ -111,35 +119,14 @@ export function batches<T>({
 	return out;
 }
 
-function parseJson(text: string): unknown {
-	try {
-		return JSON.parse(text);
-	} catch {
-		// Some answers wrap the JSON in a code fence.
-		const match = text.match(/\{[\s\S]*\}/);
-		if (!match) return null;
-		try {
-			return JSON.parse(match[0]);
-		} catch {
-			return null;
-		}
-	}
-}
 
-const isRecord = (v: unknown): v is Record<string, unknown> =>
-	typeof v === "object" && v !== null;
 
 export function parseTextResults(text: string): Map<string, string> {
-	const data = parseJson(text);
+	// Strict check of the whole answer, then of each item (AI-51).
+	const answer = parseAnswer({ text, schema: TextResultsAnswer });
+	const { items } = validItems({ items: answer.segments, item: TextResultItem });
 	const out = new Map<string, string>();
-	if (!isRecord(data) || !Array.isArray(data.segments)) return out;
-	for (const item of data.segments) {
-		if (
-			!isRecord(item) ||
-			typeof item.id !== "string" ||
-			typeof item.text !== "string"
-		)
-			continue;
+	for (const item of items) {
 		const value = item.text.replace(/\s+/g, " ").trim();
 		if (value) out.set(item.id, value);
 	}
@@ -229,17 +216,14 @@ export function parseTranscribeResult({
 	offset: number;
 	duration: number;
 }): TranscriptionSegment[] {
-	const data = parseJson(text);
-	if (!isRecord(data) || !Array.isArray(data.segments)) return [];
+	const answer = parseAnswer({ text, schema: TranscribeAnswer });
+	const { items } = validItems({ items: answer.segments, item: TranscribeItem });
 	const out: TranscriptionSegment[] = [];
-	for (const item of data.segments) {
-		if (!isRecord(item) || typeof item.text !== "string") continue;
-		const start = Number(item.start);
-		const end = Number(item.end);
+	for (const item of items) {
 		const value = item.text.replace(/\s+/g, " ").trim();
-		if (!value || !Number.isFinite(start) || !Number.isFinite(end)) continue;
-		const s = Math.min(Math.max(0, start), duration);
-		const e = Math.min(Math.max(s + 0.2, end), duration);
+		if (!value) continue;
+		const s = Math.min(Math.max(0, item.start), duration);
+		const e = Math.min(Math.max(s + 0.2, item.end), duration);
 		if (e <= s) continue;
 		out.push({ text: value, start: offset + s, end: offset + e });
 	}

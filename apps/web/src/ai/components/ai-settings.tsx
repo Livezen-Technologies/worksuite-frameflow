@@ -1,5 +1,6 @@
 "use client";
 
+import { AiSpendingSection } from "./ai-spending";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -130,6 +131,8 @@ export function AiSettings() {
 					Leave empty for the default.
 				</p>
 			</section>
+
+			<AiSpendingSection />
 
 			<section className="flex flex-col gap-2">
 				<h3 className="text-sm font-semibold">Vocabulary</h3>

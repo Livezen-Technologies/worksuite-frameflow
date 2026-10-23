@@ -78,7 +78,9 @@ describe("AI prompts", () => {
 			end: 2,
 		});
 		expect(next.segments[1]).toBe(transcript.segments[1]);
-		expect(parseTextResults("not json").size).toBe(0);
+		// An answer of the wrong shape is rejected as a whole (AI-51).
+		expect(() => parseTextResults("not json")).toThrow("expected format");
+		expect(() => parseTextResults('{"items":[]}')).toThrow("expected format");
 	});
 
 	test("batches", () => {
