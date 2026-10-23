@@ -1,5 +1,6 @@
 "use client";
 
+import { isLegacyFont } from "@/input-method/legacy";
 import { useCallback, useEffect, useRef } from "react";
 import { usePreviewViewport } from "@/preview/components/preview-viewport";
 import { useEditor } from "@/editor/use-editor";
@@ -126,7 +127,10 @@ export function TextEditOverlay({
 				className="cursor-text select-text outline-none whitespace-pre"
 				style={{
 					fontSize: resolvedTextLayout.scaledFontSize,
-					fontFamily: textParams.fontFamily,
+					// Editing shows Unicode in a Unicode font; legacy fonts apply when drawn (TI-19).
+					fontFamily: isLegacyFont({ fontFamily: textParams.fontFamily })
+						? "Noto Sans Sinhala"
+						: textParams.fontFamily,
 					fontWeight: textParams.fontWeight === "bold" ? "bold" : "normal",
 					fontStyle: textParams.fontStyle === "italic" ? "italic" : "normal",
 					textAlign: textParams.textAlign,
@@ -149,7 +153,7 @@ export function TextEditOverlay({
 				onBlur={onCommit}
 				onKeyDown={(event) => handleKeyDown({ event })}
 			>
-				{textParams.content}
+				{String(element.params.content ?? textParams.content)}
 			</div>
 		</div>
 	);

@@ -15,6 +15,7 @@ import { DeleteProjectDialog } from "@/project/components/delete-project-dialog"
 import { useRouter } from "next/navigation";
 import { FaDiscord } from "react-icons/fa6";
 import { ExportButton } from "./export-button";
+import { InputModeButton } from "@/input-method/components/input-mode-button";
 import { CloudSyncButton } from "@/cloud/components/cloud-sync-button";
 import {
 	OfflineBadge,
@@ -43,6 +44,7 @@ export function EditorHeader() {
 			</div>
 			<WorkspaceBar />
 			<nav className="flex flex-1 items-center justify-end gap-2">
+				<InputModeButton />
 				<FeedbackPopover />
 				<UpdatePrompt />
 				<OfflineBadge />

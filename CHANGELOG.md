@@ -8,6 +8,15 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 ## [Unreleased]
 
 ### Added
+- Sinhala and Tamil typing in every text field, with no OS keyboard needed. The EN / සිං / த button in the editor header switches language, as does Ctrl/Cmd+Shift+L.
+  - Singlish: type as it sounds (ayubowan → ආයුබෝවන්), including yansaya, rakaransaya and repaya. A Wijesekara layout is also available.
+  - Tamil phonetic typing (vanakkam → வணக்கம்).
+  - Suggestions appear as you type, ranked from a built-in offline word list. Pick one with the number or arrow keys; Space accepts the first. Your picks are learned and synced with your account.
+  - Shift+Space or `backticks` keep a word in English.
+  - An on-screen Sinhala and Tamil keyboard.
+- Legacy Sinhala fonts (FM, DL): text stays Unicode while you edit and is converted automatically when drawn.
+  - Pasting FM-encoded text converts it to Unicode, with Undo.
+  - The text panel adds Copy as legacy text, Singlish → සිංහල and Add romanised line.
 - Project tabs: open several projects at once, each in a tab above the editor.
   - Each tab shows its name, Local or Cloud status, an unsaved dot and a close button. Drag to reorder.
   - Shortcuts: Ctrl/Cmd+Tab and Ctrl/Cmd+1–9 switch, Ctrl/Cmd+W closes, Ctrl/Cmd+Shift+T reopens the last closed tab, and + opens another project.

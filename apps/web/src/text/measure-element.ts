@@ -1,3 +1,4 @@
+import { isLegacyFont, unicodeToLegacy } from "@/input-method/legacy";
 import { CORNER_RADIUS_MIN } from "@/text/background";
 import { DEFAULTS } from "@/timeline/defaults";
 import type { TextElement } from "@/timeline";
@@ -134,22 +135,25 @@ export function buildTextLayoutParamsFromElement({
 }: {
 	element: TextElement;
 }): TextLayoutParams {
+	const content = readStringParam({
+		params: element.params,
+		key: "content",
+		fallback: "Default text",
+	});
+	const fontFamily = readStringParam({
+		params: element.params,
+		key: "fontFamily",
+		fallback: "Arial",
+	});
 	return {
-		content: readStringParam({
-			params: element.params,
-			key: "content",
-			fallback: "Default text",
-		}),
+		// Text stays Unicode; a legacy Sinhala font gets its own encoding when drawn (TI-18).
+		content: isLegacyFont({ fontFamily }) ? unicodeToLegacy({ text: content }) : content,
 		fontSize: readNumberParam({
 			params: element.params,
 			key: "fontSize",
 			fallback: 15,
 		}),
-		fontFamily: readStringParam({
-			params: element.params,
-			key: "fontFamily",
-			fallback: "Arial",
-		}),
+		fontFamily,
 		fontWeight: readFontWeight({
 			value: element.params.fontWeight,
 			fallback: "normal",

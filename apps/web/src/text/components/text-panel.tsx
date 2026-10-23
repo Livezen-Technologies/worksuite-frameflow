@@ -1,5 +1,10 @@
 "use client";
 
+import { isLegacyFont, unicodeToLegacy } from "@/input-method/legacy";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { convertSinglishText, hasSinhala, sinhalaToSinglish } from "@/input-method/sinhala";
+
 import { useState } from "react";
 import {
 	AlignCenter,
@@ -335,10 +340,17 @@ export function TextBasicTab({
 					rows={3}
 					className="bg-accent/50 w-full resize-y rounded-lg border-0 p-3 text-sm"
 					style={{
-						fontFamily: `"${String(p.fontFamily ?? "Inter")}", 'Noto Sans Sinhala', sans-serif`,
+						fontFamily: isLegacyFont({ fontFamily: String(p.fontFamily ?? "") })
+							? "'Noto Sans Sinhala', sans-serif"
+							: `"${String(p.fontFamily ?? "Inter")}", 'Noto Sans Sinhala', sans-serif`,
 					}}
 					aria-label="Text"
 					data-text-content
+				/>
+				<SinhalaTextTools
+					content={content}
+					fontFamily={String(p.fontFamily ?? "")}
+					onChange={(next) => writeText({ content: next })}
 				/>
 			</div>
 			<Section title="Font">
@@ -731,6 +743,73 @@ export function TextPresetsTab({
 				/>
 				Apply to all text
 			</label>
+		</div>
+	);
+}
+
+/** Legacy-font badge, Singlish conversion, romanisation and legacy copy (TI-16 – TI-21). */
+function SinhalaTextTools({
+	content,
+	fontFamily,
+	onChange,
+}: {
+	content: string;
+	fontFamily: string;
+	onChange: (content: string) => void;
+}) {
+	const legacy = isLegacyFont({ fontFamily });
+	const sinhala = hasSinhala({ text: content });
+	const latin = /[A-Za-z]/.test(content);
+	if (!legacy && !sinhala && !latin) return null;
+	return (
+		<div className="mt-1.5 flex flex-wrap items-center gap-1 text-xs">
+			{legacy && (
+				<span
+					className="bg-primary/15 text-primary rounded px-1.5 py-0.5"
+					title="Text is kept as Unicode and converted to this font's encoding when drawn"
+				>
+					Legacy font · auto-converted
+				</span>
+			)}
+			{latin && !sinhala && (
+				<Button
+					variant="ghost"
+					size="sm"
+					className="h-6 px-1.5 text-xs"
+					title="Convert Singlish typed text to Sinhala; `backtick` spans stay English"
+					onClick={() => onChange(convertSinglishText({ text: content }))}
+				>
+					Singlish → සිංහල
+				</Button>
+			)}
+			{sinhala && (
+				<Button
+					variant="ghost"
+					size="sm"
+					className="h-6 px-1.5 text-xs"
+					title="Add a romanised (Singlish) line under the text"
+					onClick={() =>
+						onChange(`${content}\n${sinhalaToSinglish({ text: content })}`)
+					}
+				>
+					Add romanised line
+				</Button>
+			)}
+			{sinhala && (
+				<Button
+					variant="ghost"
+					size="sm"
+					className="h-6 px-1.5 text-xs"
+					title="Copy in FM/DL legacy encoding for Photoshop and older tools"
+					onClick={() => {
+						void navigator.clipboard
+							.writeText(unicodeToLegacy({ text: content }))
+							.then(() => toast.success("Copied as legacy text"));
+					}}
+				>
+					Copy as legacy text
+				</Button>
+			)}
 		</div>
 	);
 }

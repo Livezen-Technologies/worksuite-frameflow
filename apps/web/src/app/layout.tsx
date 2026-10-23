@@ -2,6 +2,7 @@ import { ThemeProvider } from "next-themes";
 import Script from "next/script";
 import "./globals.css";
 import { Toaster } from "../components/ui/sonner";
+import { InputMethodHost } from "@/input-method/components/input-method-host";
 import { ChangelogNotification } from "@/changelog/components/changelog-notification";
 import { TooltipProvider } from "../components/ui/tooltip";
 import { baseMetaData } from "./metadata";
@@ -47,6 +48,7 @@ export default function RootLayout({
 				>
 					<TooltipProvider>
 						<Toaster />
+						<InputMethodHost />
 						<Script
 							src="https://cdn.databuddy.cc/databuddy.js"
 							strategy="afterInteractive"

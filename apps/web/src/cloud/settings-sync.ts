@@ -9,6 +9,7 @@ import { usePreviewStore } from "@/preview/preview-store";
 import { useMyTextTemplates } from "@/text/templates";
 import { useTimelineStore } from "@/timeline/timeline-store";
 import { useWorkspaceStore } from "@/workspaces/store";
+import { useInputMethod } from "@/input-method/store";
 import { mergeSettings, pickFields } from "./settings-merge";
 
 /**
@@ -48,6 +49,11 @@ const store = ({
 });
 
 export const SYNCED_STORES: SyncedStore[] = [
+	store({
+		key: "frameflow-input-method",
+		label: "Sinhala/Tamil typing and personal dictionary",
+		api: useInputMethod,
+	}),
 	store({
 		key: "opencut-keybindings",
 		label: "Keyboard shortcuts",

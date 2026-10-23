@@ -1,5 +1,6 @@
 "use client";
 
+import { installInputMethod } from "@/input-method/controller";
 import { type ReactNode, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { ExternalLink, PanelTopClose } from "lucide-react";
@@ -117,6 +118,7 @@ function usePopoutWindow({
 			"bg-background text-foreground flex h-screen w-screen flex-col p-2";
 		child.document.body.appendChild(root);
 		const stopForwarding = forwardEvents({ child });
+		const removeInputMethod = installInputMethod({ doc: child.document });
 		const onClose = () =>
 			usePopoutStore.getState().setOpen({ id, open: false });
 		child.addEventListener("pagehide", onClose);
@@ -137,6 +139,7 @@ function usePopoutWindow({
 			setContainer(null);
 			themeObserver.disconnect();
 			stopForwarding();
+			removeInputMethod();
 			window.removeEventListener("pagehide", closeWithMain);
 			child.removeEventListener("pagehide", onClose);
 			child.close();
