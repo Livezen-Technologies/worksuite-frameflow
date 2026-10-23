@@ -1,0 +1,36 @@
+{
+	"schema": 1,
+	"id": "co-underline",
+	"name": "Swoosh underline",
+	"category": "callouts",
+	"type": "lottie",
+	"file": "co-underline.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "A brush-like swoosh underlines a word, with a second shorter stroke.",
+	"tags": [
+		"underline",
+		"swoosh",
+		"emphasis",
+		"stroke",
+		"mark"
+	],
+	"durationSec": 3,
+	"loop": false,
+	"aspect": "1:1",
+	"width": 1080,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "main",
+			"name": "Main stroke",
+			"default": "#2EC4B6"
+		},
+		{
+			"id": "second",
+			"name": "Second stroke",
+			"default": "#4C8DFF"
+		}
+	]
+}

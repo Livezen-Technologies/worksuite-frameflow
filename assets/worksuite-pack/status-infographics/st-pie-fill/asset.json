@@ -1,0 +1,47 @@
+{
+	"schema": 1,
+	"id": "st-pie-fill",
+	"name": "Pie fill",
+	"category": "status-infographics",
+	"type": "lottie",
+	"file": "st-pie-fill.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "A pie chart fills slice by slice around a ring of three colours.",
+	"tags": [
+		"pie chart",
+		"donut",
+		"share",
+		"percent",
+		"stats",
+		"data"
+	],
+	"durationSec": 3,
+	"loop": true,
+	"aspect": "1:1",
+	"width": 1080,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "a",
+			"name": "Slice 1",
+			"default": "#4C8DFF"
+		},
+		{
+			"id": "b",
+			"name": "Slice 2",
+			"default": "#2EC4B6"
+		},
+		{
+			"id": "c",
+			"name": "Slice 3",
+			"default": "#F5A524"
+		},
+		{
+			"id": "bg",
+			"name": "Background",
+			"default": "#FFFFFF"
+		}
+	]
+}

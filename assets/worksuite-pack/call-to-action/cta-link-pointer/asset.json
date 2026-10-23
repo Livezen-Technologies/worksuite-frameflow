@@ -1,0 +1,41 @@
+{
+	"schema": 1,
+	"id": "cta-link-pointer",
+	"name": "Link pointer",
+	"category": "call-to-action",
+	"type": "lottie",
+	"file": "cta-link-pointer.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "A chain-link badge with an arrow bouncing down towards it.",
+	"tags": [
+		"link in bio",
+		"link",
+		"pointer",
+		"arrow",
+		"down"
+	],
+	"durationSec": 3,
+	"loop": true,
+	"aspect": "1:1",
+	"width": 1080,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "badge",
+			"name": "Badge",
+			"default": "#FFFFFF"
+		},
+		{
+			"id": "link",
+			"name": "Link",
+			"default": "#0F1115"
+		},
+		{
+			"id": "arrow",
+			"name": "Arrow",
+			"default": "#F5A524"
+		}
+	]
+}

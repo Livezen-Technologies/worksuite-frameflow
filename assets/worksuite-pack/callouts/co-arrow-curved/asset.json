@@ -1,0 +1,31 @@
+{
+	"schema": 1,
+	"id": "co-arrow-curved",
+	"name": "Curved arrow",
+	"category": "callouts",
+	"type": "lottie",
+	"file": "co-arrow-curved.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "A hand-drawn curved arrow sketches itself on, then its head snaps into place.",
+	"tags": [
+		"arrow",
+		"curved",
+		"point",
+		"look here",
+		"sketch"
+	],
+	"durationSec": 3,
+	"loop": false,
+	"aspect": "1:1",
+	"width": 1080,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "arrow",
+			"name": "Arrow",
+			"default": "#F5A524"
+		}
+	]
+}

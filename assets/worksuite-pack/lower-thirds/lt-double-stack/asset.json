@@ -1,0 +1,41 @@
+{
+	"schema": 1,
+	"id": "lt-double-stack",
+	"name": "Double stack",
+	"category": "lower-thirds",
+	"type": "lottie",
+	"file": "lt-double-stack.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "Two stacked bars drop into place one after the other.",
+	"tags": [
+		"lower third",
+		"stack",
+		"two lines",
+		"name",
+		"role"
+	],
+	"durationSec": 4,
+	"loop": false,
+	"aspect": "16:9",
+	"width": 1920,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "top",
+			"name": "Top bar",
+			"default": "#2EC4B6"
+		},
+		{
+			"id": "bottom",
+			"name": "Bottom bar",
+			"default": "#FFFFFF"
+		},
+		{
+			"id": "edge",
+			"name": "Edge",
+			"default": "#0F1115"
+		}
+	]
+}

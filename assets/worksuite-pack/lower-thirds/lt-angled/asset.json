@@ -1,0 +1,36 @@
+{
+	"schema": 1,
+	"id": "lt-angled",
+	"name": "Angled slab",
+	"category": "lower-thirds",
+	"type": "lottie",
+	"file": "lt-angled.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "A slanted slab slices in with a thin parallel stripe.",
+	"tags": [
+		"lower third",
+		"angled",
+		"sport",
+		"dynamic",
+		"slant"
+	],
+	"durationSec": 4,
+	"loop": false,
+	"aspect": "16:9",
+	"width": 1920,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "slab",
+			"name": "Slab",
+			"default": "#F5A524"
+		},
+		{
+			"id": "stripe",
+			"name": "Stripe",
+			"default": "#0F1115"
+		}
+	]
+}

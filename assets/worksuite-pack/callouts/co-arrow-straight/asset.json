@@ -1,0 +1,36 @@
+{
+	"schema": 1,
+	"id": "co-arrow-straight",
+	"name": "Nudging arrow",
+	"category": "callouts",
+	"type": "lottie",
+	"file": "co-arrow-straight.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "A bold straight arrow nudges towards its target again and again.",
+	"tags": [
+		"arrow",
+		"straight",
+		"point",
+		"nudge",
+		"right"
+	],
+	"durationSec": 3,
+	"loop": true,
+	"aspect": "1:1",
+	"width": 1080,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "arrow",
+			"name": "Arrow",
+			"default": "#FFFFFF"
+		},
+		{
+			"id": "shadow",
+			"name": "Shadow",
+			"default": "#0F1115"
+		}
+	]
+}

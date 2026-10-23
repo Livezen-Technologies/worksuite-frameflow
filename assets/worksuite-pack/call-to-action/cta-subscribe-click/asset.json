@@ -1,0 +1,52 @@
+{
+	"schema": 1,
+	"id": "cta-subscribe-click",
+	"name": "Subscribe click",
+	"category": "call-to-action",
+	"type": "lottie",
+	"file": "cta-subscribe-click.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "A cursor glides to a play-button pill and clicks it; the pill switches to its pressed colour.",
+	"tags": [
+		"subscribe",
+		"button",
+		"click",
+		"cursor",
+		"pill",
+		"play"
+	],
+	"durationSec": 3,
+	"loop": true,
+	"aspect": "1:1",
+	"width": 1080,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "pill",
+			"name": "Pill",
+			"default": "#4C8DFF"
+		},
+		{
+			"id": "pressed",
+			"name": "Pressed pill",
+			"default": "#0F1115"
+		},
+		{
+			"id": "icon",
+			"name": "Icon",
+			"default": "#FFFFFF"
+		},
+		{
+			"id": "cursor",
+			"name": "Cursor",
+			"default": "#F4F6FA"
+		},
+		{
+			"id": "outline",
+			"name": "Cursor outline",
+			"default": "#F5A524"
+		}
+	]
+}

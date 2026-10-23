@@ -1,0 +1,36 @@
+{
+	"schema": 1,
+	"id": "tr-vertical-bars",
+	"name": "Vertical bars",
+	"category": "transitions",
+	"type": "lottie",
+	"file": "tr-vertical-bars.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "Vertical bars grow down in a ripple to cover the frame, then shrink away upwards.",
+	"tags": [
+		"transition",
+		"bars",
+		"stripes",
+		"ripple",
+		"columns"
+	],
+	"durationSec": 2,
+	"loop": false,
+	"aspect": "16:9",
+	"width": 1920,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "a",
+			"name": "Bars 1",
+			"default": "#4C8DFF"
+		},
+		{
+			"id": "b",
+			"name": "Bars 2",
+			"default": "#FFFFFF"
+		}
+	]
+}

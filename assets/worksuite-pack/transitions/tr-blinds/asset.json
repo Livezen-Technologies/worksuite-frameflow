@@ -1,0 +1,36 @@
+{
+	"schema": 1,
+	"id": "tr-blinds",
+	"name": "Blinds",
+	"category": "transitions",
+	"type": "lottie",
+	"file": "tr-blinds.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "Horizontal slats close like window blinds, then open again.",
+	"tags": [
+		"transition",
+		"blinds",
+		"slats",
+		"horizontal",
+		"shutter"
+	],
+	"durationSec": 2,
+	"loop": false,
+	"aspect": "16:9",
+	"width": 1920,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "slat",
+			"name": "Slats",
+			"default": "#FFFFFF"
+		},
+		{
+			"id": "shade",
+			"name": "Shade",
+			"default": "#2EC4B6"
+		}
+	]
+}

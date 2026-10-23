@@ -1,0 +1,42 @@
+{
+	"schema": 1,
+	"id": "lt-bar-slide",
+	"name": "Bar slide",
+	"category": "lower-thirds",
+	"type": "lottie",
+	"file": "lt-bar-slide.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "An accent line grows, then a title bar and a subtitle bar slide out from it.",
+	"tags": [
+		"lower third",
+		"name",
+		"title",
+		"bar",
+		"slide",
+		"news"
+	],
+	"durationSec": 4,
+	"loop": false,
+	"aspect": "16:9",
+	"width": 1920,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "main",
+			"name": "Title bar",
+			"default": "#4C8DFF"
+		},
+		{
+			"id": "sub",
+			"name": "Subtitle bar",
+			"default": "#0F1115"
+		},
+		{
+			"id": "accent",
+			"name": "Accent",
+			"default": "#F5A524"
+		}
+	]
+}

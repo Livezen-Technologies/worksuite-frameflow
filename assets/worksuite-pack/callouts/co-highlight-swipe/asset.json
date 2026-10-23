@@ -1,0 +1,31 @@
+{
+	"schema": 1,
+	"id": "co-highlight-swipe",
+	"name": "Highlight swipe",
+	"category": "callouts",
+	"type": "lottie",
+	"file": "co-highlight-swipe.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "A translucent highlighter band swipes across from left to right.",
+	"tags": [
+		"highlight",
+		"highlighter",
+		"marker",
+		"swipe",
+		"emphasis"
+	],
+	"durationSec": 3,
+	"loop": false,
+	"aspect": "1:1",
+	"width": 1080,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "band",
+			"name": "Band",
+			"default": "#F5A524"
+		}
+	]
+}

@@ -1,0 +1,36 @@
+{
+	"schema": 1,
+	"id": "co-exclamation",
+	"name": "Exclamation badge",
+	"category": "callouts",
+	"type": "lottie",
+	"file": "co-exclamation.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "A round warning badge pops in and gives a quick shake every loop.",
+	"tags": [
+		"exclamation",
+		"warning",
+		"attention",
+		"alert",
+		"important"
+	],
+	"durationSec": 3,
+	"loop": true,
+	"aspect": "1:1",
+	"width": 1080,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "badge",
+			"name": "Badge",
+			"default": "#F5A524"
+		},
+		{
+			"id": "mark",
+			"name": "Mark",
+			"default": "#0F1115"
+		}
+	]
+}

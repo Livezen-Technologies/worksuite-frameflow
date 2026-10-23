@@ -1,0 +1,41 @@
+{
+	"schema": 1,
+	"id": "tr-slide-panels",
+	"name": "Slide panels",
+	"category": "transitions",
+	"type": "lottie",
+	"file": "tr-slide-panels.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "Three coloured panels sweep across one after another and slide away.",
+	"tags": [
+		"transition",
+		"slide",
+		"panels",
+		"swipe",
+		"layers"
+	],
+	"durationSec": 2,
+	"loop": false,
+	"aspect": "16:9",
+	"width": 1920,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "a",
+			"name": "Panel 1",
+			"default": "#F5A524"
+		},
+		{
+			"id": "b",
+			"name": "Panel 2",
+			"default": "#2EC4B6"
+		},
+		{
+			"id": "c",
+			"name": "Panel 3",
+			"default": "#4C8DFF"
+		}
+	]
+}

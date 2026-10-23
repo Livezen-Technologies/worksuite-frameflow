@@ -1,0 +1,46 @@
+{
+	"schema": 1,
+	"id": "rx-confetti",
+	"name": "Confetti burst",
+	"category": "reactions",
+	"type": "lottie",
+	"file": "rx-confetti.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "Confetti bursts from the centre, tumbles and drifts down, then bursts again.",
+	"tags": [
+		"confetti",
+		"celebrate",
+		"party",
+		"burst",
+		"win"
+	],
+	"durationSec": 3,
+	"loop": true,
+	"aspect": "1:1",
+	"width": 1080,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "a",
+			"name": "Confetti 1",
+			"default": "#4C8DFF"
+		},
+		{
+			"id": "b",
+			"name": "Confetti 2",
+			"default": "#2EC4B6"
+		},
+		{
+			"id": "c",
+			"name": "Confetti 3",
+			"default": "#F5A524"
+		},
+		{
+			"id": "d",
+			"name": "Confetti 4",
+			"default": "#FFFFFF"
+		}
+	]
+}

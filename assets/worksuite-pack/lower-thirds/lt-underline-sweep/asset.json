@@ -1,0 +1,41 @@
+{
+	"schema": 1,
+	"id": "lt-underline-sweep",
+	"name": "Underline sweep",
+	"category": "lower-thirds",
+	"type": "lottie",
+	"file": "lt-underline-sweep.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "A long line sweeps across with a travelling dot, then a shorter line follows.",
+	"tags": [
+		"lower third",
+		"underline",
+		"line",
+		"minimal",
+		"sweep"
+	],
+	"durationSec": 4,
+	"loop": false,
+	"aspect": "16:9",
+	"width": 1920,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "line",
+			"name": "Line",
+			"default": "#FFFFFF"
+		},
+		{
+			"id": "dot",
+			"name": "Dot",
+			"default": "#2EC4B6"
+		},
+		{
+			"id": "short",
+			"name": "Short line",
+			"default": "#4C8DFF"
+		}
+	]
+}

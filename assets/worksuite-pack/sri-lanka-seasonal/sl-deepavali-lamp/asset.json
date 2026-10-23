@@ -1,0 +1,52 @@
+{
+	"schema": 1,
+	"id": "sl-deepavali-lamp",
+	"name": "Deepavali lamp",
+	"category": "sri-lanka-seasonal",
+	"type": "lottie",
+	"file": "sl-deepavali-lamp.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "A clay oil lamp with a dancing flame and a soft warm glow, for Deepavali.",
+	"tags": [
+		"deepavali",
+		"diwali",
+		"diya",
+		"lamp",
+		"festival of lights",
+		"sri lanka"
+	],
+	"durationSec": 4,
+	"loop": true,
+	"aspect": "1:1",
+	"width": 1080,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "lamp",
+			"name": "Lamp",
+			"default": "#C2552B"
+		},
+		{
+			"id": "pattern",
+			"name": "Pattern",
+			"default": "#F5A524"
+		},
+		{
+			"id": "flame",
+			"name": "Flame",
+			"default": "#FF6B3D"
+		},
+		{
+			"id": "core",
+			"name": "Flame core",
+			"default": "#FFFFFF"
+		},
+		{
+			"id": "glow",
+			"name": "Glow",
+			"default": "#FFD166"
+		}
+	]
+}

@@ -1,0 +1,44 @@
+{
+	"schema": 1,
+	"id": "sl-crescent-stars",
+	"name": "Crescent and stars",
+	"category": "sri-lanka-seasonal",
+	"type": "lottie",
+	"file": "sl-crescent-stars.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "A crescent moon rocks gently while stars twinkle around it, for Ramazan and Hajj.",
+	"tags": [
+		"ramazan",
+		"ramadan",
+		"eid",
+		"hajj",
+		"crescent",
+		"moon",
+		"stars",
+		"sri lanka"
+	],
+	"durationSec": 4,
+	"loop": true,
+	"aspect": "1:1",
+	"width": 1080,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "moon",
+			"name": "Moon",
+			"default": "#F5A524"
+		},
+		{
+			"id": "stars",
+			"name": "Stars",
+			"default": "#FFFFFF"
+		},
+		{
+			"id": "halo",
+			"name": "Halo",
+			"default": "#2EC4B6"
+		}
+	]
+}

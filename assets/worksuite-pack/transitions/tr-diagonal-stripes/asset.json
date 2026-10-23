@@ -1,0 +1,36 @@
+{
+	"schema": 1,
+	"id": "tr-diagonal-stripes",
+	"name": "Diagonal stripes",
+	"category": "transitions",
+	"type": "lottie",
+	"file": "tr-diagonal-stripes.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "Slanted stripes slide in from alternating sides to cover the frame, then slide on through.",
+	"tags": [
+		"transition",
+		"stripes",
+		"diagonal",
+		"interleave",
+		"dynamic"
+	],
+	"durationSec": 2,
+	"loop": false,
+	"aspect": "16:9",
+	"width": 1920,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "a",
+			"name": "Stripes 1",
+			"default": "#F5A524"
+		},
+		{
+			"id": "b",
+			"name": "Stripes 2",
+			"default": "#4C8DFF"
+		}
+	]
+}

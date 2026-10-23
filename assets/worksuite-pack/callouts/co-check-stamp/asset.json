@@ -1,0 +1,37 @@
+{
+	"schema": 1,
+	"id": "co-check-stamp",
+	"name": "Check stamp",
+	"category": "callouts",
+	"type": "lottie",
+	"file": "co-check-stamp.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "A circle stamps down and a tick draws itself inside.",
+	"tags": [
+		"check",
+		"tick",
+		"done",
+		"correct",
+		"yes",
+		"stamp"
+	],
+	"durationSec": 3,
+	"loop": false,
+	"aspect": "1:1",
+	"width": 1080,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "circle",
+			"name": "Circle",
+			"default": "#2EC4B6"
+		},
+		{
+			"id": "mark",
+			"name": "Tick",
+			"default": "#FFFFFF"
+		}
+	]
+}

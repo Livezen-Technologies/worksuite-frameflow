@@ -1,0 +1,37 @@
+{
+	"schema": 1,
+	"id": "co-cross-stamp",
+	"name": "Cross stamp",
+	"category": "callouts",
+	"type": "lottie",
+	"file": "co-cross-stamp.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "A circle stamps down and a cross strikes through it.",
+	"tags": [
+		"cross",
+		"x",
+		"wrong",
+		"no",
+		"stamp",
+		"mistake"
+	],
+	"durationSec": 3,
+	"loop": false,
+	"aspect": "1:1",
+	"width": 1080,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "circle",
+			"name": "Circle",
+			"default": "#0F1115"
+		},
+		{
+			"id": "mark",
+			"name": "Cross",
+			"default": "#F5A524"
+		}
+	]
+}

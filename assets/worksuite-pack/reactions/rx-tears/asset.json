@@ -1,0 +1,36 @@
+{
+	"schema": 1,
+	"id": "rx-tears",
+	"name": "Tears",
+	"category": "reactions",
+	"type": "lottie",
+	"file": "rx-tears.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "Teardrops well up and fall in two streams.",
+	"tags": [
+		"tears",
+		"cry",
+		"sad",
+		"emotional",
+		"drops"
+	],
+	"durationSec": 3,
+	"loop": true,
+	"aspect": "1:1",
+	"width": 1080,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "drop",
+			"name": "Drops",
+			"default": "#4C8DFF"
+		},
+		{
+			"id": "shine",
+			"name": "Shine",
+			"default": "#FFFFFF"
+		}
+	]
+}

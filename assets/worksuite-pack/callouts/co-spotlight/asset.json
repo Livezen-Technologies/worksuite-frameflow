@@ -1,0 +1,36 @@
+{
+	"schema": 1,
+	"id": "co-spotlight",
+	"name": "Spotlight",
+	"category": "callouts",
+	"type": "lottie",
+	"file": "co-spotlight.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "The frame dims around a circle of light that settles on the subject.",
+	"tags": [
+		"spotlight",
+		"focus",
+		"vignette",
+		"dim",
+		"reveal"
+	],
+	"durationSec": 3,
+	"loop": false,
+	"aspect": "1:1",
+	"width": 1080,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "dim",
+			"name": "Dim",
+			"default": "#0F1115"
+		},
+		{
+			"id": "rim",
+			"name": "Rim",
+			"default": "#FFFFFF"
+		}
+	]
+}

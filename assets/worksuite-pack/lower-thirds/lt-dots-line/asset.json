@@ -1,0 +1,46 @@
+{
+	"schema": 1,
+	"id": "lt-dots-line",
+	"name": "Dots and line",
+	"category": "lower-thirds",
+	"type": "lottie",
+	"file": "lt-dots-line.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "Three dots pop in a row, then a line and a bar extend from them.",
+	"tags": [
+		"lower third",
+		"dots",
+		"line",
+		"playful",
+		"bar"
+	],
+	"durationSec": 4,
+	"loop": false,
+	"aspect": "16:9",
+	"width": 1920,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "dot1",
+			"name": "Dot 1",
+			"default": "#4C8DFF"
+		},
+		{
+			"id": "dot2",
+			"name": "Dot 2",
+			"default": "#2EC4B6"
+		},
+		{
+			"id": "dot3",
+			"name": "Dot 3",
+			"default": "#F5A524"
+		},
+		{
+			"id": "bar",
+			"name": "Bar",
+			"default": "#FFFFFF"
+		}
+	]
+}

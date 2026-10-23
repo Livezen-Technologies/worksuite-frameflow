@@ -1,0 +1,36 @@
+{
+	"schema": 1,
+	"id": "cta-comment-bubble",
+	"name": "Comment bubble",
+	"category": "call-to-action",
+	"type": "lottie",
+	"file": "cta-comment-bubble.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "A speech bubble pops up and three typing dots bounce inside it.",
+	"tags": [
+		"comment",
+		"chat",
+		"speech bubble",
+		"typing",
+		"reply"
+	],
+	"durationSec": 3,
+	"loop": true,
+	"aspect": "1:1",
+	"width": 1080,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "bubble",
+			"name": "Bubble",
+			"default": "#FFFFFF"
+		},
+		{
+			"id": "dots",
+			"name": "Dots",
+			"default": "#4C8DFF"
+		}
+	]
+}

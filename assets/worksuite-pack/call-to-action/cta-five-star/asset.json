@@ -1,0 +1,36 @@
+{
+	"schema": 1,
+	"id": "cta-five-star",
+	"name": "Five-star rating",
+	"category": "call-to-action",
+	"type": "lottie",
+	"file": "cta-five-star.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "Five stars pop in one after another and fill with colour.",
+	"tags": [
+		"rate",
+		"rating",
+		"stars",
+		"review",
+		"five stars"
+	],
+	"durationSec": 3,
+	"loop": true,
+	"aspect": "1:1",
+	"width": 1080,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "star",
+			"name": "Stars",
+			"default": "#F5A524"
+		},
+		{
+			"id": "empty",
+			"name": "Empty stars",
+			"default": "#FFFFFF"
+		}
+	]
+}

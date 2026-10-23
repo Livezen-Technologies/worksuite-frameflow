@@ -20,7 +20,9 @@
     "preview:web": "turbo run preview --filter=@opencut/web",
     "publish:wasm": "bun run build:wasm && npm publish rust/wasm/pkg --access public",
     "start:tools": "turbo run start --filter=@opencut/tools",
-    "test": "bun test"
+    "test": "bun test",
+    "build:assets": "bun scripts/assets/build-worksuite-pack.ts",
+    "check:assets": "bun scripts/assets/validate-worksuite-pack.ts"
   },
   "dependencies": {
     "@types/react": "^19.2.10",

@@ -1,0 +1,36 @@
+{
+	"schema": 1,
+	"id": "cta-share-arrow",
+	"name": "Share arrow",
+	"category": "call-to-action",
+	"type": "lottie",
+	"file": "cta-share-arrow.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "A curved arrow springs forward from a round button.",
+	"tags": [
+		"share",
+		"arrow",
+		"forward",
+		"send",
+		"repost"
+	],
+	"durationSec": 3,
+	"loop": true,
+	"aspect": "1:1",
+	"width": 1080,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "button",
+			"name": "Button",
+			"default": "#2EC4B6"
+		},
+		{
+			"id": "arrow",
+			"name": "Arrow",
+			"default": "#FFFFFF"
+		}
+	]
+}

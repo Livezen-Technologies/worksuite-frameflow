@@ -1,0 +1,36 @@
+{
+	"schema": 1,
+	"id": "tr-diagonal-wipe",
+	"name": "Diagonal wipe",
+	"category": "transitions",
+	"type": "lottie",
+	"file": "tr-diagonal-wipe.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "A slanted band sweeps across corner to corner with a contrasting leading edge.",
+	"tags": [
+		"transition",
+		"diagonal",
+		"wipe",
+		"slant",
+		"sweep"
+	],
+	"durationSec": 2,
+	"loop": false,
+	"aspect": "16:9",
+	"width": 1920,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "band",
+			"name": "Band",
+			"default": "#0F1115"
+		},
+		{
+			"id": "edge",
+			"name": "Edge",
+			"default": "#F5A524"
+		}
+	]
+}

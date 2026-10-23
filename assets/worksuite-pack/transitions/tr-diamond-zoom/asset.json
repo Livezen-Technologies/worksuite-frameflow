@@ -1,0 +1,36 @@
+{
+	"schema": 1,
+	"id": "tr-diamond-zoom",
+	"name": "Diamond zoom",
+	"category": "transitions",
+	"type": "lottie",
+	"file": "tr-diamond-zoom.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "A turning diamond zooms in to fill the frame, then a diamond-shaped window opens through it.",
+	"tags": [
+		"transition",
+		"diamond",
+		"zoom",
+		"rotate",
+		"iris"
+	],
+	"durationSec": 2,
+	"loop": false,
+	"aspect": "16:9",
+	"width": 1920,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "fill",
+			"name": "Fill",
+			"default": "#2EC4B6"
+		},
+		{
+			"id": "line",
+			"name": "Outline",
+			"default": "#FFFFFF"
+		}
+	]
+}

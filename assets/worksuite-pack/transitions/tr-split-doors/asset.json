@@ -1,0 +1,41 @@
+{
+	"schema": 1,
+	"id": "tr-split-doors",
+	"name": "Split doors",
+	"category": "transitions",
+	"type": "lottie",
+	"file": "tr-split-doors.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "Two halves slide shut like doors with a bright seam, then slide open.",
+	"tags": [
+		"transition",
+		"doors",
+		"split",
+		"close",
+		"open"
+	],
+	"durationSec": 2,
+	"loop": false,
+	"aspect": "16:9",
+	"width": 1920,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "left",
+			"name": "Left door",
+			"default": "#0F1115"
+		},
+		{
+			"id": "right",
+			"name": "Right door",
+			"default": "#1B2030"
+		},
+		{
+			"id": "seam",
+			"name": "Seam",
+			"default": "#F5A524"
+		}
+	]
+}

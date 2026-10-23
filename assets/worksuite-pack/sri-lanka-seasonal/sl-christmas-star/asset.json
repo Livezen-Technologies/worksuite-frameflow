@@ -1,0 +1,42 @@
+{
+	"schema": 1,
+	"id": "sl-christmas-star",
+	"name": "Christmas star",
+	"category": "sri-lanka-seasonal",
+	"type": "lottie",
+	"file": "sl-christmas-star.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "A five-point star glows with long turning rays and small twinkles.",
+	"tags": [
+		"christmas",
+		"star",
+		"nattal",
+		"december",
+		"festive",
+		"sri lanka"
+	],
+	"durationSec": 4,
+	"loop": true,
+	"aspect": "1:1",
+	"width": 1080,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "star",
+			"name": "Star",
+			"default": "#F5A524"
+		},
+		{
+			"id": "rays",
+			"name": "Rays",
+			"default": "#FFFFFF"
+		},
+		{
+			"id": "twinkle",
+			"name": "Twinkles",
+			"default": "#2EC4B6"
+		}
+	]
+}

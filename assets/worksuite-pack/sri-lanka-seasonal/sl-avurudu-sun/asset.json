@@ -1,0 +1,54 @@
+{
+	"schema": 1,
+	"id": "sl-avurudu-sun",
+	"name": "New Year sun and lamp",
+	"category": "sri-lanka-seasonal",
+	"type": "lottie",
+	"file": "sl-avurudu-sun.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "For Sinhala and Tamil New Year: a rising sun with turning rays above a lit oil lamp.",
+	"tags": [
+		"avurudu",
+		"aluth avurudu",
+		"puthandu",
+		"new year",
+		"april",
+		"sun",
+		"oil lamp",
+		"sri lanka"
+	],
+	"durationSec": 4,
+	"loop": true,
+	"aspect": "1:1",
+	"width": 1080,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "sun",
+			"name": "Sun",
+			"default": "#F5A524"
+		},
+		{
+			"id": "rays",
+			"name": "Rays",
+			"default": "#FFD166"
+		},
+		{
+			"id": "lamp",
+			"name": "Lamp",
+			"default": "#C9822B"
+		},
+		{
+			"id": "flame",
+			"name": "Flame",
+			"default": "#FF6B3D"
+		},
+		{
+			"id": "core",
+			"name": "Flame core",
+			"default": "#FFFFFF"
+		}
+	]
+}

@@ -1,0 +1,41 @@
+{
+	"schema": 1,
+	"id": "lt-corner-tag",
+	"name": "Corner tag",
+	"category": "lower-thirds",
+	"type": "lottie",
+	"file": "lt-corner-tag.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "A tag with a round badge slides in on the right of the frame.",
+	"tags": [
+		"lower third",
+		"tag",
+		"right",
+		"badge",
+		"handle"
+	],
+	"durationSec": 4,
+	"loop": false,
+	"aspect": "16:9",
+	"width": 1920,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "tag",
+			"name": "Tag",
+			"default": "#0F1115"
+		},
+		{
+			"id": "badge",
+			"name": "Badge",
+			"default": "#F5A524"
+		},
+		{
+			"id": "icon",
+			"name": "Badge mark",
+			"default": "#FFFFFF"
+		}
+	]
+}

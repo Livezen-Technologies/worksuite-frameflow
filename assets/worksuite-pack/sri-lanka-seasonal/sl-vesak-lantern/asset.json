@@ -1,0 +1,53 @@
+{
+	"schema": 1,
+	"id": "sl-vesak-lantern",
+	"name": "Vesak lantern",
+	"category": "sri-lanka-seasonal",
+	"type": "lottie",
+	"file": "sl-vesak-lantern.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "An original geometric Vesak lantern that sways gently, its tassels swinging and its centre glowing.",
+	"tags": [
+		"vesak",
+		"lantern",
+		"kuudu",
+		"wesak",
+		"buddhist",
+		"poya",
+		"sri lanka"
+	],
+	"durationSec": 4,
+	"loop": true,
+	"aspect": "1:1",
+	"width": 1080,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "frame",
+			"name": "Frame",
+			"default": "#F5A524"
+		},
+		{
+			"id": "panel",
+			"name": "Panels",
+			"default": "#2EC4B6"
+		},
+		{
+			"id": "glow",
+			"name": "Glow",
+			"default": "#FFE7A3"
+		},
+		{
+			"id": "tassel",
+			"name": "Tassels",
+			"default": "#FFFFFF"
+		},
+		{
+			"id": "accent",
+			"name": "Accent",
+			"default": "#4C8DFF"
+		}
+	]
+}

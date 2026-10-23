@@ -1,0 +1,36 @@
+{
+	"schema": 1,
+	"id": "tr-circle-burst",
+	"name": "Circle burst",
+	"category": "transitions",
+	"type": "lottie",
+	"file": "tr-circle-burst.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "A circle bursts out to fill the frame, then opens from the middle to reveal the next shot.",
+	"tags": [
+		"transition",
+		"circle",
+		"burst",
+		"iris",
+		"wipe"
+	],
+	"durationSec": 2,
+	"loop": false,
+	"aspect": "16:9",
+	"width": 1920,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "fill",
+			"name": "Fill",
+			"default": "#4C8DFF"
+		},
+		{
+			"id": "edge",
+			"name": "Edge",
+			"default": "#2EC4B6"
+		}
+	]
+}

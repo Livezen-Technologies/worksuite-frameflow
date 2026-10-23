@@ -1,0 +1,36 @@
+{
+	"schema": 1,
+	"id": "lt-corner-brackets",
+	"name": "Corner brackets",
+	"category": "lower-thirds",
+	"type": "lottie",
+	"file": "lt-corner-brackets.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "Four corner brackets draw themselves around a clear space for a name.",
+	"tags": [
+		"lower third",
+		"brackets",
+		"frame",
+		"minimal",
+		"outline"
+	],
+	"durationSec": 4,
+	"loop": false,
+	"aspect": "16:9",
+	"width": 1920,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "bracket",
+			"name": "Brackets",
+			"default": "#FFFFFF"
+		},
+		{
+			"id": "accent",
+			"name": "Accent line",
+			"default": "#F5A524"
+		}
+	]
+}

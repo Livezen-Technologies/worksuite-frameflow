@@ -1,0 +1,42 @@
+{
+	"schema": 1,
+	"id": "st-counter-dial",
+	"name": "Gauge dial",
+	"category": "status-infographics",
+	"type": "lottie",
+	"file": "st-counter-dial.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "A gauge needle sweeps up with a little overshoot and settles, while the scale fills.",
+	"tags": [
+		"gauge",
+		"dial",
+		"speed",
+		"meter",
+		"score",
+		"counter"
+	],
+	"durationSec": 3,
+	"loop": true,
+	"aspect": "1:1",
+	"width": 1080,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "dial",
+			"name": "Dial",
+			"default": "#FFFFFF"
+		},
+		{
+			"id": "fill",
+			"name": "Fill",
+			"default": "#F5A524"
+		},
+		{
+			"id": "needle",
+			"name": "Needle",
+			"default": "#4C8DFF"
+		}
+	]
+}
