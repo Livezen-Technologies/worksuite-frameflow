@@ -814,3 +814,77 @@ mod tests {
         }
     }
 }
+
+/// Half-precision bits to f32.
+pub fn f16_bits_to_f32(h: u16) -> f32 {
+    let sign = if h & 0x8000 != 0 { -1.0 } else { 1.0 };
+    let exponent = ((h >> 10) & 0x1f) as i32;
+    let mantissa = (h & 0x3ff) as f32;
+    sign * match exponent {
+        0 => mantissa / 1024.0 * 2f32.powi(-14),
+        31 => f32::INFINITY,
+        e => (1.0 + mantissa / 1024.0) * 2f32.powi(e - 15),
+    }
+}
+
+/// Bytes read back from a render texture (rows padded to `padded_row`) as
+/// 16-bit RGBA, 0–65535, in the order FFmpeg's `rgba64le` expects.
+pub fn texels_to_rgba16(
+    bytes: &[u8],
+    format: wgpu::TextureFormat,
+    width: u32,
+    height: u32,
+    padded_row: u32,
+) -> Vec<u16> {
+    let mut out = Vec::with_capacity((width * height * 4) as usize);
+    let to16 = |v: f32| (v.clamp(0.0, 1.0) * 65535.0).round() as u16;
+    for y in 0..height {
+        let row = &bytes[(y * padded_row) as usize..];
+        for x in 0..width as usize {
+            match format {
+                wgpu::TextureFormat::Rgba16Float => {
+                    for c in 0..4 {
+                        let i = x * 8 + c * 2;
+                        out.push(to16(f16_bits_to_f32(u16::from_le_bytes([row[i], row[i + 1]]))));
+                    }
+                }
+                wgpu::TextureFormat::Bgra8Unorm => {
+                    let p = &row[x * 4..x * 4 + 4];
+                    for v in [p[2], p[1], p[0], p[3]] {
+                        out.push(v as u16 * 257);
+                    }
+                }
+                _ => {
+                    for &v in &row[x * 4..x * 4 + 4] {
+                        out.push(v as u16 * 257);
+                    }
+                }
+            }
+        }
+    }
+    out
+}
+
+#[cfg(test)]
+mod readback_tests {
+    use super::*;
+
+    #[test]
+    fn float_and_8bit_texels_to_16bit() {
+        let half = |v: f32| f32_to_f16_bits(v).to_le_bytes();
+        let mut row = Vec::new();
+        for v in [0.0, 0.25, 1.0, 1.0] {
+            row.extend_from_slice(&half(v));
+        }
+        row.resize(16, 0); // padding
+        assert_eq!(
+            texels_to_rgba16(&row, wgpu::TextureFormat::Rgba16Float, 1, 1, 16),
+            vec![0, 16384, 65535, 65535]
+        );
+        assert_eq!(
+            texels_to_rgba16(&[10, 20, 30, 255], wgpu::TextureFormat::Bgra8Unorm, 1, 1, 4),
+            vec![30 * 257, 20 * 257, 10 * 257, 65535]
+        );
+        assert!((f16_bits_to_f32(f32_to_f16_bits(0.3)) - 0.3).abs() < 1e-3);
+    }
+}

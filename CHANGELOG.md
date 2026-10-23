@@ -117,6 +117,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
   - Stabilize and Remove flicker analyse the clip and write ordinary keyframes, so the result stays editable.
 
 ### Changed
+- 10-bit desktop exports (ProRes, FFV1, AV1 and HEVC 10-bit) now take frames straight from the 16-bit engine, so gradients, grades and scaled images keep their in-between shades instead of 8-bit steps.
 - Effects and grades are now worked out in 16-bit float on GPUs that support it, so stacked grades and strong adjustments no longer band (smooth gradients keep all their steps).
 - The HEIC photo decoder (libheif, LGPL) now ships as its own replaceable file, and the installer includes notices for its LGPL components (libheif and FFmpeg) with their source and how to swap in your own build.
 - The app's description and copyright line no longer say "Based on OpenCut". OpenCut's MIT licence ships with the app in licenses/OpenCut-LICENSE.txt.

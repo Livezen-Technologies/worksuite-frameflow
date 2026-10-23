@@ -69,11 +69,11 @@ const SVT_COLOR = {
 
 const specFor = (codec) => CODECS[codec] ?? (DELIVERY[codec]?.video ? DELIVERY[codec] : null);
 
-function masterArgs({ width, height, fps, codec, audio, output, hdr }) {
+function masterArgs({ width, height, fps, codec, audio, output, hdr, depth }) {
 	const spec = specFor(codec);
 	const args = [
 		"-hide_banner", "-loglevel", "error", "-y",
-		"-f", "rawvideo", "-pix_fmt", "rgba", "-s", `${width}x${height}`, "-framerate", String(fps), "-i", "pipe:0",
+		"-f", "rawvideo", "-pix_fmt", depth === 16 ? "rgba64le" : "rgba", "-s", `${width}x${height}`, "-framerate", String(fps), "-i", "pipe:0",
 	];
 	if (audio) args.push("-i", audio);
 	args.push("-map", "0:v");
@@ -136,7 +136,7 @@ function probe() {
 module.exports = {
 	codecs: async () => [...Object.keys(CODECS), ...(await probe())],
 
-	async start({ width, height, fps, codec, audioWav, hdr }) {
+	async start({ width, height, fps, codec, audioWav, hdr, depth }) {
 		const bin = nativeHelper._test.ffmpegPath();
 		if (!bin) throw new Error("FFmpeg isn't bundled with this build.");
 		if (DELIVERY[codec]) await probe();
@@ -150,7 +150,7 @@ module.exports = {
 			audio = path.join(tmpDir(), `${id}.wav`);
 			await fs.promises.writeFile(audio, Buffer.from(audioWav));
 		}
-		const child = spawn(bin, masterArgs({ width, height, fps, codec, audio, output, hdr }), { stdio: ["pipe", "ignore", "pipe"] });
+		const child = spawn(bin, masterArgs({ width, height, fps, codec, audio, output, hdr, depth }), { stdio: ["pipe", "ignore", "pipe"] });
 		const job = { child, output, audio, ext, stderr: "", exited: null };
 		job.exited = new Promise((resolve) => child.on("close", (code) => resolve(code)));
 		child.stderr.on("data", (d) => { job.stderr = (job.stderr + d).slice(-4000); });

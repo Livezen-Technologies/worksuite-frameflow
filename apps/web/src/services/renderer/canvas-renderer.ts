@@ -82,6 +82,15 @@ export class CanvasRenderer {
 		notifyFrameRendered(wasmCompositor.getCanvas());
 	}
 
+	/** Renders and reads the frame back as 16-bit RGBA for 10-bit exports (HD-14, WS-14). */
+	async renderRgba16({ node, time }: { node: AnyBaseNode; time: number }): Promise<Uint16Array> {
+		await resolveRenderTree({ node, renderer: this, time });
+		const { frame, textures } = await buildFrameDescriptor({ node, renderer: this });
+		wasmCompositor.ensureInitialized({ width: this.width, height: this.height });
+		wasmCompositor.syncTextures(textures);
+		return wasmCompositor.renderRgba16(frame);
+	}
+
 	async renderToCanvas({
 		node,
 		time,

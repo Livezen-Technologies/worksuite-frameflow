@@ -4,6 +4,7 @@ import {
 	initCompositor,
 	releaseTexture,
 	renderFrame,
+	renderFrameRgba16,
 	resizeCompositor,
 	uploadTexture,
 } from "opencut-wasm";
@@ -88,6 +89,11 @@ class WasmCompositor {
 				this.syncRenderedTexture(texture);
 			}
 		}
+	}
+
+	/** The frame as 16-bit RGBA straight from the float working texture (HD-14). */
+	renderRgba16(frame: FrameDescriptor): Promise<Uint16Array> {
+		return renderFrameRgba16(frame);
 	}
 
 	render(frame: FrameDescriptor) {

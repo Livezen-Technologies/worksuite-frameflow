@@ -9,10 +9,12 @@ export interface MasterExportBridge {
 		fps: number;
 		codec: MasterCodec;
 		audioWav?: ArrayBuffer;
+		/** Frames sent as 8-bit RGBA, or 16-bit RGBA from the float engine. */
+		depth?: 8 | 16;
 		/** Tag the file HLG or PQ with BT.2020 (HD-14); SDR otherwise. */
 		hdr?: "hlg" | "pq";
 	}) => Promise<{ id: string; ext: string }>;
-	frame: (args: { id: string; data: ArrayBuffer }) => Promise<boolean>;
+	frame: (args: { id: string; data: ArrayBufferLike }) => Promise<boolean>;
 	finish: (args: { id: string }) => Promise<{ size: number }>;
 	cancel: (args: { id: string }) => Promise<void>;
 	save: (args: {

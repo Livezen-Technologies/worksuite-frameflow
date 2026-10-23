@@ -263,3 +263,109 @@ fn parse_upload_texture_options(value: JsValue) -> Result<UploadTextureOptions, 
         height: read_u32_property(&object, "height")?,
     })
 }
+
+/// Renders a frame and reads it back as 16-bit RGBA (`rgba64le` order), for
+/// 10-bit exports (HD-14, WS-14): the float working texture is copied out
+/// before it is squeezed through the 8-bit canvas.
+#[wasm_bindgen(js_name = renderFrameRgba16)]
+pub async fn render_frame_rgba16(options: JsValue) -> Result<js_sys::Uint16Array, JsValue> {
+    let frame: FrameDescriptor = serde_wasm_bindgen::from_value(options)
+        .map_err(|error| JsValue::from_str(&format!("Invalid frame descriptor: {error}")))?;
+    let (width, height) = (frame.width, frame.height);
+    let (buffer, format, padded_row) = with_gpu_runtime(|gpu_runtime| {
+        COMPOSITOR_RUNTIME.with(|runtime| {
+            let mut borrow = runtime.borrow_mut();
+            let Some(runtime) = borrow.as_mut() else {
+                return Err(JsValue::from_str(
+                    "Compositor is not initialized. Call initCompositor() first.",
+                ));
+            };
+            let context = &gpu_runtime.context;
+            let texture = runtime
+                .compositor
+                .render_frame_to_texture(context, &frame)
+                .map_err(|error| JsValue::from_str(&error.to_string()))?;
+            let format = texture.format();
+            let bytes_per_pixel = format.block_copy_size(None).unwrap_or(4);
+            let align = wgpu::COPY_BYTES_PER_ROW_ALIGNMENT;
+            let padded_row = (width * bytes_per_pixel).div_ceil(align) * align;
+            let buffer = context.device().create_buffer(&wgpu::BufferDescriptor {
+                label: Some("compositor-readback"),
+                size: (padded_row * height) as u64,
+                usage: wgpu::BufferUsages::COPY_DST | wgpu::BufferUsages::MAP_READ,
+                mapped_at_creation: false,
+            });
+            let mut encoder = context
+                .device()
+                .create_command_encoder(&wgpu::CommandEncoderDescriptor {
+                    label: Some("compositor-readback-encoder"),
+                });
+            encoder.copy_texture_to_buffer(
+                wgpu::TexelCopyTextureInfo {
+                    texture: &texture,
+                    mip_level: 0,
+                    origin: wgpu::Origin3d::ZERO,
+                    aspect: wgpu::TextureAspect::All,
+                },
+                wgpu::TexelCopyBufferInfo {
+                    buffer: &buffer,
+                    layout: wgpu::TexelCopyBufferLayout {
+                        offset: 0,
+                        bytes_per_row: Some(padded_row),
+                        rows_per_image: Some(height),
+                    },
+                },
+                wgpu::Extent3d {
+                    width,
+                    height,
+                    depth_or_array_layers: 1,
+                },
+            );
+            context.queue().submit([encoder.finish()]);
+            Ok((buffer, format, padded_row))
+        })
+    })?;
+
+    // Wait for the copy without holding any runtime borrow. WebGPU calls back
+    // from the browser's event loop; WebGL only while the device is polled,
+    // so poll and yield to the event loop until the map lands.
+    let state: std::rc::Rc<std::cell::RefCell<Option<Result<(), String>>>> = Default::default();
+    {
+        let state = state.clone();
+        buffer.slice(..).map_async(wgpu::MapMode::Read, move |result| {
+            state.replace(Some(result.map_err(|error| error.to_string())));
+        });
+    }
+    let mut waited = 0;
+    loop {
+        let _ = with_gpu_runtime(|gpu_runtime| {
+            let _ = gpu_runtime.context.device().poll(wgpu::PollType::Poll);
+            Ok(())
+        });
+        if let Some(result) = state.borrow_mut().take() {
+            result.map_err(|error| JsValue::from_str(&error))?;
+            break;
+        }
+        if waited > 30_000 {
+            return Err(JsValue::from_str("Reading the frame back from the GPU timed out"));
+        }
+        let tick = js_sys::Promise::new(&mut |resolve, _| {
+            match web_sys::window() {
+                Some(window) => {
+                    let _ = window.set_timeout_with_callback_and_timeout_and_arguments_0(&resolve, 1);
+                }
+                None => {
+                    let _ = resolve.call0(&JsValue::NULL);
+                }
+            }
+        });
+        wasm_bindgen_futures::JsFuture::from(tick).await?;
+        waited += 1;
+    }
+    let pixels = {
+        let view = buffer.slice(..).get_mapped_range();
+        gpu::texels_to_rgba16(&view, format, width, height, padded_row)
+    };
+    buffer.unmap();
+    Ok(js_sys::Uint16Array::from(pixels.as_slice()))
+}

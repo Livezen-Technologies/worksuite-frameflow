@@ -330,11 +330,16 @@ export class SceneExporter extends EventEmitter<SceneExporterEvents> {
 		const ctx = surface.canvas.getContext("2d", { willReadFrequently: true });
 		if (!ctx) throw new Error("Could not create the export canvas");
 		const { width, height } = this.outputSize;
+		// All master codecs are 10-bit: read frames straight from the float
+		// working texture when nothing else has to be drawn over them.
+		const deep =
+			!cover && !this.usesAi && this.renderer.width === width && this.renderer.height === height;
 		const job = await master.bridge.start({
 			width,
 			height,
 			fps: fpsFloat,
 			codec: master.codec,
+			depth: deep ? 16 : 8,
 			...(this.hdrOutput ? { hdr: this.hdrOutput } : {}),
 			...(this.shouldIncludeAudio && this.audioBuffer
 				? { audioWav: audioBufferToWav(this.audioBuffer) }
@@ -347,17 +352,25 @@ export class SceneExporter extends EventEmitter<SceneExporterEvents> {
 					this.emit("cancelled");
 					return null;
 				}
-				await this.drawFrame({
-					rootNode,
-					i,
-					firstFrame: 0,
-					ticksPerFrame,
-					frameCount,
-					cover,
-					surface,
-				});
-				const pixels = ctx.getImageData(0, 0, width, height).data;
-				await master.bridge.frame({ id: job.id, data: pixels.buffer });
+				if (deep) {
+					const pixels = await this.renderer.renderRgba16({
+						node: rootNode,
+						time: i * ticksPerFrame,
+					});
+					await master.bridge.frame({ id: job.id, data: pixels.buffer });
+				} else {
+					await this.drawFrame({
+						rootNode,
+						i,
+						firstFrame: 0,
+						ticksPerFrame,
+						frameCount,
+						cover,
+						surface,
+					});
+					const pixels = ctx.getImageData(0, 0, width, height).data;
+					await master.bridge.frame({ id: job.id, data: pixels.buffer });
+				}
 				this.emit("progress", (i + 1) / frameCount);
 			}
 			await master.bridge.finish({ id: job.id });
