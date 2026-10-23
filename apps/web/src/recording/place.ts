@@ -16,6 +16,7 @@ import { updateSceneInArray } from "@/timeline/scenes";
 import { mediaTimeFromSeconds, roundMediaTime } from "@/wasm";
 import { ApplyTracksCommand } from "@/commands/timeline/apply-tracks";
 import { generateUUID } from "@/utils/id";
+import { cropLog } from "./area";
 import { punchIn } from "./punch";
 import type { RecordedFile, SessionManifest } from "./storage";
 
@@ -83,6 +84,7 @@ export async function placeRecording({
 		(a, b) => order.indexOf(a.role) - order.indexOf(b.role),
 	);
 	const hasScreen = files.some((f) => f.role === "screen");
+	if (cursorLog && session.area) cursorLog = cropLog({ log: cursorLog, area: session.area });
 	let placed = 0;
 	for (const recorded of sorted) {
 		const [asset] = await processMediaAssets({ files: [recorded.file] });

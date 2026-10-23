@@ -7,6 +7,7 @@ import {
 	type QualityProfile,
 	type RecordingMode,
 } from "./preflight";
+import { type CaptureArea, areaPixels } from "./area";
 import { SessionClock } from "./session";
 import {
 	assembleSession,
@@ -38,6 +39,8 @@ export interface RecorderOptions {
 	mode: RecordingMode;
 	projectId: string;
 	timelineStart: number;
+	/** Record only this part of the screen (SC-01). */
+	area?: CaptureArea | null;
 	/** Punch-in range in timeline seconds (AR-05). */
 	punch?: { start: number; end: number };
 	profile: QualityProfile;
@@ -135,6 +138,8 @@ export class Recorder {
 	private pcmFrames = 0;
 	private recording = false;
 	private manifest: SessionManifest | null = null;
+	private rawScreen: MediaStream | null = null;
+	private stopCrop: (() => void) | null = null;
 	private levelListeners = new Set<(db: number) => void>();
 	private endedListeners = new Set<(device: TrackRole) => void>();
 
@@ -201,6 +206,7 @@ export class Recorder {
 			} catch (error) {
 				throw new MediaAccessError({ device: "screen", cause: error });
 			}
+			if (this.options.area) await this.cropScreen(this.options.area);
 		}
 		for (const [role, stream] of [
 			["screen", this.screen],
@@ -216,6 +222,46 @@ export class Recorder {
 			}
 		}
 		await this.startMeter();
+	}
+
+	/** Swaps the screen stream for one showing only the chosen area (SC-01). */
+	private async cropScreen(area: CaptureArea): Promise<void> {
+		const raw = this.screen;
+		const track = raw?.getVideoTracks()[0];
+		if (!raw || !track) return;
+		const video = document.createElement("video");
+		video.muted = true;
+		video.playsInline = true;
+		video.srcObject = new MediaStream([track]);
+		await video.play();
+		const { sx, sy, sw, sh } = areaPixels({
+			area,
+			width: video.videoWidth,
+			height: video.videoHeight,
+		});
+		const canvas = document.createElement("canvas");
+		canvas.width = sw;
+		canvas.height = sh;
+		const ctx = canvas.getContext("2d");
+		if (!ctx) return;
+		const fps = QUALITY_PROFILES[this.options.profile].fps;
+		const draw = () => ctx.drawImage(video, sx, sy, sw, sh, 0, 0, sw, sh);
+		draw();
+		// A timer, not requestAnimationFrame, so it keeps going when the window is hidden.
+		const timer = window.setInterval(draw, 1000 / fps);
+		const cropped = canvas.captureStream(fps);
+		for (const audio of raw.getAudioTracks()) cropped.addTrack(audio);
+		// Ending the share ends the cropped track too, so device-loss handling still works.
+		track.addEventListener("ended", () => {
+			for (const t of cropped.getVideoTracks()) t.stop();
+			cropped.getVideoTracks()[0]?.dispatchEvent(new Event("ended"));
+		});
+		this.rawScreen = raw;
+		this.screen = cropped;
+		this.stopCrop = () => {
+			window.clearInterval(timer);
+			video.srcObject = null;
+		};
 	}
 
 	private async startMeter(): Promise<void> {
@@ -361,6 +407,7 @@ export class Recorder {
 			startedAt: Date.now(),
 			timelineStart,
 			...(this.options.punch ? { punch: this.options.punch } : {}),
+			...(this.screen && this.options.area ? { area: this.options.area } : {}),
 			tracks,
 			markers: [],
 			duration: 0,
@@ -434,7 +481,9 @@ export class Recorder {
 		for (const { recorder } of this.recorders) {
 			if (recorder.state !== "inactive") recorder.stop();
 		}
-		for (const stream of [this.screen, this.camera, this.mic]) {
+		this.stopCrop?.();
+		this.stopCrop = null;
+		for (const stream of [this.screen, this.rawScreen, this.camera, this.mic]) {
 			for (const track of stream?.getTracks() ?? []) track.stop();
 		}
 		this.tap?.disconnect();

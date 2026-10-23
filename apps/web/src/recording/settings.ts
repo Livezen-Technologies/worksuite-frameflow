@@ -2,6 +2,7 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import type { CaptureArea } from "./area";
 import type { QualityProfile, RecordingMode } from "./preflight";
 
 /** Remembered recording choices (AR-02). */
@@ -19,6 +20,8 @@ export interface RecordingSettings {
 	shortcuts: Record<"toggle" | "toggle-pause" | "marker", string>;
 	/** Zoom in on clicks and typing after a screen recording (SC-11). */
 	autoZoom: boolean;
+	/** Part of the screen to record; null records all of it (SC-01). */
+	area: CaptureArea | null;
 	set: (patch: Partial<Omit<RecordingSettings, "set">>) => void;
 }
 
@@ -40,6 +43,7 @@ export const useRecordingSettings = create<RecordingSettings>()(
 				marker: "CommandOrControl+Shift+M",
 			},
 			autoZoom: true,
+			area: null,
 			set: (patch) => set(patch),
 		}),
 		{

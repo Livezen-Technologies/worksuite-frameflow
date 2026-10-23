@@ -1,5 +1,6 @@
 "use client";
 
+import type { CaptureArea } from "./area";
 import {
 	ALL_FORMATS,
 	BlobSource,
@@ -45,6 +46,8 @@ export interface SessionManifest {
 	duration: number;
 	/** Punch-in range in timeline seconds (AR-05): the take replaces it. */
 	punch?: { start: number; end: number };
+	/** The screen was recorded from this area (SC-01). */
+	area?: CaptureArea;
 }
 
 interface RecordingSessionsStore {

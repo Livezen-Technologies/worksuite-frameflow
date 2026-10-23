@@ -25,6 +25,7 @@ import { useEditor } from "@/editor/use-editor";
 import { cn } from "@/utils/ui";
 import { mediaTimeFromSeconds, TICKS_PER_SECOND } from "@/wasm";
 import { placeRecording } from "../place";
+import { AreaPicker } from "./area-picker";
 import {
 	bytesPerMinute,
 	formatBytes,
@@ -303,6 +304,7 @@ export function RecordView() {
 				micId: settings.micId,
 				cameraId: settings.cameraId,
 				sourceId: settings.sourceId,
+				area: needsScreen ? settings.area : null,
 				// With an input log we draw a clean cursor afterwards (SC-15).
 				hideCursor: needsScreen && !!capture?.cursorStart,
 				systemAudio: needsScreen && settings.systemAudio && !isMac,
@@ -703,6 +705,11 @@ export function RecordView() {
 								</button>
 							))}
 						</div>
+						<AreaPicker
+							thumbnail={sources.find((x) => x.id === settings.sourceId)?.thumbnail ?? null}
+							area={settings.area}
+							onChange={(area) => settings.set({ area })}
+						/>
 					</div>
 				)}
 
