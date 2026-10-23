@@ -1,6 +1,6 @@
 "use client";
 
-import { Crosshair, Globe, Mountain, RotateCcw, Trash2 } from "lucide-react";
+import { Crosshair, Globe, Mountain, Footprints, RotateCcw, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { buildEffectParamPath } from "@/animation";
@@ -27,6 +27,7 @@ import { cn } from "@/utils/ui";
 import type { MediaTime } from "@/wasm";
 import { cameraAtPlayhead, CAMERA_KEYS, setCamera } from "../camera";
 import { applyHorizonLock } from "../horizon-actions";
+import { followSubject } from "../track";
 import type { HorizonMode } from "../horizon";
 import {
 	findSpherePlaceEffect,
@@ -320,6 +321,39 @@ function HorizonButtons({
 			</Button>
 			<Button size="sm" variant="outline" disabled={busy} data-horizon-lock onClick={() => run("lock")}>
 				<Crosshair /> Lock view
+			</Button>
+			<Button
+				size="sm"
+				variant="outline"
+				className="col-span-2"
+				disabled={busy}
+				data-follow-subject
+				title="Aim at the subject first: it's followed from the playhead to the end of the clip"
+				onClick={async () => {
+					setBusy(true);
+					const id = toast.loading("Following the subject…");
+					try {
+						const count = await followSubject({
+							editor,
+							target,
+							onProgress: (p) =>
+								toast.loading(`Following the subject… ${Math.round(p * 100)}%`, { id }),
+						});
+						toast.success("Camera follows the subject", {
+							id,
+							description: `${count} pan and tilt keyframes. Adjust any of them on the timeline.`,
+						});
+					} catch (error) {
+						toast.error("Couldn't follow the subject", {
+							id,
+							description: error instanceof Error ? error.message : String(error),
+						});
+					} finally {
+						setBusy(false);
+					}
+				}}
+			>
+				<Footprints /> Follow subject in the middle of the view
 			</Button>
 		</div>
 	);

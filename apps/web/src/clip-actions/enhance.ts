@@ -76,11 +76,11 @@ export async function sampleClip({
 	if (!asset?.url || asset.type !== "video")
 		throw new Error("This works on video clips.");
 	const video = await openVideo(asset.url);
-	const width = ANALYSIS_WIDTH;
+	const width = analysisWidth;
 	const height = Math.max(
 		8,
 		Math.round(
-			(ANALYSIS_WIDTH * video.videoHeight) / Math.max(1, video.videoWidth),
+			(analysisWidth * video.videoHeight) / Math.max(1, video.videoWidth),
 		),
 	);
 	const canvas = document.createElement("canvas");

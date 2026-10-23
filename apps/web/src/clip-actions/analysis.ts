@@ -193,6 +193,7 @@ export function trackPatch({
 	cy,
 	r,
 	range = 12,
+	wrapX = false,
 }: {
 	frames: Float32Array[];
 	width: number;
@@ -201,7 +202,10 @@ export function trackPatch({
 	cy: number;
 	r: number;
 	range?: number;
+	/** 360° frames: the left and right edges meet (VR-13). */
+	wrapX?: boolean;
 }): { x: number; y: number }[] {
+	const wrap = (x: number) => ((x % width) + width) % width;
 	const first = frames[0];
 	if (!first) return [];
 	const size = r * 2 + 1;
@@ -218,7 +222,7 @@ export function trackPatch({
 		let sum = 0;
 		for (let j = -r; j <= r; j++) {
 			for (let i = -r; i <= r; i++) {
-				const px = Math.min(width - 1, Math.max(0, x + i));
+				const px = wrapX ? wrap(x + i) : Math.min(width - 1, Math.max(0, x + i));
 				const py = Math.min(height - 1, Math.max(0, y + j));
 				const v = f[py * width + px] ?? 0;
 				out[(j + r) * size + (i + r)] = v;
@@ -244,7 +248,8 @@ export function trackPatch({
 				if (err < best.err) best = { x: x + dx, y: y + dy, err };
 			}
 		}
-		x = Math.min(width - 1, Math.max(0, best.x));
+		// Unwrapped, so a subject circling the viewer keeps turning one way.
+		x = wrapX ? best.x : Math.min(width - 1, Math.max(0, best.x));
 		y = Math.min(height - 1, Math.max(0, best.y));
 		const now = readPatch({ f: frame, x, y });
 		template = template.map((v, k) => v * 0.9 + (now[k] ?? 0) * 0.1);

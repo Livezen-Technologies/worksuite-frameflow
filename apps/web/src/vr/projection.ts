@@ -280,3 +280,16 @@ export function dragToAngles({
 	const perPixel = Math.min(fov, 180) / Math.max(1, viewHeight);
 	return { yaw: -dx * perPixel, pitch: dy * perPixel };
 }
+
+/** Where a camera direction lands in an equirectangular frame (0..1). */
+export function directionToUv({ yaw, pitch }: { yaw: number; pitch: number }) {
+	return { u: yaw / 360 + 0.5, v: 0.5 - pitch / 180 };
+}
+
+/** Camera direction for an unwrapped equirectangular position. */
+export function uvToDirection({ u, v }: { u: number; v: number }) {
+	return {
+		yaw: (u - 0.5) * 360,
+		pitch: Math.max(-90, Math.min(90, (0.5 - v) * 180)),
+	};
+}

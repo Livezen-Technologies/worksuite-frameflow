@@ -9,6 +9,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
+- 360° subject tracking: aim a 360° clip's camera at someone or something and press **Follow subject** in its 360° tab; the camera's pan and tilt are keyframed to keep it centred to the end of the clip, even as it moves round behind the viewer.
+
 - The desktop app now opens 360° camera originals directly: Insta360 .insv (dual fisheye), GoPro MAX .360 and cubemap 360° videos are converted to standard 360° video (up to 4096×2048) on import, keeping 4-channel spatial sound.
 
 - 360° horizon lock: in a 360° clip's 360° tab, **Level horizon** reads the motion data GoPro cameras record (GPMF orientation, gravity or gyro) and keyframes the 360° camera so the horizon stays level while the view still follows where the camera turned; **Lock view** also holds the direction steady.
@@ -105,6 +107,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 - Platform guide icons no longer load logos from Brandfetch; they show a plain letter instead.
 
 ### Fixed
+
+- Clip analysis (tracking and other effects that read the video) now uses the sample size it asks for instead of always 320 pixels wide.
 - A sequence's own frame size (for example a 9:16 copy) is now kept when the project is saved and reopened.
 - Voice-over recordings no longer show a warning that the cursor couldn't be logged.
 - Editing the timeline while it plays no longer logs "Input has been disposed" errors from audio playback.
