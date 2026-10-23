@@ -5,7 +5,7 @@ import type { SceneTracks, TimelineElement } from "@/timeline";
 /** What happens to clips when the frame changes shape or size (PS-11). */
 export type ReflowMode = "fit" | "fill" | "keep";
 
-type ElementPatch = {
+export type ElementPatch = {
 	trackId: string;
 	elementId: string;
 	patch: Partial<TimelineElement>;

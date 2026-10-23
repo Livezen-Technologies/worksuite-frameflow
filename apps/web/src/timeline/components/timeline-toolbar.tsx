@@ -20,6 +20,8 @@ import { TIMELINE_ZOOM_BUTTON_FACTOR } from "./interaction";
 import { TIMELINE_ZOOM_MAX } from "@/timeline/scale";
 import { sliderToZoom, zoomToSlider } from "@/timeline/zoom-utils";
 import { ScenesView } from "@/components/editor/scenes-view";
+import { SequenceTabs } from "@/sequences/components/sequence-tabs";
+import { LayoutMenu } from "@/layouts/components/layout-menu";
 import { type TActionWithOptionalArgs, invokeAction } from "@/actions";
 import {
 	canToggleSourceAudio,
@@ -304,7 +306,7 @@ function SceneSelector() {
 	const currentScene = editor.scenes.getActiveScene();
 
 	return (
-		<div>
+		<div className="flex min-w-0 items-center gap-2">
 			<SplitButton className="border-foreground/10 h-8 border">
 				<SplitButtonLeft>{currentScene?.name || "No Scene"}</SplitButtonLeft>
 				<SplitButtonSeparator />
@@ -314,6 +316,8 @@ function SceneSelector() {
 					</SplitButtonRight>
 				</ScenesView>
 			</SplitButton>
+			<SequenceTabs />
+			<LayoutMenu />
 		</div>
 	);
 }

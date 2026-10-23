@@ -701,6 +701,7 @@ function TrackLabelsPanel({
 												/>
 											)}
 											<TrackToggleIcon
+												label={track.locked ? "Unlock track" : "Lock track"}
 												isOff={!!track.locked}
 												icons={{
 													on: SquareUnlock02Icon,
@@ -930,7 +931,9 @@ function TrackToggleIcon({
 	isOff,
 	icons,
 	onClick,
+	label,
 }: {
+	label?: string;
 	isOff: boolean;
 	icons: {
 		on: IconSvgElement;
@@ -945,12 +948,16 @@ function TrackToggleIcon({
 					icon={icons.off}
 					className="text-destructive size-4 cursor-pointer"
 					onClick={onClick}
+					aria-label={label}
+					role={label ? "button" : undefined}
 				/>
 			) : (
 				<HugeiconsIcon
 					icon={icons.on}
 					className="text-muted-foreground size-4 cursor-pointer"
 					onClick={onClick}
+					aria-label={label}
+					role={label ? "button" : undefined}
 				/>
 			)}
 		</>

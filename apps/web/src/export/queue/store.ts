@@ -6,6 +6,8 @@ export interface ExportJob {
 	id: string;
 	projectId: string;
 	projectName: string;
+	/** The sequence to export (ED-18); unset exports the open one. */
+	sceneId?: string;
 	/** File name with extension. */
 	fileName: string;
 	options: ExportOptions;

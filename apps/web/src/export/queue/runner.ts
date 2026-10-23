@@ -29,6 +29,11 @@ export async function runExportQueue({ editor }: { editor: EditorCore }) {
 				useExportQueue.getState().update({ id: job.id, patch: { progress } });
 			});
 			try {
+				if (
+					job.sceneId &&
+					editor.scenes.getActiveSceneOrNull()?.id !== job.sceneId
+				)
+					await editor.scenes.switchToScene({ sceneId: job.sceneId });
 				const result = await editor.project.export({ options: job.options });
 				editor.project.clearExportState();
 				if (result.cancelled) {

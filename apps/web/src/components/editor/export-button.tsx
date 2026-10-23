@@ -529,6 +529,24 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 		toast.success("Added to the export queue");
 	};
 
+	/** One queued export per sequence, each at its own frame size (ED-18). */
+	const queueAllSequences = () => {
+		const base = fileName.trim() || project.metadata.name;
+		const { resolution: _resolution, ...options } = exportOptions();
+		for (const scene of editor.scenes.getScenes()) {
+			useExportQueue.getState().add({
+				id: generateUUID(),
+				projectId: project.metadata.id,
+				projectName: project.metadata.name,
+				sceneId: scene.id,
+				fileName: `${base} - ${scene.name}${getExportFileExtension({ format })}`,
+				options,
+			});
+		}
+		toast.success("Every sequence is in the export queue");
+	};
+	const sequenceCount = useEditor((e) => e.scenes.getScenes().length);
+
 	const handleExport = async () => {
 		if (kind === "audio" || kind === "frame") {
 			await exportOther();
@@ -1068,6 +1086,15 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 								data-export-queue-add
 							>
 								Add to queue
+							</Button>
+						)}
+						{(kind === "video" || kind === "gif") && sequenceCount > 1 && (
+							<Button
+								variant="outline"
+								onClick={queueAllSequences}
+								data-export-all-sequences
+							>
+								Export all sequences
 							</Button>
 						)}
 						<Button

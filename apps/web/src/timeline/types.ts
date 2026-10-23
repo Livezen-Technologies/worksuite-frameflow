@@ -1,3 +1,4 @@
+import type { TCanvasSize } from "@/project/types";
 import type { PrivacyRegion } from "@/privacy/region";
 import type { MulticamTag } from "@/multicam/types";
 import type { ScreenZoom } from "@/screen-zoom/types";
@@ -26,6 +27,8 @@ export interface TScene {
 	isMain: boolean;
 	tracks: SceneTracks;
 	bookmarks: Bookmark[];
+	/** This sequence's frame (ED-18); unset follows the project's. */
+	canvasSize?: TCanvasSize;
 	createdAt: Date;
 	updatedAt: Date;
 }

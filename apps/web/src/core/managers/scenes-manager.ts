@@ -93,9 +93,25 @@ export class ScenesManager {
 
 		const activeProject = this.editor.project.getActive();
 
+		// Each sequence keeps its own frame (ED-18): remember the one we're
+		// leaving, then show the target's.
+		if (activeProject && this.active && this.active.id !== sceneId) {
+			const leaving = this.active.id;
+			const size = activeProject.settings.canvasSize;
+			this.list = this.list.map((s) =>
+				s.id === leaving ? { ...s, canvasSize: size } : s,
+			);
+		}
+		const target = this.list.find((s) => s.id === sceneId) ?? targetScene;
+		const nextSize = target.canvasSize ?? activeProject?.settings.canvasSize;
+
 		if (activeProject) {
 			const updatedProject = {
 				...activeProject,
+				scenes: this.list,
+				settings: nextSize
+					? { ...activeProject.settings, canvasSize: nextSize }
+					: activeProject.settings,
 				currentSceneId: sceneId,
 				metadata: {
 					...activeProject.metadata,
@@ -106,8 +122,9 @@ export class ScenesManager {
 			this.editor.project.setActiveProject({ project: updatedProject });
 		}
 
-		this.active = targetScene;
+		this.active = target;
 		this.notify();
+		this.editor.save.markDirty();
 	}
 
 	async toggleBookmark({ time }: { time: MediaTime }): Promise<void> {
