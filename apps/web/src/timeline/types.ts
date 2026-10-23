@@ -100,6 +100,8 @@ interface BaseAudioElement extends BaseTimelineElement {
 	type: "audio";
 	buffer?: AudioBuffer;
 	retime?: RetimeConfig;
+	/** Voice clean-up made a new file from this one (AR-15). */
+	voiceCleanup?: { originalMediaId: string };
 }
 
 export interface UploadAudioElement extends BaseAudioElement {

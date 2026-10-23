@@ -33,7 +33,7 @@ export function onsetEnvelope({
 	return onset;
 }
 
-function fft({
+export function fft({
 	re,
 	im,
 	inverse,

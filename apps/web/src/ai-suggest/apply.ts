@@ -1,31 +1,14 @@
-import { Command } from "@/commands/base-command";
-import { EditorCore } from "@/core";
+import { ApplyTracksCommand } from "@/commands/timeline/apply-tracks";
+import type { EditorCore } from "@/core";
 import { reflowElements } from "@/project-settings/reflow";
 import { applyPatches, copyTracks } from "@/sequences/copy";
 import { addSequence, sizeForShape } from "@/sequences/service";
 import { cutTimeRange } from "@/timeline/cut-range";
-import type { SceneTracks, VideoElement } from "@/timeline/types";
+import type { VideoElement } from "@/timeline/types";
 import { generateUUID } from "@/utils/id";
 import { TICKS_PER_SECOND } from "@/wasm";
 import { applyReframe } from "./reframe";
 import { type Suggestion, useSuggestions } from "./store";
-
-/** Replaces the open sequence's tracks as one undo step. */
-class ApplyTracksCommand extends Command {
-	private saved: SceneTracks | null = null;
-	constructor(private next: SceneTracks) {
-		super();
-	}
-	execute() {
-		const editor = EditorCore.getInstance();
-		this.saved = editor.scenes.getActiveScene().tracks;
-		editor.timeline.updateTracks(this.next);
-		return undefined;
-	}
-	undo() {
-		if (this.saved) EditorCore.getInstance().timeline.updateTracks(this.saved);
-	}
-}
 
 const CAPTION_LOOKS: Record<string, string> = {
 	"word highlight": "highlight",

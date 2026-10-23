@@ -49,6 +49,8 @@ import { TrackingTab } from "@/text/components/tracking-tab";
 import { BasicTab } from "@/clip-actions/components/basic-tab";
 import { AnimationTab } from "@/animation/components/animation-tab";
 import { SphereTab } from "@/vr/components/sphere-tab";
+import { VoiceTab } from "@/audio-tools/components/voice-tab";
+import { Mic } from "lucide-react";
 
 const TRANSFORM_PARAM_KEYS = [
 	"transform.positionX",
@@ -441,7 +443,18 @@ function getAudioConfig({
 }): ElementPropertiesConfig {
 	return {
 		defaultTab: "audio",
-		tabs: [buildAudioTab({ element }), buildSpeedTab({ element })],
+		tabs: [
+			buildAudioTab({ element }),
+			{
+				id: "voice",
+				label: "Voice",
+				icon: <Mic size={16} />,
+				content: ({ trackId }) => (
+					<VoiceTab element={element} trackId={trackId} />
+				),
+			},
+			buildSpeedTab({ element }),
+		],
 	};
 }
 
