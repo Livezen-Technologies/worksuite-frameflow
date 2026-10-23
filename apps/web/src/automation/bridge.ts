@@ -12,6 +12,8 @@ export interface AutomationBridge {
 	onCall: (
 		handler: (method: string, params: unknown) => Promise<unknown>,
 	) => () => void;
+	/** Sends an event to subscribed automation clients (AU-03). */
+	emit?: (topic: string, data: unknown) => void;
 }
 
 export function automationBridge(): AutomationBridge | null {

@@ -141,11 +141,13 @@ const MAIN_METHODS = {
 		const target = path.resolve(String(out));
 		await fs.promises.mkdir(path.dirname(target), { recursive: true });
 		const format = options.format ?? (path.extname(target).slice(1).toLowerCase() || "mp4");
+		emitEvent("export.started", { path: target, format });
 		const result = await callPage("export.run", { ...options, format });
 		await fs.promises.writeFile(target, Buffer.from(result.buffer));
+		emitEvent("export.finished", { path: target, bytes: result.buffer.byteLength, format });
 		return { path: target, bytes: result.buffer.byteLength, format };
 	},
-	"methods.list": () => [...Object.keys(MAIN_METHODS), ...PAGE_METHODS].sort(),
+	"methods.list": () => [...Object.keys(MAIN_METHODS), ...PAGE_METHODS, "events.subscribe", "events.unsubscribe"].sort(),
 };
 
 const PAGE_METHODS = [
@@ -162,6 +164,22 @@ const PAGE_METHODS = [
 	"cloud.sync",
 ];
 
+/** Topics a client can subscribe to (AU-03); "*" means all of them. */
+const EVENT_TOPICS = ["project.opened", "project.saved", "timeline.changed", "export.started", "export.finished"];
+/** Authenticated sockets and the topics each wants. */
+const subscribers = new Map();
+
+function emitEvent(topic, data) {
+	for (const [socket, topics] of subscribers) {
+		if (!topics.has(topic) && !topics.has("*")) continue;
+		socket.write(`${JSON.stringify({ jsonrpc: "2.0", method: "event", params: { topic, data: data ?? null, at: new Date().toISOString() } })}\n`);
+	}
+}
+
+ipcMain.on("automation:event", (_event, { topic, data } = {}) => {
+	if (EVENT_TOPICS.includes(topic)) emitEvent(topic, data);
+});
+
 async function dispatch(method, params) {
 	if (MAIN_METHODS[method]) return MAIN_METHODS[method](params ?? {});
 	if (PAGE_METHODS.includes(method)) return callPage(method, params ?? {});
@@ -174,6 +192,7 @@ function serve(socket) {
 	const send = (msg) => socket.write(`${JSON.stringify({ jsonrpc: "2.0", ...msg })}\n`);
 	socket.setEncoding("utf8");
 	socket.on("error", () => {});
+	socket.on("close", () => subscribers.delete(socket));
 	socket.on("data", (chunk) => {
 		buffer += chunk;
 		if (buffer.length > MAX_LINE) return socket.destroy();
@@ -200,6 +219,20 @@ function serve(socket) {
 					send({ id, error: { code: -32003, message: "Send auth with the token from automation.json first" } });
 					socket.end();
 				}
+				continue;
+			}
+			if (method === "events.subscribe" || method === "events.unsubscribe") {
+				const wanted = Array.isArray(params?.topics) && params.topics.length ? params.topics.map(String) : ["*"];
+				const unknown = wanted.filter((t) => t !== "*" && !EVENT_TOPICS.includes(t));
+				if (unknown.length) {
+					send({ id, error: { code: -32602, message: `Unknown topics: ${unknown.join(", ")}` } });
+					continue;
+				}
+				const topics = subscribers.get(socket) ?? new Set();
+				for (const t of wanted) method === "events.subscribe" ? topics.add(t) : topics.delete(t);
+				if (topics.size) subscribers.set(socket, topics);
+				else subscribers.delete(socket);
+				send({ id, result: { topics: [...topics], available: EVENT_TOPICS } });
 				continue;
 			}
 			// Binary results (export) never cross the socket; strip ArrayBuffers.

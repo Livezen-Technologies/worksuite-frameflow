@@ -89,6 +89,7 @@ contextBridge.exposeInMainWorld("worksuite", {
 	automation: {
 		getState: () => ipcRenderer.invoke("automation:get-state"),
 		setEnabled: (enabled) => ipcRenderer.invoke("automation:set-enabled", enabled),
+		emit: (topic, data) => ipcRenderer.send("automation:event", { topic, data }),
 		// The page runs editor methods for the local automation API.
 		onCall: (handler) => {
 			const listener = async (_event, { id, method, params }) => {

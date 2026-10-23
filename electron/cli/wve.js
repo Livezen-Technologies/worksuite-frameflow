@@ -34,7 +34,7 @@ class WveError extends Error {
 	}
 }
 
-function connect() {
+function connect({ onEvent } = {}) {
 	let info;
 	try {
 		info = JSON.parse(fs.readFileSync(discoveryPath(), "utf8"));
@@ -57,6 +57,10 @@ function connect() {
 			while ((nl = buffer.indexOf("\n")) >= 0) {
 				const msg = JSON.parse(buffer.slice(0, nl));
 				buffer = buffer.slice(nl + 1);
+				if (msg.method === "event") {
+					onEvent?.(msg.params);
+					continue;
+				}
 				const w = waiting.get(msg.id);
 				if (!w) continue;
 				waiting.delete(msg.id);
@@ -239,6 +243,7 @@ const HELP = `wve: control ${APP_NAME} from the command line
   wve export <out.mp4|webm|gif> [--quality low|medium|high|very_high]
   wve sync [project-id]
   wve call <method> ['<json params>']
+  wve events [topic...]           print events as they happen (JSON lines)
   wve methods                     every API method
   wve mcp                         run as an MCP server (stdio) for AI agents
 
@@ -320,6 +325,13 @@ async function cli(argv) {
 			return print(await rpc("timeline.addText", { text: f._.join(" "), start: seconds(f.start), duration: seconds(f.duration) }));
 		case "export":
 			return print(await rpc("export.run", { path: path.resolve(f._[0] ?? "export.mp4"), quality: f.quality }));
+		case "events": {
+			const client = await connect({ onEvent: (e) => process.stdout.write(`${JSON.stringify(e)}\n`) });
+			const { topics } = await client.call("events.subscribe", { topics: rest.length ? rest : ["*"] });
+			process.stderr.write(`Listening for ${topics.join(", ")} (Ctrl+C to stop)\n`);
+			await new Promise(() => {});
+			return;
+		}
 		case "methods":
 			return print(await rpc("methods.list"));
 		case "call":
