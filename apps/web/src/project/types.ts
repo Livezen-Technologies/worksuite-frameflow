@@ -50,6 +50,8 @@ export interface TProjectSettings {
 	audio?: { sampleRate: 44100 | 48000; channels: 1 | 2 };
 	/** Tone mapping for HDR footage, project-wide and per media (HD-05, HD-08). */
 	hdr?: ProjectHdrSettings;
+	/** How clips stack (PS-08): a magnetic main track, or all tracks equal. */
+	arrangeLayers?: "main" | "free";
 	/** Per-project defaults (PS-17 – PS-23). */
 	defaults?: TProjectDefaults;
 }

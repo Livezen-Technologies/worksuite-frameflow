@@ -3,6 +3,13 @@ import { type MediaTime, ZERO_MEDIA_TIME } from "@/wasm";
 
 export const MAIN_TRACK_NAME = "Main Track";
 
+let freeTracks = false;
+
+/** Free tracks mode (PS-08): the main track stops pulling clips to 0:00. */
+export function setFreeTracks(free: boolean) {
+	freeTracks = free;
+}
+
 export function getEarliestMainTrackElement({
 	mainTrack,
 	excludeElementId,
@@ -35,7 +42,7 @@ export function enforceMainTrackStart({
 	requestedStartTime: MediaTime;
 	excludeElementId?: string;
 }): MediaTime {
-	if (tracks.main.id !== targetTrackId) {
+	if (freeTracks || tracks.main.id !== targetTrackId) {
 		return requestedStartTime;
 	}
 

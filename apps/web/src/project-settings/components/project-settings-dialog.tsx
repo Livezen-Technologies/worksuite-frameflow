@@ -157,6 +157,7 @@ function ProjectSettingsBody({ onClose }: { onClose: () => void }) {
 		settings.audio?.sampleRate ?? 48000,
 	);
 	const [channels, setChannels] = useState(settings.audio?.channels ?? 2);
+	const [arrange, setArrange] = useState(settings.arrangeLayers ?? "main");
 	const [is360, setIs360] = useState(sphere);
 	const [reflow, setReflow] = useState<ReflowMode>("fit");
 	const [defaults, setDefaults] = useState<TProjectDefaults>(
@@ -219,6 +220,7 @@ function ProjectSettingsBody({ onClose }: { onClose: () => void }) {
 				? settings.fps
 				: floatToFrameRate(fps),
 		colorSpace,
+		arrangeLayers: arrange,
 		audio: { sampleRate, channels },
 		defaults,
 		hdr: { ...(settings.hdr ?? {}), toneMap, graphicsWhiteNits: graphicsWhite },
@@ -274,6 +276,7 @@ function ProjectSettingsBody({ onClose }: { onClose: () => void }) {
 		if (t.canvasSize) setSize(t.canvasSize);
 		if (t.fps) setFps(frameRateToFloat(t.fps));
 		if (t.colorSpace) setColorSpace(t.colorSpace);
+		if (t.arrangeLayers) setArrange(t.arrangeLayers);
 		if (t.audio) {
 			setSampleRate(t.audio.sampleRate);
 			setChannels(t.audio.channels);
@@ -516,9 +519,16 @@ function ProjectSettingsBody({ onClose }: { onClose: () => void }) {
 						</Field>
 						<Field
 							label="Arrange layers"
-							hint="Free tracks (all tracks equal) is coming later."
+							hint="Free tracks: clips stay where you drop them on every track, gaps at the start included."
 						>
-							<select className={selectClass} value="main" disabled>
+							<select
+								className={selectClass}
+								value={arrange}
+								data-arrange-layers
+								onChange={(e) =>
+									setArrange(e.target.value === "free" ? "free" : "main")
+								}
+							>
 								<option value="main">
 									Main track (magnetic), others as overlays
 								</option>
