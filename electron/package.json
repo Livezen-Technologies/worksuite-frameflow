@@ -2,7 +2,7 @@
   "name": "worksuite-frameflow",
   "productName": "Worksuite FrameFlow",
   "version": "1.0.0",
-  "description": "Worksuite FrameFlow — desktop app (based on OpenCut)",
+  "description": "Worksuite FrameFlow — video editor desktop app",
   "author": {
     "name": "Livezen Technologies",
     "email": "support@worksuitecloud.com"
@@ -30,7 +30,7 @@
   "build": {
     "appId": "com.worksuitecloud.frameflow",
     "productName": "Worksuite FrameFlow",
-    "copyright": "Copyright © 2026 Livezen Technologies. Based on OpenCut (MIT).",
+    "copyright": "Copyright © 2026 Livezen Technologies.",
     "directories": {
       "output": "dist",
       "buildResources": "build"
@@ -51,6 +51,10 @@
       {
         "from": "web",
         "to": "web"
+      },
+      {
+        "from": "../LICENSE",
+        "to": "licenses/OpenCut-LICENSE.txt"
       }
     ],
     "asar": true,

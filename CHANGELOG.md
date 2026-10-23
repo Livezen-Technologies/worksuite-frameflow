@@ -8,6 +8,14 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 ## [Unreleased]
 
 ### Added
+- Basic tab for video and image clips. It has Mask and Color adjustment shortcuts, Blend (mode and opacity), Transform, and three switches:
+  - Stabilize smooths camera shake with position keyframes and a 10% zoom.
+  - Reduce image noise adds an edge-preserving GPU denoise.
+  - Remove flicker evens out brightness with exposure keyframes.
+  - Stabilize and Remove flicker analyse the clip and write ordinary keyframes, so the result stays editable.
+
+### Changed
+- The app's description and copyright line no longer say "Based on OpenCut". OpenCut's MIT licence ships with the app in licenses/OpenCut-LICENSE.txt.
 - Speed has Normal and Curve tabs. Normal sets speed, duration and pitch. Curve adds speed ramps: Montage, Hero, Bullet, Jump Cut, Flash In, Flash Out, or Custom (five points). The clip is played in 16 short pieces at changing speeds, in one undo step, and None turns it back into one clip.
 - Clip toolbar over the selected clip in the preview: Replace, Fit/Fill, Crop, Overlay track, and a "…" menu with Copy, Cut, Paste, Duplicate, Delete, Replace, Crop, Flip (horizontal or vertical), Overlay and Add overlay.
 - Aspect-ratio picker at the top-left of the preview: original aspect ratio, 16:9, 4:3, 2:1, 9:16, 1:1, 3:4 and 4:5, each labelled with where it's used.

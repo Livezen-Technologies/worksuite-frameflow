@@ -32,7 +32,8 @@ import { MasksTab } from "@/masks/components/masks-tab";
 import { SpeedTab } from "@/speed/components/speed-tab";
 import { GraphicTab } from "@/graphics/components/graphic-tab";
 import { OcShapesIcon } from "@/components/icons";
-import { Globe, Sparkles } from "lucide-react";
+import { Film, Globe, Sparkles } from "lucide-react";
+import { BasicTab } from "@/clip-actions/components/basic-tab";
 import { AnimationTab } from "@/animation/components/animation-tab";
 import { SphereTab } from "@/vr/components/sphere-tab";
 
@@ -202,6 +203,19 @@ function buildAnimationTab({
 	};
 }
 
+function buildBasicTab({
+	element,
+}: {
+	element: VisualElement;
+}): PropertiesTabDef {
+	return {
+		id: "basic",
+		label: "Basic",
+		icon: <Film size={16} />,
+		content: ({ trackId }) => <BasicTab element={element} trackId={trackId} />,
+	};
+}
+
 function buildSphereTab({
 	element,
 }: {
@@ -286,8 +300,9 @@ function getVideoConfig({
 }): ElementPropertiesConfig {
 	const showAudioTab = mediaAsset?.hasAudio !== false;
 	return {
-		defaultTab: "transform",
+		defaultTab: "basic",
 		tabs: [
+			buildBasicTab({ element }),
 			buildTransformTab({ element }),
 			buildAnimationTab({ element, thumbnail: mediaAsset?.thumbnailUrl }),
 			...(showAudioTab ? [buildAudioTab({ element })] : []),
@@ -308,8 +323,9 @@ function getImageConfig({
 	thumbnail?: string | null;
 }): ElementPropertiesConfig {
 	return {
-		defaultTab: "transform",
+		defaultTab: "basic",
 		tabs: [
+			buildBasicTab({ element }),
 			buildTransformTab({ element }),
 			buildAnimationTab({ element, thumbnail }),
 			buildBlendingTab({ element }),

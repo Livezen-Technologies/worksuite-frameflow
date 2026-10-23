@@ -315,7 +315,7 @@ export function startCrop({
 	toast.info("Drag the box's edges on the preview to crop.");
 }
 
-function sourceSecondsAt({
+export function sourceSecondsAt({
 	element,
 	timelineTime,
 }: {
@@ -330,7 +330,7 @@ function sourceSecondsAt({
 	return (element.trimStart + local * rate) / TICKS_PER_SECOND;
 }
 
-async function openVideo(url: string): Promise<HTMLVideoElement> {
+export async function openVideo(url: string): Promise<HTMLVideoElement> {
 	const video = document.createElement("video");
 	video.muted = true;
 	video.preload = "auto";
@@ -342,7 +342,7 @@ async function openVideo(url: string): Promise<HTMLVideoElement> {
 	return video;
 }
 
-async function seek({
+export async function seek({
 	video,
 	seconds,
 }: {

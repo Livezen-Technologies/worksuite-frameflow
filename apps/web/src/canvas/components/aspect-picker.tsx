@@ -76,7 +76,7 @@ export function ratioLabel(size: TCanvasSize): string {
 		if (
 			Math.abs(
 				option.size.width / option.size.height - size.width / size.height,
-			) < 0.005
+			) < 0.02
 		) {
 			return option.label;
 		}

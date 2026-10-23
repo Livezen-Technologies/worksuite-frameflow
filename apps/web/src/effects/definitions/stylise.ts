@@ -82,7 +82,26 @@ const percent = ({
 	key: string;
 }) => read(key) / 100;
 
+export const DENOISE_EFFECT_TYPE = "denoise";
+
 export const STYLISE_EFFECTS: EffectDefinition[] = [
+	stylise({
+		type: DENOISE_EFFECT_TYPE,
+		name: "Reduce noise",
+		category: "Blur",
+		keywords: ["denoise", "noise", "grain", "clean", "smooth"],
+		params: [
+			slider({
+				key: "strength",
+				label: "Strength",
+				min: 0,
+				max: 100,
+				step: 1,
+				value: 50,
+			}),
+		],
+		p0: (r) => [percent({ read: r, key: "strength" })],
+	}),
 	stylise({
 		type: "sharpen",
 		name: "Sharpen",
