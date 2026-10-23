@@ -24,11 +24,11 @@ const DEFAULT_SAFE: Insets = {
 };
 const SINHALA_FONT = "Noto Sans Sinhala";
 /** Pack sizes are written on a larger scale than the editor's text units. */
-const SIZE_UNIT = 0.35;
+export const SIZE_UNIT = 0.35;
 const COLOR_ROLES: ColorRole[] = ["primary", "accent", "dark", "light"];
 
 /** Text shrinks on narrow frames so lines still fit across. */
-const TEXT_SCALE: Record<AspectId, number> = {
+export const TEXT_SCALE: Record<AspectId, number> = {
 	"16:9": 1,
 	"1:1": 0.8,
 	"4:5": 0.78,

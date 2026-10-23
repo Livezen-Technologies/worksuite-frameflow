@@ -25,6 +25,8 @@ import {
 	type PackFields,
 } from "../compile";
 import { PACKS } from "../data";
+import { useCustomPacks } from "../custom";
+import { CustomPackBar } from "./custom-pack-bar";
 import { usePackStore } from "../store";
 import {
 	ASPECT_SIZES,
@@ -194,7 +196,9 @@ export function PacksView() {
 	);
 	const store = usePackStore();
 	const kit = useBrandKit();
-	const pack = PACKS.find((p) => p.id === store.pack) ?? PACKS[0];
+	const customPacks = useCustomPacks((s) => s.packs);
+	const allPacks = [...PACKS, ...customPacks];
+	const pack = allPacks.find((p) => p.id === store.pack) ?? PACKS[0];
 	const projectAspect = canvas
 		? nearestAspect({
 				width: canvas.width,
@@ -281,7 +285,7 @@ export function PacksView() {
 		<div className="flex h-full flex-col" data-packs-view>
 			<div className="flex flex-col gap-2 border-b p-3">
 				<div className="flex flex-wrap gap-1">
-					{PACKS.map((p) => (
+					{allPacks.map((p) => (
 						<button
 							key={p.id}
 							type="button"
@@ -301,6 +305,7 @@ export function PacksView() {
 				<p className="text-muted-foreground text-[11px] leading-snug">
 					{pack.description}
 				</p>
+				<CustomPackBar editor={editor} pack={pack} aspect={aspect} />
 				<div className="flex flex-wrap items-center gap-1.5">
 					<div className="bg-accent flex rounded-md p-0.5">
 						{LANGUAGES.map((l) => (

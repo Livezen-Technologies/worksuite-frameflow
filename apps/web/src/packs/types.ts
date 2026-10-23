@@ -7,7 +7,7 @@ import type { ParamValues } from "@/params";
  * SP-04). Text comes in English, Sinhala and mixed versions (SP-01).
  */
 
-export type PackId = "youtube" | "facebook" | "tiktok" | "podcast";
+export type PackId = "youtube" | "facebook" | "tiktok" | "podcast" | `custom-${string}`;
 export type AspectId = "16:9" | "9:16" | "1:1" | "4:5";
 export type PackLanguage = "en" | "si" | "mixed";
 export type Purpose =

@@ -9,6 +9,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
+- Your own template packs (Text → Packs): **+ New pack**, then select titles and shapes and **Save selection as template**; templates adapt to every aspect like the built-in packs. Packs export and import as .ffpack.json files, and in the desktop app can be shared with your team through the asset library (**Share with team**, **Team packs**).
+
 - The Podcast pack's Audiogram card now moves with your sound: each bar's height follows the timeline audio where the card is placed (the bars pulse when there is no sound).
 
 - Template packs: **Fill host and guest from the transcript** (Text → Packs → Your details) reads speaker names from captions or the transcript ("Name:" lines or WebVTT voice tags) and fills the host and guest lower thirds.
