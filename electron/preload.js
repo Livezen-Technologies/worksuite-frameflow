@@ -45,6 +45,17 @@ contextBridge.exposeInMainWorld("worksuite", {
 			return () => ipcRenderer.removeListener("uploads:changed", handler);
 		},
 	},
+	windows: {
+		report: (args) => ipcRenderer.invoke("windows:report", args),
+		open: (args) => ipcRenderer.invoke("windows:open", args),
+		moveToMain: (args) => ipcRenderer.invoke("windows:move-to-main", args),
+		isMain: () => ipcRenderer.invoke("windows:is-main"),
+		onNavigate: (listener) => {
+			const handler = (_event, url) => listener(url);
+			ipcRenderer.on("windows:navigate", handler);
+			return () => ipcRenderer.removeListener("windows:navigate", handler);
+		},
+	},
 	helper: {
 		caps: () => ipcRenderer.invoke("helper:caps"),
 		configure: (args) => ipcRenderer.invoke("helper:configure", args),

@@ -3,6 +3,7 @@ import Script from "next/script";
 import "./globals.css";
 import { Toaster } from "../components/ui/sonner";
 import { ProjectFolderHost } from "@/project-folder/components/project-folder-host";
+import { WindowHost } from "@/windows/components/window-host";
 import { RecordingCommandHost } from "@/recording/components/recording-command-host";
 import { RenderCacheHost } from "@/render-cache/components/render-cache-host";
 import { ProxyHost } from "@/proxy/components/proxy-host";
@@ -67,6 +68,7 @@ export default function RootLayout({
 						<ProxyHost />
 						<RenderCacheHost />
 						<RecordingCommandHost />
+						<WindowHost />
 						<Script
 							src="https://cdn.databuddy.cc/databuddy.js"
 							strategy="afterInteractive"

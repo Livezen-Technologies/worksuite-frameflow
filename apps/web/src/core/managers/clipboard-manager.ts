@@ -6,7 +6,9 @@ import {
 	type CopyContext,
 	type PasteContext,
 } from "@/clipboard";
+import { clipboardText, fitItemsToCanvas } from "@/clipboard/fit";
 import type { MediaAsset } from "@/media/types";
+import type { TCanvasSize } from "@/project/types";
 import type { MediaTime } from "@/wasm";
 
 export class ClipboardManager {
@@ -15,12 +17,32 @@ export class ClipboardManager {
 	 * pasting into another project tab brings the media along (MP-15). */
 	private sourceProjectId: string | null = null;
 	private media: MediaAsset[] = [];
+	private sourceCanvas: TCanvasSize | null = null;
+	/** Text this app last put on the system clipboard (MP-19). */
+	private systemText: string | null = null;
 	private listeners = new Set<() => void>();
 
 	constructor(private editor: EditorCore) {}
 
 	getEntry(): ClipboardEntry | null {
 		return this.entry;
+	}
+
+	/** True when the system clipboard text came from our own copy. */
+	isOwnText(text: string): boolean {
+		return this.systemText !== null && text === this.systemText;
+	}
+
+	/** The entry fitted to the open project's frame (MP-20). */
+	private fittedEntry(): ClipboardEntry | null {
+		const entry = this.entry;
+		if (!entry || entry.type !== "elements") return entry;
+		const to = this.editor.project.getActiveOrNull()?.settings.canvasSize;
+		if (!to || !this.sourceCanvas) return entry;
+		return {
+			...entry,
+			items: fitItemsToCanvas({ items: entry.items, from: this.sourceCanvas, to }),
+		};
 	}
 
 	hasEntry(): boolean {
@@ -36,7 +58,14 @@ export class ClipboardManager {
 		}
 
 		this.entry = entry;
-		this.sourceProjectId = this.editor.project.getActiveOrNull()?.metadata.id ?? null;
+		const source = this.editor.project.getActiveOrNull();
+		this.sourceProjectId = source?.metadata.id ?? null;
+		this.sourceCanvas = source?.settings.canvasSize ?? null;
+		if (entry.type === "elements") {
+			const text = clipboardText({ items: entry.items });
+			this.systemText = text;
+			void navigator.clipboard?.writeText(text).catch(() => {});
+		}
 		const ids = new Set(
 			entry.type === "elements"
 				? entry.items.flatMap((item) =>
@@ -77,7 +106,7 @@ export class ClipboardManager {
 	}
 
 	private async pasteFromOtherProject({ time }: { time?: MediaTime }): Promise<void> {
-		const entry = this.entry;
+		const entry = this.fittedEntry();
 		if (!entry || entry.type !== "elements") return;
 		const map = await this.bringMedia();
 		const remapped: ClipboardEntry = {
@@ -106,8 +135,10 @@ export class ClipboardManager {
 			return true;
 		}
 
+		const entry = this.fittedEntry();
+		if (!entry) return false;
 		const command = buildPasteClipboardCommand({
-			entry: this.entry,
+			entry,
 			context: this.getPasteContext({ time }),
 		});
 		if (!command) {

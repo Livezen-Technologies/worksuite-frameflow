@@ -53,7 +53,8 @@
       "native-helper.js",
       "cursor-log.js",
       "capture-controls.js",
-      "capture-bar/**"
+      "capture-bar/**",
+      "project-windows.js"
     ],
     "extraResources": [
       {

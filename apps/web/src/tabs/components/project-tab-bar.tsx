@@ -2,7 +2,10 @@
 
 import { useProjectSettings } from "@/project-settings/store";
 import { FolderMenuItems } from "@/project-folder/components/folder-menu-items";
-import { Settings } from "lucide-react";
+import { AppWindow, Settings } from "lucide-react";
+import { leaveProject, openInNewWindow } from "@/windows/actions";
+import { windowsBridge } from "@/windows/bridge";
+import { useWindowState } from "@/windows/store";
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import {
@@ -58,16 +61,22 @@ export function ProjectTabBar() {
 		}
 	}, [tabs.length]);
 
-	const go = async (id: string | null) => {
-		await editor.save.flush().catch(() => {});
-		router.push(id ? `/editor/${id}` : "/projects");
-	};
+	const go = (id: string | null) =>
+		leaveProject({
+			editor,
+			then: () => router.push(id ? `/editor/${id}` : "/projects"),
+		});
 
 	const close = async (id: string) => {
-		if (id === activeId) await editor.save.flush().catch(() => {});
-		const next = useProjectTabs.getState().close(id);
-		if (id === activeId) router.push(next ? `/editor/${next}` : "/projects");
+		const finish = () => {
+			const next = useProjectTabs.getState().close(id);
+			if (id === activeId) router.push(next ? `/editor/${next}` : "/projects");
+		};
+		if (id === activeId) await leaveProject({ editor, then: finish });
+		else finish();
 	};
+	const isMainWindow = useWindowState((s) => s.isMain);
+	const hasWindows = typeof window !== "undefined" && !!windowsBridge();
 
 	// Ctrl/Cmd+Tab, Ctrl/Cmd+1–9, Ctrl/Cmd+W, Ctrl/Cmd+Shift+T (MP-03).
 	useEffect(() => {
@@ -214,6 +223,37 @@ export function ProjectTabBar() {
 				>
 					<Plus className="size-4" /> Open another project
 				</DropdownMenuItem>
+				{activeId && hasWindows ? (
+					isMainWindow ? (
+						<DropdownMenuItem
+							data-open-new-window
+							className="gap-2.5 px-3"
+							onSelect={() =>
+								void openInNewWindow({
+									editor,
+									projectId: activeId,
+									goToProjects: () => router.push("/projects"),
+								})
+							}
+						>
+							<AppWindow className="size-4" /> Open in new window
+						</DropdownMenuItem>
+					) : (
+						<DropdownMenuItem
+							data-move-to-main
+							className="gap-2.5 px-3"
+							onSelect={() =>
+								void leaveProject({
+									editor,
+									then: () =>
+										void windowsBridge()?.moveToMain({ projectId: activeId }),
+								})
+							}
+						>
+							<AppWindow className="size-4" /> Move back to main window
+						</DropdownMenuItem>
+					)
+				) : null}
 				{activeId ? (
 					<DropdownMenuItem
 						onSelect={() => void close(activeId)}

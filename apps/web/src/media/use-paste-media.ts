@@ -10,6 +10,32 @@ import { defaultStillDuration } from "@/timeline/creation";
 import { mediaTimeFromSeconds } from "@/wasm";
 import { isTypableDOMElement } from "@/utils/browser";
 import type { MediaType } from "@/media/types";
+import { looksLikeSubtitles } from "@/clipboard/fit";
+import { parseSrt } from "@/subtitles/srt";
+import { insertCaptionChunksAsTextTrack } from "@/subtitles/insert";
+import { buildTextElement } from "@/timeline/element-utils";
+import type { EditorCore } from "@/core";
+
+/** Text from another app becomes captions or a title clip (MP-18). */
+function pasteText({ editor, text }: { editor: EditorCore; text: string }) {
+	if (looksLikeSubtitles(text)) {
+		const { captions } = parseSrt({ input: text.replace(/^WEBVTT[^\n]*\n/, "") });
+		if (captions.length > 0) {
+			insertCaptionChunksAsTextTrack({ editor, captions });
+			return;
+		}
+	}
+	const element = buildTextElement({
+		raw: { name: text.slice(0, 40), params: { content: text } },
+		startTime: editor.playback.getCurrentTime(),
+	});
+	editor.command.execute({
+		command: new InsertElementCommand({
+			element,
+			placement: { mode: "auto", trackType: "text" },
+		}),
+	});
+}
 
 const MEDIA_MIME_PREFIXES: MediaType[] = ["image", "video", "audio"];
 
@@ -51,6 +77,11 @@ export function usePasteMedia() {
 			});
 			if (files.length === 0) {
 				event.preventDefault();
+				const text = event.clipboardData?.getData("text/plain")?.trim() ?? "";
+				if (text && !editor.clipboard.isOwnText(text)) {
+					pasteText({ editor, text });
+					return;
+				}
 				editor.clipboard.paste();
 				return;
 			}

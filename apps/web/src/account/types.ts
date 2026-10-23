@@ -1,3 +1,4 @@
+import type { ProjectWindowsBridge } from "@/windows/bridge";
 import type { CursorLog } from "@/screen-zoom/types";
 import type { NativeHelperBridge } from "@/proxy/bridge";
 import type { AutomationBridge } from "@/automation/bridge";
@@ -82,6 +83,7 @@ declare global {
 			ai?: AiBridge;
 			automation?: AutomationBridge;
 			helper?: NativeHelperBridge;
+			windows?: ProjectWindowsBridge;
 		};
 	}
 }

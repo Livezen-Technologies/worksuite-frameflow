@@ -18,6 +18,7 @@ const updates = require("./updater");
 const projectFolders = require("./project-folders");
 const ai = require("./ai");
 const automation = require("./automation");
+const projectWindows = require("./project-windows");
 const nativeHelper = require("./native-helper");
 
 const HOST = "127.0.0.1";
@@ -121,6 +122,50 @@ async function startServer() {
 	return origin;
 }
 
+const WINDOW_OPTIONS = {
+	width: 1440,
+	height: 900,
+	minWidth: 1024,
+	minHeight: 640,
+	title: "Worksuite FrameFlow",
+	backgroundColor: "#0F172A",
+	icon: path.join(__dirname, "build", "icon.png"),
+	autoHideMenuBar: true,
+	webPreferences: {
+		contextIsolation: true,
+		sandbox: true,
+		preload: path.join(__dirname, "preload.js"),
+	},
+};
+
+/** Keep a window on the app's origin; panels may pop out (WS-03). */
+function guardWindow(win, origin) {
+	win.webContents.setWindowOpenHandler(({ url, frameName }) => {
+		// Editor panels moved to their own window for a second monitor
+		// (WS-03): same-origin blank windows the editor renders into.
+		if (url === "about:blank" && /^frameflow-[a-z]+$/.test(frameName)) {
+			return {
+				action: "allow",
+				overrideBrowserWindowOptions: {
+					title: "Worksuite FrameFlow",
+					backgroundColor: "#0F172A",
+					autoHideMenuBar: true,
+					icon: path.join(__dirname, "build", "icon.png"),
+					webPreferences: { contextIsolation: true, sandbox: true },
+				},
+			};
+		}
+		shell.openExternal(url);
+		return { action: "deny" };
+	});
+	win.webContents.on("will-navigate", (event, url) => {
+		if (!url.startsWith(origin)) {
+			event.preventDefault();
+			shell.openExternal(url);
+		}
+	});
+}
+
 async function createWindow() {
 	const origin = await startServer();
 	appOrigin = origin;
@@ -149,29 +194,15 @@ async function createWindow() {
 	});
 
 	// Keep the app on its own origin; open everything else in the system browser.
-	win.webContents.setWindowOpenHandler(({ url, frameName }) => {
-		// Editor panels moved to their own window for a second monitor
-		// (WS-03): same-origin blank windows the editor renders into.
-		if (url === "about:blank" && /^frameflow-[a-z]+$/.test(frameName)) {
-			return {
-				action: "allow",
-				overrideBrowserWindowOptions: {
-					title: "Worksuite FrameFlow",
-					backgroundColor: "#0F172A",
-					autoHideMenuBar: true,
-					icon: path.join(__dirname, "build", "icon.png"),
-					webPreferences: { contextIsolation: true, sandbox: true },
-				},
-			};
-		}
-		shell.openExternal(url);
-		return { action: "deny" };
-	});
-	win.webContents.on("will-navigate", (event, url) => {
-		if (!url.startsWith(origin)) {
-			event.preventDefault();
-			shell.openExternal(url);
-		}
+	guardWindow(win, origin);
+	projectWindows.init({
+		window: win,
+		appOrigin: origin,
+		create: () => {
+			const extra = new BrowserWindow(WINDOW_OPTIONS);
+			guardWindow(extra, origin);
+			return extra;
+		},
 	});
 
 	await win.loadURL(`${origin}/projects`);
@@ -187,6 +218,17 @@ function registerAccountIpc() {
 			if (!fromApp(event)) throw new Error("Not allowed");
 			return fn(...args);
 		});
+
+	// Same check, for handlers that need to know which window asked.
+	const handleFrom = (channel, fn) =>
+		ipcMain.handle(channel, (event, ...args) => {
+			if (!fromApp(event)) throw new Error("Not allowed");
+			return fn(event, ...args);
+		});
+	handleFrom("windows:report", (event, args) => projectWindows.report(event, args));
+	handleFrom("windows:open", (event, args) => projectWindows.open(event, args));
+	handleFrom("windows:move-to-main", (event, args) => projectWindows.moveToMain(event, args));
+	handleFrom("windows:is-main", (event) => projectWindows.isMain(event));
 
 	handle("app:version", () => app.getVersion());
 	handle("capture:sources", () => capture.listSources());
