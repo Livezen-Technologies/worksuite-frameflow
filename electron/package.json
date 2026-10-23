@@ -50,7 +50,10 @@
       "automation.js",
       "preload.js",
       "package.json",
-      "native-helper.js"
+      "native-helper.js",
+      "cursor-log.js",
+      "capture-controls.js",
+      "capture-bar/**"
     ],
     "extraResources": [
       {
@@ -146,6 +149,7 @@
     "afterPack": "scripts/after-pack.cjs"
   },
   "dependencies": {
-    "electron-updater": "6.6.2"
+    "electron-updater": "6.6.2",
+    "uiohook-napi": "1.5.4"
   }
 }

@@ -105,6 +105,9 @@ function buildTrackNodes({
 							effects: element.effects ?? [],
 							masks: element.masks ?? [],
 							transitions: transitionsFor(element.id),
+							...(element.screenZoom?.segments.length
+								? { screenZoom: element.screenZoom }
+								: {}),
 						}),
 					);
 				}

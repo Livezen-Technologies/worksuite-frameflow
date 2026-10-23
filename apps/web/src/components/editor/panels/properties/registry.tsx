@@ -32,7 +32,16 @@ import { MasksTab } from "@/masks/components/masks-tab";
 import { SpeedTab } from "@/speed/components/speed-tab";
 import { GraphicTab } from "@/graphics/components/graphic-tab";
 import { OcShapesIcon } from "@/components/icons";
-import { Crosshair, Film, Globe, Sparkles, Type, Wand } from "lucide-react";
+import {
+	Crosshair,
+	Film,
+	Globe,
+	Sparkles,
+	Type,
+	Wand,
+	ZoomIn,
+} from "lucide-react";
+import { ZoomTab } from "@/screen-zoom/components/zoom-tab";
 import { TextBasicTab, TextPresetsTab } from "@/text/components/text-panel";
 import { TrackingTab } from "@/text/components/tracking-tab";
 import { BasicTab } from "@/clip-actions/components/basic-tab";
@@ -335,7 +344,21 @@ function getVideoConfig({
 			buildBlendingTab({ element }),
 			buildMasksTab({ element }),
 			buildClipEffectsTab({ element }),
+			buildZoomTab({ element }),
 		],
+	};
+}
+
+function buildZoomTab({
+	element,
+}: {
+	element: VideoElement;
+}): PropertiesTabDef {
+	return {
+		id: "zoom",
+		label: "Zoom",
+		icon: <ZoomIn size={16} />,
+		content: ({ trackId }) => <ZoomTab element={element} trackId={trackId} />,
 	};
 }
 

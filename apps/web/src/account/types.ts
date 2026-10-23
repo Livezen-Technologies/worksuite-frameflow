@@ -1,3 +1,4 @@
+import type { CursorLog } from "@/screen-zoom/types";
 import type { NativeHelperBridge } from "@/proxy/bridge";
 import type { AutomationBridge } from "@/automation/bridge";
 import type { AiBridge } from "@/ai/bridge";
@@ -344,4 +345,33 @@ export interface WorksuiteCaptureBridge {
 		camera: MediaAccess;
 		screen: MediaAccess;
 	}>;
+	/** Cursor and click log while screen recording (SC-06). */
+	cursorStart?: (args: {
+		sourceId: string | null;
+	}) => Promise<{ cursor: boolean; clicks: boolean; keys: boolean }>;
+	cursorPause?: () => Promise<void>;
+	cursorResume?: () => Promise<void>;
+	cursorStop?: () => Promise<CursorLog | null>;
+	/** Floating control bar (SC-04). */
+	showBar?: () => Promise<void>;
+	barState?: (state: {
+		elapsed?: number;
+		paused?: boolean;
+		micMuted?: boolean;
+		countdown?: number;
+	}) => Promise<void>;
+	hideBar?: () => Promise<void>;
+	/** Global shortcuts (SC-05); returns accelerators another app holds. */
+	setShortcuts?: (
+		next: Record<string, string>,
+	) => Promise<{ shortcuts: Record<string, string>; failed: string[] }>;
+	onCommand?: (listener: (command: CaptureCommand) => void) => () => void;
 }
+
+export type CaptureCommand =
+	| "toggle"
+	| "toggle-pause"
+	| "marker"
+	| "stop"
+	| "discard"
+	| "toggle-mic";

@@ -10,6 +10,19 @@ contextBridge.exposeInMainWorld("worksuite", {
 		sources: () => ipcRenderer.invoke("capture:sources"),
 		choose: (id) => ipcRenderer.invoke("capture:choose", id),
 		permissions: () => ipcRenderer.invoke("capture:permissions"),
+		cursorStart: (args) => ipcRenderer.invoke("capture:cursor-start", args),
+		cursorPause: () => ipcRenderer.invoke("capture:cursor-pause"),
+		cursorResume: () => ipcRenderer.invoke("capture:cursor-resume"),
+		cursorStop: () => ipcRenderer.invoke("capture:cursor-stop"),
+		showBar: () => ipcRenderer.invoke("capture:bar-show"),
+		barState: (state) => ipcRenderer.invoke("capture:bar-state", state),
+		hideBar: () => ipcRenderer.invoke("capture:bar-hide"),
+		setShortcuts: (next) => ipcRenderer.invoke("capture:shortcuts", next),
+		onCommand: (listener) => {
+			const handler = (_event, command) => listener(command);
+			ipcRenderer.on("capture:command", handler);
+			return () => ipcRenderer.removeListener("capture:command", handler);
+		},
 	},
 	network: {
 		getState: () => ipcRenderer.invoke("network:get-state"),

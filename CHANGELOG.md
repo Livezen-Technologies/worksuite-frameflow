@@ -8,6 +8,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 ## [Unreleased]
 
 ### Added
+- Screen recordings now log the cursor, clicks and typing (as data, not in the video) and zoom in on the action automatically. Change each zoom's level, length, ease and focus, follow the cursor smoothly, add zooms by hand on any video, or re-generate them in the clip's new Zoom tab.
+- Floating recording bar with timer, pause, marker, mic mute, discard and stop, kept out of the recording, plus shortcuts that work in any app (Ctrl/Cmd+Shift+R start/stop, +P pause, +M marker; change them in the Record panel).
 - Render cache: click Render on the preview toolbar (or let it run automatically when idle) to pre-render the timeline in 2-second parts so effects-heavy sections play smoothly. The strip under the button shows rendered (green) and changed (red) parts; an edit only re-renders the parts it touches. Choose the mode and preview quality in Project settings → Performance. Export never uses the cache.
 - Proxies for smooth editing of 4K and other large clips: the desktop app makes lightweight copies in the background with a bundled FFmpeg (LGPL), on your GPU when it can. Choose when to make them, their size, the encoder and background priority in Project settings → Performance, and switch between proxies and originals on the preview toolbar. Export always uses the original files.
 - Automation API: turn it on in Settings → API to control the editor from scripts with the new `wve` command (create and open projects, import media, add clips and titles, export, sign in and sync) or from AI agents through `wve mcp`. Only programs running as your user can connect, and none of them see your sign-in or API keys.

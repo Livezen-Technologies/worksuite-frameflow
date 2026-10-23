@@ -1,5 +1,8 @@
 "use client";
 
+import type { CursorLog } from "@/screen-zoom/types";
+import { DEFAULT_ZOOM_SETTINGS } from "@/screen-zoom/types";
+import { generateZooms } from "@/screen-zoom/generate";
 import { BatchCommand, Command, type CommandResult } from "@/commands";
 import { AddMediaAssetCommand } from "@/commands/media";
 import { AddTrackCommand, InsertElementCommand } from "@/commands/timeline";
@@ -51,10 +54,16 @@ export async function placeRecording({
 	editor,
 	session,
 	files,
+	cursorLog = null,
+	autoZoom = true,
 }: {
 	editor: EditorCore;
 	session: SessionManifest;
 	files: RecordedFile[];
+	/** Cursor and click log for the screen track (SC-06). */
+	cursorLog?: CursorLog | null;
+	/** Turn clicks and typing into zooms (SC-11). */
+	autoZoom?: boolean;
 }): Promise<number> {
 	const project = editor.project.getActive();
 	const startTime = roundMediaTime({
@@ -117,7 +126,22 @@ export async function placeRecording({
 								}),
 							},
 						}
-					: element;
+					: recorded.role === "screen" && cursorLog
+						? {
+								...element,
+								screenZoom: {
+									settings: DEFAULT_ZOOM_SETTINGS,
+									log: cursorLog,
+									segments: autoZoom
+										? generateZooms({
+												log: cursorLog,
+												duration: seconds,
+												settings: DEFAULT_ZOOM_SETTINGS,
+											})
+										: [],
+								},
+							}
+						: element;
 			commands.push(
 				new InsertElementCommand({
 					element: pip,

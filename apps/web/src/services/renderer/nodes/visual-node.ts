@@ -1,3 +1,4 @@
+import type { ScreenZoom } from "@/screen-zoom/types";
 import type { ProjectionDescriptor } from "@/vr/projection";
 import type { ParamValues } from "@/params";
 import type { ClipTransitionTiming } from "@/transitions/windows";
@@ -29,6 +30,8 @@ export interface VisualNodeParams {
 	transitions?: NodeTransitions;
 	/** The element's animation.* params, when it has an In/Out/Combo animation. */
 	clipAnimation?: ParamValues;
+	/** Zoom segments on a video clip (SC-11–SC-18). */
+	screenZoom?: ScreenZoom;
 }
 
 export interface ResolvedVisualNodeState {

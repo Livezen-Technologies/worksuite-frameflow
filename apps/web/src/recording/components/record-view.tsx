@@ -1,5 +1,8 @@
 "use client";
 
+import type { CursorLog } from "@/screen-zoom/types";
+import type { CaptureCommand } from "@/account/types";
+import { useRecordingCommands } from "../commands";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
 	Camera,
@@ -232,7 +235,15 @@ export function RecordView() {
 	useEffect(() => {
 		if (phase !== "recording") return;
 		const timer = window.setInterval(() => {
-			setElapsed(recorderRef.current?.clock.elapsed() ?? 0);
+			const recorder = recorderRef.current;
+			const seconds = recorder?.clock.elapsed() ?? 0;
+			setElapsed(seconds);
+			void capture?.barState?.({
+				elapsed: seconds,
+				paused: recorder?.clock.paused ?? false,
+				micMuted:
+					recorder?.mic?.getAudioTracks().every((t) => !t.enabled) ?? false,
+			});
 		}, 200);
 		return () => window.clearInterval(timer);
 	}, [phase]);
@@ -257,6 +268,7 @@ export function RecordView() {
 	};
 
 	const reset = () => {
+		void capture?.hideBar?.();
 		recorderRef.current = null;
 		setActiveId(null);
 		setPreview(null);
@@ -309,8 +321,10 @@ export function RecordView() {
 		});
 		setPreview(recorder.camera ?? recorder.screen);
 		setPhase("countdown");
+		if (needsScreen) void capture?.showBar?.();
 		for (let n = settings.countdown; n > 0; n--) {
 			setCountdown(n);
+			void capture?.barState?.({ countdown: n });
 			await new Promise((r) => setTimeout(r, 1000));
 			if (recorderRef.current !== recorder) return;
 		}
@@ -320,6 +334,11 @@ export function RecordView() {
 			editor.playback.play();
 		}
 		recorder.start();
+		// Cursor and clicks as data, for zooms after recording (SC-06).
+		if (needsScreen)
+			await capture
+				?.cursorStart?.({ sourceId: settings.sourceId })
+				.catch(() => null);
 		setPhase("recording");
 	};
 
@@ -328,10 +347,12 @@ export function RecordView() {
 		if (!recorder?.isRecording) return;
 		if (recorder.clock.paused) {
 			recorder.resume();
+			void capture?.cursorResume?.();
 			if (mode === "voiceover") editor.playback.play();
 			setPaused(false);
 		} else {
 			recorder.pause();
+			void capture?.cursorPause?.();
 			if (mode === "voiceover") editor.playback.pause();
 			setPaused(true);
 		}
@@ -344,9 +365,11 @@ export function RecordView() {
 	const finish = async ({
 		session,
 		recover,
+		cursorLog,
 	}: {
 		session: SessionManifest;
 		recover: () => Promise<Awaited<ReturnType<typeof assembleSession>>>;
+		cursorLog?: CursorLog | null;
 	}) => {
 		const files = await recover();
 		if (files.length === 0) {
@@ -354,7 +377,13 @@ export function RecordView() {
 			await deleteSessionData(session.id);
 			return;
 		}
-		const placed = await placeRecording({ editor, session, files });
+		const placed = await placeRecording({
+			editor,
+			session,
+			files,
+			cursorLog: cursorLog ?? null,
+			autoZoom: settings.autoZoom,
+		});
 		await deleteSessionData(session.id);
 		toast.success(
 			`Added ${placed} recorded track${placed === 1 ? "" : "s"} to the timeline`,
@@ -372,8 +401,11 @@ export function RecordView() {
 		setPhase("saving");
 		releasePlayback();
 		try {
+			const cursorLog = needsScreen
+				? await capture?.cursorStop?.().catch(() => null)
+				: null;
 			const { session, files } = await recorder.stop();
-			await finish({ session, recover: async () => files });
+			await finish({ session, recover: async () => files, cursorLog });
 		} catch (error) {
 			toast.error(
 				error instanceof Error ? error.message : "Couldn't save the recording",
@@ -387,6 +419,7 @@ export function RecordView() {
 		const recorder = recorderRef.current;
 		if (!recorder) return;
 		const id = recorder.id;
+		void capture?.cursorStop?.().catch(() => null);
 		recorder.release();
 		releasePlayback();
 		reset();
@@ -415,6 +448,42 @@ export function RecordView() {
 		window.addEventListener("keydown", onKey, true);
 		return () => window.removeEventListener("keydown", onKey, true);
 	});
+
+	const toggleMic = () => {
+		const tracks = recorderRef.current?.mic?.getAudioTracks() ?? [];
+		const muted = !tracks.every((t) => !t.enabled);
+		for (const t of tracks) t.enabled = !muted;
+	};
+
+	// Floating bar and global shortcuts (SC-04, SC-05) send commands here.
+	const commandRef = useRef<(command: CaptureCommand) => void>(() => {});
+	useEffect(() => {
+		commandRef.current = (command: CaptureCommand) => {
+			if (command === "toggle") {
+				if (phase === "idle") void start();
+				else if (phase === "recording" || phase === "countdown") void stop();
+			} else if (command === "toggle-pause") togglePause();
+			else if (command === "marker" && phase === "recording") marker();
+			else if (command === "stop") void stop();
+			else if (command === "discard") void discard();
+			else if (command === "toggle-mic") toggleMic();
+		};
+	});
+
+	useEffect(() => {
+		const commands = useRecordingCommands.getState();
+		commands.setPanelOpen(true);
+		const off = capture?.onCommand?.((command) => commandRef.current(command));
+		// Opened by a global shortcut: start straight away.
+		if (commands.pendingStart) {
+			commands.setPendingStart(false);
+			commandRef.current("toggle");
+		}
+		return () => {
+			off?.();
+			useRecordingCommands.getState().setPanelOpen(false);
+		};
+	}, [capture]);
 
 	// Leaving the panel mid-take keeps the chunks so the take can be recovered.
 	useEffect(() => () => recorderRef.current?.release(), []);
@@ -719,7 +788,63 @@ export function RecordView() {
 							Record system audio (its own track)
 						</label>
 					)}
+					{needsScreen && (
+						<label className="flex items-center gap-2 text-xs">
+							<input
+								type="checkbox"
+								data-auto-zoom
+								checked={settings.autoZoom}
+								onChange={(e) => settings.set({ autoZoom: e.target.checked })}
+							/>
+							Zoom in on clicks and typing afterwards (edit in the clip&apos;s
+							Zoom tab)
+						</label>
+					)}
 				</div>
+
+				{capture?.setShortcuts && (
+					<details
+						className="rounded-lg border px-3 py-2 text-xs"
+						data-record-shortcuts
+					>
+						<summary className="cursor-pointer">
+							Shortcuts that work in any app
+						</summary>
+						<div className="mt-2 flex flex-col gap-1.5">
+							{(
+								[
+									["toggle", "Start / stop"],
+									["toggle-pause", "Pause / resume"],
+									["marker", "Add marker"],
+								] as const
+							).map(([key, label]) => (
+								<label
+									key={key}
+									className="flex items-center justify-between gap-2"
+								>
+									{label}
+									<input
+										className="bg-accent/50 h-7 w-44 rounded-md border px-2"
+										defaultValue={settings.shortcuts[key]}
+										aria-label={`${label} shortcut`}
+										onBlur={(e) =>
+											settings.set({
+												shortcuts: {
+													...settings.shortcuts,
+													[key]: e.target.value.trim(),
+												},
+											})
+										}
+									/>
+								</label>
+							))}
+							<span className="text-muted-foreground">
+								Use names like CommandOrControl+Shift+R. The floating bar also
+								has these controls and stays out of the recording.
+							</span>
+						</div>
+					</details>
+				)}
 
 				<div
 					className={cn(

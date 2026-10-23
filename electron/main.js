@@ -3,6 +3,8 @@
 const { app, BrowserWindow, clipboard, shell, dialog, ipcMain, Menu } = require("electron");
 const { spawn } = require("node:child_process");
 const capture = require("./capture");
+const cursorLog = require("./cursor-log");
+const captureControls = require("./capture-controls");
 const network = require("./network");
 const uploadQueue = require("./upload-queue");
 const net = require("node:net");
@@ -139,6 +141,7 @@ async function createWindow() {
 	});
 
 	capture.setupCapture({ session: win.webContents.session, origin });
+	captureControls.init({ window: win });
 	network.guardSession({
 		session: win.webContents.session,
 		origin,
@@ -189,6 +192,15 @@ function registerAccountIpc() {
 	handle("capture:sources", () => capture.listSources());
 	handle("capture:choose", (id) => capture.chooseSource(id));
 	handle("capture:permissions", () => capture.permissionStatus());
+	handle("capture:cursor-start", (args) => cursorLog.start(args ?? {}));
+	handle("capture:cursor-pause", () => cursorLog.pause());
+	handle("capture:cursor-resume", () => cursorLog.resume());
+	handle("capture:cursor-stop", () => cursorLog.stop());
+	handle("capture:cursor-available", () => cursorLog.available());
+	handle("capture:bar-show", () => captureControls.showBar({ owner: BrowserWindow.getFocusedWindow() }));
+	handle("capture:bar-state", (state) => captureControls.updateBar(state));
+	handle("capture:bar-hide", () => captureControls.hideBar());
+	handle("capture:shortcuts", (next) => captureControls.setShortcuts(next ?? {}));
 	handle("account:get-state", () => account.getState());
 	handle("account:sign-in", async ({ signup } = {}) => {
 		if (network.isOffline()) {
@@ -368,6 +380,7 @@ if (!app.requestSingleInstanceLock()) {
 }
 
 app.on("before-quit", () => {
+	captureControls.dispose();
 	void automation.stop();
 	app.isQuitting = true;
 	if (server) server.kill();

@@ -4,6 +4,7 @@ import {
 	projectionFromParams,
 	REFRAME_EFFECT_TYPE,
 } from "@/vr/projection";
+import { screenZoomAt, zoomOffset } from "@/screen-zoom/evaluate";
 import { previewSource } from "@/proxy/registry";
 import { mediaTimeToSeconds, roundMediaTime, TICKS_PER_SECOND } from "@/wasm";
 import {
@@ -241,7 +242,7 @@ function resolveVisualState({
 				durationSeconds: params.duration / TICKS_PER_SECOND,
 			})
 		: null;
-	const transform = animated
+	const animatedTransform = animated
 		? {
 				...transition.transform,
 				scaleX: transition.transform.scaleX * animated.scale,
@@ -257,6 +258,15 @@ function resolveVisualState({
 				},
 			}
 		: transition.transform;
+	const zoomed = applyScreenZoom({
+		params,
+		sampleTime,
+		transform: animatedTransform,
+		width: sourceWidth,
+		height: sourceHeight,
+		context,
+	});
+	const transform = zoomed;
 	const opacity = transition.opacity * (animated?.opacity ?? 1);
 	const projection = resolveProjection({
 		effects: params.effects,
@@ -306,6 +316,50 @@ function resolveVisualState({
 		effectPasses,
 		...(projection ? { projection } : {}),
 		...(transition.mask ? { maskOverride: transition.mask } : {}),
+	};
+}
+
+/**
+ * Screen-recording zoom (SC-11–SC-18): scale around the clip centre and
+ * shift so the focus point stays put. Times are source seconds, so the
+ * cursor log lines up however the clip is trimmed.
+ */
+function applyScreenZoom({
+	params,
+	sampleTime,
+	transform,
+	width,
+	height,
+	context,
+}: {
+	params: VisualNodeParams;
+	sampleTime: number;
+	transform: Transform;
+	width: number;
+	height: number;
+	context: ResolveContext;
+}): Transform {
+	if (!params.screenZoom) return transform;
+	const seconds =
+		(params.trimStart + sampleTime - params.timeOffset) / TICKS_PER_SECOND;
+	const zoom = screenZoomAt({ zoom: params.screenZoom, seconds });
+	if (zoom.scale <= 1) return transform;
+	const fit = Math.min(
+		context.renderer.width / width,
+		context.renderer.height / height,
+	);
+	const { dx, dy } = zoomOffset({
+		scale: zoom.scale,
+		x: zoom.x,
+		y: zoom.y,
+		width: width * fit * Math.abs(transform.scaleX),
+		height: height * fit * Math.abs(transform.scaleY),
+	});
+	return {
+		...transform,
+		scaleX: transform.scaleX * zoom.scale,
+		scaleY: transform.scaleY * zoom.scale,
+		position: { x: transform.position.x + dx, y: transform.position.y + dy },
 	};
 }
 

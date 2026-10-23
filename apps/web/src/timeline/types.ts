@@ -1,3 +1,4 @@
+import type { ScreenZoom } from "@/screen-zoom/types";
 import type { ClipTransition } from "@/transitions/types";
 import type { ElementAnimations } from "@/animation/types";
 import type { Effect } from "@/effects/types";
@@ -125,6 +126,8 @@ export interface VideoElement extends BaseTimelineElement {
 	masks?: Mask[];
 	/** Transition on the cut into this clip from the clip before it. */
 	transitionIn?: ClipTransition;
+	/** Auto or manual zoom, with the cursor log for screen recordings (SC-11–SC-18). */
+	screenZoom?: ScreenZoom;
 }
 
 export interface ImageElement extends BaseTimelineElement {

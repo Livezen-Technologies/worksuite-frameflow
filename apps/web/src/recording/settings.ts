@@ -15,6 +15,10 @@ export interface RecordingSettings {
 	countdown: number;
 	muteTimeline: boolean;
 	systemAudio: boolean;
+	/** Global shortcuts (SC-05), Electron accelerators. */
+	shortcuts: Record<"toggle" | "toggle-pause" | "marker", string>;
+	/** Zoom in on clicks and typing after a screen recording (SC-11). */
+	autoZoom: boolean;
 	set: (patch: Partial<Omit<RecordingSettings, "set">>) => void;
 }
 
@@ -30,6 +34,12 @@ export const useRecordingSettings = create<RecordingSettings>()(
 			countdown: 3,
 			muteTimeline: true,
 			systemAudio: false,
+			shortcuts: {
+				toggle: "CommandOrControl+Shift+R",
+				"toggle-pause": "CommandOrControl+Shift+P",
+				marker: "CommandOrControl+Shift+M",
+			},
+			autoZoom: true,
 			set: (patch) => set(patch),
 		}),
 		{
