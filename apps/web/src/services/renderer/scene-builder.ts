@@ -109,6 +109,12 @@ function buildTrackNodes({
 							...(element.screenZoom?.segments.length
 								? { screenZoom: element.screenZoom }
 								: {}),
+							...(element.screenStyle
+								? {
+										screenStyle: element.screenStyle,
+										...(element.screenZoom?.log ? { screenLog: element.screenZoom.log } : {}),
+									}
+								: {}),
 						}),
 					);
 				}

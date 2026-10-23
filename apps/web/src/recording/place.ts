@@ -1,5 +1,6 @@
 "use client";
 
+import { DEFAULT_SCREEN_STYLE } from "@/screen-style/types";
 import type { CursorLog } from "@/screen-zoom/types";
 import { DEFAULT_ZOOM_SETTINGS } from "@/screen-zoom/types";
 import { generateZooms } from "@/screen-zoom/generate";
@@ -56,7 +57,10 @@ export async function placeRecording({
 	files,
 	cursorLog = null,
 	autoZoom = true,
+	cleanCursor = false,
 }: {
+	/** The system cursor was left out; draw one from the log (SC-15). */
+	cleanCursor?: boolean;
 	editor: EditorCore;
 	session: SessionManifest;
 	files: RecordedFile[];
@@ -129,6 +133,14 @@ export async function placeRecording({
 					: recorded.role === "screen" && cursorLog
 						? {
 								...element,
+								...(cleanCursor
+									? {
+											screenStyle: {
+												...DEFAULT_SCREEN_STYLE,
+												cursor: { ...DEFAULT_SCREEN_STYLE.cursor, enabled: true },
+											},
+										}
+									: {}),
 								screenZoom: {
 									settings: DEFAULT_ZOOM_SETTINGS,
 									log: cursorLog,

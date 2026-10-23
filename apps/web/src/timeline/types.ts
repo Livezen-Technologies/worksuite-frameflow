@@ -1,3 +1,4 @@
+import type { ScreenStyle } from "@/screen-style/types";
 import type { CaptionAnchor } from "@/captions/anchor";
 import type { TimedWord } from "@/captions/words";
 import type { TCanvasSize } from "@/project/types";
@@ -137,6 +138,8 @@ export interface VideoElement extends BaseTimelineElement {
 	transitionIn?: ClipTransition;
 	/** Auto or manual zoom, with the cursor log for screen recordings (SC-11–SC-18). */
 	screenZoom?: ScreenZoom;
+	/** Cursor, keys and background styling (SC-07, SC-15, SC-17). */
+	screenStyle?: ScreenStyle;
 	/** Part of a multicam clip (SC-24–SC-30). */
 	multicam?: MulticamTag;
 }

@@ -1,6 +1,8 @@
 import { drawCssBackground } from "@/gradients";
 import { getMaskDefinition } from "@/masks";
 import { drawRegionMask, regionPixels } from "@/privacy/region";
+import { cardRect, cardScale, type Rect } from "@/screen-style/layout";
+import { drawCardMask, drawScreenBackground, drawScreenOverlay } from "@/screen-style/draw";
 import { incrementCounter } from "@/diagnostics/render-perf";
 import type { AnyBaseNode } from "../nodes/base-node";
 import type { CanvasRenderer } from "../canvas-renderer";
@@ -329,7 +331,7 @@ async function collectVisualSourceNode({
 
 	const projection =
 		"projection" in node.resolved ? node.resolved.projection : undefined;
-	const transform = projection
+	let transform = projection
 		? fullCanvasTransform(renderer)
 		: computeVisualTransform({
 				renderer,
@@ -337,6 +339,55 @@ async function collectVisualSourceNode({
 				sourceWidth,
 				sourceHeight,
 			});
+	// Screen recording styling: background card (SC-17), then cursor and keys on top.
+	const style = node instanceof VideoNode && !projection ? node.params.screenStyle : undefined;
+	let card: Rect | null = null;
+	let cardMask: LayerMaskDescriptor | null = null;
+	if (style?.background.enabled) {
+		const { width, height } = renderer;
+		const source = { width: sourceWidth, height: sourceHeight };
+		const cardBox = cardRect({ canvas: { width, height }, source, padding: style.background.padding });
+		card = cardBox;
+		const k = cardScale({ canvas: { width, height }, source, padding: style.background.padding });
+		const bgId = `${path}:screen-bg`;
+		textures.set(bgId, {
+			kind: "rendered",
+			id: bgId,
+			contentHash: `screen-bg:${JSON.stringify(style.background)}:${width}x${height}:${JSON.stringify(cardBox)}`,
+			width,
+			height,
+			draw: (ctx) =>
+				drawScreenBackground({ ctx, width, height, card: cardBox, style: style.background }),
+		});
+		items.push({
+			type: "layer",
+			textureId: bgId,
+			transform: fullCanvasTransform(renderer),
+			opacity: node.resolved.opacity,
+			blendMode: "normal",
+			effectPassGroups: [],
+			mask: null,
+		});
+		// Zoom happens inside the card: scale the whole placement about the centre.
+		transform = {
+			...transform,
+			centerX: width / 2 + (transform.centerX - width / 2) * k,
+			centerY: height / 2 + (transform.centerY - height / 2) * k,
+			width: transform.width * k,
+			height: transform.height * k,
+		};
+		const maskId = `${path}:screen-card`;
+		textures.set(maskId, {
+			kind: "rendered",
+			id: maskId,
+			contentHash: `screen-card:${style.background.radius}:${width}x${height}:${JSON.stringify(cardBox)}`,
+			width,
+			height,
+			draw: (ctx) =>
+				drawCardMask({ ctx, width, height, card: cardBox, radius: style.background.radius }),
+		});
+		cardMask = { textureId: maskId, feather: 0, inverted: false };
+	}
 	const { mask, strokeLayer } = buildMaskArtifacts({
 		node,
 		renderer,
@@ -352,11 +403,42 @@ async function collectVisualSourceNode({
 		opacity: node.resolved.opacity,
 		blendMode: node.params.blendMode ?? "normal",
 		effectPassGroups: node.resolved.effectPasses,
-		mask,
+		mask: mask ?? cardMask,
 		...(projection ? { projection } : {}),
 	});
 	if (strokeLayer) {
 		items.push(strokeLayer);
+	}
+	const log = node instanceof VideoNode ? node.params.screenLog : undefined;
+	const seconds =
+		"sourceSeconds" in node.resolved ? node.resolved.sourceSeconds : undefined;
+	if (style && log && seconds !== undefined && (style.cursor.enabled || style.keys.enabled)) {
+		const { width, height } = renderer;
+		const screen = {
+			x: transform.centerX - transform.width / 2,
+			y: transform.centerY - transform.height / 2,
+			width: transform.width,
+			height: transform.height,
+		};
+		const overlayId = `${path}:screen-overlay`;
+		textures.set(overlayId, {
+			kind: "rendered",
+			id: overlayId,
+			contentHash: `screen-overlay:${seconds.toFixed(4)}:${JSON.stringify(style)}:${JSON.stringify(screen)}:${width}x${height}`,
+			width,
+			height,
+			draw: (ctx) =>
+				drawScreenOverlay({ ctx, width, height, screen, clip: card ?? screen, log, seconds, style }),
+		});
+		items.push({
+			type: "layer",
+			textureId: overlayId,
+			transform: fullCanvasTransform(renderer),
+			opacity: node.resolved.opacity,
+			blendMode: "normal",
+			effectPassGroups: [],
+			mask: null,
+		});
 	}
 }
 

@@ -45,6 +45,11 @@ export interface RecorderOptions {
 	sourceId: string | null;
 	systemAudio: boolean;
 	channelCount: 1 | 2;
+	/**
+	 * Leave the system cursor out of the video; FrameFlow draws a clean one
+	 * from the input log instead, which can be restyled later (SC-15).
+	 */
+	hideCursor?: boolean;
 }
 
 export interface RecordingResult {
@@ -185,6 +190,8 @@ export class Recorder {
 						video: {
 							height: { ideal: quality.height },
 							frameRate: { ideal: quality.fps },
+							// Chromium's display-capture constraint; ignored where unsupported.
+							...(this.options.hideCursor ? { cursor: "never" } : {}),
 						},
 						audio: systemAudio,
 					}),

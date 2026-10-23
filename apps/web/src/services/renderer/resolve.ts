@@ -508,6 +508,7 @@ async function resolveVideoNode({
 		source: frame.canvas,
 		sourceWidth: frame.canvas.width,
 		sourceHeight: frame.canvas.height,
+		sourceSeconds: sourceTimeTicks / TICKS_PER_SECOND,
 	};
 }
 

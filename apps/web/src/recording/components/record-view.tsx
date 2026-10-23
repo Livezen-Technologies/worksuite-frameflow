@@ -291,6 +291,8 @@ export function RecordView() {
 				micId: settings.micId,
 				cameraId: settings.cameraId,
 				sourceId: settings.sourceId,
+				// With an input log we draw a clean cursor afterwards (SC-15).
+				hideCursor: needsScreen && !!capture?.cursorStart,
 				systemAudio: needsScreen && settings.systemAudio && !isMac,
 				channelCount: settings.channelCount,
 			});
@@ -383,7 +385,10 @@ export function RecordView() {
 			files,
 			cursorLog: cursorLog ?? null,
 			autoZoom: settings.autoZoom,
+			cleanCursor: !!capture?.cursorStart,
 		});
+		if (capture?.cursorStart && !cursorLog)
+			toast.warning("The cursor couldn't be logged, so this recording has no cursor.");
 		await deleteSessionData(session.id);
 		toast.success(
 			`Added ${placed} recorded track${placed === 1 ? "" : "s"} to the timeline`,

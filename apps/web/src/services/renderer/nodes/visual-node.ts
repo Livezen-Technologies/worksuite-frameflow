@@ -1,3 +1,5 @@
+import type { ScreenStyle } from "@/screen-style/types";
+import type { CursorLog } from "@/screen-zoom/types";
 import type { ScreenZoom } from "@/screen-zoom/types";
 import type { ProjectionDescriptor } from "@/vr/projection";
 import type { ParamValues } from "@/params";
@@ -32,6 +34,10 @@ export interface VisualNodeParams {
 	clipAnimation?: ParamValues;
 	/** Zoom segments on a video clip (SC-11–SC-18). */
 	screenZoom?: ScreenZoom;
+	/** Cursor, keys and background styling for a screen recording (SC-07, SC-15, SC-17). */
+	screenStyle?: ScreenStyle;
+	/** The recording's input log, for drawing the cursor and keys. */
+	screenLog?: CursorLog;
 }
 
 export interface ResolvedVisualNodeState {
@@ -49,6 +55,8 @@ export interface ResolvedVisualSourceNodeState extends ResolvedVisualNodeState {
 	source: CanvasImageSource;
 	sourceWidth: number;
 	sourceHeight: number;
+	/** Source time of the frame shown, for screen styling. */
+	sourceSeconds?: number;
 }
 
 export abstract class VisualNode<

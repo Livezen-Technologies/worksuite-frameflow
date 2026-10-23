@@ -1,5 +1,6 @@
 "use client";
 
+import { ZoomLane } from "@/screen-zoom/components/zoom-lane";
 import { TimelineClipMenuExtras } from "@/clip-actions/components/clip-menus";
 import { getTransitionDefinition } from "@/transitions/definitions";
 import { createContext, useContext } from "react";
@@ -408,6 +409,7 @@ export function TimelineElement({
 							onElementMouseDown={onElementMouseDown}
 							onResizeStart={onResizeStart}
 							isDropTarget={isDropTarget}
+							pixelsPerSecond={timelinePixelsPerSecond}
 						/>
 						{isSelected && (
 							<div
@@ -534,7 +536,9 @@ function ElementInner({
 	onElementMouseDown,
 	onResizeStart,
 	isDropTarget = false,
+	pixelsPerSecond,
 }: {
+	pixelsPerSecond: number;
 	element: TimelineElementType;
 	displayElement?: TimelineElementType;
 	track: TimelineTrack;
@@ -625,6 +629,14 @@ function ElementInner({
 						</div>
 						{expandedContent}
 					</button>
+					{visibleElement.type === "video" &&
+						!!visibleElement.screenZoom?.segments.length && (
+							<ZoomLane
+								element={visibleElement}
+								trackId={track.id}
+								pixelsPerSecond={pixelsPerSecond}
+							/>
+						)}
 				</div>
 			</div>
 

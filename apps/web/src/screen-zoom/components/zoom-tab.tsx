@@ -1,5 +1,6 @@
 "use client";
 
+import { ScreenStyleSection } from "@/screen-style/components/screen-style-section";
 import { Plus, RefreshCw, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { UpdateElementsCommand } from "@/commands/timeline/element/update-elements";
@@ -327,6 +328,7 @@ export function ZoomTab({
 					</li>
 				))}
 			</ul>
+			<ScreenStyleSection element={element} trackId={trackId} />
 		</div>
 	);
 }
