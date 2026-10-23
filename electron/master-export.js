@@ -1,5 +1,5 @@
 const { app, BrowserWindow, dialog } = require("electron");
-const { spawn } = require("node:child_process");
+const { execFile, spawn } = require("node:child_process");
 const crypto = require("node:crypto");
 const fs = require("node:fs");
 const path = require("node:path");
@@ -9,6 +9,8 @@ const nativeHelper = require("./native-helper");
  * Production exports through the bundled LGPL FFmpeg (SRS EX-15): the page
  * renders each frame and streams raw RGBA here; FFmpeg encodes ProRes
  * 422 HQ (.mov) or FFV1 (.mkv), both 10-bit, into a temp file in userData.
+ * Also 10-bit AV1 (SVT-AV1) and HEVC Main10 (the machine's hardware encoder),
+ * tagged HLG or PQ for HDR projects (HD-14).
  * Saving moves it into place (EX-13). Also MP3/M4A audio (EX-12).
  */
 
@@ -25,11 +27,50 @@ const CODECS = {
 	},
 };
 
+// HEVC Main10 needs a hardware encoder: the LGPL FFmpeg has no x265.
+const HEVC_ENCODERS = [
+	["hevc_videotoolbox", ["-profile:v", "main10", "-q:v", "65"]],
+	["hevc_nvenc", ["-profile:v", "main10", "-preset", "p5", "-cq", "24"]],
+	["hevc_qsv", ["-profile:v", "main10", "-global_quality", "24"]],
+	["hevc_amf", ["-profile:v", "main10", "-quality", "quality"]],
+	["hevc_mf", ["-profile:v", "main10"]],
+	["hevc_vaapi", ["-profile:v", "main10", "-vaapi_device", "/dev/dri/renderD128", "-vf", "format=p010,hwupload"]],
+];
+
+const DELIVERY = {
+	av1: {
+		ext: ".mp4",
+		video: ["-c:v", "libsvtav1", "-preset", "8", "-crf", "30", "-pix_fmt", "yuv420p10le"],
+		audio: ["-c:a", "aac", "-b:a", "192k"],
+	},
+	hevc: {
+		ext: ".mp4",
+		// Filled in by probe() with the encoder this machine has.
+		video: null,
+		audio: ["-c:a", "aac", "-b:a", "192k"],
+	},
+};
+
 const jobs = new Map(); // id → { child, output, audio, done, error, stderr }
 const tmpDir = () => path.join(app.getPath("userData"), "master-tmp");
 
-function masterArgs({ width, height, fps, codec, audio, output }) {
-	const spec = CODECS[codec];
+const COLOR = {
+	sdr: ["-colorspace", "bt709", "-color_primaries", "bt709", "-color_trc", "bt709", "-color_range", "tv"],
+	hlg: ["-colorspace", "bt2020nc", "-color_primaries", "bt2020", "-color_trc", "arib-std-b67", "-color_range", "tv"],
+	pq: ["-colorspace", "bt2020nc", "-color_primaries", "bt2020", "-color_trc", "smpte2084", "-color_range", "tv"],
+};
+
+// ITU-T H.273 codes: BT.709, or BT.2020 with HLG (18) or PQ (16).
+const SVT_COLOR = {
+	sdr: "color-primaries=1:transfer-characteristics=1:matrix-coefficients=1",
+	hlg: "color-primaries=9:transfer-characteristics=18:matrix-coefficients=9",
+	pq: "color-primaries=9:transfer-characteristics=16:matrix-coefficients=9",
+};
+
+const specFor = (codec) => CODECS[codec] ?? (DELIVERY[codec]?.video ? DELIVERY[codec] : null);
+
+function masterArgs({ width, height, fps, codec, audio, output, hdr }) {
+	const spec = specFor(codec);
 	const args = [
 		"-hide_banner", "-loglevel", "error", "-y",
 		"-f", "rawvideo", "-pix_fmt", "rgba", "-s", `${width}x${height}`, "-framerate", String(fps), "-i", "pipe:0",
@@ -37,9 +78,13 @@ function masterArgs({ width, height, fps, codec, audio, output }) {
 	if (audio) args.push("-i", audio);
 	args.push("-map", "0:v");
 	if (audio) args.push("-map", "1:a", ...spec.audio, "-shortest");
+	const tone = hdr === "hlg" || hdr === "pq" ? hdr : "sdr";
 	args.push(
 		...spec.video,
-		"-colorspace", "bt709", "-color_primaries", "bt709", "-color_trc", "bt709", "-color_range", "tv",
+		...(codec === "hevc" ? ["-tag:v", "hvc1"] : []),
+		// SVT-AV1 only writes colour tags into the stream from its own options.
+		...(codec === "av1" ? ["-svtav1-params", SVT_COLOR[tone]] : []),
+		...COLOR[tone],
 		output,
 	);
 	return args;
@@ -59,23 +104,54 @@ async function moveInto(from, to) {
 	}
 }
 
-module.exports = {
-	codecs: () => Object.keys(CODECS),
+/** Encodes a few frames to see whether this FFmpeg and machine can use an encoder. */
+function tryEncode(bin, video) {
+	return new Promise((resolve) => {
+		const args = ["-hide_banner", "-loglevel", "error", "-f", "lavfi", "-i", "testsrc2=size=256x144:rate=24", "-frames:v", "4", ...video, "-f", "null", "-"];
+		execFile(bin, args, { timeout: 20000 }, (error) => resolve(!error));
+	});
+}
 
-	async start({ width, height, fps, codec, audioWav }) {
+let probed = null;
+/** Which 10-bit delivery codecs work here (HD-14), checked once. */
+function probe() {
+	probed ??= (async () => {
+		const bin = nativeHelper._test.ffmpegPath();
+		if (!bin) return [];
+		const found = [];
+		if (await tryEncode(bin, DELIVERY.av1.video)) found.push("av1");
+		for (const [name, extra] of HEVC_ENCODERS) {
+			const video = ["-c:v", name, ...extra, ...(extra.includes("-vf") ? [] : ["-pix_fmt", "p010le"])];
+			if (await tryEncode(bin, video)) {
+				DELIVERY.hevc.video = video;
+				found.push("hevc");
+				break;
+			}
+		}
+		return found;
+	})();
+	return probed;
+}
+
+module.exports = {
+	codecs: async () => [...Object.keys(CODECS), ...(await probe())],
+
+	async start({ width, height, fps, codec, audioWav, hdr }) {
 		const bin = nativeHelper._test.ffmpegPath();
 		if (!bin) throw new Error("FFmpeg isn't bundled with this build.");
-		if (!CODECS[codec]) throw new Error(`Unknown codec ${codec}`);
+		if (DELIVERY[codec]) await probe();
+		if (!specFor(codec)) throw new Error(`Unknown codec ${codec}`);
 		await fs.promises.mkdir(tmpDir(), { recursive: true });
 		const id = crypto.randomUUID();
-		const output = path.join(tmpDir(), `${id}${CODECS[codec].ext}`);
+		const ext = specFor(codec).ext;
+		const output = path.join(tmpDir(), `${id}${ext}`);
 		let audio = null;
 		if (audioWav) {
 			audio = path.join(tmpDir(), `${id}.wav`);
 			await fs.promises.writeFile(audio, Buffer.from(audioWav));
 		}
-		const child = spawn(bin, masterArgs({ width, height, fps, codec, audio, output }), { stdio: ["pipe", "ignore", "pipe"] });
-		const job = { child, output, audio, ext: CODECS[codec].ext, stderr: "", exited: null };
+		const child = spawn(bin, masterArgs({ width, height, fps, codec, audio, output, hdr }), { stdio: ["pipe", "ignore", "pipe"] });
+		const job = { child, output, audio, ext, stderr: "", exited: null };
 		job.exited = new Promise((resolve) => child.on("close", (code) => resolve(code)));
 		child.stderr.on("data", (d) => { job.stderr = (job.stderr + d).slice(-4000); });
 		child.stdin.on("error", () => {});

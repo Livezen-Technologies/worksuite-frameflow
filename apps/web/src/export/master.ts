@@ -1,5 +1,5 @@
 /** Desktop bridge to production exports through FFmpeg (SRS EX-15). */
-export type MasterCodec = "prores" | "ffv1";
+export type MasterCodec = "prores" | "ffv1" | "av1" | "hevc";
 
 export interface MasterExportBridge {
 	codecs: () => Promise<MasterCodec[]>;
@@ -9,6 +9,8 @@ export interface MasterExportBridge {
 		fps: number;
 		codec: MasterCodec;
 		audioWav?: ArrayBuffer;
+		/** Tag the file HLG or PQ with BT.2020 (HD-14); SDR otherwise. */
+		hdr?: "hlg" | "pq";
 	}) => Promise<{ id: string; ext: string }>;
 	frame: (args: { id: string; data: ArrayBuffer }) => Promise<boolean>;
 	finish: (args: { id: string }) => Promise<{ size: number }>;
@@ -27,8 +29,10 @@ export interface MasterExportBridge {
 export const MASTER_CODECS: {
 	id: MasterCodec;
 	label: string;
-	container: "mov" | "mkv";
+	container: "mov" | "mkv" | "mp4";
 	detail: string;
+	/** Can carry an HDR export (10-bit, HLG/PQ tags). */
+	hdr?: boolean;
 	/** Rough bits per pixel per frame, for the size estimate. */
 	bitsPerPixel: number;
 }[] = [
@@ -45,6 +49,22 @@ export const MASTER_CODECS: {
 		container: "mkv",
 		detail: "10-bit 4:4:4 lossless .mkv for archiving",
 		bitsPerPixel: 6,
+	},
+	{
+		id: "av1",
+		label: "AV1 10-bit",
+		container: "mp4",
+		detail: "10-bit AV1 .mp4 (SVT-AV1), small files for YouTube and the web, HDR-ready",
+		bitsPerPixel: 0.08,
+		hdr: true,
+	},
+	{
+		id: "hevc",
+		label: "HEVC 10-bit",
+		container: "mp4",
+		detail: "HEVC Main10 .mp4 from this computer's hardware encoder, plays on phones and TVs, HDR-ready",
+		bitsPerPixel: 0.1,
+		hdr: true,
 	},
 ];
 

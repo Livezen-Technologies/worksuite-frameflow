@@ -368,6 +368,9 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 	const [hdrMode, setHdrMode] = useState<"hdr" | "sdr">("hdr");
 	const [alsoSdr, setAlsoSdr] = useState(false);
 	const hdrExport = hdrProject && hdrMode === "hdr";
+	// ProRes/FFV1 stay SDR here; AV1 and HEVC 10-bit carry HDR (HD-14).
+	const usableMaster =
+		master && (!hdrExport || MASTER_CODECS.find((m) => m.id === master)?.hdr) ? master : null;
 	const [codec, setCodec] = useState<ExportCodec>(hdrProject ? "vp9" : "avc");
 	const [quality, setQuality] = useState<ExportQuality>("high");
 	const [includeAudio, setIncludeAudio] = useState(true);
@@ -590,12 +593,12 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 		coverImage: useCover && cover ? cover.image : undefined,
 		forceSdr: hdrProject && hdrMode === "sdr",
 		...(kind === "gif" ? { gif: gifOptions } : {}),
-		...(kind === "video" && master ? { master } : {}),
+		...(kind === "video" && usableMaster ? { master: usableMaster } : {}),
 		...(aiActive ? { ai } : {}),
 	});
 	const fileExtension = () =>
-		kind === "video" && master
-			? `.${MASTER_CODECS.find((m) => m.id === master)?.container ?? "mov"}`
+		kind === "video" && usableMaster
+			? `.${MASTER_CODECS.find((m) => m.id === usableMaster)?.container ?? "mov"}`
 			: getExportFileExtension({ format });
 
 	/** Adds this export to the queue (EX-14) and keeps the dialog open. */
@@ -1051,8 +1054,9 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 											{EXPORT_CODEC_LABELS[c]}
 										</Pill>
 									))}
-									{!hdrExport &&
-										MASTER_CODECS.filter((m) => masterCodecs.includes(m.id)).map(
+									{MASTER_CODECS.filter(
+										(m) => masterCodecs.includes(m.id) && (!hdrExport || m.hdr),
+									).map(
 											(m) => (
 												<Pill
 													key={m.id}
@@ -1063,7 +1067,7 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 													{m.label} (.{m.container})
 												</Pill>
 											),
-										)}
+									)}
 									{master && (
 										<span
 											className="text-muted-foreground w-full text-[11px]"

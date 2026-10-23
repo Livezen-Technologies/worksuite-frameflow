@@ -335,6 +335,7 @@ export class SceneExporter extends EventEmitter<SceneExporterEvents> {
 			height,
 			fps: fpsFloat,
 			codec: master.codec,
+			...(this.hdrOutput ? { hdr: this.hdrOutput } : {}),
 			...(this.shouldIncludeAudio && this.audioBuffer
 				? { audioWav: audioBufferToWav(this.audioBuffer) }
 				: {}),

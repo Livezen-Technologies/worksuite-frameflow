@@ -8,6 +8,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 ## [Unreleased]
 
 ### Added
+- Desktop exports can be AV1 10-bit (.mp4) and, where the computer has a hardware HEVC encoder, HEVC 10-bit (.mp4). Both also work for HDR projects, tagged HLG or PQ with BT.2020 so YouTube and players show them as HDR.
 - A colour-accuracy check for camera LUTs: it measures FrameFlow's result against the camera maker's own result (CIEDE2000), ready for DJI D-Log M test footage.
 - Imported LUTs now follow your Worksuite account: the files upload with settings sync and appear, ready to use, on your other devices.
 - Grades are a stack of nodes: add Wheels & sliders or Curves & HSL nodes to a clip, turn each on or off, and reorder them. Choose Whole timeline in the Color panel to grade every clip at once with its own node stack; it's saved with the sequence and used in exports.
