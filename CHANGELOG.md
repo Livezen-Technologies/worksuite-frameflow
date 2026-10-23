@@ -9,6 +9,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
+- Project backups: while you work, a copy of the project is kept every 10 minutes (the newest 20). Project settings → Defaults → Backups lists them; Restore opens a backup as a new project, leaving the current one untouched.
+
 - Your own template packs (Text → Packs): **+ New pack**, then select titles and shapes and **Save selection as template**; templates adapt to every aspect like the built-in packs. Packs export and import as .ffpack.json files, and in the desktop app can be shared with your team through the asset library (**Share with team**, **Team packs**).
 
 - The Podcast pack's Audiogram card now moves with your sound: each bar's height follows the timeline audio where the card is placed (the bars pulse when there is no sound).

@@ -31,6 +31,7 @@ import { useSphereStore } from "@/vr/store";
 import { DEFAULT_TONE_MAP } from "@/hdr/tonemap";
 import { PerformanceSettings } from "@/proxy/components/performance-settings";
 import { reflowElements, type ReflowMode } from "../reflow";
+import { BackupsField } from "./backups-field";
 import { getTextMeasurementContext, measureTextElement } from "@/text/measure-element";
 import { BUILT_IN_TEMPLATES, useProjectSettings } from "../store";
 
@@ -702,6 +703,9 @@ function ProjectSettingsBody({ onClose }: { onClose: () => void }) {
 								<option value="60">Every minute</option>
 								<option value="300">Every 5 minutes</option>
 							</select>
+						</Field>
+						<Field label="Backups">
+							<BackupsField editor={editor} projectId={project.metadata.id} />
 						</Field>
 					</>
 				)}

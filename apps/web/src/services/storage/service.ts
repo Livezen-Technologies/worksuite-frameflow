@@ -51,8 +51,21 @@ function normalizeBookmarks({ raw }: { raw: unknown }): Bookmark[] {
 		.filter((b): b is Bookmark => b !== null);
 }
 
+/** One stored version of a project (PS-21). */
+export interface ProjectBackup {
+	projectId: string;
+	savedAt: string;
+	project: SerializedProject;
+}
+
+export const BACKUP_INTERVAL_MS = 10 * 60 * 1000;
+export const BACKUPS_KEPT = 20;
+
 class StorageService {
 	private projectsAdapter: IndexedDBAdapter<SerializedProject>;
+	/** Earlier versions of each project (PS-21), keyed "<projectId>|<ISO time>". */
+	private backupsAdapter: IndexedDBAdapter<ProjectBackup>;
+	private lastBackupAt = new Map<string, number>();
 	private savedSoundsAdapter: IndexedDBAdapter<SavedSoundsData>;
 	private config: StorageConfig;
 	private migrationsPromise: Promise<void> | null = null;
@@ -69,6 +82,12 @@ class StorageService {
 			dbName: this.config.projectsDb,
 			storeName: "projects",
 			version: this.config.version,
+		});
+
+		this.backupsAdapter = new IndexedDBAdapter<ProjectBackup>({
+			dbName: "frameflow-project-backups",
+			storeName: "backups",
+			version: 1,
 		});
 
 		this.savedSoundsAdapter = new IndexedDBAdapter<SavedSoundsData>({
@@ -207,6 +226,64 @@ class StorageService {
 			value: serializedProject,
 		});
 		this.emitChanged(project.metadata.id);
+		await this.maybeBackup({ project: serializedProject }).catch(() => {
+			// A failed backup must never fail the save.
+		});
+	}
+
+	/** Keeps a copy at most every BACKUP_INTERVAL_MS, the newest BACKUPS_KEPT (PS-21). */
+	private async maybeBackup({ project, force = false }: { project: SerializedProject; force?: boolean }) {
+		const id = project.metadata.id;
+		const now = Date.now();
+		if (!this.lastBackupAt.has(id)) {
+			const newest = (await this.listBackups({ projectId: id }))[0];
+			this.lastBackupAt.set(id, newest ? Date.parse(newest.savedAt) : 0);
+		}
+		if (!force && now - (this.lastBackupAt.get(id) ?? 0) < BACKUP_INTERVAL_MS) return;
+		const savedAt = new Date(now).toISOString();
+		await this.backupsAdapter.set({ key: `${id}|${savedAt}`, value: { projectId: id, savedAt, project } });
+		this.lastBackupAt.set(id, now);
+		const all = await this.listBackups({ projectId: id });
+		for (const old of all.slice(BACKUPS_KEPT)) await this.backupsAdapter.remove(old.key);
+	}
+
+	/** Backups of a project, newest first. */
+	async listBackups({ projectId }: { projectId: string }): Promise<{ key: string; savedAt: string }[]> {
+		const keys = await this.backupsAdapter.list();
+		return keys
+			.filter((key) => key.startsWith(`${projectId}|`))
+			.map((key) => ({ key, savedAt: key.slice(projectId.length + 1) }))
+			.sort((a, b) => b.savedAt.localeCompare(a.savedAt));
+	}
+
+	/**
+	 * Opens a backup as a new project beside the current one, so nothing is
+	 * overwritten (and no pending save can undo the restore). Returns its id.
+	 */
+	async restoreBackup({ projectId, key }: { projectId: string; key: string }): Promise<string> {
+		const backup = await this.backupsAdapter.get(key);
+		if (!backup || backup.projectId !== projectId) throw new Error("That backup is gone.");
+		const id = crypto.randomUUID();
+		const when = new Date(backup.savedAt).toLocaleString();
+		const now = new Date().toISOString();
+		await this.projectsAdapter.set({
+			key: id,
+			value: {
+				...backup.project,
+				metadata: { ...backup.project.metadata, id, name: `${backup.project.metadata.name} (restored ${when})`, updatedAt: now },
+			},
+		});
+		// Media is stored per project: copy the backup's media alongside.
+		const from = this.getProjectMediaAdapters({ projectId });
+		const to = this.getProjectMediaAdapters({ projectId: id });
+		for (const mediaId of await from.mediaMetadataAdapter.list()) {
+			const meta = await from.mediaMetadataAdapter.get(mediaId);
+			const file = await from.mediaAssetsAdapter.get(mediaId);
+			if (meta) await to.mediaMetadataAdapter.set({ key: mediaId, value: meta });
+			if (file) await to.mediaAssetsAdapter.set({ key: mediaId, value: file });
+		}
+		this.emitChanged(id);
+		return id;
 	}
 
 	async loadProject({
