@@ -86,6 +86,10 @@ export const ACTIONS = {
 		description: "Copy selected elements",
 		category: "editing",
 	},
+	"copy-frame": {
+		description: "Copy the current frame as an image",
+		category: "editing",
+	},
 	"paste-copied": {
 		description: "Paste elements at playhead",
 		category: "editing",
@@ -167,6 +171,7 @@ const ACTION_DEFAULT_SHORTCUTS = [
 	["split-right", ["w"]],
 	["delete-selected", ["backspace", "delete"]],
 	["copy-selected", ["ctrl+c"]],
+	["copy-frame", ["ctrl+shift+c"]],
 	["paste-copied", ["ctrl+v"]],
 	["toggle-snapping", ["n"]],
 	["select-all", ["ctrl+a"]],

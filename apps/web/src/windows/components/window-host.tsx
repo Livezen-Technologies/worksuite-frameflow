@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -19,7 +19,19 @@ import { useWindowState } from "../store";
  * window" (MP-04), saves before the window closes and asks only when a
  * save fails (MP-11).
  */
+const noSubscribe = () => () => {};
+
 export function WindowHost() {
+	// The editor exists only in the browser, never while pages prerender.
+	const mounted = useSyncExternalStore(
+		noSubscribe,
+		() => true,
+		() => false,
+	);
+	return mounted ? <WindowHostInner /> : null;
+}
+
+function WindowHostInner() {
 	const router = useRouter();
 	const editor = useEditor();
 	const projectId = useEditor(

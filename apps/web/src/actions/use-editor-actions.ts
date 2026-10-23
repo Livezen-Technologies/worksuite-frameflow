@@ -454,6 +454,14 @@ export function useEditorActions() {
 	);
 
 	useActionHandler(
+		"copy-frame",
+		() => {
+			void editor.renderer.copySnapshot();
+		},
+		undefined,
+	);
+
+	useActionHandler(
 		"paste-copied",
 		() => {
 			editor.clipboard.paste();
