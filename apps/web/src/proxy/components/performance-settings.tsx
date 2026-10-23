@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { RenderCacheSettings } from "@/render-cache/components/render-cache-settings";
 import { useEditor } from "@/editor/use-editor";
 import { helperBridge, type HelperCaps, type HelperGpu } from "../bridge";
 import { PROXY_HEIGHTS, type ProxyMode } from "../rules";
@@ -198,6 +199,7 @@ export function PerformanceSettings() {
 					at once
 				</label>
 			</Row>
+			<RenderCacheSettings />
 			<Row label="This project">
 				<span className="text-sm" data-proxy-counts>
 					{counts.ready} ready

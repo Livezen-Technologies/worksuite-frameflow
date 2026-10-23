@@ -8,6 +8,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 ## [Unreleased]
 
 ### Added
+- Render cache: click Render on the preview toolbar (or let it run automatically when idle) to pre-render the timeline in 2-second parts so effects-heavy sections play smoothly. The strip under the button shows rendered (green) and changed (red) parts; an edit only re-renders the parts it touches. Choose the mode and preview quality in Project settings → Performance. Export never uses the cache.
 - Proxies for smooth editing of 4K and other large clips: the desktop app makes lightweight copies in the background with a bundled FFmpeg (LGPL), on your GPU when it can. Choose when to make them, their size, the encoder and background priority in Project settings → Performance, and switch between proxies and originals on the preview toolbar. Export always uses the original files.
 - Automation API: turn it on in Settings → API to control the editor from scripts with the new `wve` command (create and open projects, import media, add clips and titles, export, sign in and sync) or from AI agents through `wve mcp`. Only programs running as your user can connect, and none of them see your sign-in or API keys.
 - AI features with Google Gemini, using your own API key (Settings → AI, stored encrypted on this computer): cloud transcription as a second engine in Captions, Translate and Clean up text in the transcript editor (with Undo), and a vocabulary list of names and terms AI should spell exactly.
@@ -69,6 +70,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 - Platform guide icons no longer load logos from Brandfetch; they show a plain letter instead.
 
 ### Fixed
+- Creating a project through the automation API (`wve new`) now opens it in the editor window.
 - A project started at a chosen size (custom size or a size template) no longer switches to the size of the first photo or video you add.
 - Adjustment-layer effects no longer fail to reach the renderer (a field name mismatch with the engine).
 - Undo no longer reaches into a project you had open before.

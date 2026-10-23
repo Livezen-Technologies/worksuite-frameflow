@@ -1,5 +1,7 @@
 "use client";
 
+import { renderCache } from "@/render-cache/service";
+import { videoCache } from "@/services/video-cache/service";
 import { AspectPicker } from "@/canvas/components/aspect-picker";
 import { useSphereProjectView } from "@/vr/components/sphere-menu";
 import { SphereGuides, SphereViewer } from "@/vr/components/sphere-viewer";
@@ -161,6 +163,7 @@ function PreviewCanvas({
 	});
 	const { canPan, panByScreenDelta, scaleZoom } = viewport;
 
+	const cacheCanvasRef = useRef<HTMLCanvasElement | null>(null);
 	const renderer = useMemo(() => {
 		return new CanvasRenderer({
 			width: nativeWidth,
@@ -182,10 +185,25 @@ function PreviewCanvas({
 		outputCanvas.style.width = "100%";
 		outputCanvas.style.height = "100%";
 		mount.appendChild(outputCanvas);
+		// Cached renders draw here, on top of the live compositor output.
+		const cacheCanvas = document.createElement("canvas");
+		cacheCanvas.dataset.renderCacheOutput = "true";
+		Object.assign(cacheCanvas.style, {
+			position: "absolute",
+			inset: "0",
+			width: "100%",
+			height: "100%",
+			visibility: "hidden",
+			pointerEvents: "none",
+		});
+		mount.appendChild(cacheCanvas);
+		cacheCanvasRef.current = cacheCanvas;
 		return () => {
 			if (outputCanvas.parentElement === mount) {
 				mount.removeChild(outputCanvas);
 			}
+			cacheCanvas.remove();
+			cacheCanvasRef.current = null;
 		};
 	}, [renderer]);
 
@@ -213,10 +231,39 @@ function PreviewCanvas({
 		lastSceneRef.current = renderTree;
 		lastFrameRef.current = frame;
 		lastPreviewGenerationRef.current = effectPreviewService.generation;
+		// Rendered and unchanged since: show the cached picture instead (PS-13).
+		const cached = renderCache.lookup({ editor, frame });
+		const overlay = cacheCanvasRef.current;
+		if (cached && overlay) {
+			void videoCache
+				.getFrameAt({
+					mediaId: cached.mediaId,
+					file: cached.file,
+					time: cached.seconds,
+				})
+				.then((picture) => {
+					if (!picture) {
+						overlay.style.visibility = "hidden";
+						lastFrameRef.current = -1;
+						return;
+					}
+					if (overlay.width !== picture.canvas.width)
+						overlay.width = picture.canvas.width;
+					if (overlay.height !== picture.canvas.height)
+						overlay.height = picture.canvas.height;
+					overlay.getContext("2d")?.drawImage(picture.canvas, 0, 0);
+					overlay.style.visibility = "visible";
+				})
+				.finally(() => {
+					renderingRef.current = false;
+				});
+			return;
+		}
 		renderer.render({ node: renderTree, time: renderTime }).then(() => {
+			if (overlay) overlay.style.visibility = "hidden";
 			renderingRef.current = false;
 		});
-	}, [renderer, renderTree, editor.playback, editor.timeline]);
+	}, [renderer, renderTree, editor]);
 
 	useRafLoop(render);
 

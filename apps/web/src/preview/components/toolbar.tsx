@@ -2,6 +2,7 @@
 
 import { SphereMenu } from "@/vr/components/sphere-menu";
 import { ProxyToggle } from "@/proxy/components/proxy-toggle";
+import { RenderButton } from "@/render-cache/components/render-button";
 import { ToneMappedLabel } from "@/hdr/components/tone-mapped-label";
 import { useState, useEffect } from "react";
 import { useEditor } from "@/editor/use-editor";
@@ -42,6 +43,7 @@ export function PreviewToolbar({
 				<ToneMappedLabel />
 				<SphereMenu />
 				<ProxyToggle />
+				<RenderButton />
 				<ZoomSelect />
 				<Separator orientation="vertical" className="h-4" />
 				{/* v0.4.0 */}

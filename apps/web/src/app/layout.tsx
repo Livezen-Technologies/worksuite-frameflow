@@ -3,6 +3,7 @@ import Script from "next/script";
 import "./globals.css";
 import { Toaster } from "../components/ui/sonner";
 import { ProjectFolderHost } from "@/project-folder/components/project-folder-host";
+import { RenderCacheHost } from "@/render-cache/components/render-cache-host";
 import { ProxyHost } from "@/proxy/components/proxy-host";
 import { AutomationHost } from "@/automation/components/automation-host";
 import { LocaleSync } from "@/i18n/components/locale-sync";
@@ -63,6 +64,7 @@ export default function RootLayout({
 						<ProjectFolderHost />
 						<AutomationHost />
 						<ProxyHost />
+						<RenderCacheHost />
 						<Script
 							src="https://cdn.databuddy.cc/databuddy.js"
 							strategy="afterInteractive"

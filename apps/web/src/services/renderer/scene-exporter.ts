@@ -165,8 +165,11 @@ export class SceneExporter extends EventEmitter<SceneExporterEvents> {
 
 	async export({
 		rootNode,
+		range,
 	}: {
 		rootNode: RootNode;
+		/** Only these frames [start, end), timed from zero (render cache). */
+		range?: { startFrame: number; endFrame: number };
 	}): Promise<ArrayBuffer | null> {
 		const fps = this.renderer.fps;
 		const fpsFloat = frameRateToFloat(fps);
@@ -252,7 +255,9 @@ export class SceneExporter extends EventEmitter<SceneExporterEvents> {
 			subtitleSource.close();
 		}
 
-		for (let i = 0; i < frameCount; i++) {
+		const firstFrame = Math.max(0, range?.startFrame ?? 0);
+		const endFrame = Math.min(frameCount, range?.endFrame ?? frameCount);
+		for (let i = firstFrame; i < endFrame; i++) {
 			if (this.isCancelled) {
 				await output.cancel();
 				this.emit("cancelled");
@@ -260,8 +265,10 @@ export class SceneExporter extends EventEmitter<SceneExporterEvents> {
 			}
 
 			const timeTicks = i * ticksPerFrame;
-			const timeSeconds = mediaTimeToSeconds({ time: timeTicks });
-			if (i === 0 && cover) surface.drawPicture(cover);
+			const timeSeconds = mediaTimeToSeconds({
+				time: (i - firstFrame) * ticksPerFrame,
+			});
+			if (i === firstFrame && cover) surface.drawPicture(cover);
 			else {
 				await this.renderer.render({ node: rootNode, time: timeTicks });
 				surface.copyFrame();
@@ -284,7 +291,10 @@ export class SceneExporter extends EventEmitter<SceneExporterEvents> {
 				await videoSource.add(timeSeconds, 1 / fpsFloat);
 			}
 
-			this.emit("progress", i / frameCount);
+			this.emit(
+				"progress",
+				(i - firstFrame) / Math.max(1, endFrame - firstFrame),
+			);
 		}
 
 		if (this.isCancelled) {

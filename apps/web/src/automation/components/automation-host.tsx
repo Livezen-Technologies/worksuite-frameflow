@@ -16,10 +16,15 @@ export function AutomationHost() {
 		if (!bridge) return;
 		const editor = EditorCore.getInstance();
 		const openProject = async (id: string) => {
-			if (editor.project.getActiveOrNull()?.metadata.id === id) return;
-			router.push(`/editor/${id}`);
+			const onPage = () =>
+				window.location.pathname.startsWith(`/editor/${id}`);
+			// Creating a project makes it active without opening the editor page.
+			if (editor.project.getActiveOrNull()?.metadata.id === id && onPage())
+				return;
+			if (!onPage()) router.push(`/editor/${id}`);
 			const started = Date.now();
 			while (
+				!onPage() ||
 				editor.project.getActiveOrNull()?.metadata.id !== id ||
 				editor.project.getIsLoading()
 			) {
