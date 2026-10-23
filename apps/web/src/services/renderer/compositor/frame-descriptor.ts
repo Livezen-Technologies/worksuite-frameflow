@@ -1,5 +1,6 @@
 import { drawCssBackground } from "@/gradients";
 import { getMaskDefinition } from "@/masks";
+import { drawRegionMask, regionPixels } from "@/privacy/region";
 import { incrementCounter } from "@/diagnostics/render-perf";
 import type { AnyBaseNode } from "../nodes/base-node";
 import type { CanvasRenderer } from "../canvas-renderer";
@@ -179,9 +180,32 @@ async function collectNode({
 		if (!node.resolved || node.resolved.passes.length === 0) {
 			return;
 		}
+		const region = node.params.region;
+		if (!region) {
+			items.push({
+				type: "sceneEffect",
+				effectPassGroups: [node.resolved.passes],
+			});
+			return;
+		}
+		const { width, height } = renderer;
+		const maskTextureId = `${path}:region`;
+		textures.set(maskTextureId, {
+			kind: "rendered",
+			id: maskTextureId,
+			contentHash: `region:${JSON.stringify(region)}:${width}x${height}`,
+			width,
+			height,
+			draw: (ctx) => drawRegionMask({ ctx, region, width, height }),
+		});
 		items.push({
 			type: "sceneEffect",
 			effectPassGroups: [node.resolved.passes],
+			mask: {
+				textureId: maskTextureId,
+				feather: regionPixels({ region, width, height }).feather,
+				inverted: false,
+			},
 		});
 		return;
 	}

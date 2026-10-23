@@ -72,6 +72,11 @@ declare global {
 					data: ArrayBuffer;
 					sideFiles?: { suffix: string; content: string }[];
 				}) => Promise<{ saved: boolean; path?: string }>;
+				/** Saves into Videos/Worksuite without a dialog (export queue). */
+				saveToFolder?: (args: {
+					fileName: string;
+					data: ArrayBuffer;
+				}) => Promise<{ saved: boolean; path?: string }>;
 				show: (filePath: string) => Promise<void>;
 			};
 			cloud?: WorksuiteCloudBridge;

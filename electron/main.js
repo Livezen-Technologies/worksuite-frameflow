@@ -266,6 +266,22 @@ function registerAccountIpc() {
 
 	// Exports: a native Save dialog, defaulting to Videos/Worksuite. Side files
 	// (e.g. captions .srt) are written next to the video with the same name.
+	/**
+	 * Writes next to the destination first, checks the size, then renames,
+	 * so an interrupted export never leaves a half-written file (SRS EX-13).
+	 */
+	const writeAtomically = async (filePath, bytes) => {
+		const temp = `${filePath}.${process.pid}.part`;
+		try {
+			await fs.promises.writeFile(temp, bytes);
+			const { size } = await fs.promises.stat(temp);
+			if (size !== bytes.length) throw new Error("The export file didn't write completely.");
+			await fs.promises.rename(temp, filePath);
+		} catch (error) {
+			await fs.promises.unlink(temp).catch(() => {});
+			throw error;
+		}
+	};
 	handle("files:save-export", async ({ suggestedName, data, sideFiles = [] }) => {
 		const folder = path.join(app.getPath("videos"), "Worksuite");
 		await fs.promises.mkdir(folder, { recursive: true }).catch(() => {});
@@ -276,7 +292,7 @@ function registerAccountIpc() {
 			filters: [{ name: ext.toUpperCase(), extensions: [ext] }],
 		});
 		if (result.canceled || !result.filePath) return { saved: false };
-		await fs.promises.writeFile(result.filePath, Buffer.from(data));
+		await writeAtomically(result.filePath, Buffer.from(data));
 		const base = result.filePath.slice(0, -path.extname(result.filePath).length);
 		for (const side of sideFiles) {
 			const suffix = String(side.suffix).replace(/[\\/]/g, "");
@@ -284,6 +300,19 @@ function registerAccountIpc() {
 		}
 		savedExports.add(result.filePath);
 		return { saved: true, path: result.filePath };
+	});
+	// Queued exports (EX-14) go straight into Videos/Worksuite, no dialog.
+	handle("files:save-to-folder", async ({ fileName, data }) => {
+		const folder = path.join(app.getPath("videos"), "Worksuite");
+		await fs.promises.mkdir(folder, { recursive: true });
+		const clean = path.basename(String(fileName)).replace(/[<>:"|?*\x00-\x1f]/g, "_") || "export.mp4";
+		const ext = path.extname(clean);
+		const stem = clean.slice(0, clean.length - ext.length);
+		let target = path.join(folder, clean);
+		for (let n = 2; fs.existsSync(target); n++) target = path.join(folder, `${stem} (${n})${ext}`);
+		await writeAtomically(target, Buffer.from(data));
+		savedExports.add(target);
+		return { saved: true, path: target };
 	});
 	// Share links (CL-06): only files this session exported can be uploaded.
 	handle("cloud:upload-share", async ({ filePath, expiresInDays, allowDownload } = {}) => {

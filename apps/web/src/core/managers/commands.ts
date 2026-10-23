@@ -3,6 +3,35 @@ import type { Command, CommandResult } from "@/commands";
 import type { EditorSelectionSnapshot } from "@/selection/editor-selection";
 import { applyRippleAdjustments, computeRippleAdjustments } from "@/ripple";
 import type { SceneTracks } from "@/timeline/types";
+import { toast } from "sonner";
+
+/** Elements of each locked track, to spot edits that touch them (ED-14). */
+function lockedSnapshot(tracks: SceneTracks | null): Map<string, string> {
+	const out = new Map<string, string>();
+	if (!tracks) return out;
+	for (const track of [tracks.main, ...tracks.overlay, ...tracks.audio])
+		if (track.locked) out.set(track.id, JSON.stringify(track.elements));
+	return out;
+}
+
+function touchesLocked({
+	before,
+	after,
+}: {
+	before: Map<string, string>;
+	after: SceneTracks | null;
+}): boolean {
+	if (before.size === 0 || !after) return false;
+	const now = new Map(
+		[after.main, ...after.overlay, ...after.audio].map((t) => [t.id, t]),
+	);
+	for (const [id, elements] of before) {
+		const track = now.get(id);
+		// Removing a locked track, or changing its clips, is blocked.
+		if (!track || JSON.stringify(track.elements) !== elements) return true;
+	}
+	return false;
+}
 
 export interface CommandHistorySnapshot {
 	history: CommandHistoryEntry[];
@@ -41,7 +70,22 @@ export class CommandManager {
 			? (this.editor.scenes.getActiveSceneOrNull()?.tracks ?? null)
 			: null;
 		const previousSelection = this.getSelectionSnapshot();
+		const locked = lockedSnapshot(
+			this.editor.scenes.getActiveSceneOrNull()?.tracks ?? null,
+		);
 		const result = command.execute();
+		if (
+			touchesLocked({
+				before: locked,
+				after: this.editor.scenes.getActiveSceneOrNull()?.tracks ?? null,
+			})
+		) {
+			command.undo();
+			toast.error("That track is locked", {
+				description: "Unlock it in the track header to edit it.",
+			});
+			return command;
+		}
 		this.applyRippleIfEnabled({ beforeTracks });
 		const selectionOverride = this.applySelectionOverride(result);
 		this.runReactors();

@@ -73,12 +73,21 @@ export class SaveManager {
 
 	private queueSave(): void {
 		if (this.isSaving) return;
+		// An autosave interval (ED-16) saves at most that often: the first
+		// change starts the timer and later ones ride along with it.
+		const interval =
+			this.editor.project.getActiveOrNull()?.settings.defaults
+				?.autosaveSeconds ?? 0;
+		if (interval > 0 && this.saveTimer) return;
 		if (this.saveTimer) {
 			clearTimeout(this.saveTimer);
 		}
-		this.saveTimer = setTimeout(() => {
-			void this.saveNow();
-		}, this.debounceMs);
+		this.saveTimer = setTimeout(
+			() => {
+				void this.saveNow();
+			},
+			interval > 0 ? interval * 1000 : this.debounceMs,
+		);
 	}
 
 	private async saveNow(): Promise<void> {

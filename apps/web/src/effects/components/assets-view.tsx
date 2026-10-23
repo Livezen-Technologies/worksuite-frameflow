@@ -14,6 +14,7 @@ import { buildEffectElement, isVisualElement } from "@/timeline/element-utils";
 import type { EffectCategory, EffectDefinition } from "@/effects/types";
 import { cn } from "@/utils/ui";
 import { useEffectLibrary, type EffectStackPreset } from "../presets";
+import { PrivacyButtons } from "@/privacy/components/privacy-buttons";
 
 const CATEGORIES: (EffectCategory | "All" | "Favourites" | "My presets")[] = [
 	"All",
@@ -99,6 +100,7 @@ export function EffectsView() {
 					value={query}
 					onChange={(event) => setQuery(event.target.value)}
 				/>
+				<PrivacyButtons />
 				<div
 					className="flex flex-wrap gap-1"
 					role="group"

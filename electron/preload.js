@@ -113,6 +113,7 @@ contextBridge.exposeInMainWorld("worksuite", {
 	},
 	files: {
 		saveExport: (args) => ipcRenderer.invoke("files:save-export", args),
+		saveToFolder: (args) => ipcRenderer.invoke("files:save-to-folder", args),
 		show: (filePath) => ipcRenderer.invoke("files:show", filePath),
 	},
 	cloud: {

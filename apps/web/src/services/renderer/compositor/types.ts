@@ -25,6 +25,8 @@ export type FrameItemDescriptor =
 	| {
 			type: "sceneEffect";
 			effectPassGroups: EffectPass[][];
+			/** Limits the effect to an area (privacy regions). */
+			mask?: LayerMaskDescriptor | null;
 	  };
 
 export type QuadTransformDescriptor = {

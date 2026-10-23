@@ -677,9 +677,21 @@ function ProjectSettingsBody({ onClose }: { onClose: () => void }) {
 						</Field>
 						<Field
 							label="Autosave"
-							hint="Every change is saved within a second."
+							hint="Continuous saves each change within a second; an interval saves at most that often. Closing or switching projects always saves."
 						>
-							<span className="text-sm">Always on</span>
+							<select
+								className={selectClass}
+								value={String(defaults.autosaveSeconds ?? 0)}
+								onChange={(e) =>
+									setDefault({ autosaveSeconds: Number(e.target.value) })
+								}
+								data-field="autosave"
+							>
+								<option value="0">Continuous</option>
+								<option value="30">Every 30 seconds</option>
+								<option value="60">Every minute</option>
+								<option value="300">Every 5 minutes</option>
+							</select>
 						</Field>
 					</>
 				)}

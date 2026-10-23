@@ -27,6 +27,7 @@ import { cn } from "@/utils/ui";
 import { Separator } from "@/components/ui/separator";
 import { useAssetsPanelStore } from "@/components/editor/panels/assets/assets-panel-store";
 import { SavePresetButton } from "./save-preset-button";
+import { RegionSection } from "@/privacy/components/region-section";
 
 export function StandaloneEffectTab({
 	element,
@@ -64,6 +65,13 @@ export function StandaloneEffectTab({
 				renderParams={(renderElement as EffectElement).params}
 				previewParam={previewParam}
 				onCommit={commit}
+			/>
+			<RegionSection
+				element={renderElement as EffectElement}
+				onChange={(region) => {
+					previewUpdates({ region });
+					commit();
+				}}
 			/>
 		</div>
 	);

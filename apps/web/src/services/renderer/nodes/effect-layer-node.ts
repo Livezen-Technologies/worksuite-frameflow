@@ -1,5 +1,6 @@
 import type { EffectPass } from "@/effects/types";
 import type { ParamValues } from "@/params";
+import type { PrivacyRegion } from "@/privacy/region";
 import { BaseNode } from "./base-node";
 
 export type EffectLayerNodeParams = {
@@ -7,6 +8,7 @@ export type EffectLayerNodeParams = {
 	effectParams: ParamValues;
 	timeOffset: number;
 	duration: number;
+	region?: PrivacyRegion;
 };
 
 export type ResolvedEffectLayerNodeState = {

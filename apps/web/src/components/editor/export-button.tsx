@@ -1,6 +1,17 @@
 "use client";
 
 import { HDR_EXPORT_PRESETS } from "@/hdr/presets";
+import {
+	AUDIO_EXPORT_FORMATS,
+	audioFormatInfo,
+	encodeAudioFile,
+	supportedAudioFormats,
+	type AudioExportFormat,
+} from "@/export/audio-export";
+import { createTimelineAudioBuffer } from "@/media/audio";
+import { ExportQueueHost, ExportQueueList } from "@/export/queue/queue-list";
+import { useExportQueue } from "@/export/queue/store";
+import { generateUUID } from "@/utils/id";
 import { finishSphereExport, SPHERE_EXPORT_PRESETS } from "@/vr/export";
 import { useSphereStore } from "@/vr/store";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
@@ -36,6 +47,7 @@ import {
 	EXPORT_CODEC_VALUES,
 	type ExportCodec,
 	type ExportQuality,
+	type ExportOptions,
 } from "@/export";
 import { captionTracksToCues, cuesToSrt } from "@/export/captions";
 import {
@@ -90,6 +102,7 @@ export function ExportButton() {
 				<Upload className="size-4" strokeWidth={2.25} />
 				{t("Export")}
 			</button>
+			{hasProject && <ExportQueueHost />}
 			{hasProject && open && (
 				<ExportDialog onClose={() => handleOpenChange(false)} />
 			)}
@@ -288,7 +301,18 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 	);
 
 	const [fileName, setFileName] = useState(project.metadata.name);
-	const [kind, setKind] = useState<"video" | "gif">("video");
+	const [kind, setKind] = useState<"video" | "gif" | "audio" | "frame">(
+		"video",
+	);
+	const [audioFormat, setAudioFormat] = useState<AudioExportFormat>("wav");
+	const [frameFormat, setFrameFormat] = useState<"png" | "jpeg">("png");
+	const [audioSupported, setAudioSupported] = useState<Set<AudioExportFormat>>(
+		() => new Set(["wav"]),
+	);
+	const [otherBusy, setOtherBusy] = useState(false);
+	useEffect(() => {
+		void supportedAudioFormats().then(setAudioSupported);
+	}, []);
 	const [gifLevel, setGifLevel] = useState(480);
 	const [gifFps, setGifFps] = useState(15);
 	/** Mbps chosen on the slider; null follows the quality setting. */
@@ -397,7 +421,13 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 	}, [size.width, size.height]);
 
 	const estimate =
-		kind === "gif"
+		kind === "audio"
+			? audioFormat === "wav"
+				? durationSeconds * (project.settings.audio?.sampleRate ?? 48000) * 4
+				: (durationSeconds * 192000) / 8
+			: kind === "frame"
+				? projectSize.width * projectSize.height * (frameFormat === "png" ? 1.5 : 0.3)
+				: kind === "gif"
 			? size.width * size.height * gifFps * durationSeconds * 0.35
 			: bitrate !== null
 				? ((bitrate * 1e6 + (includeAudio ? 192000 : 0)) * durationSeconds) / 8
@@ -411,7 +441,99 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 					});
 	const isDesktop = typeof window !== "undefined" && !!window.worksuite?.files;
 
+	/** Audio-only and still-frame export (EX-12). */
+	const exportOther = async () => {
+		setOtherBusy(true);
+		try {
+			let data: ArrayBuffer;
+			let extension: string;
+			let mimeType: string;
+			if (kind === "audio") {
+				const buffer = await createTimelineAudioBuffer({
+					tracks,
+					mediaAssets: editor.media.getAssets(),
+					duration: editor.timeline.getTotalDuration(),
+					sampleRate: project.settings.audio?.sampleRate,
+					channels: project.settings.audio?.channels,
+				});
+				if (!buffer) {
+					toast.error("There's no audio on the timeline.");
+					return;
+				}
+				data = await encodeAudioFile({ buffer, format: audioFormat });
+				({ extension, mimeType } = audioFormatInfo(audioFormat));
+			} else {
+				const canvas = await editor.project.renderFrame({
+					time: editor.playback.getCurrentTime(),
+				});
+				mimeType = frameFormat === "png" ? "image/png" : "image/jpeg";
+				extension = frameFormat === "png" ? ".png" : ".jpg";
+				const blob = await new Promise<Blob | null>((resolve) =>
+					canvas.toBlob(resolve, mimeType, 0.92),
+				);
+				if (!blob) throw new Error("Couldn't draw the frame.");
+				data = await blob.arrayBuffer();
+			}
+			const name = `${fileName.trim() || project.metadata.name}${extension}`;
+			const files = window.worksuite?.files;
+			if (files) {
+				const saved = await files.saveExport({
+					suggestedName: name,
+					data,
+					sideFiles: [],
+				});
+				if (saved.saved && saved.path) {
+					setSavedPath(saved.path);
+					toast.success(t("Export saved"));
+				}
+				return;
+			}
+			downloadBuffer({ buffer: data, filename: name, mimeType });
+			onClose();
+		} catch (error) {
+			toast.error("Export failed", {
+				description: error instanceof Error ? error.message : String(error),
+			});
+		} finally {
+			setOtherBusy(false);
+		}
+	};
+
+	const exportOptions = (): ExportOptions => ({
+		format,
+		codec,
+		quality,
+		fps:
+			exportRate === projectFps
+				? project.settings.fps
+				: floatToFrameRate(exportRate),
+		includeAudio: kind === "video" && includeAudio,
+		resolution: size,
+		burnInCaptions: burnIn,
+		embedCaptions: kind === "video" && embed,
+		videoBitrate:
+			kind === "video" && bitrate !== null ? bitrate * 1e6 : undefined,
+		coverImage: useCover && cover ? cover.image : undefined,
+		forceSdr: hdrProject && hdrMode === "sdr",
+	});
+
+	/** Adds this export to the queue (EX-14) and keeps the dialog open. */
+	const addToQueue = () => {
+		useExportQueue.getState().add({
+			id: generateUUID(),
+			projectId: project.metadata.id,
+			projectName: project.metadata.name,
+			fileName: `${fileName.trim() || project.metadata.name}${getExportFileExtension({ format })}`,
+			options: exportOptions(),
+		});
+		toast.success("Added to the export queue");
+	};
+
 	const handleExport = async () => {
+		if (kind === "audio" || kind === "frame") {
+			await exportOther();
+			return;
+		}
 		setSavedPath(null);
 		setSharing(null);
 		const exportResult = await editor.project.export({
@@ -544,7 +666,7 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 				) : (
 					<>
 						<div className="flex gap-4 border-b" role="tablist">
-							{(["video", "gif"] as const).map((k) => (
+							{(["video", "gif", "audio", "frame"] as const).map((k) => (
 								<button
 									key={k}
 									type="button"
@@ -559,7 +681,13 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 											: "text-muted-foreground border-transparent",
 									)}
 								>
-									{k === "video" ? "Video" : "GIF"}
+									{k === "video"
+										? "Video"
+										: k === "gif"
+											? "GIF"
+											: k === "audio"
+												? "Audio"
+												: "Frame"}
 								</button>
 							))}
 						</div>
@@ -579,7 +707,40 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 							</p>
 						</div>
 
-						{kind === "gif" ? (
+						{kind === "audio" ? (
+							<Row label="Format">
+								<div className="flex gap-1" data-audio-formats>
+									{AUDIO_EXPORT_FORMATS.map((f) => (
+										<Pill
+											key={f.id}
+											active={audioFormat === f.id}
+											disabled={!audioSupported.has(f.id)}
+											onClick={() => setAudioFormat(f.id)}
+										>
+											{f.label}
+										</Pill>
+									))}
+								</div>
+							</Row>
+						) : kind === "frame" ? (
+							<Row label="Format">
+								<div className="flex items-center gap-1" data-frame-formats>
+									{(["png", "jpeg"] as const).map((f) => (
+										<Pill
+											key={f}
+											active={frameFormat === f}
+											onClick={() => setFrameFormat(f)}
+										>
+											{f.toUpperCase()}
+										</Pill>
+									))}
+									<span className="text-muted-foreground ml-2 text-[11px]">
+										The frame at the playhead, {projectSize.width} ×{" "}
+										{projectSize.height}
+									</span>
+								</div>
+							</Row>
+						) : kind === "gif" ? (
 							<>
 								<Row label="Resolution">
 									<StepSlider
@@ -861,7 +1022,10 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 							</div>
 						)}
 
-						<ShareOptions settings={share} onChange={setShare} />
+						{(kind === "video" || kind === "gif") && (
+							<ShareOptions settings={share} onChange={setShare} />
+						)}
+						<ExportQueueList />
 
 						{savedPath && (
 							<div className="flex items-center justify-between gap-2 rounded-md border border-emerald-500/40 bg-emerald-500/10 p-2 text-xs">
@@ -897,9 +1061,29 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 						<Button variant="outline" onClick={onClose}>
 							{savedPath ? "Close" : "Cancel"}
 						</Button>
-						<Button onClick={handleExport} className="gap-2">
+						{(kind === "video" || kind === "gif") && (
+							<Button
+								variant="outline"
+								onClick={addToQueue}
+								data-export-queue-add
+							>
+								Add to queue
+							</Button>
+						)}
+						<Button
+							onClick={handleExport}
+							className="gap-2"
+							disabled={otherBusy}
+							data-export-go
+						>
 							<Download className="size-4" />
-							{kind === "gif" ? "Export GIF" : "Export video"}
+							{kind === "gif"
+								? "Export GIF"
+								: kind === "audio"
+									? "Export audio"
+									: kind === "frame"
+										? "Export frame"
+										: "Export video"}
 						</Button>
 					</>
 				)}

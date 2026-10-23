@@ -27,6 +27,9 @@ pub enum FrameItemDescriptor {
         // Enum-level rename_all only renames variants, not their fields.
         #[serde(rename = "effectPassGroups")]
         effect_pass_groups: Vec<Vec<EffectPassDescriptor>>,
+        /// Limits the effect to this area of the frame (privacy regions).
+        #[serde(default)]
+        mask: Option<LayerMaskDescriptor>,
     },
 }
 

@@ -75,6 +75,7 @@ function buildTrackNodes({
 						effectParams: element.params,
 						timeOffset: element.startTime,
 						duration: element.duration,
+						...(element.region ? { region: element.region } : {}),
 					}),
 				);
 				continue;

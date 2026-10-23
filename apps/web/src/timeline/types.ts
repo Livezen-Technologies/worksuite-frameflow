@@ -1,3 +1,4 @@
+import type { PrivacyRegion } from "@/privacy/region";
 import type { MulticamTag } from "@/multicam/types";
 import type { ScreenZoom } from "@/screen-zoom/types";
 import type { ClipTransition } from "@/transitions/types";
@@ -34,6 +35,8 @@ export type TrackType = "video" | "text" | "audio" | "graphic" | "effect";
 interface BaseTrack {
 	id: string;
 	name: string;
+	/** Locked tracks can't be edited (SRS ED-14). */
+	locked?: boolean;
 }
 
 export interface VideoTrack extends BaseTrack {
@@ -170,6 +173,8 @@ export interface GraphicElement extends BaseTimelineElement {
 export interface EffectElement extends BaseTimelineElement {
 	type: "effect";
 	effectType: string;
+	/** Limits the effect to one area of the frame (privacy region, ED-15). */
+	region?: PrivacyRegion;
 }
 
 export type ElementUpdatePatch = { params?: Partial<ParamValues> };

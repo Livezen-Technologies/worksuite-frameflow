@@ -9,7 +9,7 @@ use crate::{
     BlendMode,
     frame::{
         EffectPassDescriptor, EffectUniformValueDescriptor, FrameDescriptor, FrameItemDescriptor,
-        LayerDescriptor,
+        LayerDescriptor, LayerMaskDescriptor,
     },
     texture_pool::TexturePool,
     texture_store::TextureStore,
@@ -386,8 +386,11 @@ impl Compositor {
                         frame.height,
                     )?;
                 }
-                FrameItemDescriptor::SceneEffect { effect_pass_groups } => {
-                    scene = self.apply_effect_groups(
+                FrameItemDescriptor::SceneEffect {
+                    effect_pass_groups,
+                    mask,
+                } => {
+                    let effected = self.apply_effect_groups(
                         context,
                         &mut encoder,
                         &scene,
@@ -395,6 +398,28 @@ impl Compositor {
                         frame.height,
                         effect_pass_groups,
                     )?;
+                    scene = match mask {
+                        Some(mask) => {
+                            let masked = self.mask_layer(
+                                context,
+                                &mut encoder,
+                                &effected,
+                                mask,
+                                frame.width,
+                                frame.height,
+                            )?;
+                            self.blend_texture(
+                                context,
+                                &mut encoder,
+                                &scene,
+                                &masked,
+                                BlendMode::Normal,
+                                frame.width,
+                                frame.height,
+                            )?
+                        }
+                        None => effected,
+                    };
                 }
             }
         }
@@ -442,8 +467,11 @@ impl Compositor {
                         frame.height,
                     )?;
                 }
-                FrameItemDescriptor::SceneEffect { effect_pass_groups } => {
-                    scene = self.apply_effect_groups(
+                FrameItemDescriptor::SceneEffect {
+                    effect_pass_groups,
+                    mask,
+                } => {
+                    let effected = self.apply_effect_groups(
                         context,
                         &mut encoder,
                         &scene,
@@ -451,6 +479,28 @@ impl Compositor {
                         frame.height,
                         effect_pass_groups,
                     )?;
+                    scene = match mask {
+                        Some(mask) => {
+                            let masked = self.mask_layer(
+                                context,
+                                &mut encoder,
+                                &effected,
+                                mask,
+                                frame.width,
+                                frame.height,
+                            )?;
+                            self.blend_texture(
+                                context,
+                                &mut encoder,
+                                &scene,
+                                &masked,
+                                BlendMode::Normal,
+                                frame.width,
+                                frame.height,
+                            )?
+                        }
+                        None => effected,
+                    };
                 }
             }
         }
@@ -504,44 +554,50 @@ impl Compositor {
         }
 
         if let Some(mask) = &layer.mask {
-            let mask_source = self.textures.get(&mask.texture_id).ok_or_else(|| {
-                CompositorError::MissingTexture {
-                    texture_id: mask.texture_id.clone(),
-                }
-            })?;
-            let mask_source_texture = mask_source.texture().clone();
-            let mask_texture = if mask.feather > 0.0 {
-                self.masks.apply_mask_feather_with_encoder(
-                    context,
-                    encoder,
-                    ApplyMaskFeatherOptions {
-                        mask: &mask_source_texture,
-                        width: frame.width,
-                        height: frame.height,
-                        feather: mask.feather,
-                    },
-                )
-            } else {
-                self.copy_texture(
-                    context,
-                    encoder,
-                    &mask_source_texture,
-                    frame.width,
-                    frame.height,
-                )
-            };
-            current = self.apply_mask(
-                context,
-                encoder,
-                &current,
-                &mask_texture,
-                mask.inverted,
-                frame.width,
-                frame.height,
-            );
+            current = self.mask_layer(context, encoder, &current, mask, frame.width, frame.height)?;
         }
 
         Ok(current)
+    }
+
+    fn mask_layer(
+        &mut self,
+        context: &GpuContext,
+        encoder: &mut wgpu::CommandEncoder,
+        source: &wgpu::Texture,
+        mask: &LayerMaskDescriptor,
+        width: u32,
+        height: u32,
+    ) -> Result<wgpu::Texture, CompositorError> {
+        let mask_source = self.textures.get(&mask.texture_id).ok_or_else(|| {
+            CompositorError::MissingTexture {
+                texture_id: mask.texture_id.clone(),
+            }
+        })?;
+        let mask_source_texture = mask_source.texture().clone();
+        let mask_texture = if mask.feather > 0.0 {
+            self.masks.apply_mask_feather_with_encoder(
+                context,
+                encoder,
+                ApplyMaskFeatherOptions {
+                    mask: &mask_source_texture,
+                    width,
+                    height,
+                    feather: mask.feather,
+                },
+            )
+        } else {
+            self.copy_texture(context, encoder, &mask_source_texture, width, height)
+        };
+        Ok(self.apply_mask(
+            context,
+            encoder,
+            source,
+            &mask_texture,
+            mask.inverted,
+            width,
+            height,
+        ))
     }
 
     fn apply_effect_groups(
