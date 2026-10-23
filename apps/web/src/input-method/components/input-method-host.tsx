@@ -3,11 +3,18 @@
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import { cn } from "@/utils/ui";
+import { loadDictionary } from "../candidates";
 import { installInputMethod, pickCandidate, useCandidates } from "../controller";
+import { useInputMethod } from "../store";
 
 /** Installs the input method on the page and draws the candidate list. */
 export function InputMethodHost() {
 	useEffect(() => installInputMethod({ doc: document }), []);
+	// The full word lists load the first time their language is used (TI-10).
+	const mode = useInputMethod((s) => s.mode);
+	useEffect(() => {
+		if (mode !== "en") void loadDictionary(mode);
+	}, [mode]);
 	return <CandidateList />;
 }
 

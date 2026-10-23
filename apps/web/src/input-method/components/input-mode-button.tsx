@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuCheckboxItem,
+	DropdownMenuItem,
 	DropdownMenuContent,
 	DropdownMenuLabel,
 	DropdownMenuRadioGroup,
@@ -11,15 +12,19 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MODE_LABELS, useInputMethod, type InputMode, type SinhalaLayout } from "../store";
+import { useState } from "react";
+import { SpellCheckDialog } from "./spell-check-dialog";
+import { MODE_LABELS, useInputMethod, type InputMode, type SinhalaLayout, type TamilLayout } from "../store";
 import { OnScreenKeyboard } from "./on-screen-keyboard";
 
 const MODES: InputMode[] = ["en", "si", "ta"];
 const LAYOUTS: SinhalaLayout[] = ["singlish", "wijesekara"];
+const TAMIL_LAYOUTS: TamilLayout[] = ["phonetic", "tamil99"];
 
 /** Shows and switches the typing language (TI-01); Ctrl/Cmd+Shift+L cycles it. */
 export function InputModeButton({ className }: { className?: string }) {
 	const im = useInputMethod();
+	const [spellOpen, setSpellOpen] = useState(false);
 	return (
 		<div className="flex items-center gap-0.5">
 			<DropdownMenu>
@@ -60,6 +65,18 @@ export function InputModeButton({ className }: { className?: string }) {
 						<DropdownMenuRadioItem value="wijesekara">Wijesekara</DropdownMenuRadioItem>
 					</DropdownMenuRadioGroup>
 					<DropdownMenuSeparator />
+					<DropdownMenuLabel>Tamil keyboard</DropdownMenuLabel>
+					<DropdownMenuRadioGroup
+						value={im.tamilLayout}
+						onValueChange={(v) => {
+							const layout = TAMIL_LAYOUTS.find((l) => l === v);
+							if (layout) im.setTamilLayout(layout);
+						}}
+					>
+						<DropdownMenuRadioItem value="phonetic">Phonetic</DropdownMenuRadioItem>
+						<DropdownMenuRadioItem value="tamil99" data-tamil99>Tamil99</DropdownMenuRadioItem>
+					</DropdownMenuRadioGroup>
+					<DropdownMenuSeparator />
 					<DropdownMenuCheckboxItem
 						checked={im.suggestions}
 						onCheckedChange={(v) => im.setSuggestions(v === true)}
@@ -73,6 +90,9 @@ export function InputModeButton({ className }: { className?: string }) {
 					>
 						Forget learned words ({Object.keys(im.learned).length})
 					</DropdownMenuCheckboxItem>
+					<DropdownMenuItem data-spell-check-open onSelect={() => setSpellOpen(true)}>
+						Check spelling…
+					</DropdownMenuItem>
 					<DropdownMenuSeparator />
 					<p className="text-muted-foreground px-2 py-1 text-xs leading-snug">
 						Type as it sounds: ayubowan → ආයුබෝවන්. Numbers or arrows pick a
@@ -81,6 +101,7 @@ export function InputModeButton({ className }: { className?: string }) {
 				</DropdownMenuContent>
 			</DropdownMenu>
 			<OnScreenKeyboard />
+			<SpellCheckDialog open={spellOpen} onOpenChange={setSpellOpen} />
 		</div>
 	);
 }

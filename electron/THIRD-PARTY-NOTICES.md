@@ -37,3 +37,18 @@ On request, Livezen Technologies (support@worksuitecloud.com) will provide the c
 corresponding source code of these components, as shipped, for at least three
 years after the last release that includes them, for no more than the cost
 of providing it.
+
+## Other data files
+
+### Sinhala and Tamil word lists (typing suggestions and spell check)
+
+- Where they are: `resources/web/apps/web/public/dictionaries/si.txt` and
+  `ta.txt`, with `LICENSE.md` beside them.
+- `si.txt`: from FrequencyWords by Hermit Dave
+  (https://github.com/hermitdave/FrequencyWords), built from OpenSubtitles.
+  Licence: CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0/),
+  covering that file only.
+- `ta.txt`: from open-tamil by the Ezhil Language Foundation
+  (https://github.com/Ezhil-Language-Foundation/open-tamil). Licence: MIT.
+- Either file can be replaced with a list in the same format (one word per
+  line).

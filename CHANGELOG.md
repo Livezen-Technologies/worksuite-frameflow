@@ -9,6 +9,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
+- Sinhala and Tamil typing: a Tamil99 keyboard (Typing language menu → Tamil keyboard), next-word suggestions learned from what you type (press 1–5 after a space), much bigger built-in word lists (about 3,600 Sinhala and 63,000 Tamil words), and **Check spelling…** for the text box you are typing in, with replacements and Add to dictionary.
+
 - The desktop app can export the frame at the playhead as HEIC (Export → Frame → HEIC), about half the size of a JPEG of the same quality.
 
 - In the desktop app, a HEIC photo FrameFlow's own reader can't open is converted to JPEG through FFmpeg instead of failing.

@@ -2,9 +2,18 @@
 
 import { create } from "zustand";
 import { toast } from "sonner";
-import { suggest } from "./candidates";
+import { nextWordSuggestions, suggest, wordBefore } from "./candidates";
 import { legacyToUnicode, looksLikeLegacy } from "./legacy";
 import { useInputMethod } from "./store";
+import { isTamil99Key, tamil99FromKeys } from "./tamil99";
+
+/** Layouts that type letters key by key, with no suggestions (Wijesekara, Tamil99). */
+function directLayout(): "wijesekara" | "tamil99" | null {
+	const { mode, sinhalaLayout, tamilLayout } = useInputMethod.getState();
+	if (mode === "si" && sinhalaLayout === "wijesekara") return "wijesekara";
+	if (mode === "ta" && tamilLayout === "tamil99") return "tamil99";
+	return null;
+}
 
 /**
  * The in-app input method (SRS TI-01 – TI-06, TI-09, TI-20). Listens to
@@ -39,8 +48,21 @@ export const useCandidates = create<CandidateState>()(() => ({
 }));
 
 let composition: Composition | null = null;
+/** Showing next-word picks after a finished word (TI-12). */
+let following: { field: Field; at: number } | null = null;
 let literal = false;
 let lastField: Field | null = null;
+
+/** The text field that last had focus, for spell check (TI-13). */
+export function lastTextField(): Field | null {
+	return lastField?.isConnected ? lastField : null;
+}
+
+/** Replaces a range of a field's text as if typed, so undo and React see it. */
+export function replaceInField({ field, start, end, text }: { field: Field; start: number; end: number; text: string }) {
+	field.focus();
+	replace({ field, start, end, text });
+}
 
 /** Types text into the field that last had focus (on-screen keyboard, TI-04). */
 export function typeIntoLastField({ text }: { text: string }) {
@@ -79,14 +101,32 @@ function replace({ field, start, end, text }: { field: Field; start: number; end
 	field.dispatchEvent(new Event("input", { bubbles: true }));
 }
 
+function showNextWords({ field }: { field: Field }) {
+	const { suggestions, nextWords } = useInputMethod.getState();
+	if (!suggestions) return;
+	const at = field.selectionStart ?? field.value.length;
+	const previous = wordBefore({ text: field.value, at });
+	const words = nextWordSuggestions({ previous, nextWords });
+	if (words.length === 0) return;
+	following = { field, at };
+	const rect = field.getBoundingClientRect();
+	useCandidates.setState({
+		candidates: words,
+		selected: 0,
+		latin: "",
+		anchor: { left: rect.left, top: rect.bottom + 4 },
+		doc: field.ownerDocument,
+	});
+}
+
 function clearCandidates() {
+	following = null;
 	useCandidates.setState({ candidates: [], selected: 0, latin: "", anchor: null });
 }
 
 function showCandidates({ comp }: { comp: Composition }) {
-	const { mode, sinhalaLayout, suggestions, learned, keepEnglish } =
-		useInputMethod.getState();
-	if (!suggestions || mode === "en" || (mode === "si" && sinhalaLayout === "wijesekara")) {
+	const { mode, suggestions, learned, keepEnglish } = useInputMethod.getState();
+	if (!suggestions || mode === "en" || directLayout()) {
 		clearCandidates();
 		return;
 	}
@@ -106,9 +146,9 @@ function showCandidates({ comp }: { comp: Composition }) {
 }
 
 function render({ comp }: { comp: Composition }): string {
-	const { mode, sinhalaLayout } = useInputMethod.getState();
-	if (mode === "si" && sinhalaLayout === "wijesekara")
-		return legacyToUnicode({ text: comp.keys });
+	const direct = directLayout();
+	if (direct === "wijesekara") return legacyToUnicode({ text: comp.keys });
+	if (direct === "tamil99") return tamil99FromKeys({ keys: comp.keys });
 	const first = useCandidates.getState().candidates[0];
 	return first ?? comp.keys;
 }
@@ -140,11 +180,26 @@ export function commit({ word }: { word?: string } = {}) {
 		});
 	if (chosen !== comp.keys && useCandidates.getState().candidates.length > 1)
 		useInputMethod.getState().learn({ latin: comp.keys, word: chosen });
+	const previous = wordBefore({ text: comp.field.value, at: comp.start });
+	if (previous && chosen) useInputMethod.getState().learnNext({ previous, word: chosen });
 	clearCandidates();
+}
+
+function insertNextWord({ field, previous, word }: { field: Field; previous: string; word: string }) {
+	insert({ field, text: `${word} ` });
+	if (previous) useInputMethod.getState().learnNext({ previous, word });
+	showNextWords({ field });
 }
 
 export function pickCandidate({ index }: { index: number }) {
 	const word = useCandidates.getState().candidates[index];
+	if (following && !composition && word !== undefined) {
+		const { field } = following;
+		clearCandidates();
+		field.focus();
+		insertNextWord({ field, previous: wordBefore({ text: field.value, at: field.selectionStart ?? 0 }), word });
+		return;
+	}
 	if (word !== undefined) commit({ word });
 	composition?.field.focus();
 }
@@ -176,15 +231,31 @@ export function handleKeyDown(event: KeyboardEvent) {
 		commit();
 		return;
 	}
+	// Next-word picks: a number inserts that word, anything else carries on.
+	if (following && !composition) {
+		const pick = /^[1-9]$/.test(event.key)
+			? useCandidates.getState().candidates[Number(event.key) - 1]
+			: undefined;
+		const here = following.field === field && field.selectionStart === following.at;
+		clearCandidates();
+		if (pick && here) {
+			event.preventDefault();
+			event.stopPropagation();
+			const previous = wordBefore({ text: field.value, at: field.selectionStart ?? 0 });
+			insertNextWord({ field, previous, word: pick });
+			return;
+		}
+	}
 	if (composition && !stillComposing({ field })) {
 		composition = null;
 		clearCandidates();
 	}
 	const key = event.key;
 	const { candidates, selected } = useCandidates.getState();
-	const wijesekara = store.mode === "si" && store.sinhalaLayout === "wijesekara";
+	const direct = directLayout();
+	const wijesekara = direct === "wijesekara";
 
-	if (key === "`" && !wijesekara) {
+	if (key === "`" && !direct) {
 		event.preventDefault();
 		commit();
 		literal = !literal;
@@ -198,7 +269,9 @@ export function handleKeyDown(event: KeyboardEvent) {
 	};
 	const isInputKey = wijesekara
 		? key.length === 1 && key !== " "
-		: /^[A-Za-z]$/.test(key);
+		: direct === "tamil99"
+			? isTamil99Key(key)
+			: /^[A-Za-z]$/.test(key);
 
 	if (isInputKey) {
 		stop();
@@ -258,8 +331,10 @@ export function handleKeyDown(event: KeyboardEvent) {
 	if (key === " ") {
 		stop();
 		// Shift+Space keeps the word in English (TI-06).
-		commit(event.shiftKey ? { word: composition.keys } : {});
+		const word = event.shiftKey ? composition.keys : undefined;
+		commit(word === undefined ? {} : { word });
 		insert({ field, text: " " });
+		showNextWords({ field });
 		return;
 	}
 	if (key === "Enter" && candidates.length > 0) {

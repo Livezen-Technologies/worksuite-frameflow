@@ -12,6 +12,53 @@ const RANK: Record<InputLanguage, Map<string, number>> = {
 	ta: new Map(TAMIL_WORDS.map((w, i) => [w, i])),
 };
 
+/**
+ * Adds a full word list behind the starter words (TI-10): starter words
+ * keep their rank, new words follow in the list's order.
+ */
+export function addDictionaryWords({
+	language,
+	words,
+}: {
+	language: InputLanguage;
+	words: string[];
+}): void {
+	const rank = RANK[language];
+	for (const word of words) if (word && !rank.has(word)) rank.set(word, rank.size);
+}
+
+/** Whether a word is in the dictionary (TI-13). */
+export function isDictionaryWord({
+	language,
+	word,
+}: {
+	language: InputLanguage;
+	word: string;
+}): boolean {
+	return RANK[language].has(word);
+}
+
+export function dictionaryWords(language: InputLanguage): Iterable<string> {
+	return RANK[language].keys();
+}
+
+const loaded = new Map<InputLanguage, Promise<void>>();
+
+/** Loads public/dictionaries/<language>.txt once (see LICENSE.md there). */
+export function loadDictionary(language: InputLanguage): Promise<void> {
+	let task = loaded.get(language);
+	if (!task) {
+		task = fetch(`/dictionaries/${language}.txt`)
+			.then((r) => (r.ok ? r.text() : ""))
+			.then((text) => addDictionaryWords({ language, words: text.split("\n").map((w) => w.trim()) }))
+			.catch(() => {
+				// Offline or missing file: the starter list still works.
+			});
+		loaded.set(language, task);
+	}
+	return task;
+}
+
 export function transliterate({
 	latin,
 	language,
@@ -78,4 +125,26 @@ export function recordChoice({
 	const forKey = { ...(learned[latin] ?? {}) };
 	forKey[word] = (forKey[word] ?? 0) + 1;
 	return { ...learned, [latin]: forKey };
+}
+
+/** Most likely words after `previous`, from what the user has typed (TI-12). */
+export function nextWordSuggestions({
+	previous,
+	nextWords,
+	limit = 5,
+}: {
+	previous: string;
+	nextWords: Record<string, Record<string, number>>;
+	limit?: number;
+}): string[] {
+	return Object.entries(nextWords[previous] ?? {})
+		.sort((a, b) => b[1] - a[1])
+		.slice(0, limit)
+		.map(([word]) => word);
+}
+
+/** The word just before `at` in `text`, if any. */
+export function wordBefore({ text, at }: { text: string; at: number }): string {
+	const match = /(\S+)\s*$/.exec(text.slice(0, at));
+	return match?.[1] ?? "";
 }

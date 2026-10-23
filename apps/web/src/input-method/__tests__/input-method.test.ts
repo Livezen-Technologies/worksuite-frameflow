@@ -81,3 +81,49 @@ describe("legacy fonts", () => {
 		expect(isLegacyFont({ fontFamily: "Noto Sans Sinhala" })).toBe(false);
 	});
 });
+
+describe("Tamil99 (TI-05)", () => {
+	test("consonant + vowel keys make syllables", async () => {
+		const { tamil99FromKeys } = await import("../tamil99");
+		// வணக்கம்: v a p h h k f
+		expect(tamil99FromKeys({ keys: "vaphhkf" })).toBe("வணக்கம்");
+		// நன்றி: ; a i u s
+		expect(tamil99FromKeys({ keys: ";aius" })).toBe("நன்றி");
+		// தமிழ்: l a k s / f
+		expect(tamil99FromKeys({ keys: "laks/f" })).toBe("தமிழ்");
+		// அம்மா: a k k q
+		expect(tamil99FromKeys({ keys: "akkq" })).toBe("அம்மா");
+		// இந்தியா: s ; l s ' q
+		expect(tamil99FromKeys({ keys: "s;ls'q" })).toBe("இந்தியா");
+		// ஸ்ரீ and ஃ
+		expect(tamil99FromKeys({ keys: "YF" })).toBe("ஸ்ரீஃ");
+	});
+});
+
+describe("next-word suggestions (TI-12)", () => {
+	test("most frequent followers first", async () => {
+		const { nextWordSuggestions, wordBefore } = await import("../candidates");
+		const nextWords = { මම: { යනවා: 3, කනවා: 1, එනවා: 2 } };
+		expect(nextWordSuggestions({ previous: "මම", nextWords })).toEqual(["යනවා", "එනවා", "කනවා"]);
+		expect(nextWordSuggestions({ previous: "ඔබ", nextWords })).toEqual([]);
+		expect(wordBefore({ text: "අද මම ", at: 6 })).toBe("මම");
+		expect(wordBefore({ text: "", at: 0 })).toBe("");
+	});
+});
+
+describe("spell check (TI-13)", () => {
+	test("finds unknown words and suggests close ones", async () => {
+		const { findMisspellings, editDistance, languageOf } = await import("../spell");
+		const { isDictionaryWord } = await import("../candidates");
+		expect(editDistance({ a: "ගෙදර", b: "ගෙදර", max: 2 })).toBe(0);
+		expect(editDistance({ a: "ගෙදර", b: "ගදර", max: 2 })).toBe(1);
+		const isKnown = (word: string) => isDictionaryWord({ language: "si", word });
+		// "ගෙදරර" is a slip for ගෙදර (home).
+		const found = findMisspellings({ text: "මම ගෙදරර යනවා", language: "si", isKnown });
+		expect(found.map((m) => m.word)).toEqual(["ගෙදරර"]);
+		expect(found[0].start).toBe(3);
+		expect(found[0].suggestions[0]).toBe("ගෙදර");
+		expect(languageOf("வணக்கம் hello")).toBe("ta");
+		expect(languageOf("hello")).toBeNull();
+	});
+});
