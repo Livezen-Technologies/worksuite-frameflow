@@ -314,6 +314,16 @@ export function buildSubtitleTextElement({
 
 	return {
 		...DEFAULTS.text.element,
+		...(caption.words?.length
+			? {
+					// Stored from the caption's start so the clip can move (AI-45, AI-46).
+					words: caption.words.map((w) => ({
+						text: w.text,
+						start: Math.max(0, w.start - caption.startTime),
+						end: Math.max(0, w.end - caption.startTime),
+					})),
+				}
+			: {}),
 		name: `Caption ${index + 1}`,
 		duration: mediaTimeFromSeconds({ seconds: caption.duration }),
 		startTime: mediaTimeFromSeconds({ seconds: caption.startTime }),

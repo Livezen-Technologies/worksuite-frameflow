@@ -61,6 +61,8 @@ export const CAPTION_ANIMATIONS: AnimationPreset[] = [
 	{ value: "words-fast", label: "Quick words", textOnly: true },
 	{ value: "lines", label: "Line by line", textOnly: true },
 	{ value: "letters", label: "Letter by letter", textOnly: true },
+	// Uses the caption's word timings from transcription (AI-46).
+	{ value: "highlight", label: "Highlight spoken word", textOnly: true },
 ];
 
 const options = (presets: AnimationPreset[]) =>
@@ -109,6 +111,13 @@ export const ANIMATION_PARAMS: ParamDefinition[] = [
 		type: "select",
 		default: "none",
 		options: options(CAPTION_ANIMATIONS),
+		keyframable: false,
+	},
+	{
+		key: "animation.highlightColor",
+		label: "Highlight Color",
+		type: "color",
+		default: "#ffd400",
 		keyframable: false,
 	},
 	{
@@ -352,7 +361,7 @@ export function animationState({
 		});
 	}
 	const caption = str({ params, key: "animation.caption" });
-	if (caption !== "none" && durationSeconds > 0) {
+	if (caption !== "none" && caption !== "highlight" && durationSeconds > 0) {
 		const span =
 			caption === "words-fast" ? 0.4 : caption === "letters" ? 0.6 : 0.85;
 		state.reveal = Math.min(state.reveal, clamp01(localSeconds / (durationSeconds * span)));

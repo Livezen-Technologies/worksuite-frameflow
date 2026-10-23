@@ -1,3 +1,4 @@
+import type { TimedWord } from "@/captions/words";
 import type { TranscriptionSegment } from "@/transcription/types";
 import { detectScriptLanguage } from "./script";
 import type { Transcript, TranscriptSegment } from "./types";
@@ -13,11 +14,13 @@ function makeSegment({
 	end,
 	text,
 	verified = false,
+	words,
 }: {
 	start: number;
 	end: number;
 	text: string;
 	verified?: boolean;
+	words?: TimedWord[];
 }): TranscriptSegment {
 	const clean = text.replace(/\s+/g, " ").trim();
 	return {
@@ -27,6 +30,7 @@ function makeSegment({
 		text: clean,
 		lang: detectScriptLanguage(clean),
 		verified,
+		...(words?.length ? { words } : {}),
 	};
 }
 
@@ -34,15 +38,18 @@ export function createTranscript({
 	segments,
 	language,
 	engine,
+	narrationTrackId = null,
 }: {
 	segments: TranscriptionSegment[];
 	language: string;
 	engine: string;
+	narrationTrackId?: string | null;
 }): Transcript {
 	return {
 		version: 1,
 		language,
 		engine,
+		narrationTrackId,
 		createdAt: Date.now(),
 		segments: segments
 			.map((segment) => makeSegment(segment))

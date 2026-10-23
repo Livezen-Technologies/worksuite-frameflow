@@ -1,3 +1,4 @@
+import { wordIndexAt } from "@/captions/words";
 import {
 	findReframeEffect,
 	type ProjectionDescriptor,
@@ -628,6 +629,16 @@ function resolveTextNode({
 		params: node.params.params,
 		fontSizePx: measuredText.scaledFontSize,
 	});
+	const words = node.params.words;
+	if (node.params.params["animation.caption"] === "highlight" && words?.length) {
+		const index = wordIndexAt({ words, seconds: localTime / TICKS_PER_SECOND });
+		const color = node.params.params["animation.highlightColor"];
+		if (index >= 0)
+			styleEffects.highlightWord = {
+				index,
+				color: typeof color === "string" ? color : "#ffd400",
+			};
+	}
 	if (animation.reveal < 1) {
 		const content = String(node.params.params.content ?? "");
 		styleEffects.revealGraphemes = revealCount({

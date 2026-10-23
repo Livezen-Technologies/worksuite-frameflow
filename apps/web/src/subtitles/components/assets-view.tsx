@@ -7,11 +7,12 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { useReducer, useRef, useState, useSyncExternalStore } from "react";
+import { useMemo, useReducer, useRef, useState, useSyncExternalStore } from "react";
 import { aiBridge } from "@/ai/bridge";
 import { aiTranscribe } from "@/ai/tasks";
 import { useAiSettings } from "@/ai/store";
 import { extractTimelineAudio } from "@/media/mediabunny";
+import { narrationSources, onlyTrack } from "@/captions/narration";
 import { useEditor } from "@/editor/use-editor";
 import { TRANSCRIPTION_DIAGNOSTICS_SCOPE } from "@/transcription/diagnostics";
 import { DEFAULT_TRANSCRIPTION_SAMPLE_RATE } from "@/transcription/audio";
@@ -120,6 +121,11 @@ export function Captions() {
 	const openTranscriptEditor = useTranscriptStore((s) => s.openEditor);
 
 	const isProcessing = processing.status === "processing";
+	const sceneTracks = useEditor((e) => e.scenes.getActiveScene().tracks);
+	const sources = useMemo(() => narrationSources(sceneTracks), [sceneTracks]);
+	const [narration, setNarration] = useState<string>("all");
+	const narrationTrackId =
+		narration !== "all" && sources.some((s) => s.id === narration) ? narration : null;
 
 	const activeDiagnostics = useEditor((e) =>
 		e.diagnostics.getActive({ scope: TRANSCRIPTION_DIAGNOSTICS_SCOPE }),
@@ -148,8 +154,11 @@ export function Captions() {
 	const handleGenerateTranscript = async () => {
 		dispatch({ type: "start", step: "Extracting audio..." });
 		try {
+			const allTracks = editor.scenes.getActiveScene().tracks;
 			const audioBlob = await extractTimelineAudio({
-				tracks: editor.scenes.getActiveScene().tracks,
+				tracks: narrationTrackId
+					? onlyTrack({ tracks: allTracks, trackId: narrationTrackId })
+					: allTracks,
 				mediaAssets: editor.media.getAssets(),
 				totalDuration: editor.timeline.getTotalDuration(),
 			});
@@ -190,6 +199,7 @@ export function Captions() {
 				segments: result.segments,
 				language: selectedLanguage,
 				engine: useGemini ? "Gemini (cloud)" : `Local Whisper ${modelName}`,
+				narrationTrackId,
 			});
 			if (nextTranscript.segments.length === 0) {
 				dispatch({
@@ -344,6 +354,25 @@ export function Captions() {
 			>
 				<SectionContent className="flex flex-col gap-4 h-full pt-1">
 					<SectionFields>
+						<SectionField label="Narration">
+							<Select value={narration} onValueChange={setNarration}>
+								<SelectTrigger data-narration-source>
+									<SelectValue />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value="all">All audio, mixed</SelectItem>
+									{sources.map((source) => (
+										<SelectItem
+											key={source.id}
+											value={source.id}
+											data-narration-option={source.id}
+										>
+											{source.label}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+						</SectionField>
 						<SectionField label="Language">
 							<Select
 								value={selectedLanguage}

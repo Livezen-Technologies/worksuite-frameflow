@@ -1,3 +1,4 @@
+import { estimateWords, realignWords, splitWords } from "@/captions/words";
 import type { CaptionChunk } from "@/transcription/types";
 import { graphemes } from "./transcript";
 import type { Transcript } from "./types";
@@ -73,6 +74,11 @@ export function buildCuesFromTranscript({
 
 	segments.forEach((segment, index) => {
 		const lines = breakLines({ text: segment.text, maxGraphemes });
+		// Words for highlighting: the model's, re-aligned if the text changed.
+		const segmentWords = segment.words?.length
+			? realignWords({ words: segment.words, text: segment.text }).words
+			: estimateWords({ text: segment.text, start: segment.start, end: segment.end });
+		let wordCursor = 0;
 		const groups: string[] = [];
 		for (let i = 0; i < lines.length; i += maxLines) {
 			groups.push(lines.slice(i, i + maxLines).join("\n"));
@@ -99,7 +105,10 @@ export function buildCuesFromTranscript({
 				MAX_CUE_SECONDS,
 			);
 			duration = Math.max(Math.min(duration, limit - startTime), 0.2);
-			cues.push({ text: group, startTime, duration });
+			const count = splitWords(group).length;
+			const words = segmentWords.slice(wordCursor, wordCursor + count);
+			wordCursor += count;
+			cues.push({ text: group, startTime, duration, ...(words.length ? { words } : {}) });
 			cursor = startTime + Math.max(share, 0);
 		});
 	});

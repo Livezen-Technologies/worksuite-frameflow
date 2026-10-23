@@ -1,3 +1,4 @@
+import { registerCaptionSync } from "@/captions/sync";
 import { PlaybackManager } from "./managers/playback-manager";
 import { TimelineManager } from "./managers/timeline-manager";
 import { ScenesManager } from "./managers/scenes-manager";
@@ -65,6 +66,7 @@ export class EditorCore {
 				this.timeline.updateTracks(prunedTracks);
 			}
 		});
+		registerCaptionSync({ editor: this });
 		this.save.start();
 	}
 

@@ -34,6 +34,10 @@ export async function buildSubtitlesFromTranscript({
 				: {}),
 		}),
 	);
-	const trackId = insertCaptionChunksAsTextTrack({ editor, captions: cues });
+	const trackId = insertCaptionChunksAsTextTrack({
+		editor,
+		captions: cues,
+		narrationTrackId: transcript.narrationTrackId ?? null,
+	});
 	return { trackId, cueCount: cues.length };
 }

@@ -1,3 +1,5 @@
+import type { CaptionAnchor } from "@/captions/anchor";
+import type { TimedWord } from "@/captions/words";
 import type { TCanvasSize } from "@/project/types";
 import type { PrivacyRegion } from "@/privacy/region";
 import type { MulticamTag } from "@/multicam/types";
@@ -153,6 +155,10 @@ export interface TextElement extends BaseTimelineElement {
 	type: "text";
 	hidden?: boolean;
 	effects?: Effect[];
+	/** Caption times kept against the source media (AI-45). */
+	captionAnchor?: CaptionAnchor;
+	/** Word timings in seconds from the caption's start (AI-46). */
+	words?: TimedWord[];
 }
 
 export interface StickerElement extends BaseTimelineElement {

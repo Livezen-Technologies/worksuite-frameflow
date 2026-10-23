@@ -6,6 +6,8 @@ export interface TranscriptionSegment {
 	text: string;
 	start: number;
 	end: number;
+	/** Word timings when the engine gives them (AI-46). */
+	words?: { text: string; start: number; end: number }[];
 }
 
 export interface TranscriptionResult {
@@ -44,4 +46,6 @@ export interface CaptionChunk {
 	text: string;
 	startTime: number;
 	duration: number;
+	/** Word timings in timeline seconds (AI-46). */
+	words?: { text: string; start: number; end: number }[];
 }

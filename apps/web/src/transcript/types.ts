@@ -1,3 +1,4 @@
+import type { TimedWord } from "@/captions/words";
 /** Language tag per segment; "mixed" = Sinhala sentence with English words. */
 export type ScriptLanguage = "si" | "en" | "mixed" | "other";
 
@@ -9,6 +10,8 @@ export interface TranscriptSegment {
 	text: string;
 	lang: ScriptLanguage;
 	verified: boolean;
+	/** Word timings in timeline seconds (AI-46); re-aligned if the text changes. */
+	words?: TimedWord[];
 }
 
 export interface Transcript {
@@ -18,4 +21,6 @@ export interface Transcript {
 	engine: string;
 	createdAt: number;
 	segments: TranscriptSegment[];
+	/** Track the narration was taken from (AI-44); null = all audio. */
+	narrationTrackId?: string | null;
 }

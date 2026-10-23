@@ -4,6 +4,7 @@ import {
 	type AutomaticSpeechRecognitionOutput,
 } from "@huggingface/transformers";
 import type { TranscriptionSegment } from "@/transcription/types";
+import { groupWords } from "@/captions/words";
 import {
 	DEFAULT_CHUNK_LENGTH_SECONDS,
 	DEFAULT_STRIDE_SECONDS,
@@ -134,12 +135,21 @@ async function handleTranscribe({
 	cancelled = false;
 
 	try {
-		const rawResult = await transcriber(audio, {
+		const options = {
 			chunk_length_s: DEFAULT_CHUNK_LENGTH_SECONDS,
 			stride_length_s: DEFAULT_STRIDE_SECONDS,
 			language: language === "auto" ? undefined : language,
-			return_timestamps: true,
-		});
+		};
+		// Word timings for word highlighting (AI-46); models without
+		// alignment heads can't give them, so fall back to segments.
+		let words = true;
+		let rawResult: Awaited<ReturnType<AutomaticSpeechRecognitionPipeline>>;
+		try {
+			rawResult = await transcriber(audio, { ...options, return_timestamps: "word" });
+		} catch {
+			words = false;
+			rawResult = await transcriber(audio, { ...options, return_timestamps: true });
+		}
 
 		if (cancelled) return;
 
@@ -149,7 +159,16 @@ async function handleTranscribe({
 
 		const segments: TranscriptionSegment[] = [];
 
-		if (result.chunks) {
+		if (words && result.chunks) {
+			const timed = result.chunks
+				.filter((chunk) => chunk.timestamp && chunk.timestamp.length >= 2)
+				.map((chunk) => ({
+					text: chunk.text,
+					start: chunk.timestamp[0] ?? 0,
+					end: chunk.timestamp[1] ?? chunk.timestamp[0] ?? 0,
+				}));
+			segments.push(...groupWords({ words: timed }));
+		} else if (result.chunks) {
 			for (const chunk of result.chunks) {
 				if (chunk.timestamp && chunk.timestamp.length >= 2) {
 					segments.push({

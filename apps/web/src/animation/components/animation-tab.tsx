@@ -220,6 +220,29 @@ export function AnimationTab({
 						/>
 					))}
 			</div>
+			{mode === "caption" && selected === "highlight" && (
+				<div className="flex items-center gap-2 border-t pt-3 text-xs">
+					<label htmlFor="highlight-color" className="text-muted-foreground">
+						Highlight colour
+					</label>
+					<input
+						id="highlight-color"
+						type="color"
+						className="h-6 w-10 cursor-pointer rounded border bg-transparent"
+						value={
+							typeof params["animation.highlightColor"] === "string"
+								? String(params["animation.highlightColor"])
+								: "#ffd400"
+						}
+						onChange={(e) => write({ "animation.highlightColor": e.target.value })}
+					/>
+					<span className="text-muted-foreground">
+						{element.type === "text" && element.words?.length
+							? "Follows each word as it's spoken."
+							: "This caption has no word timings yet."}
+					</span>
+				</div>
+			)}
 			{selected !== "none" && mode !== "caption" && (
 				<div className="flex flex-col gap-2 border-t pt-3">
 					<div className="flex justify-between text-xs">

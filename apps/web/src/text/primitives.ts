@@ -202,6 +202,7 @@ export function drawMeasuredTextLayout({
 	}
 
 	let graphemesLeft = styleEffects?.revealGraphemes ?? Number.POSITIVE_INFINITY;
+	let wordsBefore = 0;
 	for (let index = 0; index < layout.lines.length; index++) {
 		const lineY = index * layout.lineHeightPx - layout.block.visualCenterOffset;
 		const line = layout.lines[index];
@@ -224,6 +225,33 @@ export function drawMeasuredTextLayout({
 			ctx.clip();
 		}
 		drawStyledLine({ ctx, text: line, y: lineY, textColor, styleEffects });
+		const highlight = styleEffects?.highlightWord;
+		if (highlight) {
+			const lineWords = [...line.matchAll(/\S+/g)];
+			const local = highlight.index - wordsBefore;
+			const word = lineWords[local];
+			if (word && word.index !== undefined) {
+				// Repaint just this word in the highlight colour, in place.
+				const lineWidth = layout.lineMetrics[index].width;
+				const startX =
+					layout.textAlign === "center"
+						? -lineWidth / 2
+						: layout.textAlign === "right"
+							? -lineWidth
+							: 0;
+				const before = ctx.measureText(line.slice(0, word.index)).width;
+				const width = ctx.measureText(word[0]).width;
+				const reach = layout.scaledFontSize * 2;
+				ctx.save();
+				ctx.beginPath();
+				ctx.rect(startX + before, lineY - reach, width, reach * 2);
+				ctx.clip();
+				ctx.fillStyle = highlight.color;
+				ctx.fillText(line, 0, lineY);
+				ctx.restore();
+			}
+			wordsBefore += lineWords.length;
+		}
 		ctx.restore();
 		drawTextDecoration({
 			ctx,

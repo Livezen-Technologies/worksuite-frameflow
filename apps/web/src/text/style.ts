@@ -123,6 +123,8 @@ export interface TextStyleEffects {
 	glow?: { color: string; sizePx: number };
 	/** Typewriter: how many grapheme clusters are visible, or all when absent. */
 	revealGraphemes?: number;
+	/** The word being spoken, counted across lines, drawn in `color` (AI-46). */
+	highlightWord?: { index: number; color: string };
 }
 
 function num({
