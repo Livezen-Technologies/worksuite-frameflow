@@ -11,13 +11,56 @@ const selectClass =
 export function GifOptionsRows({
 	value,
 	onChange,
+	playhead,
+	selection,
 }: {
 	value: GifOptions;
 	onChange: (value: GifOptions) => void;
+	/** Playhead, in seconds, for "Start at playhead" (EX-02). */
+	playhead?: number;
+	/** The selected clips' span, in seconds. */
+	selection?: { start: number; length: number } | null;
 }) {
 	const set = (patch: Partial<GifOptions>) => onChange({ ...value, ...patch });
+	const lengths = [5, 10, 15, 30];
+	const custom = value.maxSeconds && !lengths.includes(value.maxSeconds) ? value.maxSeconds : null;
 	return (
 		<div className="grid grid-cols-2 gap-2 sm:grid-cols-4" data-gif-options>
+			<div className="col-span-2 flex flex-wrap items-end gap-2 sm:col-span-4">
+				<div className="flex flex-col gap-1">
+					<Label htmlFor="gif-start" className="text-muted-foreground text-xs">
+						Start at (s)
+					</Label>
+					<input
+						id="gif-start"
+						type="number"
+						min={0}
+						step={0.1}
+						className={`${selectClass} w-24`}
+						value={Math.round((value.startSeconds ?? 0) * 10) / 10}
+						onChange={(e) => set({ startSeconds: Math.max(0, Number(e.target.value) || 0) })}
+						data-gif-start
+					/>
+				</div>
+				<button type="button" className="text-primary h-7 text-xs" onClick={() => set({ startSeconds: 0 })}>
+					Beginning
+				</button>
+				{playhead !== undefined && (
+					<button type="button" className="text-primary h-7 text-xs" onClick={() => set({ startSeconds: playhead })} data-gif-from-playhead>
+						Playhead
+					</button>
+				)}
+				{selection && (
+					<button
+						type="button"
+						className="text-primary h-7 text-xs"
+						onClick={() => set({ startSeconds: selection.start, maxSeconds: Math.max(0.1, Math.round(selection.length * 10) / 10) })}
+						data-gif-from-selection
+					>
+						Selected clips ({Math.round(selection.length * 10) / 10} s)
+					</button>
+				)}
+			</div>
 			<div className="flex flex-col gap-1">
 				<Label htmlFor="gif-colors" className="text-muted-foreground text-xs">
 					Colours
@@ -67,6 +110,7 @@ export function GifOptionsRows({
 						set({ maxSeconds: n > 0 ? n : undefined });
 					}}
 				>
+					{custom && <option value={String(custom)}>{custom} s</option>}
 					<option value="5">5 s</option>
 					<option value="10">10 s</option>
 					<option value="15">15 s</option>

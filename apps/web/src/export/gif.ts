@@ -8,6 +8,8 @@ export interface GifOptions {
 	loop: "forever" | "once" | number;
 	/** Stop after this many seconds (GIFs get big fast). */
 	maxSeconds?: number;
+	/** Start this far into the video, e.g. at the playhead or a selection (EX-02). */
+	startSeconds?: number;
 }
 
 export const DEFAULT_GIF_OPTIONS: GifOptions = {

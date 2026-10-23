@@ -596,11 +596,16 @@ export class SceneExporter extends EventEmitter<SceneExporterEvents> {
 		const delay = Math.round(1000 / fpsFloat);
 		const options = this.gif;
 		const colors = Math.min(256, Math.max(2, Math.round(options.colors)));
-		const total = options.maxSeconds
-			? Math.min(frameCount, Math.ceil(options.maxSeconds * fpsFloat))
+		const first = Math.min(
+			Math.max(0, frameCount - 1),
+			Math.max(0, Math.round((options.startSeconds ?? 0) * fpsFloat)),
+		);
+		const end = options.maxSeconds
+			? Math.min(frameCount, first + Math.ceil(options.maxSeconds * fpsFloat))
 			: frameCount;
+		const total = end - first;
 		const repeat = gifRepeat(options.loop);
-		for (let i = 0; i < total; i++) {
+		for (let i = first; i < end; i++) {
 			if (this.isCancelled) {
 				this.emit("cancelled");
 				return null;
@@ -608,9 +613,9 @@ export class SceneExporter extends EventEmitter<SceneExporterEvents> {
 			await this.drawFrame({
 				rootNode,
 				i,
-				firstFrame: 0,
+				firstFrame: first,
 				ticksPerFrame,
-				frameCount: total,
+				frameCount: end,
 				cover,
 				surface,
 			});
@@ -622,9 +627,9 @@ export class SceneExporter extends EventEmitter<SceneExporterEvents> {
 			gif.writeFrame(index, width, height, {
 				palette,
 				delay,
-				...(i === 0 ? { repeat } : {}),
+				...(i === first ? { repeat } : {}),
 			});
-			this.emit("progress", i / total);
+			this.emit("progress", (i - first) / total);
 		}
 		gif.finish();
 		const bytes = gif.bytes();

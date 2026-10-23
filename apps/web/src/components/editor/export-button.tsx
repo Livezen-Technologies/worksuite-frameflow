@@ -86,6 +86,7 @@ import {
 } from "@/export/components/share-panel";
 import { floatToFrameRate, frameRateToFloat } from "@/fps/utils";
 import { TICKS_PER_SECOND } from "@/wasm";
+import type { EditorCore } from "@/core";
 import { t } from "@/i18n";
 import { useLocale } from "@/i18n/store";
 
@@ -886,7 +887,12 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 										onChange={setGifFps}
 									/>
 								</Row>
-								<GifOptionsRows value={gifOptions} onChange={setGifOptions} />
+								<GifOptionsRows
+									value={gifOptions}
+									onChange={setGifOptions}
+									playhead={editor.playback.getCurrentTime() / TICKS_PER_SECOND}
+									selection={selectedSpan({ editor })}
+								/>
 								<p className="text-muted-foreground text-xs">
 									GIFs have no sound and at most 256 colours per frame. Keep
 									them short.
@@ -1323,4 +1329,13 @@ function ExportError({
 			</div>
 		</div>
 	);
+}
+
+/** The selected clips' span on the timeline, in seconds (GIF range, EX-02). */
+function selectedSpan({ editor }: { editor: EditorCore }): { start: number; length: number } | null {
+	const found = editor.timeline.getElementsWithTracks({ elements: editor.selection.getSelectedElements() });
+	if (found.length === 0) return null;
+	const start = Math.min(...found.map((f) => f.element.startTime));
+	const end = Math.max(...found.map((f) => f.element.startTime + f.element.duration));
+	return { start: start / TICKS_PER_SECOND, length: (end - start) / TICKS_PER_SECOND };
 }
