@@ -32,6 +32,25 @@ contextBridge.exposeInMainWorld("worksuite", {
 			return () => ipcRenderer.removeListener("uploads:changed", handler);
 		},
 	},
+	automation: {
+		getState: () => ipcRenderer.invoke("automation:get-state"),
+		setEnabled: (enabled) => ipcRenderer.invoke("automation:set-enabled", enabled),
+		// The page runs editor methods for the local automation API.
+		onCall: (handler) => {
+			const listener = async (_event, { id, method, params }) => {
+				try {
+					ipcRenderer.send("automation:reply", { id, result: await handler(method, params) });
+				} catch (error) {
+					ipcRenderer.send("automation:reply", {
+						id,
+						error: { code: error?.code ?? -32000, message: error?.message ?? String(error) },
+					});
+				}
+			};
+			ipcRenderer.on("automation:call", listener);
+			return () => ipcRenderer.removeListener("automation:call", listener);
+		},
+	},
 	ai: {
 		getState: () => ipcRenderer.invoke("ai:get-state"),
 		setKey: (args) => ipcRenderer.invoke("ai:set-key", args),

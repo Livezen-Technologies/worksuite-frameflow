@@ -1,3 +1,4 @@
+import type { AutomationBridge } from "@/automation/bridge";
 import type { AiBridge } from "@/ai/bridge";
 import type { ProjectFoldersBridge } from "@/project-folder/bridge";
 export type WorksuiteAccountStatus =
@@ -77,6 +78,7 @@ declare global {
 			uploads?: WorksuiteUploadsBridge;
 			folders?: ProjectFoldersBridge;
 			ai?: AiBridge;
+			automation?: AutomationBridge;
 		};
 	}
 }

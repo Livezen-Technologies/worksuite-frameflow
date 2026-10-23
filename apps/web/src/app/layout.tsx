@@ -3,6 +3,7 @@ import Script from "next/script";
 import "./globals.css";
 import { Toaster } from "../components/ui/sonner";
 import { ProjectFolderHost } from "@/project-folder/components/project-folder-host";
+import { AutomationHost } from "@/automation/components/automation-host";
 import { LocaleSync } from "@/i18n/components/locale-sync";
 import { InputMethodHost } from "@/input-method/components/input-method-host";
 import { ChangelogNotification } from "@/changelog/components/changelog-notification";
@@ -59,6 +60,7 @@ export default function RootLayout({
 						<InputMethodHost />
 						<LocaleSync />
 						<ProjectFolderHost />
+						<AutomationHost />
 						<Script
 							src="https://cdn.databuddy.cc/databuddy.js"
 							strategy="afterInteractive"

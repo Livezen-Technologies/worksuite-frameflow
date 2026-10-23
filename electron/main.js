@@ -15,6 +15,7 @@ const cloudSync = require("./cloud-sync");
 const updates = require("./updater");
 const projectFolders = require("./project-folders");
 const ai = require("./ai");
+const automation = require("./automation");
 
 const HOST = "127.0.0.1";
 let server = null;
@@ -270,6 +271,8 @@ function registerAccountIpc() {
 	handle("uploads:pause-all", () => uploadQueue.pauseAll());
 	handle("uploads:resume-all", () => uploadQueue.resumeAll());
 	handle("clipboard:write", (text) => clipboard.writeText(String(text)));
+	handle("automation:get-state", () => automation.getState());
+	handle("automation:set-enabled", (enabled) => automation.setEnabled(!!enabled));
 	handle("ai:get-state", () => ai.getState());
 	handle("ai:set-key", (args) => ai.setKey(args ?? {}));
 	handle("ai:clear-key", () => ai.clearKey());
@@ -320,6 +323,7 @@ if (!app.requestSingleInstanceLock()) {
 		.whenReady()
 		.then(() => {
 			registerAccountIpc();
+			void automation.init();
 			// A menu without Close Window / Ctrl+Tab accelerators, so the editor's
 			// project tab shortcuts (Ctrl/Cmd+W, Ctrl+Tab, Ctrl+Shift+T) reach it.
 			Menu.setApplicationMenu(
@@ -355,6 +359,7 @@ if (!app.requestSingleInstanceLock()) {
 }
 
 app.on("before-quit", () => {
+	void automation.stop();
 	app.isQuitting = true;
 	if (server) server.kill();
 });

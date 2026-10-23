@@ -80,7 +80,11 @@ export class InsertElementCommand extends Command {
 		const isVisualMedia =
 			newElement.type === "video" || newElement.type === "image";
 
-		if (isFirstElement && isVisualMedia) {
+		// The first clip sets the canvas, unless a size was chosen on purpose
+		// (custom size, a template, or the automation API).
+		const sizeChosen =
+			editor.project.getActive()?.settings.canvasSizeMode === "custom";
+		if (isFirstElement && isVisualMedia && !sizeChosen) {
 			const mediaAssets = editor.media.getAssets();
 			const activeProject = editor.project.getActive();
 			const asset = mediaAssets.find(

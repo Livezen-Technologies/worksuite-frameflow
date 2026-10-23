@@ -284,7 +284,10 @@ export class RendererManager {
 			console.error("Export failed:", error);
 			return {
 				success: false,
-				error: error instanceof Error ? error.message : "Unknown export error",
+				error:
+					error instanceof Error
+						? error.message
+						: String(error) || "Unknown export error",
 			};
 		}
 	}

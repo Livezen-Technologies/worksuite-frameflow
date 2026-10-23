@@ -8,6 +8,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 ## [Unreleased]
 
 ### Added
+- Automation API: turn it on in Settings → API to control the editor from scripts with the new `wve` command (create and open projects, import media, add clips and titles, export, sign in and sync) or from AI agents through `wve mcp`. Only programs running as your user can connect, and none of them see your sign-in or API keys.
 - AI features with Google Gemini, using your own API key (Settings → AI, stored encrypted on this computer): cloud transcription as a second engine in Captions, Translate and Clean up text in the transcript editor (with Undo), and a vocabulary list of names and terms AI should spell exactly.
 - Projects can be saved as a portable folder (`.ffproj`) with all their media copied in, so they open on any computer. Use Save as project folder in the project menu; edits save to the folder automatically. Open folder on the Projects page brings one back, and asks you to find any media that's missing.
 - The interface can now be shown in Sinhala or Tamil. Pick a language under Settings → Project info; it follows your system language the first time and syncs with your other settings.
@@ -67,6 +68,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 - Platform guide icons no longer load logos from Brandfetch; they show a plain letter instead.
 
 ### Fixed
+- A project started at a chosen size (custom size or a size template) no longer switches to the size of the first photo or video you add.
 - Adjustment-layer effects no longer fail to reach the renderer (a field name mismatch with the engine).
 - Undo no longer reaches into a project you had open before.
 - Videos from other cameras are no longer mistaken for DJI footage.

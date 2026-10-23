@@ -32,13 +32,19 @@ import { formatNumberForDisplay } from "@/utils/math";
 import { OcSquarePlusIcon } from "@/components/icons";
 import type { TCanvasSize } from "@/project/types";
 import { useT } from "@/i18n";
+import { AutomationSettings } from "@/automation/components/automation-settings";
 import { AiSettings } from "@/ai/components/ai-settings";
 import { LanguageSelect } from "@/i18n/components/language-select";
 
-type SettingsView = "project-info" | "background" | "ai";
+type SettingsView = "project-info" | "background" | "ai" | "api";
 
 function isSettingsView(value: string): value is SettingsView {
-	return value === "project-info" || value === "background" || value === "ai";
+	return (
+		value === "project-info" ||
+		value === "background" ||
+		value === "ai" ||
+		value === "api"
+	);
 }
 
 const PRESET_LABELS: Record<string, string> = {
@@ -230,11 +236,13 @@ export function SettingsView() {
 						<TabsTrigger value="project-info">{t("Project info")}</TabsTrigger>
 						<TabsTrigger value="background">{t("Background")}</TabsTrigger>
 						<TabsTrigger value="ai">AI</TabsTrigger>
+						<TabsTrigger value="api">API</TabsTrigger>
 					</TabsList>
 				</Tabs>
 			}
 		>
 			{view === "ai" && <AiSettings />}
+			{view === "api" && <AutomationSettings />}
 			{view === "project-info" && (
 				<div className="flex flex-col">
 					<Section showTopBorder={false}>
