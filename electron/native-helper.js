@@ -127,7 +127,8 @@ function proxyArgs({ input, output, height, encoder, hasAudio }) {
  * (SRS VR-02, VR-03). `videoTracks` is how many video streams the file has.
  */
 function sphereFilter({ layout, height, videoTracks }) {
-	const h = Math.max(960, Math.min(2880, Math.round(height / 2) * 2));
+	// 4096×2048 at most: the bundled H.264 encoder (OpenH264) stops there.
+	const h = Math.max(960, Math.min(2048, Math.round(height / 2) * 2));
 	const out = `v360=input=%IN%:output=e:w=${h * 2}:h=${h}:interp=cubic,format=yuv420p,setsar=1`;
 	if (layout === "eac") return { graph: `[0:v:0]${out.replace("%IN%", "eac")}[v]` };
 	if (layout === "c3x2") return { graph: `[0:v:0]${out.replace("%IN%", "c3x2")}[v]` };

@@ -9,7 +9,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
-- The desktop app now opens 360° camera originals directly: Insta360 .insv (dual fisheye), GoPro MAX .360 and cubemap 360° videos are converted to standard 360° video on import, keeping 4-channel spatial sound.
+- The desktop app now opens 360° camera originals directly: Insta360 .insv (dual fisheye), GoPro MAX .360 and cubemap 360° videos are converted to standard 360° video (up to 4096×2048) on import, keeping 4-channel spatial sound.
 
 - 360° horizon lock: in a 360° clip's 360° tab, **Level horizon** reads the motion data GoPro cameras record (GPMF orientation, gravity or gyro) and keyframes the 360° camera so the horizon stays level while the view still follows where the camera turned; **Lock view** also holds the direction steady.
 
