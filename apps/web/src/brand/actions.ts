@@ -15,6 +15,10 @@ import type { TimelineElement } from "@/timeline";
 import { mediaTimeFromSeconds, roundMediaTime } from "@/wasm";
 import type { BrandKit, BrandLogo } from "./store";
 import { watermarkTransform } from "./watermark";
+import { findPackAsset } from "@/lottie/catalog";
+import { brandColorOverrides } from "@/lottie/element";
+import type { LottieColorSlot, LottieSource } from "@/lottie/types";
+import { getUserLottie } from "@/lottie/user-library";
 
 async function dataUrlToFile({ logo }: { logo: BrandLogo }): Promise<File> {
 	const blob = await (await fetch(logo.dataUrl)).blob();
@@ -160,8 +164,14 @@ export function brandPatch({
 			...(color ? { color } : {}),
 		};
 	}
+	if (element.type === "graphic" && element.lottie) return null;
 	if (element.type === "graphic" && color) return { fill: color };
 	return null;
+}
+
+async function lottieSlots(source: LottieSource): Promise<LottieColorSlot[]> {
+	if (source.kind === "pack") return (await findPackAsset(source.assetId))?.colors ?? [];
+	return (await getUserLottie(source.id))?.colors ?? [];
 }
 
 export async function applyBrandToSelection({
@@ -178,6 +188,15 @@ export async function applyBrandToSelection({
 	await loadFonts({ families: [kit.headingFont, kit.bodyFont] }).catch(
 		() => {},
 	);
+	const animationUpdates = await Promise.all(
+		targets.map(async ({ trackId, element }) => {
+			if (element.type !== "graphic" || !element.lottie) return [];
+			const slots = await lottieSlots(element.lottie.source).catch(() => []);
+			if (slots.length === 0) return [];
+			const colors = brandColorOverrides({ slots, brandColors: kit.colors, color });
+			return [{ trackId, elementId: element.id, patch: { lottie: { ...element.lottie, colors } } }];
+		}),
+	);
 	const updates = targets.flatMap(({ trackId, element }) => {
 		const patch = brandPatch({ element, kit, color });
 		return patch
@@ -190,6 +209,7 @@ export async function applyBrandToSelection({
 				]
 			: [];
 	});
-	editor.timeline.updateElements({ updates });
-	return updates.length;
+	const all = [...updates, ...animationUpdates.flat()];
+	editor.timeline.updateElements({ updates: all });
+	return all.length;
 }

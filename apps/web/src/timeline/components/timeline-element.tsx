@@ -66,6 +66,7 @@ import {
 import { useElementSelection } from "@/timeline/hooks/element/use-element-selection";
 import { resolveStickerId } from "@/stickers";
 import { buildGraphicPreviewUrl } from "@/graphics";
+import { useLottieThumbnail } from "@/lottie/components/use-lottie-thumbnail";
 import Image from "next/image";
 import {
 	ScissorIcon,
@@ -1000,6 +1001,26 @@ function GraphicElementContent({
 }: {
 	element: Extract<TimelineElementType, { type: "graphic" }>;
 }) {
+	const lottieThumbnail = useLottieThumbnail(element.lottie?.source);
+	if (element.lottie) {
+		return (
+			<div className="flex size-full items-center gap-2 pl-2">
+				{lottieThumbnail ? (
+					<Image
+						src={lottieThumbnail}
+						alt={element.name}
+						className="size-4 shrink-0 object-contain"
+						width={20}
+						height={20}
+						unoptimized
+					/>
+				) : (
+					<span className="size-4 shrink-0 rounded-sm bg-white/20" />
+				)}
+				<span className="truncate text-xs text-white">{element.name}</span>
+			</div>
+		);
+	}
 	return (
 		<div className="flex size-full items-center gap-2 pl-2">
 			<Image

@@ -4,6 +4,7 @@ import { polygonGraphicDefinition } from "./polygon";
 import { rectangleGraphicDefinition } from "./rectangle";
 import { starGraphicDefinition } from "./star";
 import { extraGraphicDefinitions } from "./extras";
+import { lottieGraphicDefinition } from "./lottie";
 
 const defaultGraphicDefinitions = [
 	rectangleGraphicDefinition,
@@ -11,6 +12,7 @@ const defaultGraphicDefinitions = [
 	polygonGraphicDefinition,
 	starGraphicDefinition,
 	...extraGraphicDefinitions,
+	lottieGraphicDefinition,
 ];
 
 export function registerDefaultGraphics(): void {
@@ -27,6 +29,7 @@ export function registerDefaultGraphics(): void {
 
 export {
 	ellipseGraphicDefinition,
+	lottieGraphicDefinition,
 	polygonGraphicDefinition,
 	rectangleGraphicDefinition,
 	starGraphicDefinition,

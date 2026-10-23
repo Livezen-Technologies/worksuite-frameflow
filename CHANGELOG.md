@@ -9,6 +9,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
+- Animations library (Elements → Animations): 60 original animated graphics in seven sets: lower thirds with space for your own text, call-to-action buttons (subscribe, bell, like, comment, share, follow, link, swipe up, five stars, tap here), callouts, reactions, Sri Lankan seasonal graphics (Avurudu, Vesak, Poson, Christmas, Deepavali, Ramazan), full-frame transitions, and status and chart graphics. Hover to preview, click + or double-click to add at the playhead, or drag onto the timeline. Change any of their colours (or apply your brand colours), speed and looping in the Animation tab; they play the same in the preview and in exports. Import your own Lottie (.json) files from Media too; their colours are picked up automatically.
+
 - Sinhala and Tamil typing: a Tamil99 keyboard (Typing language menu → Tamil keyboard), next-word suggestions learned from what you type (press 1–5 after a space), much bigger built-in word lists (about 3,600 Sinhala and 63,000 Tamil words), and **Check spelling…** for the text box you are typing in, with replacements and Add to dictionary.
 
 - The desktop app can export the frame at the playhead as HEIC (Export → Frame → HEIC), about half the size of a JPEG of the same quality.

@@ -4,8 +4,8 @@
   "private": true,
   "packageManager": "bun@1.2.18",
   "scripts": {
-    "predev": "node scripts/copy-libheif.mjs && node scripts/copy-ort.mjs",
-    "prebuild": "node scripts/copy-libheif.mjs && node scripts/copy-ort.mjs",
+    "predev": "node scripts/copy-libheif.mjs && node scripts/copy-ort.mjs && node scripts/copy-worksuite-pack.mjs",
+    "prebuild": "node scripts/copy-libheif.mjs && node scripts/copy-ort.mjs && node scripts/copy-worksuite-pack.mjs",
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
@@ -51,6 +51,7 @@
     "gifenc": "1.0.3",
     "input-otp": "^1.4.1",
     "libheif-js": "1.17.1",
+    "lottie-web": "5.12.2",
     "lucide-react": "^0.562.0",
     "mediabunny": "^1.29.1",
     "motion": "^12.18.1",

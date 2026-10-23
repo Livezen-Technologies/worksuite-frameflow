@@ -32,6 +32,7 @@ import {
 	getBuiltInElementParams,
 } from "@/params/registry";
 import { capitalizeFirstLetter } from "@/utils/string";
+import type { LottieElementData } from "@/lottie/types";
 import { type MediaTime, ZERO_MEDIA_TIME } from "@/wasm";
 
 export function canElementHaveAudio(
@@ -177,17 +178,23 @@ export function buildGraphicElement({
 	name,
 	startTime,
 	params,
+	lottie,
+	duration,
 }: {
 	definitionId: string;
 	name?: string;
 	startTime: MediaTime;
 	params?: Partial<ParamValues>;
+	/** For animations: which Lottie to play and its colours. */
+	lottie?: LottieElementData;
+	duration?: MediaTime;
 }): CreateGraphicElement {
 	const instance = buildDefaultGraphicInstance({ definitionId });
 	return {
 		type: "graphic",
 		name: name ?? capitalizeFirstLetter({ string: instance.definitionId }),
 		definitionId: instance.definitionId,
+		...(lottie ? { lottie } : {}),
 		params: mergeParamValues({
 			base: {
 				...buildDefaultElementParams({ type: "graphic" }),
@@ -195,7 +202,7 @@ export function buildGraphicElement({
 			},
 			overrides: params,
 		}),
-		duration: DEFAULT_NEW_ELEMENT_DURATION,
+		duration: duration ?? DEFAULT_NEW_ELEMENT_DURATION,
 		startTime,
 		trimStart: ZERO_MEDIA_TIME,
 		trimEnd: ZERO_MEDIA_TIME,

@@ -163,8 +163,8 @@ function getElementBounds({
 		return getVisualElementBounds({
 			canvasWidth,
 			canvasHeight,
-			sourceWidth: DEFAULT_GRAPHIC_SOURCE_SIZE,
-			sourceHeight: DEFAULT_GRAPHIC_SOURCE_SIZE,
+			sourceWidth: element.lottie?.width ?? DEFAULT_GRAPHIC_SOURCE_SIZE,
+			sourceHeight: element.lottie?.height ?? DEFAULT_GRAPHIC_SOURCE_SIZE,
 			transform,
 		});
 	}

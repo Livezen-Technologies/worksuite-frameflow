@@ -13,6 +13,8 @@ export interface GraphicDefinition {
 	id: string;
 	name: string;
 	keywords: string[];
+	/** Not offered as a shape (drawn by its own node, e.g. animations). */
+	hidden?: boolean;
 	params: ParamDefinition[];
 	render(context: GraphicRenderContext): void;
 }

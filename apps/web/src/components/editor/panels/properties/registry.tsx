@@ -31,6 +31,7 @@ import {
 import { MasksTab } from "@/masks/components/masks-tab";
 import { SpeedTab } from "@/speed/components/speed-tab";
 import { GraphicTab } from "@/graphics/components/graphic-tab";
+import { LottieTab } from "@/lottie/components/lottie-tab";
 import { OcShapesIcon } from "@/components/icons";
 import {
 	Crosshair,
@@ -279,13 +280,17 @@ function buildGraphicTab({
 }: {
 	element: GraphicElement;
 }): PropertiesTabDef {
+	const { lottie } = element;
 	return {
 		id: "graphic",
-		label: "Graphic",
+		label: lottie ? "Animation" : "Graphic",
 		icon: <OcShapesIcon size={16} />,
-		content: ({ trackId }) => (
-			<GraphicTab element={element} trackId={trackId} />
-		),
+		content: ({ trackId }) =>
+			lottie ? (
+				<LottieTab element={{ ...element, lottie }} trackId={trackId} />
+			) : (
+				<GraphicTab element={element} trackId={trackId} />
+			),
 	};
 }
 
