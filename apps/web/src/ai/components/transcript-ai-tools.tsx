@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { LANGUAGES } from "@/transcription/languages";
 import type { Transcript } from "@/transcript/types";
 import { aiBridge } from "../bridge";
+import { EditorCore } from "@/core";
 import { aiCleanUp, aiTranslate, cancelAi, estimateTextJob } from "../tasks";
 import { AiCostNote } from "./ai-spending";
 
@@ -89,7 +90,14 @@ export function TranscriptAiTools({
 						void run({
 							label: "Translating",
 							task: (onProgress) =>
-								aiTranslate({ transcript, target, onProgress }),
+								aiTranslate({
+									transcript,
+									target,
+									projectId:
+										EditorCore.getInstance().project.getActiveOrNull()?.metadata
+											.id,
+									onProgress,
+								}),
 							done: (n) => `Translated ${n} segment${n === 1 ? "" : "s"}`,
 						})
 					}

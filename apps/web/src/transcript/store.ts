@@ -2,6 +2,7 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { useTranslationMemory } from "@/ai/memory-store";
 import type { Transcript } from "./types";
 
 interface TranscriptStore {
@@ -20,10 +21,13 @@ export const useTranscriptStore = create<TranscriptStore>()(
 		(set) => ({
 			byProject: {},
 			openProjectId: null,
-			setTranscript: ({ projectId, transcript }) =>
+			setTranscript: ({ projectId, transcript }) => {
+				// Corrected translations go into translation memory (AI-37).
+				useTranslationMemory.getState().remember({ projectId, transcript });
 				set((state) => ({
 					byProject: { ...state.byProject, [projectId]: transcript },
-				})),
+				}));
+			},
 			removeTranscript: ({ projectId }) =>
 				set((state) => {
 					const { [projectId]: _removed, ...rest } = state.byProject;

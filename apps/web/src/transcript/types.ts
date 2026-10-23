@@ -12,6 +12,8 @@ export interface TranscriptSegment {
 	verified: boolean;
 	/** Word timings in timeline seconds (AI-46); re-aligned if the text changes. */
 	words?: TimedWord[];
+	/** Set by AI translation: what it was translated from and to (AI-37). */
+	translation?: { source: string; machine: string; target: string };
 }
 
 export interface Transcript {

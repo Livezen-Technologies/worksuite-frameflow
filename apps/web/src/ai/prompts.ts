@@ -59,10 +59,13 @@ export function buildTranslateRequest({
 	segments,
 	target,
 	vocabulary,
+	examples = [],
 }: {
 	segments: TranscriptSegment[];
 	target: string;
 	vocabulary: string[];
+	/** The user's earlier corrections (translation memory, AI-37). */
+	examples?: { source: string; corrected: string }[];
 }): TextRequest {
 	return {
 		system:
@@ -70,7 +73,10 @@ export function buildTranslateRequest({
 			"Translate each segment on its own, keep its id, and keep it about as long as the original so it fits the same time on screen. " +
 			"Use natural, everyday wording, not a word-for-word translation. Keep names, numbers and on-screen terms. " +
 			"Never merge, split, drop or add segments." +
-			vocabularyLine(vocabulary),
+			vocabularyLine(vocabulary) +
+			(examples.length
+				? `\nThe user corrected earlier translations like this; follow their wording and style: ${JSON.stringify(examples.map(({ source, corrected }) => ({ original: source, translation: corrected })))}`
+				: ""),
 		text: segmentPayload(segments),
 		schema: TEXT_RESULT_SCHEMA,
 	};
@@ -139,18 +145,30 @@ export function applyTextResults({
 	results,
 	language,
 	engine,
+	translatedTo,
 }: {
 	transcript: Transcript;
 	results: Map<string, string>;
 	language?: string;
 	engine?: string;
+	/** Remember each segment's source for translation memory (AI-37). */
+	translatedTo?: string;
 }): { transcript: Transcript; changed: number } {
 	let changed = 0;
 	const segments = transcript.segments.map((segment) => {
 		const next = results.get(segment.id);
 		if (!next || next === segment.text) return segment;
 		changed++;
-		return { ...segment, text: next, verified: false };
+		// Without translatedTo (clean-up), the change isn't the user's correction.
+		const { translation: _machine, ...rest } = segment;
+		return {
+			...rest,
+			text: next,
+			verified: false,
+			...(translatedTo
+				? { translation: { source: segment.text, machine: next, target: translatedTo } }
+				: {}),
+		};
 	});
 	return {
 		transcript: {

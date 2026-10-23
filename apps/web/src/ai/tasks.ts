@@ -14,6 +14,8 @@ import {
 	type TextRequest,
 } from "./prompts";
 import { useAiSettings } from "./store";
+import { useTranslationMemory } from "./memory-store";
+import { examplesFor } from "./translation-memory";
 import { AiError, aiProvider } from "./provider";
 
 export { AiError };
@@ -55,19 +57,33 @@ async function runTextBatches({
 export async function aiTranslate({
 	transcript,
 	target,
+	projectId,
 	onProgress,
 }: {
 	transcript: Transcript;
 	target: string;
+	/** Puts this project's translation memory first. */
+	projectId?: string | null;
 	onProgress?: (progress: number) => void;
 }) {
 	const { vocabulary } = useAiSettings.getState();
+	const { entries } = useTranslationMemory.getState();
 	const results = await runTextBatches({
 		transcript,
 		onProgress,
 		kind: "translate",
 		build: (segments) =>
-			buildTranslateRequest({ segments, target, vocabulary }),
+			buildTranslateRequest({
+				segments,
+				target,
+				vocabulary,
+				examples: examplesFor({
+					entries,
+					target,
+					projectId: projectId ?? null,
+					texts: segments.map((s) => s.text),
+				}),
+			}),
 	});
 	if (!results.size)
 		throw new AiError({
@@ -78,6 +94,7 @@ export async function aiTranslate({
 		transcript,
 		results,
 		language: target,
+		translatedTo: target,
 		engine: `${transcript.engine} · translated to ${languageName(target)} by Gemini`,
 	});
 }

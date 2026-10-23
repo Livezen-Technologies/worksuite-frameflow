@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { aiBridge, type AiState } from "../bridge";
 import { useAiSettings } from "../store";
+import { useTranslationMemory } from "../memory-store";
 
 const KEY_PAGE = "https://aistudio.google.com/app/apikey";
 
@@ -153,6 +154,39 @@ export function AiSettings() {
 					data-ai-vocabulary
 				/>
 			</section>
+			<TranslationMemorySection />
 		</div>
+	);
+}
+
+/** How many corrections translation memory holds, and a way to forget them (AI-37). */
+function TranslationMemorySection() {
+	const { entries, clear } = useTranslationMemory();
+	const projects = new Set(entries.map((e) => e.projectId)).size;
+	return (
+		<section className="flex flex-col gap-2" data-translation-memory>
+			<h3 className="text-sm font-semibold">Translation memory</h3>
+			<p className="text-muted-foreground text-xs">
+				When you correct a translation, FrameFlow remembers it and shows
+				Gemini your wording the next time it translates into that language,
+				this project&apos;s corrections first.
+			</p>
+			<div className="flex items-center gap-3 text-sm">
+				<span data-memory-count>
+					{entries.length} correction{entries.length === 1 ? "" : "s"}
+					{entries.length ? ` from ${projects} project${projects === 1 ? "" : "s"}` : ""}
+				</span>
+				<Button
+					size="sm"
+					variant="outline"
+					disabled={!entries.length}
+					onClick={() => {
+						if (window.confirm("Forget all translation corrections?")) clear();
+					}}
+				>
+					Clear
+				</Button>
+			</div>
+		</section>
 	);
 }

@@ -9,6 +9,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
+- Translation memory: when you correct an AI translation, FrameFlow shows Gemini your wording the next time it translates into that language, this project's corrections first. See how many it holds, or clear them, in Settings → AI.
 - **Arrange layers → Free tracks** in Project settings: clips stay where you drop them on every track, instead of the main track pulling them to the start.
 - Each synced project can sync automatically or only when you press Sync now.
 - A project can have its own brand kit: tick **Separate brand kit for this project** in the Brand kit panel. Other projects keep the shared kit, and the right one is loaded whenever you switch projects.
