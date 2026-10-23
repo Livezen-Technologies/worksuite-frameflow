@@ -46,6 +46,101 @@ const TRANSFORM_KEYS = [
 
 type Write = (patch: ParamValues) => void;
 
+/** Which text clips a style change reaches (SP-07: a whole caption track). */
+export type StyleScope = "one" | "track" | "all";
+
+/** The other text clips a scope covers. */
+export function scopeTargets({
+	tracks,
+	element,
+	trackId,
+	scope,
+}: {
+	tracks: { id: string; elements: { id: string; type: string; params?: ParamValues }[] }[];
+	element: { id: string };
+	trackId: string;
+	scope: StyleScope;
+}): { trackId: string; element: TextElement }[] {
+	if (scope === "one") return [];
+	const out: { trackId: string; element: TextElement }[] = [];
+	for (const track of tracks) {
+		if (scope === "track" && track.id !== trackId) continue;
+		for (const other of track.elements)
+			if (other.type === "text" && other.id !== element.id && isText(other))
+				out.push({ trackId: track.id, element: other });
+	}
+	return out;
+}
+
+function isText(element: { type: string }): element is TextElement {
+	return element.type === "text";
+}
+
+/** Everything but the words and placement: what "a style" means here. */
+function styleOf(params: ParamValues): ParamValues {
+	const skip = new Set<string>([...TRANSFORM_KEYS, "content"]);
+	return Object.fromEntries(Object.entries(params).filter(([k]) => !skip.has(k)));
+}
+
+function ScopePicker({
+	element,
+	trackId,
+	scope,
+	setScope,
+	className,
+}: {
+	element: TextElement;
+	trackId: string;
+	scope: StyleScope;
+	setScope: (scope: StyleScope) => void;
+	className?: string;
+}) {
+	const editor = useEditor();
+	const copyNow = () => {
+		const tracks = editor.scenes.getActiveScene().tracks;
+		const targets = scopeTargets({
+			tracks: [...tracks.overlay, tracks.main],
+			element,
+			trackId,
+			scope,
+		});
+		if (targets.length === 0) return;
+		const style = styleOf(element.params);
+		editor.timeline.updateElements({
+			updates: targets.map((t) => ({
+				trackId: t.trackId,
+				elementId: t.element.id,
+				patch: { params: { ...t.element.params, ...style } },
+			})),
+		});
+	};
+	return (
+		<div className={cn("flex items-center gap-2 text-sm", className)}>
+			<span>Apply to</span>
+			<select
+				className="bg-background rounded border px-1 py-0.5 text-sm"
+				value={scope}
+				onChange={(e) => {
+					const next = SCOPES.find((v) => v === e.target.value);
+					if (next) setScope(next);
+				}}
+				data-style-scope
+			>
+				<option value="one">this text</option>
+				<option value="track">every text on this track</option>
+				<option value="all">all text</option>
+			</select>
+			{scope !== "one" && (
+				<button type="button" className="text-primary ml-auto text-xs" onClick={copyNow} data-copy-style>
+					Copy this style now
+				</button>
+			)}
+		</div>
+	);
+}
+
+const SCOPES: StyleScope[] = ["one", "track", "all"];
+
 /**
  * Writers for the selected text: `style` also reaches every other text clip
  * when "Apply to all" is on; `text` changes only this clip (its words).
@@ -53,11 +148,11 @@ type Write = (patch: ParamValues) => void;
 function useTextWriter({
 	element,
 	trackId,
-	applyAll,
+	scope,
 }: {
 	element: TextElement;
 	trackId: string;
-	applyAll: boolean;
+	scope: StyleScope;
 }): { style: Write; text: Write } {
 	const editor = useEditor();
 	const update = ({
@@ -76,21 +171,22 @@ function useTextWriter({
 		];
 		if (everywhere) {
 			const tracks = editor.scenes.getActiveScene().tracks;
-			for (const track of [...tracks.overlay, tracks.main]) {
-				for (const other of track.elements) {
-					if (other.type !== "text" || other.id === element.id) continue;
-					updates.push({
-						trackId: track.id,
-						elementId: other.id,
-						patch: { params: { ...other.params, ...patch } },
-					});
-				}
-			}
+			for (const target of scopeTargets({
+				tracks: [...tracks.overlay, tracks.main],
+				element,
+				trackId,
+				scope,
+			}))
+				updates.push({
+					trackId: target.trackId,
+					elementId: target.element.id,
+					patch: { params: { ...target.element.params, ...patch } },
+				});
 		}
 		editor.timeline.updateElements({ updates });
 	};
 	return {
-		style: (patch) => update({ patch, everywhere: applyAll }),
+		style: (patch) => update({ patch, everywhere: scope !== "one" }),
 		text: (patch) => update({ patch, everywhere: false }),
 	};
 }
@@ -314,11 +410,11 @@ export function TextBasicTab({
 	element: TextElement;
 	trackId: string;
 }) {
-	const [applyAll, setApplyAll] = useState(false);
+	const [scope, setScope] = useState<StyleScope>("one");
 	const { style: write, text: writeText } = useTextWriter({
 		element,
 		trackId,
-		applyAll,
+		scope,
 	});
 	const p = element.params;
 	const [draft, setDraft] = useState<string | null>(null);
@@ -623,15 +719,13 @@ export function TextBasicTab({
 				paramKeys={TRANSFORM_KEYS}
 				sectionKey="text-transform"
 			/>
-			<label className="bg-background sticky bottom-0 mt-auto flex items-center gap-2 border-t px-4 py-3 text-sm">
-				<input
-					type="checkbox"
-					checked={applyAll}
-					onChange={(e) => setApplyAll(e.target.checked)}
-					data-apply-all
-				/>
-				Apply to all text
-			</label>
+			<ScopePicker
+				element={element}
+				trackId={trackId}
+				scope={scope}
+				setScope={setScope}
+				className="bg-background sticky bottom-0 mt-auto border-t px-4 py-3"
+			/>
 		</div>
 	);
 }
@@ -653,8 +747,8 @@ export function TextPresetsTab({
 	trackId: string;
 }) {
 	const [tab, setTab] = useState<"styles" | "templates">("styles");
-	const [applyAll, setApplyAll] = useState(false);
-	const { style: write } = useTextWriter({ element, trackId, applyAll });
+	const [scope, setScope] = useState<StyleScope>("one");
+	const { style: write } = useTextWriter({ element, trackId, scope });
 	const keys = new Set(TEMPLATE_STYLE_KEYS);
 
 	return (
@@ -735,14 +829,13 @@ export function TextPresetsTab({
 							</button>
 						))}
 			</div>
-			<label className="mt-auto flex items-center gap-2 border-t pt-3 text-sm">
-				<input
-					type="checkbox"
-					checked={applyAll}
-					onChange={(e) => setApplyAll(e.target.checked)}
-				/>
-				Apply to all text
-			</label>
+			<ScopePicker
+				element={element}
+				trackId={trackId}
+				scope={scope}
+				setScope={setScope}
+				className="mt-auto border-t pt-3"
+			/>
 		</div>
 	);
 }

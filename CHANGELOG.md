@@ -9,6 +9,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
+- Text styles can now go to every text on the same track (Apply to → every text on this track), so a caption look reaches a whole caption track without touching titles; "Copy this style now" applies the current look straight away.
+
 - Template packs now use your brand kit logo: the YouTube intro, Thanks card and Podcast outro place it (fitted, on its own track) when "Brand kit" is ticked, and leave it out when the kit has no logo.
 
 - Sinhala and Tamil typing now also works in the text box on the preview (double-click a title), with the same suggestions as the side panel.
