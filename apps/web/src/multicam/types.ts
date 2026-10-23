@@ -17,7 +17,7 @@ export interface MulticamGroup {
 	/** Group length in seconds (end of the latest angle). */
 	length: number;
 	/** How the angles were lined up (SC-25). */
-	sync: "audio" | "start" | "manual";
+	sync: "audio" | "timecode" | "start" | "manual";
 }
 
 /** Stored on every clip of a multicam clip; the group copy is the same on all of them. */

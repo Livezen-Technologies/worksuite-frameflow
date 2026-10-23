@@ -8,6 +8,7 @@ import { ApplyMulticamCommand } from "./command";
 import { buildSpans, switchSpan, type CutSpan } from "./cuts";
 import { loudnessEnvelope, suggestCuts } from "./smart";
 import { offsetsFromEnvelopes, onsetEnvelope } from "./sync";
+import { offsetsFromTimecodes, readTimecode } from "./timecode";
 import {
 	MAX_ANGLES,
 	MIN_ANGLES,
@@ -18,7 +19,7 @@ import {
 
 const ANALYSIS_RATE = 8000;
 
-export type SyncMethod = "audio" | "start" | "manual";
+export type SyncMethod = "audio" | "timecode" | "start" | "manual";
 
 /** Per-angle audio analysis, kept for smart switching. */
 const loudnessCache = new Map<string, Float32Array>();
@@ -75,6 +76,18 @@ export async function createMulticam({
 		}
 		onProgress?.("Lining up the angles");
 		({ offsets, confidence } = offsetsFromEnvelopes({ envelopes }));
+	} else if (sync === "timecode") {
+		const starts: number[] = [];
+		for (const [i, asset] of assets.entries()) {
+			onProgress?.(`Reading timecode of ${asset.name} (${i + 1}/${assets.length})`);
+			const tc = await readTimecode(asset.file);
+			if (!tc)
+				throw new Error(
+					`${asset.name} has no timecode. Try "Audio waveform" or "Recording start time".`,
+				);
+			starts.push(tc.seconds);
+		}
+		offsets = offsetsFromTimecodes(starts);
 	} else if (sync === "start") {
 		// File times mark when recording ended; start = end − length.
 		const starts = assets.map(

@@ -22,6 +22,11 @@ const SYNC: { value: SyncMethod; label: string; hint: string }[] = [
 		hint: "Best: lines up claps, speech and music",
 	},
 	{
+		value: "timecode",
+		label: "Timecode",
+		hint: "From the timecode cameras and recorders write; needs jam-synced clocks",
+	},
+	{
 		value: "start",
 		label: "Recording start time",
 		hint: "From each file's time; cameras' clocks must match",

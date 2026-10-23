@@ -138,9 +138,11 @@ export function MulticamTab({ element }: { element: VideoElement }) {
 					Sync (
 					{group.sync === "audio"
 						? "by sound"
-						: group.sync === "start"
-							? "by start time"
-							: "by hand"}
+						: group.sync === "timecode"
+							? "by timecode"
+							: group.sync === "start"
+								? "by start time"
+								: "by hand"}
 					)
 				</span>
 				{group.angles.map((a, i) => (
