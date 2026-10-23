@@ -8,6 +8,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 ## [Unreleased]
 
 ### Added
+- The floating recording bar has a camera on/off button and a Pen for drawing on the screen while recording (pick a colour, Clear to wipe, Esc to stop drawing). The drawing is part of the recording.
 - Punch-in voice-over: set In and Out points and the take replaces only that range, stopping at Out. Each take over the same range is kept, and you switch between takes in the clip's Voice tab.
 - Audio clips have a Voice tab: Clean up voice removes background noise, makes speech clearer and levels it to about −16 LUFS (Use original puts the recording back).
 - Trim silence cuts the quiet start and end of a voice clip and can shorten long pauses; later clips on the track move up.
@@ -86,6 +87,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 - Platform guide icons no longer load logos from Brandfetch; they show a plain letter instead.
 
 ### Fixed
+- Voice-over recordings no longer show a warning that the cursor couldn't be logged.
 - Editing the timeline while it plays no longer logs "Input has been disposed" errors from audio playback.
 - Creating a project through the automation API (`wve new`) now opens it in the editor window.
 - A project started at a chosen size (custom size or a size template) no longer switches to the size of the first photo or video you add.

@@ -7,7 +7,7 @@ const path = require("node:path");
  * owns the recording. The bar is hidden from screen capture.
  */
 
-const COMMANDS = new Set(["toggle", "toggle-pause", "marker", "stop", "discard", "toggle-mic"]);
+const COMMANDS = new Set(["toggle", "toggle-pause", "marker", "stop", "discard", "toggle-mic", "toggle-camera"]);
 const DEFAULT_SHORTCUTS = {
 	toggle: "CommandOrControl+Shift+R",
 	"toggle-pause": "CommandOrControl+Shift+P",
@@ -25,8 +25,64 @@ function send(command) {
 }
 
 ipcMain.on("capture-bar:command", (event, command) => {
-	if (bar && event.sender === bar.webContents) send(command);
+	if (!bar || event.sender !== bar.webContents) return;
+	if (command === "toggle-pen") togglePen();
+	else if (command === "clear-pen") pen?.webContents.send("pen:clear");
+	else send(command);
 });
+
+// Draw-on-screen pen (SC-04): a transparent window over the screen that IS
+// captured, unlike the bar. While it's open, the mouse draws instead of
+// clicking; Esc or the bar's Pen button closes it and clears the ink.
+let pen = null;
+let lastState = {};
+
+function togglePen() {
+	if (pen && !pen.isDestroyed()) {
+		pen.close();
+		return;
+	}
+	const display = screen.getPrimaryDisplay();
+	pen = new BrowserWindow({
+		...display.bounds,
+		frame: false,
+		transparent: true,
+		resizable: false,
+		movable: false,
+		alwaysOnTop: true,
+		skipTaskbar: true,
+		hasShadow: false,
+		enableLargerThanScreen: true,
+		show: false,
+		webPreferences: {
+			preload: path.join(__dirname, "capture-bar", "pen-preload.js"),
+			contextIsolation: true,
+			sandbox: true,
+		},
+	});
+	pen.setAlwaysOnTop(true, "pop-up-menu");
+	pen.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
+	pen.loadFile(path.join(__dirname, "capture-bar", "pen.html"));
+	pen.once("ready-to-show", () => {
+		pen?.show();
+		// The bar stays above the ink so it can still be clicked.
+		bar?.moveTop();
+	});
+	pen.on("closed", () => {
+		pen = null;
+		updateBarState();
+	});
+	updateBarState();
+}
+
+ipcMain.on("pen:close", (event) => {
+	if (pen && event.sender === pen.webContents) pen.close();
+});
+
+function updateBarState() {
+	if (bar && !bar.isDestroyed())
+		bar.webContents.send("capture-bar:state", { ...lastState, pen: !!(pen && !pen.isDestroyed()) });
+}
 
 function registerShortcuts() {
 	globalShortcut.unregisterAll();
@@ -63,7 +119,7 @@ module.exports = {
 		editor = owner ?? editor;
 		if (bar && !bar.isDestroyed()) return bar.showInactive();
 		const work = screen.getPrimaryDisplay().workArea;
-		const width = 470;
+		const width = 640;
 		bar = new BrowserWindow({
 			width,
 			height: 52,
@@ -94,10 +150,12 @@ module.exports = {
 	},
 
 	updateBar(state) {
-		if (bar && !bar.isDestroyed()) bar.webContents.send("capture-bar:state", state ?? {});
+		lastState = state ?? {};
+		updateBarState();
 	},
 
 	hideBar() {
+		if (pen && !pen.isDestroyed()) pen.close();
 		if (bar && !bar.isDestroyed()) bar.close();
 		bar = null;
 	},

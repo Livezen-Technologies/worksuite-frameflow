@@ -251,6 +251,9 @@ export function RecordView() {
 				paused: recorder?.clock.paused ?? false,
 				micMuted:
 					recorder?.mic?.getAudioTracks().every((t) => !t.enabled) ?? false,
+				cameraOff: recorder?.camera
+					? recorder.camera.getVideoTracks().every((t) => !t.enabled)
+					: null,
 			});
 		}, 200);
 		return () => window.clearInterval(timer);
@@ -475,6 +478,13 @@ export function RecordView() {
 		for (const t of tracks) t.enabled = !muted;
 	};
 
+	// Camera off records black frames, so the take keeps its length (SC-04).
+	const toggleCamera = () => {
+		const tracks = recorderRef.current?.camera?.getVideoTracks() ?? [];
+		const off = !tracks.every((t) => !t.enabled);
+		for (const t of tracks) t.enabled = !off;
+	};
+
 	// Floating bar and global shortcuts (SC-04, SC-05) send commands here.
 	const commandRef = useRef<(command: CaptureCommand) => void>(() => {});
 	useEffect(() => {
@@ -487,6 +497,7 @@ export function RecordView() {
 			else if (command === "stop") void stop();
 			else if (command === "discard") void discard();
 			else if (command === "toggle-mic") toggleMic();
+			else if (command === "toggle-camera") toggleCamera();
 		};
 	});
 

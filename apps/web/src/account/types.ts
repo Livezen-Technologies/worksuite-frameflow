@@ -367,6 +367,8 @@ export interface WorksuiteCaptureBridge {
 		elapsed?: number;
 		paused?: boolean;
 		micMuted?: boolean;
+		/** null when the take has no camera. */
+		cameraOff?: boolean | null;
 		countdown?: number;
 	}) => Promise<void>;
 	hideBar?: () => Promise<void>;
@@ -383,4 +385,5 @@ export type CaptureCommand =
 	| "marker"
 	| "stop"
 	| "discard"
-	| "toggle-mic";
+	| "toggle-mic"
+	| "toggle-camera";
