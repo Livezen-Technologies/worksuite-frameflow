@@ -40,7 +40,16 @@ export function MotionHome() {
 	const importLottie = async (file: File) => {
 		try {
 			const text = file.name.toLowerCase().endsWith(".lottie") ? dotLottieText(new Uint8Array(await file.arrayBuffer())) : await file.text();
-			const { project, warnings } = lottieToMotion({ json: parseLottie(text), name: file.name.replace(/\.(json|lottie)$/i, "") });
+			const { project, warnings, animated } = lottieToMotion({ json: parseLottie(text), name: file.name.replace(/\.(json|lottie)$/i, "") });
+			// Animated pictures (GIFs FrameFlow exported) become GIFs again.
+			if (animated.length) {
+				const { framesToGif } = await import("../export");
+				for (const a of animated) {
+					const gif = await framesToGif({ frames: a.frames });
+					const layer = project.layers.find((l) => l.id === a.layerId);
+					if (gif && layer?.kind === "image") layer.src = gif;
+				}
+			}
 			if (!project.layers.length) throw new Error(warnings[0] ?? "Nothing in this file could be edited here.");
 			await saveMotionProject(project);
 			if (warnings.length)

@@ -75,6 +75,65 @@ export interface LayerGroup {
 	id: string;
 	name: string;
 	collapsed: boolean;
+	/** The group this group sits in (groups can nest). */
+	parentId?: string;
+}
+
+/** Ids of a group and every group inside it. */
+export function groupSubtree({ groups, groupId }: { groups: LayerGroup[]; groupId: string }): Set<string> {
+	const ids = new Set([groupId]);
+	let grew = true;
+	while (grew) {
+		grew = false;
+		for (const g of groups)
+			if (g.parentId && ids.has(g.parentId) && !ids.has(g.id)) {
+				ids.add(g.id);
+				grew = true;
+			}
+	}
+	return ids;
+}
+
+/** Layers in a group or any group inside it. */
+export function groupLayers({ project, groupId }: { project: MotionProject; groupId: string }): Layer[] {
+	const ids = groupSubtree({ groups: project.groups, groupId });
+	return project.layers.filter((l) => l.groupId && ids.has(l.groupId));
+}
+
+/**
+ * Groups the selected layers. Whole groups that are fully selected move in
+ * as sub-groups; the new group sits where the selection did when it all
+ * shared one parent group.
+ */
+export function groupSelection({ project, selection, id, name }: { project: MotionProject; selection: string[]; id: string; name: string }): MotionProject {
+	const selected = new Set(selection);
+	const whole = project.groups.filter((g) => {
+		const members = groupLayers({ project, groupId: g.id });
+		return members.length > 0 && members.every((l) => selected.has(l.id));
+	});
+	// Only the outermost fully selected groups move as units.
+	const units = whole.filter((g) => !whole.some((o) => o.id !== g.id && g.parentId && groupSubtree({ groups: project.groups, groupId: o.id }).has(g.id)));
+	const covered = new Set(units.flatMap((g) => groupLayers({ project, groupId: g.id }).map((l) => l.id)));
+	const looseLayers = project.layers.filter((l) => selected.has(l.id) && !covered.has(l.id));
+	const parents = new Set([...units.map((g) => g.parentId ?? ""), ...looseLayers.map((l) => l.groupId ?? "")]);
+	const parentId = parents.size === 1 ? [...parents][0] || undefined : undefined;
+	const unitIds = new Set(units.map((g) => g.id));
+	return {
+		...project,
+		groups: [...project.groups.map((g) => (unitIds.has(g.id) ? { ...g, parentId: id } : g)), { id, name, collapsed: false, parentId }],
+		layers: project.layers.map((l) => (looseLayers.some((x) => x.id === l.id) ? { ...l, groupId: id } : l)),
+	};
+}
+
+/** Removes a group; what was inside moves up to its parent. */
+export function ungroup({ project, groupId }: { project: MotionProject; groupId: string }): MotionProject {
+	const group = project.groups.find((g) => g.id === groupId);
+	const parentId = group?.parentId;
+	return {
+		...project,
+		groups: project.groups.filter((g) => g.id !== groupId).map((g) => (g.parentId === groupId ? { ...g, parentId } : g)),
+		layers: project.layers.map((l) => (l.groupId === groupId ? { ...l, groupId: parentId } : l)),
+	};
 }
 
 export interface MotionProject {
