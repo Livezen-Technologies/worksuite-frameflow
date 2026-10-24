@@ -1,6 +1,7 @@
 "use client";
 
 import { isLegacyFont, unicodeToLegacy } from "@/input-method/legacy";
+import { SinhalaConverter } from "@/input-method/components/sinhala-converter";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { convertSinglishText, hasSinhala, sinhalaToSinglish } from "@/input-method/sinhala";
@@ -446,7 +447,13 @@ export function TextBasicTab({
 				<SinhalaTextTools
 					content={content}
 					fontFamily={String(p.fontFamily ?? "")}
+					fontSize={Number(p.fontSize ?? 15)}
 					onChange={(next) => writeText({ content: next })}
+					onApply={({ content: next, fontFamily, fontSize }) => {
+						writeText({ content: next });
+						void loadFonts({ families: [fontFamily] }).catch(() => {});
+						write({ fontFamily, fontSize });
+					}}
 				/>
 			</div>
 			<Section title="Font">
@@ -844,18 +851,42 @@ export function TextPresetsTab({
 function SinhalaTextTools({
 	content,
 	fontFamily,
+	fontSize,
 	onChange,
+	onApply,
 }: {
 	content: string;
 	fontFamily: string;
+	fontSize: number;
 	onChange: (content: string) => void;
+	onApply: (result: { content: string; fontFamily: string; fontSize: number }) => void;
 }) {
+	const [converterOpen, setConverterOpen] = useState(false);
 	const legacy = isLegacyFont({ fontFamily });
 	const sinhala = hasSinhala({ text: content });
 	const latin = /[A-Za-z]/.test(content);
-	if (!legacy && !sinhala && !latin) return null;
 	return (
 		<div className="mt-1.5 flex flex-wrap items-center gap-1 text-xs">
+			<Button
+				variant="ghost"
+				size="sm"
+				className="h-6 px-1.5 text-xs"
+				title="Convert between Unicode and legacy FM/DL text, preview in any Sinhala font"
+				onClick={() => setConverterOpen(true)}
+				data-open-sinhala-converter
+			>
+				සිංහල converter…
+			</Button>
+			{converterOpen && (
+				<SinhalaConverter
+					open={converterOpen}
+					onOpenChange={setConverterOpen}
+					initialText={content}
+					initialFont={fontFamily}
+					initialSize={fontSize}
+					onApply={onApply}
+				/>
+			)}
 			{legacy && (
 				<span
 					className="bg-primary/15 text-primary rounded px-1.5 py-0.5"
