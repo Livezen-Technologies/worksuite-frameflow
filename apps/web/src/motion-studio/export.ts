@@ -57,7 +57,9 @@ export const rasterizeText: RasterizeText = async (layer) => {
 const gifFrames: AnimatedFrames = async (src) => {
 	const { loadAnimatedImage } = await import("@/media/animated-image");
 	if (!/^data:image\/(gif|webp)/.test(src)) return null;
-	const image = await loadAnimatedImage({ url: src, maxSourceSize: 512 });
+	// Long animations get smaller frames so the Lottie file stays a sensible size.
+	let image = await loadAnimatedImage({ url: src, maxSourceSize: 512 });
+	if (image && image.frames.length > 300) image = await loadAnimatedImage({ url: src, maxSourceSize: 256 });
 	if (!image) return null;
 	const canvas = canvasOf({ width: image.width, height: image.height });
 	const ctx = canvas.getContext("2d");
