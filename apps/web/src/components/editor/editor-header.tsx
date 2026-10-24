@@ -25,6 +25,8 @@ import {
 	UploadQueueButton,
 } from "@/cloud/components/upload-queue";
 import { UpdatePrompt } from "@/updates/components/update-prompt";
+import { AssetLibraryHeaderButton } from "@/asset-library/components/asset-library-button";
+import { MotionEditorHost } from "@/lottie/motion-editor/motion-editor-host";
 import { FeedbackPopover } from "@/feedback/components/feedback-popover";
 import { ThemeToggle } from "../theme-toggle";
 import { DEFAULT_LOGO_URL } from "@/site/brand";
@@ -50,6 +52,8 @@ export function EditorHeader() {
 			<nav className="flex flex-1 items-center justify-end gap-2">
 				<InputModeButton />
 				<FeedbackPopover />
+				<AssetLibraryHeaderButton />
+				<MotionEditorHost />
 				<UpdatePrompt />
 				<OfflineBadge />
 				<UploadQueueButton />

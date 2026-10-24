@@ -1,6 +1,7 @@
 "use client";
 
 import { ZoomLane } from "@/screen-zoom/components/zoom-lane";
+import { useMotionEditor } from "@/lottie/motion-editor/store";
 import { TimelineClipMenuExtras } from "@/clip-actions/components/clip-menus";
 import { getTransitionDefinition } from "@/transitions/definitions";
 import { createContext, useContext } from "react";
@@ -385,6 +386,12 @@ export function TimelineElement({
 				<ContextMenuTrigger asChild>
 					<div
 						className="absolute top-0 select-none"
+						onDoubleClick={() => {
+							// Motion clips open in the Motion Editor.
+							if (element.type === "graphic" && (element as { lottie?: unknown }).lottie) {
+								useMotionEditor.getState().openFor({ trackId: track.id, elementId: element.id });
+							}
+						}}
 						style={{
 							left: `${elementLeft}px`,
 							width: `${elementWidth}px`,

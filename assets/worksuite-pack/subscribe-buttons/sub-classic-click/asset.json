@@ -86,5 +86,59 @@
 			"file": "../../sounds/click.wav",
 			"at": 1.467
 		}
+	],
+	"textSlots": [
+		{
+			"id": "subscribe",
+			"name": "Button text",
+			"layer": "slot:text:subscribe",
+			"defaults": {
+				"en": "SUBSCRIBE",
+				"si": "සබ්ස්ක්‍රයිබ් කරන්න",
+				"ta": "சப்ஸ்கிரைப்"
+			},
+			"fontFamily": "Inter, Noto Sans Sinhala, Noto Sans Tamil",
+			"fontWeight": 700,
+			"fontSize": 67.5,
+			"box": {
+				"x": 216.25,
+				"y": 105,
+				"w": 467.5,
+				"h": 90
+			},
+			"origin": [
+				450,
+				150
+			],
+			"align": "center",
+			"color": "text",
+			"uppercase": true
+		},
+		{
+			"id": "subscribed",
+			"name": "Subscribed text",
+			"layer": "slot:text:subscribed",
+			"defaults": {
+				"en": "SUBSCRIBED",
+				"si": "සබ්ස්ක්‍රයිබ් කළා",
+				"ta": "சப்ஸ்கிரைப்"
+			},
+			"fontFamily": "Inter, Noto Sans Sinhala, Noto Sans Tamil",
+			"fontWeight": 700,
+			"fontSize": 67.5,
+			"box": {
+				"x": 216.25,
+				"y": 105,
+				"w": 467.5,
+				"h": 90
+			},
+			"origin": [
+				450,
+				150
+			],
+			"align": "center",
+			"color": "text",
+			"uppercase": true
+		}
 	]
 }

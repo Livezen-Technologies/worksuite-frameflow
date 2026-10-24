@@ -700,6 +700,7 @@ async function resolveLottieNode({
 		frames: lottie.frames,
 		loop: lottie.loop,
 		ticksPerSecond: TICKS_PER_SECOND,
+		timing: lottie.timing,
 	});
 	// Draw at about the size it is shown (vector art stays sharp when scaled up).
 	const contain = Math.min(

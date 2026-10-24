@@ -97,5 +97,133 @@
 			"file": "../../sounds/click.wav",
 			"at": 1.933
 		}
+	],
+	"textSlots": [
+		{
+			"id": "channel",
+			"name": "Channel name",
+			"layer": "slot:text:channel",
+			"defaults": {
+				"en": "Your channel",
+				"si": "ඔබේ නාලිකාව",
+				"ta": "உங்கள் சேனல்"
+			},
+			"fontFamily": "Inter, Noto Sans Sinhala, Noto Sans Tamil",
+			"fontWeight": 700,
+			"fontSize": 40,
+			"box": {
+				"x": 250,
+				"y": 102,
+				"w": 360,
+				"h": 48
+			},
+			"origin": [
+				250,
+				126
+			],
+			"align": "left",
+			"color": "text"
+		},
+		{
+			"id": "subscribers",
+			"name": "Subscribers line",
+			"layer": "slot:text:subscribers",
+			"defaults": {
+				"en": "1.2K subscribers",
+				"si": "සබ්ස්ක්‍රයිබර්ස් 1.2K",
+				"ta": "1.2K சப்ஸ்கிரைபர்கள்"
+			},
+			"fontFamily": "Inter, Noto Sans Sinhala, Noto Sans Tamil",
+			"fontWeight": 400,
+			"fontSize": 26,
+			"box": {
+				"x": 250,
+				"y": 160,
+				"w": 300,
+				"h": 32
+			},
+			"origin": [
+				250,
+				176
+			],
+			"align": "left",
+			"color": "text"
+		},
+		{
+			"id": "subscribe",
+			"name": "Button text",
+			"layer": "slot:text:subscribe",
+			"defaults": {
+				"en": "SUBSCRIBE",
+				"si": "සබ්ස්ක්‍රයිබ් කරන්න",
+				"ta": "சப்ஸ்கிரைப்"
+			},
+			"fontFamily": "Inter, Noto Sans Sinhala, Noto Sans Tamil",
+			"fontWeight": 700,
+			"fontSize": 51.3,
+			"box": {
+				"x": 755,
+				"y": 115.8,
+				"w": 250,
+				"h": 68.4
+			},
+			"origin": [
+				880,
+				150
+			],
+			"align": "center",
+			"color": "text",
+			"uppercase": true
+		},
+		{
+			"id": "subscribed",
+			"name": "Subscribed text",
+			"layer": "slot:text:subscribed",
+			"defaults": {
+				"en": "SUBSCRIBED",
+				"si": "සබ්ස්ක්‍රයිබ් කළා",
+				"ta": "சப்ஸ்கிரைப்"
+			},
+			"fontFamily": "Inter, Noto Sans Sinhala, Noto Sans Tamil",
+			"fontWeight": 700,
+			"fontSize": 51.3,
+			"box": {
+				"x": 755,
+				"y": 115.8,
+				"w": 250,
+				"h": 68.4
+			},
+			"origin": [
+				880,
+				150
+			],
+			"align": "center",
+			"color": "text",
+			"uppercase": true
+		}
+	],
+	"imageSlots": [
+		{
+			"id": "avatar",
+			"name": "Channel picture",
+			"layer": "slot:image:avatar",
+			"mask": {
+				"shape": "ellipse",
+				"w": 150,
+				"h": 150
+			},
+			"origin": [
+				140,
+				150
+			],
+			"box": {
+				"x": 65,
+				"y": 75,
+				"w": 150,
+				"h": 150
+			},
+			"placeholder": "placeholder",
+			"aspect": "1:1"
+		}
 	]
 }

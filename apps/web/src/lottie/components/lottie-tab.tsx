@@ -28,6 +28,7 @@ import { findPackAsset, type PackIndexAsset, resolvePackVariant } from "../catal
 import { brandColorOverrides, resolveSlotColors, setSlotColor, switchLottieVariant } from "../element";
 import type { LottieColorSlot, LottieElementData, LottieSource } from "../types";
 import { getUserLottie } from "../user-library";
+import { useMotionEditor } from "../motion-editor/store";
 
 const SPEEDS = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 2, 3];
 
@@ -39,7 +40,7 @@ function useColorSlots(source: LottieSource): LottieColorSlot[] | null {
 		let cancelled = false;
 		const load =
 			source.kind === "pack"
-				? findPackAsset(source.assetId).then((asset) => asset?.colors ?? [])
+				? findPackAsset(source.assetId, source.pack).then((asset) => asset?.colors ?? [])
 				: getUserLottie(source.id).then((entry) => entry?.colors ?? []);
 		load
 			.then((result) => !cancelled && setSlots({ key, slots: result }))
@@ -55,11 +56,12 @@ function useColorSlots(source: LottieSource): LottieColorSlot[] | null {
 /** The library entry of a pack animation (for its language variants). */
 function usePackAsset(source: LottieSource): PackIndexAsset | null {
 	const assetId = source.kind === "pack" ? source.assetId : null;
+	const pack = source.kind === "pack" ? source.pack : undefined;
 	const [asset, setAsset] = useState<PackIndexAsset | null>(null);
 	useEffect(() => {
 		if (!assetId) return;
 		let cancelled = false;
-		findPackAsset(assetId)
+		findPackAsset(assetId, pack)
 			.then((found) => !cancelled && setAsset(found))
 			.catch(() => !cancelled && setAsset(null));
 		return () => {
@@ -109,6 +111,19 @@ export function LottieTab({
 
 	return (
 		<div className="flex flex-col">
+			<div className="px-4 pt-3">
+				<Button
+					variant="secondary"
+					size="sm"
+					className="w-full"
+					onClick={() => useMotionEditor.getState().openFor({ trackId, elementId: element.id })}
+				>
+					Edit motion…
+				</Button>
+				{(packAsset?.textSlots?.length || packAsset?.imageSlots?.length) ? (
+					<p className="text-muted-foreground mt-1.5 text-xs">Change the words, fonts and pictures (e.g. your channel photo).</p>
+				) : null}
+			</div>
 			{packAsset && variants.length > 1 && (
 				<Section collapsible sectionKey={`${element.id}:lottie-language`}>
 					<SectionHeader>
