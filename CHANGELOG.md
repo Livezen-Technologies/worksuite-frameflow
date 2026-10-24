@@ -11,6 +11,9 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 - **Click highlights and keys in recordings**: the recorder can draw a ripple where you click and show the shortcuts and special keys you press (Ctrl + S, Enter, arrows…) in the video. Plain typing shows only as "Typing…", never the letters.
 - **Private windows covered in recordings**: windows of the apps you mark private (password managers by default) are covered with a "Private window hidden" panel that follows them, instead of pausing the recording. Pausing is still available in Settings.
+### Changed
+
+- The recorder's 4K setting now records at 30 fps.
 
 ## [1.4.1] - 2026-10-24
 
