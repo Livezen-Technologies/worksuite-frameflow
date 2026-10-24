@@ -1,6 +1,7 @@
 "use client";
 
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Lock as LockIcon, Settings as SettingsIcon } from "lucide-react";
+import { PROJECT_TEMPLATES } from "@/templates/project-templates";
 import {
 	BUILT_IN_TEMPLATES,
 	useProjectSettings,
@@ -11,7 +12,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { KeyboardEvent, MouseEvent } from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import type { EditorCore } from "@/core";
 import { MigrationDialog } from "@/project/components/migration-dialog";
@@ -39,7 +40,6 @@ import {
 	LeftToRightListDashIcon,
 	PlusSignIcon,
 	Search01Icon,
-	Video01Icon,
 	MoreHorizontalIcon,
 	Delete02Icon,
 	Copy01Icon,
@@ -133,11 +133,12 @@ export default function ProjectsPage() {
 			<div className="flex">
 				<ProjectsSidebar />
 				<div className="min-w-0 flex-1">
-					<ProjectsTitleBar />
-					<ProjectsToolbar projectIds={projectsToDisplay.map((p) => p.id)} />
-					<main className="mx-auto px-4 pt-2 pb-6 flex flex-col gap-4">
+					<main className="mx-auto flex max-w-[1600px] flex-col gap-6 px-5 pt-8 pb-10 md:px-10">
+						<ProjectsTitleBar />
 						<StartPanel />
 						<CloudOnlyProjects />
+						<section id="recent-projects" className="flex scroll-mt-20 flex-col gap-4">
+						<ProjectsToolbar projectIds={projectsToDisplay.map((p) => p.id)} />
 						{isLoading || !isInitialized ? (
 							<ProjectsSkeleton />
 						) : projectsToDisplay.length === 0 ? (
@@ -146,7 +147,7 @@ export default function ProjectsPage() {
 							<div
 								className={
 									viewMode === "grid"
-										? "xs:grid-cols-2 grid grid-cols-1 gap-6 sm:grid-cols-3 lg:grid-cols-4 px-4"
+										? "xs:grid-cols-2 grid grid-cols-1 gap-6 sm:grid-cols-3 lg:grid-cols-4"
 										: "flex flex-col"
 								}
 							>
@@ -159,6 +160,7 @@ export default function ProjectsPage() {
 								))}
 							</div>
 						)}
+						</section>
 					</main>
 				</div>
 			</div>
@@ -169,12 +171,16 @@ export default function ProjectsPage() {
 function ProjectsHeader() {
 	return (
 		<header className="bg-background sticky top-0 z-20 flex h-[60px] shrink-0 items-center gap-4 border-b px-6">
-			<Link href="/projects" className="flex items-center gap-2.5 font-bold">
+			<Link href="/projects" className="flex items-center gap-2.5 text-lg font-bold">
 				<BrandMark />
 				FrameFlow
+				<span className="text-muted-foreground border px-1.5 py-0.5 font-mono text-[10px] font-normal tracking-[0.2em]">
+					WORKSUITE
+				</span>
 			</Link>
-			<div className="flex-1" />
-			<SearchBar className="hidden w-[280px] md:block" />
+			<div className="flex flex-1 justify-center">
+				<SearchBar className="hidden w-full max-w-xl md:block" shortcut />
+			</div>
 			<UpdatePrompt />
 			<OfflineBadge />
 			<UploadQueueButton />
@@ -184,55 +190,89 @@ function ProjectsHeader() {
 }
 
 function ProjectsSidebar() {
+	const editor = useEditor();
+	const router = useRouter();
+	const { setSearchQuery } = useProjectsStore();
+	const projects = useEditor((e) => e.project.getSavedProjects());
+	const [motionCount, setMotionCount] = useState(0);
+	useEffect(() => {
+		let cancelled = false;
+		void import("@/motion-studio/storage")
+			.then(({ listMotionProjects }) => listMotionProjects())
+			.then((list) => !cancelled && setMotionCount(list.length))
+			.catch(() => {});
+		return () => {
+			cancelled = true;
+		};
+	}, []);
+	const recordings = projects.filter((p) => /^screen recording/i.test(p.name)).length;
+	const newWithTemplates = async () => {
+		const projectId = await editor.project.createNewProject({ name: "New project" });
+		const { useStartIntent } = await import("@/start/intent");
+		useStartIntent.getState().set({ projectId, intent: { kind: "templates" } });
+		router.push(`/editor/${projectId}`);
+	};
+	const item = "text-muted-foreground hover:bg-accent hover:text-foreground flex w-full items-center gap-3 px-3 py-2.5 text-left";
+	const dot = "size-2 shrink-0 bg-primary/60";
+	const count = (n: number) => <span className="text-muted-foreground ml-auto font-mono text-xs">{n}</span>;
 	return (
 		<nav
 			aria-label="Projects"
-			className="bg-sidebar sticky top-[60px] hidden h-[calc(100vh-60px)] w-[220px] shrink-0 flex-col gap-1 border-r px-3 py-5 text-sm md:flex"
+			className="bg-sidebar sticky top-[60px] hidden h-[calc(100vh-60px)] w-[240px] shrink-0 flex-col gap-1 border-r px-3 py-5 text-sm md:flex"
+			data-start-nav
 		>
 			<WorkspaceSwitcher />
-			<Link
-				href="/projects"
-				aria-current="page"
-				className="bg-secondary text-foreground rounded-lg px-3 py-2.5"
-			>
-				Recent projects
+			<Link href="/projects" aria-current="page" className="bg-primary/15 text-foreground flex items-center gap-3 px-3 py-2.5 font-medium">
+				<span className="bg-primary size-2 shrink-0" /> Home
 			</Link>
+			<button
+				type="button"
+				className={item}
+				onClick={() => {
+					setSearchQuery({ query: "" });
+					document.getElementById("recent-projects")?.scrollIntoView({ behavior: "smooth" });
+				}}
+			>
+				<span className={dot} /> Recent projects {count(projects.length)}
+			</button>
+			<button type="button" className={item} onClick={() => void newWithTemplates()}>
+				<span className={dot} /> Templates {count(PROJECT_TEMPLATES.length)}
+			</button>
+			<Link href="/motion" className={item}>
+				<span className={dot} /> Motion graphics {count(motionCount)}
+			</Link>
+			<button
+				type="button"
+				className={item}
+				onClick={() => {
+					setSearchQuery({ query: "Screen recording" });
+					document.getElementById("recent-projects")?.scrollIntoView({ behavior: "smooth" });
+				}}
+			>
+				<span className={dot} /> Screen recordings {count(recordings)}
+			</button>
 			<div className="flex-1" />
 			<StorageCard />
-			<Link
-				href="/settings"
-				className="text-muted-foreground hover:bg-accent rounded-lg px-3 py-2.5"
-			>
-				Settings
+			<div className="bg-card mt-2 flex flex-col gap-1 border p-3 text-xs">
+				<span className="flex items-center gap-2 text-sm font-semibold">
+					<LockIcon className="text-primary size-3.5" /> Private by default
+				</span>
+				<span className="text-muted-foreground">Projects stay on this computer. Sign in to back them up to WorkSuite Drive.</span>
+			</div>
+			<Link href="/settings" className="text-muted-foreground hover:bg-accent mt-2 flex items-center gap-3 px-3 py-2.5">
+				<SettingsIcon className="size-4" /> Settings
 			</Link>
 		</nav>
 	);
 }
 
 function ProjectsTitleBar() {
-	const { viewMode, isHydrated, setViewMode } = useProjectsStore();
-
 	return (
-		<div className="flex flex-col gap-3 px-8 pt-7">
-			<div className="flex flex-wrap items-center gap-3">
-				<h1 className="m-0 flex-1 text-2xl font-bold">Recent projects</h1>
-				<div className="hidden h-10 items-center rounded-[10px] border p-1 px-1.5 md:flex">
-					{VIEW_MODE_OPTIONS.map(({ mode, icon, label }) => (
-						<Button
-							key={mode}
-							variant="ghost"
-							size="icon"
-							className={cn(
-								"rounded-sm",
-								isHydrated && viewMode === mode && "!bg-secondary",
-							)}
-							onClick={() => setViewMode({ viewMode: mode })}
-							aria-label={label}
-							aria-pressed={isHydrated && viewMode === mode}
-						>
-							<HugeiconsIcon icon={icon} className="size-4" />
-						</Button>
-					))}
+		<div className="flex flex-col gap-3">
+			<div className="flex flex-wrap items-start gap-4">
+				<div className="flex min-w-0 flex-1 flex-col gap-1">
+					<h1 className="m-0 text-3xl font-bold tracking-tight">Start something new</h1>
+					<p className="text-muted-foreground">Record, edit and animate. Everything stays on this computer.</p>
 				</div>
 				<NewProjectButton />
 			</div>
@@ -275,7 +315,9 @@ function ProjectsToolbar({ projectIds }: { projectIds: string[] }) {
 	};
 
 	return (
-		<div className="sticky top-[60px] z-10 flex items-center justify-between px-6 h-14 pt-2 bg-background">
+		<div className="flex flex-wrap items-center gap-3 border-b pb-3" data-recent-toolbar>
+			<h2 className="m-0 flex-1 text-xl font-bold">Recent projects</h2>
+			{selectedProjectCount > 0 ? <ProjectActions /> : null}
 			<div className="flex items-center gap-2">
 				<Label
 					className="flex items-center gap-3 cursor-pointer px-2"
@@ -326,27 +368,22 @@ function ProjectsToolbar({ projectIds }: { projectIds: string[] }) {
 					/>
 				</Button>
 
-				<div className="h-4 w-px bg-border/50 block md:hidden" />
-
-				<div className="flex md:hidden items-center gap-4">
+				<div className="flex items-center border">
 					{VIEW_MODE_OPTIONS.map(({ mode, icon, label }) => (
 						<Button
 							key={mode}
-							variant="text"
+							variant="ghost"
+							size="icon"
+							className={cn(viewMode === mode && "!bg-secondary")}
 							onClick={() => setViewMode({ viewMode: mode })}
 							aria-label={label}
+							aria-pressed={viewMode === mode}
 						>
-							<HugeiconsIcon
-								icon={icon}
-								className={cn(
-									viewMode === mode ? "text-primary" : "text-muted-foreground",
-								)}
-							/>
+							<HugeiconsIcon icon={icon} className="size-4" />
 						</Button>
 					))}
 				</div>
 			</div>
-			{selectedProjectCount > 0 ? <ProjectActions /> : null}
 		</div>
 	);
 }
@@ -354,11 +391,26 @@ function ProjectsToolbar({ projectIds }: { projectIds: string[] }) {
 function SearchBar({
 	className,
 	collapsed,
+	shortcut,
 }: {
 	className?: string;
 	collapsed?: boolean;
+	/** Ctrl/Cmd+K focuses this field. */
+	shortcut?: boolean;
 }) {
 	const { searchQuery, setSearchQuery } = useProjectsStore();
+	const inputRef = useRef<HTMLInputElement>(null);
+	useEffect(() => {
+		if (!shortcut) return;
+		const onKey = (e: globalThis.KeyboardEvent) => {
+			if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+				e.preventDefault();
+				inputRef.current?.focus();
+			}
+		};
+		window.addEventListener("keydown", onKey);
+		return () => window.removeEventListener("keydown", onKey);
+	}, [shortcut]);
 
 	return (
 		<>
@@ -380,12 +432,19 @@ function SearchBar({
 						aria-hidden="true"
 					/>
 					<Input
-						placeholder="Search..."
+						ref={inputRef}
+						placeholder="Search projects"
 						value={searchQuery}
 						onChange={(event) => setSearchQuery({ query: event.target.value })}
 						size="lg"
-						className="pl-9"
+						className={cn("pl-9", shortcut && "pr-16")}
+						data-projects-search
 					/>
+					{shortcut && (
+						<span className="text-muted-foreground pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 border px-1.5 py-0.5 font-mono text-[11px]">
+							Ctrl K
+						</span>
+					)}
 				</div>
 			)}
 		</>
@@ -1081,18 +1140,16 @@ function EmptyState() {
 	}
 
 	return (
-		<div className="flex flex-col items-center justify-center gap-6 py-16 text-center">
-			<div className="flex flex-col items-center gap-2">
-				<div className="bg-muted/30 flex size-16 items-center justify-center rounded-full">
-					<HugeiconsIcon
-						icon={Video01Icon}
-						className="text-muted-foreground size-8"
-					/>
-				</div>
-				<h3 className="text-lg font-medium">No projects yet</h3>
-				<p className="text-muted-foreground max-w-md">
-					Start creating your first project. Import media, edit, and export your
-					videos. All privately.
+		<div className="bg-card flex flex-col items-center gap-6 border p-6 text-center md:flex-row md:p-8 md:text-left" data-projects-empty>
+			<div className="hidden gap-3 lg:flex" aria-hidden>
+				{[0, 1, 2].map((i) => (
+					<span key={i} className="border-primary/40 h-16 w-24 border border-dashed" />
+				))}
+			</div>
+			<div className="flex flex-1 flex-col gap-1">
+				<h3 className="text-lg font-semibold">No projects yet</h3>
+				<p className="text-muted-foreground">
+					Start your first project. Import media, edit and export your videos, all privately on this computer.
 				</p>
 			</div>
 			<Button size="lg" className="gap-2" onClick={handleCreateProject}>
