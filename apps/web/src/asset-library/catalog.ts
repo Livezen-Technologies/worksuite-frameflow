@@ -91,7 +91,7 @@ export function searchPacks({
 	query: string;
 	type?: PackType | null;
 	language?: string | null;
-	statusFilter?: "installed" | "updates" | "favorites" | null;
+	statusFilter?: "mine" | "installed" | "updates" | "favorites" | null;
 	state?: Pick<AssetStoreState, "installed" | "builtin" | "downloads">;
 	/** Favorite pack ids (statusFilter "favorites"). */
 	favorites?: string[];
@@ -101,7 +101,11 @@ export function searchPacks({
 		if (type && pack.type !== type) return false;
 		if (language && !pack.languages.includes(language)) return false;
 		if (statusFilter === "favorites" && !favorites.includes(pack.id)) return false;
-		if (statusFilter && state) {
+		if (statusFilter === "mine" && state) {
+			// My Library: what this user downloaded, is downloading or saved as a favorite.
+			const status = packStatus(pack, state);
+			if ((status === "not-installed" || status === "builtin") && !favorites.includes(pack.id)) return false;
+		} else if (statusFilter && statusFilter !== "favorites" && state) {
 			const status = packStatus(pack, state);
 			if (statusFilter === "installed" && !["installed", "builtin", "update-available"].includes(status)) return false;
 			if (statusFilter === "updates" && status !== "update-available") return false;

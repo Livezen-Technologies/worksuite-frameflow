@@ -11,6 +11,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 - Screen recorder options for smart zoom (strength, follow the mouse), the camera overlay (circle, rounded, square or original; size, border and corner), and highlights (a halo that follows the mouse, click colour and size).
 - Rectangle masks can have rounded corners.
 - Asset Library: a category sidebar filters each type by its sub-categories (for example LUTs → Cinematic, Film, Cool).
+- Asset Library: right-click any pack for Add to timeline, Add to project, Install, Update, Pause/Resume/Cancel download, Uninstall (with a confirm), Add to / Remove from favorites and Preview & details, with a short confirmation after each.
+- Asset Library: My Library shows the packs you installed, are downloading or saved as favorites, and every view can be sorted by name, recently installed or size.
 - Asset Library: rest the mouse on a pack to preview it — videos and animations play in the card and sounds play out loud.
 
 ### Changed
