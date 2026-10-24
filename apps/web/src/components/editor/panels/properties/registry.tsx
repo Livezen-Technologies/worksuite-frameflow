@@ -54,7 +54,8 @@ import { BasicTab } from "@/clip-actions/components/basic-tab";
 import { AnimationTab } from "@/animation/components/animation-tab";
 import { SpherePinTab, SphereTab } from "@/vr/components/sphere-tab";
 import { findSpherePlaceEffect } from "@/vr/projection";
-import { Mic } from "lucide-react";
+import { Mic, PaintBucket } from "lucide-react";
+import { BackgroundContent } from "@/components/editor/panels/assets/views/settings/background";
 
 const TRANSFORM_PARAM_KEYS = [
 	"transform.positionX",
@@ -235,6 +236,20 @@ function buildBasicTab({
 	};
 }
 
+/** The canvas behind the clip: colour, blur or a pattern (applies to the whole project). */
+function buildBackgroundTab(): PropertiesTabDef {
+	return {
+		id: "background",
+		label: "Background",
+		icon: <PaintBucket size={16} />,
+		content: () => (
+			<div className="p-4" data-clip-background>
+				<BackgroundContent />
+			</div>
+		),
+	};
+}
+
 function buildSphereTab({
 	element,
 }: {
@@ -370,10 +385,23 @@ function getVideoConfig({
 		defaultTab: element.multicam ? "multicam" : "basic",
 		tabs: [
 			buildBasicTab({ element }),
-			buildTransformTab({ element }),
+			buildBackgroundTab(),
 			buildAnimationTab({ element, thumbnail: mediaAsset?.thumbnailUrl }),
-			...(showAudioTab ? [buildAudioTab({ element })] : []),
 			buildSpeedTab({ element }),
+			...(showAudioTab
+				? [
+						buildAudioTab({ element }),
+						{
+							id: "voice",
+							label: "Voice changer",
+							icon: <Mic size={16} />,
+							content: ({ trackId }: { trackId: string }) => (
+								<VoiceChangerTab element={element} trackId={trackId} />
+							),
+						},
+					]
+				: []),
+			buildTransformTab({ element }),
 			buildSphereTab({ element }),
 			buildBlendingTab({ element }),
 			buildMasksTab({ element }),
@@ -423,8 +451,9 @@ function getImageConfig({
 		defaultTab: "basic",
 		tabs: [
 			buildBasicTab({ element }),
-			buildTransformTab({ element }),
+			buildBackgroundTab(),
 			buildAnimationTab({ element, thumbnail }),
+			buildTransformTab({ element }),
 			...buildSpherePinTabs({ element }),
 			buildBlendingTab({ element }),
 			buildMasksTab({ element }),
