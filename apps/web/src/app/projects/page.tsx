@@ -272,6 +272,18 @@ function ProjectsSidebar() {
 			>
 				<span className={dot} /> Screen recorder
 			</button>
+			<button
+				type="button"
+				className={item}
+				data-tool="audio"
+				onClick={() =>
+					void editor.project
+						.createNewProject({ name: "Audio project" })
+						.then((id) => router.push(`/editor/${id}?studio=audio`))
+				}
+			>
+				<span className={dot} /> Music &amp; Audio Editor
+			</button>
 			<Link href="/tools/convert" className={item} data-tool="convert">
 				<span className={dot} /> Video converter
 			</Link>
