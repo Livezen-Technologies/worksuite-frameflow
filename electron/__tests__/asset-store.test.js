@@ -231,7 +231,7 @@ test("built catalog from the repo packs verifies", async () => {
 	const text = fs.readFileSync(path.join(dest, "catalog.json"), "utf8");
 	assert.equal(io.verifyCatalog(text, fs.readFileSync(path.join(dest, "catalog.json.sig"), "utf8"), PUB), true);
 	const ids = catalog.packs.map((p) => p.id).sort();
-	assert.deepEqual(ids, ["subscribe-buttons", "worksuite-essentials", "worksuite-sfx", "worksuite-text-animations", "worksuite-text-templates"]);
+	assert.deepEqual(ids, ["subscribe-buttons", "worksuite-essentials", "worksuite-sfx", "worksuite-text-animations", "worksuite-text-animations-studio", "worksuite-text-templates", "worksuite-text-templates-studio"]);
 	const sub = catalog.packs.find((p) => p.id === "subscribe-buttons");
 	const zip = fs.readFileSync(path.join(dest, sub.files));
 	assert.equal(io.sha256(zip), sub.sha256);
