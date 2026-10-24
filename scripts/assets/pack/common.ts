@@ -15,9 +15,27 @@ export interface ColorSlotDef {
 	default: string;
 }
 
+/** A language version of an asset (same timing and colour slots, different words). */
+export interface VariantDef {
+	id: string;
+	/** Shown in the editor, in the language itself. */
+	name: string;
+	/** BCP 47 language tag. */
+	lang: string;
+}
+
+/** The languages assets with words come in. The first is the default. */
+export const LANGUAGES: VariantDef[] = [
+	{ id: "en", name: "English", lang: "en" },
+	{ id: "si", name: "සිංහල", lang: "si" },
+	{ id: "ta", name: "தமிழ்", lang: "ta" },
+];
+
 export interface AssetContext {
 	/** The colour of a slot, by id. */
 	c: (slot: string) => string;
+	/** The variant being built (its id), or "default" for assets without variants. */
+	variant: string;
 	w: number;
 	h: number;
 	frames: number;
@@ -37,6 +55,8 @@ export interface AssetDef {
 	colors: ColorSlotDef[];
 	/** Thumbnail frame as a share of the timeline (default 0.6). */
 	thumbAt?: number;
+	/** Language versions; the first is the default. Omit for assets without words. */
+	variants?: VariantDef[];
 	build: (ctx: AssetContext) => LayerInput[];
 }
 

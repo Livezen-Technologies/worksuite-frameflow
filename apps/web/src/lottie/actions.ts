@@ -55,16 +55,19 @@ function insertAnimation({
 export function addPackAnimation({
 	editor,
 	asset,
+	variant,
 	startTime,
 }: {
 	editor: EditorCore;
 	asset: PackIndexAsset;
+	/** Language variant; the asset's default when absent. */
+	variant?: string | null;
 	startTime?: MediaTime;
 }) {
 	insertAnimation({
 		editor,
 		name: asset.name,
-		lottie: lottieDataFromPackAsset(asset),
+		lottie: lottieDataFromPackAsset(asset, variant),
 		params: packAssetInsertParams({ asset, frame: frameOf(editor) }),
 		startTime,
 	});
@@ -97,11 +100,13 @@ export function addUserAnimation({
 export function packAnimationDragData({
 	asset,
 	frame,
+	variant,
 }: {
 	asset: PackIndexAsset;
 	frame: { width: number; height: number };
+	variant?: string | null;
 }): TimelineDragData {
-	const lottie = lottieDataFromPackAsset(asset);
+	const lottie = lottieDataFromPackAsset(asset, variant);
 	return {
 		type: "graphic",
 		id: asset.id,

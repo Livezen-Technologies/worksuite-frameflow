@@ -16,6 +16,8 @@ import {
 import {
 	loadPackIndex,
 	packAssetThumbnailUrl,
+	packLanguages,
+	resolvePackVariant,
 	searchPackAssets,
 	type PackIndex,
 	type PackIndexAsset,
@@ -37,6 +39,8 @@ export function AnimationsView() {
 	const [imports, setImports] = useState<UserLottie[]>([]);
 	const [category, setCategory] = useState<string | null>(null);
 	const [query, setQuery] = useState("");
+	/** Language filter; also picks the variant that is previewed and added. */
+	const [language, setLanguage] = useState<string | null>(null);
 
 	useEffect(() => {
 		let cancelled = false;
@@ -55,9 +59,9 @@ export function AnimationsView() {
 	const visible = useMemo(
 		() =>
 			index && category !== MY_IMPORTS
-				? searchPackAssets({ assets: index.assets, query, category })
+				? searchPackAssets({ assets: index.assets, query, category, language })
 				: [],
-		[index, query, category],
+		[index, query, category, language],
 	);
 	const visibleImports = useMemo(() => {
 		if (category && category !== MY_IMPORTS) return [];
@@ -75,6 +79,10 @@ export function AnimationsView() {
 			</div>
 		);
 	}
+
+	const languages = packLanguages(
+		category ? index.assets.filter((asset) => asset.category === category) : index.assets,
+	);
 
 	const chips: Array<{ id: string | null; name: string }> = [
 		{ id: null, name: "All" },
@@ -101,6 +109,26 @@ export function AnimationsView() {
 					</button>
 				))}
 			</div>
+			{languages.length > 1 && (
+				<div className="flex flex-wrap items-center gap-1" aria-label="Language">
+					<span className="text-muted-foreground text-[11px]">Language</span>
+					{[{ id: null as string | null, name: "Any" }, ...languages].map((lang) => (
+						<button
+							key={lang.id ?? "any"}
+							type="button"
+							onClick={() => setLanguage(lang.id)}
+							className={cn(
+								"rounded-full border px-2 py-0.5 text-[11px]",
+								language === lang.id
+									? "bg-primary text-primary-foreground border-primary"
+									: "text-muted-foreground hover:bg-accent",
+							)}
+						>
+							{lang.name}
+						</button>
+					))}
+				</div>
+			)}
 			<Input
 				placeholder="Search animations"
 				value={query}
@@ -108,22 +136,25 @@ export function AnimationsView() {
 				className="h-8"
 			/>
 			<div className="grid grid-cols-3 gap-2">
-				{visible.map((asset) => (
-					<AnimationTile
-						key={asset.id}
-						name={asset.name}
-						tags={asset.tags}
-						preview={(playing) => (
-							<LottiePreview
-								source={{ kind: "pack", assetId: asset.id }}
-								thumbnailUrl={packAssetThumbnailUrl(asset)}
-								playing={playing}
-							/>
-						)}
-						dragData={packAnimationDragData({ asset, frame })}
-						onAdd={() => addPackAnimation({ editor, asset })}
-					/>
-				))}
+				{visible.map((asset) => {
+					const variant = resolvePackVariant(asset, language);
+					return (
+						<AnimationTile
+							key={`${asset.id}@${variant ?? ""}`}
+							name={asset.name}
+							tags={asset.tags}
+							preview={(playing) => (
+								<LottiePreview
+									source={variant ? { kind: "pack", assetId: asset.id, variant } : { kind: "pack", assetId: asset.id }}
+									thumbnailUrl={packAssetThumbnailUrl(asset, variant)}
+									playing={playing}
+								/>
+							)}
+							dragData={packAnimationDragData({ asset, frame, variant })}
+							onAdd={() => addPackAnimation({ editor, asset, variant })}
+						/>
+					);
+				})}
 				{visibleImports.map((entry) => (
 					<AnimationTile
 						key={entry.id}

@@ -20,6 +20,7 @@ import { reactions } from "./pack/reactions";
 import { seasonal } from "./pack/seasonal";
 import { transitions } from "./pack/transitions";
 import { status } from "./pack/status";
+import { subscribeButtons } from "./pack/subscribe";
 import { validatePack } from "./validate-worksuite-pack";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
@@ -33,6 +34,7 @@ export const CATEGORIES: Array<{ id: string; name: string; assets: AssetDef[] }>
 	{ id: "sri-lanka-seasonal", name: "Sri Lankan seasons", assets: seasonal },
 	{ id: "transitions", name: "Transitions", assets: transitions },
 	{ id: "status-infographics", name: "Status & infographics", assets: status },
+	{ id: "subscribe-buttons", name: "YouTube & subscribe", assets: subscribeButtons },
 ];
 
 const round = (value: unknown): unknown => {
@@ -44,7 +46,7 @@ const round = (value: unknown): unknown => {
 	return value;
 };
 
-function buildAsset(def: AssetDef) {
+function buildAsset(def: AssetDef, variant = "default") {
 	const fps = 30;
 	const frames = Math.round(def.durationSec * fps);
 	const ids = new Set<string>();
@@ -60,7 +62,7 @@ function buildAsset(def: AssetDef) {
 		if (!found) throw new Error(`${def.id}: unknown colour slot "${slotId}"`);
 		return found.default;
 	};
-	const layers = def.build({ c, w: def.w, h: def.h, frames, fps });
+	const layers = def.build({ c, variant, w: def.w, h: def.h, frames, fps });
 	return round(buildAnimation({ w: def.w, h: def.h, fps, frames, name: def.name }, layers));
 }
 
@@ -68,6 +70,13 @@ const gcd = (a: number, b: number): number => (b ? gcd(b, a % b) : a);
 
 function sha256(file: string) {
 	return createHash("sha256").update(readFileSync(file)).digest("hex");
+}
+
+/** Files of one variant: the default keeps the plain names. */
+export function variantFiles(id: string, variant: string, isDefault: boolean) {
+	return isDefault
+		? { file: `${id}.json`, thumbnail: "thumbnail.png" }
+		: { file: `${id}.${variant}.json`, thumbnail: `thumbnail.${variant}.png` };
 }
 
 function writePack({ thumbs }: { thumbs: boolean }) {
@@ -78,7 +87,12 @@ function writePack({ thumbs }: { thumbs: boolean }) {
 			if (def.category !== category.id) throw new Error(`${def.id}: category mismatch`);
 			const dir = join(packDir, category.id, def.id);
 			mkdirSync(dir, { recursive: true });
-			writeFileSync(join(dir, `${def.id}.json`), JSON.stringify(buildAsset(def)));
+			const variants = (def.variants ?? []).map((v, i) => ({ ...v, ...variantFiles(def.id, v.id, i === 0) }));
+			if (variants.length) {
+				for (const v of variants) writeFileSync(join(dir, v.file), JSON.stringify(buildAsset(def, v.id)));
+			} else {
+				writeFileSync(join(dir, `${def.id}.json`), JSON.stringify(buildAsset(def)));
+			}
 			const g = gcd(def.w, def.h);
 			const meta = {
 				schema: 1,
@@ -98,6 +112,7 @@ function writePack({ thumbs }: { thumbs: boolean }) {
 				height: def.h,
 				thumbnailAt: def.thumbAt ?? 0.6,
 				colors: def.colors,
+				...(variants.length ? { defaultVariant: variants[0].id, variants } : {}),
 			};
 			writeFileSync(join(dir, "asset.json"), `${JSON.stringify(meta, null, "\t")}\n`);
 			entries.push({ dir, def, category: category.id });
@@ -115,7 +130,8 @@ function writePack({ thumbs }: { thumbs: boolean }) {
 		license: "MIT",
 		categories: CATEGORIES.map(({ id, name, assets }) => ({ id, name, count: assets.length })),
 		assets: entries.map(({ dir, def, category }) => {
-			const files = [`${def.id}.json`, "thumbnail.png", "asset.json"].filter((f) => existsSync(join(dir, f)));
+			const variantNames = (def.variants ?? []).slice(1).flatMap((v) => Object.values(variantFiles(def.id, v.id, false)));
+			const files = [`${def.id}.json`, "thumbnail.png", ...variantNames, "asset.json"].filter((f) => existsSync(join(dir, f)));
 			return {
 				id: def.id,
 				name: def.name,
@@ -127,6 +143,9 @@ function writePack({ thumbs }: { thumbs: boolean }) {
 				width: def.w,
 				height: def.h,
 				colors: def.colors,
+				...(def.variants?.length
+					? { defaultVariant: def.variants[0].id, variants: def.variants.map(({ id, name, lang }) => ({ id, name, lang })) }
+					: {}),
 				files: Object.fromEntries(files.map((f) => [f, { sha256: sha256(join(dir, f)) }])),
 			};
 		}),
@@ -150,11 +169,21 @@ function writeReadme(entries: Array<{ def: AssetDef; category: string }>) {
 	];
 	for (const category of CATEGORIES) {
 		const items = entries.filter((e) => e.category === category.id);
-		lines.push(`## ${category.name} (${items.length})`, "", "| Preview | Asset | Length | Colours |", "| --- | --- | --- | --- |");
+		lines.push(`## ${category.name} (${items.length})`, "");
+		if (category.id === "subscribe-buttons") {
+			lines.push(
+				"Generic, brand-free subscribe, bell and like buttons. Assets with words come in English, Sinhala and Tamil",
+				"variants (`asset.json` → `variants`) with the same timing and colour slots. The words are vector outlines",
+				"shaped with HarfBuzz from OFL fonts (Inter, Noto Sans Sinhala, Noto Sans Tamil) by",
+				"[`scripts/assets/shape-text.py`](../../scripts/assets/shape-text.py); there are no text layers.",
+				"",
+			);
+		}
+		lines.push("| Preview | Asset | Length | Colours |", "| --- | --- | --- | --- |");
 		for (const { def } of items) {
 			const thumb = `${category.id}/${def.id}/thumbnail.png`;
 			lines.push(
-				`| <img src="${thumb}" width="128" alt=""> | **${def.name}** \`${def.id}\`<br>${def.description} | ${def.durationSec} s${def.loop ? ", loops" : ""} | ${def.colors.map((s) => `${s.name} \`${s.default}\``).join("<br>")} |`,
+				`| <img src="${thumb}" width="128" alt=""> | **${def.name}** \`${def.id}\`<br>${def.description}${def.variants ? `<br>Languages: ${def.variants.map((v) => v.name).join(", ")}` : ""} | ${def.durationSec} s${def.loop ? ", loops" : ""} | ${def.colors.map((s) => `${s.name} \`${s.default}\``).join("<br>")} |`,
 			);
 		}
 		lines.push("");

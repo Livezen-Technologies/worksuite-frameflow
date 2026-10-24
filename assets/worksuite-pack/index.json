@@ -37,6 +37,11 @@
 			"id": "status-infographics",
 			"name": "Status & infographics",
 			"count": 8
+		},
+		{
+			"id": "subscribe-buttons",
+			"name": "YouTube & subscribe",
+			"count": 16
 		}
 	],
 	"assets": [
@@ -2658,6 +2663,1396 @@
 				},
 				"asset.json": {
 					"sha256": "479d9acf9258dd077ddae3b2f06abb494d066226f910cc3b19a0cad1b3f42299"
+				}
+			}
+		},
+		{
+			"id": "sub-classic-click",
+			"name": "Subscribe click",
+			"category": "subscribe-buttons",
+			"path": "subscribe-buttons/sub-classic-click",
+			"tags": [
+				"subscribe",
+				"youtube",
+				"button",
+				"සබ්ස්ක්‍රයිබ්",
+				"சப்ஸ்கிரைப்",
+				"click",
+				"cursor",
+				"subscribed",
+				"pill"
+			],
+			"durationSec": 3.5,
+			"loop": false,
+			"width": 900,
+			"height": 300,
+			"colors": [
+				{
+					"id": "button",
+					"name": "Button",
+					"default": "#E53935"
+				},
+				{
+					"id": "pressed",
+					"name": "Subscribed button",
+					"default": "#3A3F4B"
+				},
+				{
+					"id": "text",
+					"name": "Text",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "cursor",
+					"name": "Cursor",
+					"default": "#F4F6FA"
+				},
+				{
+					"id": "shadow",
+					"name": "Shadow & outline",
+					"default": "#0F1115"
+				}
+			],
+			"defaultVariant": "en",
+			"variants": [
+				{
+					"id": "en",
+					"name": "English",
+					"lang": "en"
+				},
+				{
+					"id": "si",
+					"name": "සිංහල",
+					"lang": "si"
+				},
+				{
+					"id": "ta",
+					"name": "தமிழ்",
+					"lang": "ta"
+				}
+			],
+			"files": {
+				"sub-classic-click.json": {
+					"sha256": "1602a4d69b4851deb534e4000477f53c5cf30fb516f0922d8c6a8102cfeccc29"
+				},
+				"thumbnail.png": {
+					"sha256": "d5be72b3689a13f392999ff2b3c6a28fd75c43b2ce401441c70255951afa1777"
+				},
+				"sub-classic-click.si.json": {
+					"sha256": "bf608ee347cdae0af962e618b84450a9c623dc0e9e93a9989bcc2597bb455cb4"
+				},
+				"thumbnail.si.png": {
+					"sha256": "7c3d99228f0809668b796e8e4910508a05f66a695aa9fbc420b979c2238d960b"
+				},
+				"sub-classic-click.ta.json": {
+					"sha256": "9b51e1baf665fe57bbec774290e361c58a03a869f155154fcf6c19c399d4b1ad"
+				},
+				"thumbnail.ta.png": {
+					"sha256": "260e07913f581d2f7a1cd03c15c6b1da6388e52ad7aabff5e0661e2e4353f065"
+				},
+				"asset.json": {
+					"sha256": "ebf0363fd4e46551b0ed9a81bc23e16c88ef9156d19d6c86c653953d3d65016b"
+				}
+			}
+		},
+		{
+			"id": "sub-bell-combo",
+			"name": "Subscribe + bell",
+			"category": "subscribe-buttons",
+			"path": "subscribe-buttons/sub-bell-combo",
+			"tags": [
+				"subscribe",
+				"youtube",
+				"button",
+				"සබ්ස්ක්‍රයිබ්",
+				"சப்ஸ்கிரைப்",
+				"bell",
+				"notification",
+				"ring",
+				"subscribed"
+			],
+			"durationSec": 4,
+			"loop": false,
+			"width": 1000,
+			"height": 300,
+			"colors": [
+				{
+					"id": "button",
+					"name": "Button",
+					"default": "#E53935"
+				},
+				{
+					"id": "pressed",
+					"name": "Subscribed & bell circle",
+					"default": "#3A3F4B"
+				},
+				{
+					"id": "text",
+					"name": "Text",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "accent",
+					"name": "Bell & burst",
+					"default": "#F5A524"
+				},
+				{
+					"id": "shadow",
+					"name": "Shadow",
+					"default": "#0F1115"
+				}
+			],
+			"defaultVariant": "en",
+			"variants": [
+				{
+					"id": "en",
+					"name": "English",
+					"lang": "en"
+				},
+				{
+					"id": "si",
+					"name": "සිංහල",
+					"lang": "si"
+				},
+				{
+					"id": "ta",
+					"name": "தமிழ்",
+					"lang": "ta"
+				}
+			],
+			"files": {
+				"sub-bell-combo.json": {
+					"sha256": "69ed50e7e4562d833cb71a7cca08a001489572287245a30bb33dec39eb4b1d24"
+				},
+				"thumbnail.png": {
+					"sha256": "6bb851cbbd44f1c09e556a4772995448c3b2ec5105e8286fea742f9b62ed7669"
+				},
+				"sub-bell-combo.si.json": {
+					"sha256": "cb6f176ef53eb6f646c3004e57dc1d738e565bfdbc1efdca511754f12a19e843"
+				},
+				"thumbnail.si.png": {
+					"sha256": "b49a0bd79bd00b5d7d465fc9841a45f2eabe7dd3c19d395f8c08028bcd293168"
+				},
+				"sub-bell-combo.ta.json": {
+					"sha256": "ab1bd3bad89475ce5eb824028684494e71dfbe4164d12d6905dd68d00873ddbf"
+				},
+				"thumbnail.ta.png": {
+					"sha256": "8024967a7aa64cea86155b8313bef3968d24d34f4e379f1be7fa68c8df893fc8"
+				},
+				"asset.json": {
+					"sha256": "894ce9ea56ec0dfffd7e1e3dc95471556425e205098fbb9bd09bdf603635ce97"
+				}
+			}
+		},
+		{
+			"id": "sub-like-subscribe-bell",
+			"name": "Like, subscribe, bell bar",
+			"category": "subscribe-buttons",
+			"path": "subscribe-buttons/sub-like-subscribe-bell",
+			"tags": [
+				"subscribe",
+				"youtube",
+				"button",
+				"සබ්ස්ක්‍රයිබ්",
+				"சப்ஸ்கிரைப்",
+				"like",
+				"thumbs up",
+				"bell",
+				"notification",
+				"bar",
+				"sequence"
+			],
+			"durationSec": 4,
+			"loop": false,
+			"width": 1200,
+			"height": 300,
+			"colors": [
+				{
+					"id": "button",
+					"name": "Button",
+					"default": "#E53935"
+				},
+				{
+					"id": "pressed",
+					"name": "Subscribed & circles",
+					"default": "#3A3F4B"
+				},
+				{
+					"id": "text",
+					"name": "Text & icons",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "liked",
+					"name": "Liked",
+					"default": "#4C8DFF"
+				},
+				{
+					"id": "accent",
+					"name": "Burst",
+					"default": "#F5A524"
+				},
+				{
+					"id": "bar",
+					"name": "Bar",
+					"default": "#0F1115"
+				}
+			],
+			"defaultVariant": "en",
+			"variants": [
+				{
+					"id": "en",
+					"name": "English",
+					"lang": "en"
+				},
+				{
+					"id": "si",
+					"name": "සිංහල",
+					"lang": "si"
+				},
+				{
+					"id": "ta",
+					"name": "தமிழ்",
+					"lang": "ta"
+				}
+			],
+			"files": {
+				"sub-like-subscribe-bell.json": {
+					"sha256": "e4cb145f65bf66b10858e56b4191764562ab0bcefa47a2b731a62213ee3d5cd3"
+				},
+				"thumbnail.png": {
+					"sha256": "8972c900c935ffec76680b74b9365be042de568eb6df49b69f5267950f91c17f"
+				},
+				"sub-like-subscribe-bell.si.json": {
+					"sha256": "5c6343e8798e3ff52f89bad652580dc3069cf90c57579fca446561e17867f1cc"
+				},
+				"thumbnail.si.png": {
+					"sha256": "96d9d4c9116e72c4c5608c693b935764ea963850e9ca5fe5e34c435abbbd1df2"
+				},
+				"sub-like-subscribe-bell.ta.json": {
+					"sha256": "97e74d0bd4f6ec18519077dd7406937bb705da37f1885e24a76720c248761dd2"
+				},
+				"thumbnail.ta.png": {
+					"sha256": "21f272cfed547fca5d0714fb4bef0e0036a4efe4e1cdb616b2f42451fea0c2ec"
+				},
+				"asset.json": {
+					"sha256": "b9ae6ab3d9462a4fce0fc6c3f33838798c645f5b3f81d365f9db51fd36a18533"
+				}
+			}
+		},
+		{
+			"id": "sub-bounce-pop",
+			"name": "Bounce pop",
+			"category": "subscribe-buttons",
+			"path": "subscribe-buttons/sub-bounce-pop",
+			"tags": [
+				"subscribe",
+				"youtube",
+				"button",
+				"සබ්ස්ක්‍රයිබ්",
+				"சப்ஸ்கிரைப்",
+				"bounce",
+				"pop",
+				"drop"
+			],
+			"durationSec": 2.5,
+			"loop": false,
+			"width": 900,
+			"height": 400,
+			"colors": [
+				{
+					"id": "button",
+					"name": "Button",
+					"default": "#E53935"
+				},
+				{
+					"id": "text",
+					"name": "Text",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "accent",
+					"name": "Sparks",
+					"default": "#F5A524"
+				},
+				{
+					"id": "shadow",
+					"name": "Shadow",
+					"default": "#0F1115"
+				}
+			],
+			"defaultVariant": "en",
+			"variants": [
+				{
+					"id": "en",
+					"name": "English",
+					"lang": "en"
+				},
+				{
+					"id": "si",
+					"name": "සිංහල",
+					"lang": "si"
+				},
+				{
+					"id": "ta",
+					"name": "தமிழ்",
+					"lang": "ta"
+				}
+			],
+			"files": {
+				"sub-bounce-pop.json": {
+					"sha256": "bdd148560117dbc0c8ca092b2187cef50ef55ece63909411071b773d84f21a18"
+				},
+				"thumbnail.png": {
+					"sha256": "f02bb7871268c7652f1c60920c6d1b6e5af71b3992522feb68c3d4aea7387eb5"
+				},
+				"sub-bounce-pop.si.json": {
+					"sha256": "d2540a07495fd8676610fdd8ff0e5b23e505f225fcd139476d716aa909073910"
+				},
+				"thumbnail.si.png": {
+					"sha256": "d9133c37b04d8d1361ac69f7e0a70aa2fbf397a2bdb3c60781b37449090ba699"
+				},
+				"sub-bounce-pop.ta.json": {
+					"sha256": "e040ef23136b8115ba5804ef3a2820a692c70c272e396642ce73b593f7e5722b"
+				},
+				"thumbnail.ta.png": {
+					"sha256": "bd945e959a533d79dcca6cc4eef8323d1ebe243bd7aa117d3870982ac4056b9b"
+				},
+				"asset.json": {
+					"sha256": "9379b279c96a9717c14d2d2aaf925af5abbbbaf14aa6ae8510723f5fd131f209"
+				}
+			}
+		},
+		{
+			"id": "sub-slide-shine",
+			"name": "Slide-in shine",
+			"category": "subscribe-buttons",
+			"path": "subscribe-buttons/sub-slide-shine",
+			"tags": [
+				"subscribe",
+				"youtube",
+				"button",
+				"සබ්ස්ක්‍රයිබ්",
+				"சப்ஸ்கிரைப்",
+				"slide",
+				"shine",
+				"sweep",
+				"gloss"
+			],
+			"durationSec": 3,
+			"loop": false,
+			"width": 900,
+			"height": 300,
+			"colors": [
+				{
+					"id": "button",
+					"name": "Button",
+					"default": "#E53935"
+				},
+				{
+					"id": "text",
+					"name": "Text",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "shine",
+					"name": "Shine",
+					"default": "#F4F6FA"
+				},
+				{
+					"id": "shadow",
+					"name": "Shadow",
+					"default": "#0F1115"
+				}
+			],
+			"defaultVariant": "en",
+			"variants": [
+				{
+					"id": "en",
+					"name": "English",
+					"lang": "en"
+				},
+				{
+					"id": "si",
+					"name": "සිංහල",
+					"lang": "si"
+				},
+				{
+					"id": "ta",
+					"name": "தமிழ்",
+					"lang": "ta"
+				}
+			],
+			"files": {
+				"sub-slide-shine.json": {
+					"sha256": "8c7a05fcf97496dcf974753263f9feb374e9c099e7b21dfb8ce2402a00b293bd"
+				},
+				"thumbnail.png": {
+					"sha256": "5e31b1aaf5805184d23571cf9439eb09fa85a2976c27169c5a57cf11017445df"
+				},
+				"sub-slide-shine.si.json": {
+					"sha256": "aef59b1b33751990946e4bcddc18171a3eae32a567be1bf0ff917b2bacc1f103"
+				},
+				"thumbnail.si.png": {
+					"sha256": "cec206dbeedb28d9ede098beb1f23ba6e3876085be0b8dcb309e30f9cd1b12e2"
+				},
+				"sub-slide-shine.ta.json": {
+					"sha256": "0c3c94241dc87890b2097e818af0a58045613220ffba1da123be7857fb9e61c3"
+				},
+				"thumbnail.ta.png": {
+					"sha256": "e40e7e57905273db88980bbdb9f3dbd82e8819ab7b60e84150b81610edad775c"
+				},
+				"asset.json": {
+					"sha256": "524da09dbf6f3c25f68b875367d445dafb1efa1adb9f336798c2b463ae8b5349"
+				}
+			}
+		},
+		{
+			"id": "sub-neon-glow",
+			"name": "Neon glow",
+			"category": "subscribe-buttons",
+			"path": "subscribe-buttons/sub-neon-glow",
+			"tags": [
+				"subscribe",
+				"youtube",
+				"button",
+				"සබ්ස්ක්‍රයිබ්",
+				"சப்ஸ்கிரைப்",
+				"neon",
+				"glow",
+				"outline",
+				"pulse"
+			],
+			"durationSec": 3,
+			"loop": true,
+			"width": 900,
+			"height": 300,
+			"colors": [
+				{
+					"id": "neon",
+					"name": "Neon",
+					"default": "#FF4D6D"
+				},
+				{
+					"id": "text",
+					"name": "Core & text",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "background",
+					"name": "Background",
+					"default": "#0F1115"
+				}
+			],
+			"defaultVariant": "en",
+			"variants": [
+				{
+					"id": "en",
+					"name": "English",
+					"lang": "en"
+				},
+				{
+					"id": "si",
+					"name": "සිංහල",
+					"lang": "si"
+				},
+				{
+					"id": "ta",
+					"name": "தமிழ்",
+					"lang": "ta"
+				}
+			],
+			"files": {
+				"sub-neon-glow.json": {
+					"sha256": "fac024e09d55b4c71add38c8cebfad8c17c54f55679809cf28d7f6f566402391"
+				},
+				"thumbnail.png": {
+					"sha256": "28266446c689985aad68474849e77cf76b16a6ce176ac0983ee7d26e88cace90"
+				},
+				"sub-neon-glow.si.json": {
+					"sha256": "8ba4bd86d33017865230d3cbc375ac4fedf7966b94d2c3f71a871ce0d4aadbc1"
+				},
+				"thumbnail.si.png": {
+					"sha256": "448f58e02f93019425d3126ed7199bfecf51fa568e9d61928dcaafea00a96004"
+				},
+				"sub-neon-glow.ta.json": {
+					"sha256": "70b0ea181f4fc272dd978d22952b97cbe00e169bfcddbd35e3247c98edd11434"
+				},
+				"thumbnail.ta.png": {
+					"sha256": "2594e3fcc1db78959106daca04d7100e9022c9877919fcb5fee0214eab56d54e"
+				},
+				"asset.json": {
+					"sha256": "2f9de712fc86f8c64cc11188c37c7c062b85ae3f19aef582ee2a319d87385c0c"
+				}
+			}
+		},
+		{
+			"id": "sub-ghost-outline",
+			"name": "Ghost outline",
+			"category": "subscribe-buttons",
+			"path": "subscribe-buttons/sub-ghost-outline",
+			"tags": [
+				"subscribe",
+				"youtube",
+				"button",
+				"සබ්ස්ක්‍රයිබ්",
+				"சப்ஸ்கிரைப்",
+				"outline",
+				"ghost",
+				"minimal"
+			],
+			"durationSec": 2.5,
+			"loop": false,
+			"width": 900,
+			"height": 300,
+			"colors": [
+				{
+					"id": "button",
+					"name": "Button & outline",
+					"default": "#E53935"
+				},
+				{
+					"id": "text",
+					"name": "Filled text",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "shadow",
+					"name": "Shadow",
+					"default": "#0F1115"
+				}
+			],
+			"defaultVariant": "en",
+			"variants": [
+				{
+					"id": "en",
+					"name": "English",
+					"lang": "en"
+				},
+				{
+					"id": "si",
+					"name": "සිංහල",
+					"lang": "si"
+				},
+				{
+					"id": "ta",
+					"name": "தமிழ்",
+					"lang": "ta"
+				}
+			],
+			"files": {
+				"sub-ghost-outline.json": {
+					"sha256": "6805b4599c5056085d85c0f2789c4f84f736289fb81d1fb6ccd4dfd5108c0e2b"
+				},
+				"thumbnail.png": {
+					"sha256": "aa2bf12ba298baa2b24116fc1f56d3de406ce846e2592517d92956bf39457f8a"
+				},
+				"sub-ghost-outline.si.json": {
+					"sha256": "52decee7463a99e6bcfe25ed4749e6492409fe1dcde4f9f8985e3185acaca65f"
+				},
+				"thumbnail.si.png": {
+					"sha256": "324cab94e8ca51ee954ee097e0a53e3172e3f8116244c823449f17622286b1ee"
+				},
+				"sub-ghost-outline.ta.json": {
+					"sha256": "12727728e88b0fd2f39eac54b146b4541bd38b1b6ef9c6da6e6e0735709c710e"
+				},
+				"thumbnail.ta.png": {
+					"sha256": "2b54be2556ce79b87087eab69115dc600d3bc37847d7a45fb6af467f3042a2c3"
+				},
+				"asset.json": {
+					"sha256": "c76adf9fa940f61f2d6ffd4389945f82f3e7c0ea263eb62d10330259d5127b01"
+				}
+			}
+		},
+		{
+			"id": "sub-glass",
+			"name": "Frosted glass",
+			"category": "subscribe-buttons",
+			"path": "subscribe-buttons/sub-glass",
+			"tags": [
+				"subscribe",
+				"youtube",
+				"button",
+				"සබ්ස්ක්‍රයිබ්",
+				"சப்ஸ்கிரைப்",
+				"glass",
+				"frosted",
+				"blur",
+				"subscribed"
+			],
+			"durationSec": 3,
+			"loop": false,
+			"width": 900,
+			"height": 300,
+			"colors": [
+				{
+					"id": "button",
+					"name": "Blob 1",
+					"default": "#E53935"
+				},
+				{
+					"id": "accent",
+					"name": "Blob 2",
+					"default": "#4C8DFF"
+				},
+				{
+					"id": "text",
+					"name": "Glass & text",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "shadow",
+					"name": "Shadow",
+					"default": "#0F1115"
+				}
+			],
+			"defaultVariant": "en",
+			"variants": [
+				{
+					"id": "en",
+					"name": "English",
+					"lang": "en"
+				},
+				{
+					"id": "si",
+					"name": "සිංහල",
+					"lang": "si"
+				},
+				{
+					"id": "ta",
+					"name": "தமிழ்",
+					"lang": "ta"
+				}
+			],
+			"files": {
+				"sub-glass.json": {
+					"sha256": "c12c7681ac833479e7f0e1101f549d7512db72fd03680ffc44338edaf2664247"
+				},
+				"thumbnail.png": {
+					"sha256": "183fa0ad7fe87e9ee7dadfac887161da7b8b9bd6a1da1e7a50ed5588b045c563"
+				},
+				"sub-glass.si.json": {
+					"sha256": "7e86eb3c988408015a9625bb72d4fe1c2592318834ab2b50fcca98c0dcaba522"
+				},
+				"thumbnail.si.png": {
+					"sha256": "5795971c08064874c3e02f217bebac3cfd4d1eb5e8f7a12fa59e3142246411fd"
+				},
+				"sub-glass.ta.json": {
+					"sha256": "729415179c631f662eb86aa4ce9b809787281cecdc887d73b1746a6197210534"
+				},
+				"thumbnail.ta.png": {
+					"sha256": "9941ab2a4114bdca4cc2003a85d34b7ace37a9f9b39f21cc40a1de8c635c2574"
+				},
+				"asset.json": {
+					"sha256": "4ee740c0dd7fd84380b6fc61712d8c90e38c93511c9d770b73fd40e87123e14b"
+				}
+			}
+		},
+		{
+			"id": "sub-avatar-bar",
+			"name": "Channel bar",
+			"category": "subscribe-buttons",
+			"path": "subscribe-buttons/sub-avatar-bar",
+			"tags": [
+				"subscribe",
+				"youtube",
+				"button",
+				"සබ්ස්ක්‍රයිබ්",
+				"சப்ஸ்கிரைப்",
+				"channel",
+				"avatar",
+				"profile",
+				"lower third",
+				"subscribed"
+			],
+			"durationSec": 3.5,
+			"loop": false,
+			"width": 1100,
+			"height": 300,
+			"colors": [
+				{
+					"id": "panel",
+					"name": "Bar",
+					"default": "#0F1115"
+				},
+				{
+					"id": "placeholder",
+					"name": "Avatar & name area",
+					"default": "#596070"
+				},
+				{
+					"id": "accent",
+					"name": "Avatar ring",
+					"default": "#F5A524"
+				},
+				{
+					"id": "button",
+					"name": "Button",
+					"default": "#E53935"
+				},
+				{
+					"id": "pressed",
+					"name": "Subscribed button",
+					"default": "#3A3F4B"
+				},
+				{
+					"id": "text",
+					"name": "Text",
+					"default": "#FFFFFF"
+				}
+			],
+			"defaultVariant": "en",
+			"variants": [
+				{
+					"id": "en",
+					"name": "English",
+					"lang": "en"
+				},
+				{
+					"id": "si",
+					"name": "සිංහල",
+					"lang": "si"
+				},
+				{
+					"id": "ta",
+					"name": "தமிழ்",
+					"lang": "ta"
+				}
+			],
+			"files": {
+				"sub-avatar-bar.json": {
+					"sha256": "62de0a56bdd0a73d750919e4d4ece2464ba6c40bcdbd6e058857260cb3377951"
+				},
+				"thumbnail.png": {
+					"sha256": "4191e54291a333cc079b6d1601d97af02f5febb89acdd9120fa7e66c1cd05a5f"
+				},
+				"sub-avatar-bar.si.json": {
+					"sha256": "f2aae6637fade67c50ad7bcc334d1bb268671e436688a6ab92f0eef97848a336"
+				},
+				"thumbnail.si.png": {
+					"sha256": "f0f4b2bd1b4834fe2bba7170fbf7804deb3e2507b29908a3ebeadc813ee31392"
+				},
+				"sub-avatar-bar.ta.json": {
+					"sha256": "24ff1fc766d3c47a588f34fd8fee5b4dc92ec8da66e3e6026389b4b46e107872"
+				},
+				"thumbnail.ta.png": {
+					"sha256": "5a5f8f2ab02cf76eb53d367457436b6824fd52179f46e42897f89b400307349e"
+				},
+				"asset.json": {
+					"sha256": "4ad45909568b657855ae6d8d83b1c5fda15353d89c8d9fc920ab9f09d2703f86"
+				}
+			}
+		},
+		{
+			"id": "sub-finger-tap",
+			"name": "Finger tap",
+			"category": "subscribe-buttons",
+			"path": "subscribe-buttons/sub-finger-tap",
+			"tags": [
+				"subscribe",
+				"youtube",
+				"button",
+				"සබ්ස්ක්‍රයිබ්",
+				"சப்ஸ்கிரைப்",
+				"tap",
+				"hand",
+				"finger",
+				"mobile",
+				"shorts",
+				"vertical",
+				"subscribed"
+			],
+			"durationSec": 3,
+			"loop": false,
+			"width": 800,
+			"height": 800,
+			"colors": [
+				{
+					"id": "button",
+					"name": "Button",
+					"default": "#E53935"
+				},
+				{
+					"id": "pressed",
+					"name": "Subscribed button",
+					"default": "#3A3F4B"
+				},
+				{
+					"id": "text",
+					"name": "Text",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "hand",
+					"name": "Hand",
+					"default": "#F4F6FA"
+				},
+				{
+					"id": "outline",
+					"name": "Hand outline & shadow",
+					"default": "#0F1115"
+				},
+				{
+					"id": "accent",
+					"name": "Ripple",
+					"default": "#F5A524"
+				}
+			],
+			"defaultVariant": "en",
+			"variants": [
+				{
+					"id": "en",
+					"name": "English",
+					"lang": "en"
+				},
+				{
+					"id": "si",
+					"name": "සිංහල",
+					"lang": "si"
+				},
+				{
+					"id": "ta",
+					"name": "தமிழ்",
+					"lang": "ta"
+				}
+			],
+			"files": {
+				"sub-finger-tap.json": {
+					"sha256": "0bd41650fe7efff611e672dc301dfd5a02368257da1687fad0513bd2facb70a1"
+				},
+				"thumbnail.png": {
+					"sha256": "76a448eb55cae876813193b84794c3be8f0efe311cb535913ea1bcf1f234ec47"
+				},
+				"sub-finger-tap.si.json": {
+					"sha256": "52427384cf5719f4dde46c26f37620c63af60bfd886e34580bca589aff9b69fb"
+				},
+				"thumbnail.si.png": {
+					"sha256": "1a2b6f33b36fa67bb6a3ef518a9f211559825250f5d50ed69638942aae2b66a9"
+				},
+				"sub-finger-tap.ta.json": {
+					"sha256": "479be06a414abaf9fdc95074621785b042a13b6e3dd65c22dc9f2841c951639a"
+				},
+				"thumbnail.ta.png": {
+					"sha256": "1ac01666807510a8b6c7602270842e48c64733fa19042f731356d168419546b1"
+				},
+				"asset.json": {
+					"sha256": "4c196f965dd8448016815696d89ce66f3c7564c505c9764bcc3c511d1b46aa47"
+				}
+			}
+		},
+		{
+			"id": "sub-glitch",
+			"name": "Glitch",
+			"category": "subscribe-buttons",
+			"path": "subscribe-buttons/sub-glitch",
+			"tags": [
+				"subscribe",
+				"youtube",
+				"button",
+				"සබ්ස්ක්‍රයිබ්",
+				"சப்ஸ்கிரைப்",
+				"glitch",
+				"rgb",
+				"split",
+				"distortion"
+			],
+			"durationSec": 2.5,
+			"loop": false,
+			"width": 900,
+			"height": 300,
+			"colors": [
+				{
+					"id": "button",
+					"name": "Button",
+					"default": "#E53935"
+				},
+				{
+					"id": "text",
+					"name": "Text",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "split1",
+					"name": "Split 1",
+					"default": "#00E5FF"
+				},
+				{
+					"id": "split2",
+					"name": "Split 2",
+					"default": "#FF2DAA"
+				}
+			],
+			"defaultVariant": "en",
+			"variants": [
+				{
+					"id": "en",
+					"name": "English",
+					"lang": "en"
+				},
+				{
+					"id": "si",
+					"name": "සිංහල",
+					"lang": "si"
+				},
+				{
+					"id": "ta",
+					"name": "தமிழ்",
+					"lang": "ta"
+				}
+			],
+			"files": {
+				"sub-glitch.json": {
+					"sha256": "1ed0f3be94776bfd0d07c45818a447115c13568b56f5618971aac4e170776459"
+				},
+				"thumbnail.png": {
+					"sha256": "926e0d5b06500230cb0d9ad1c1f92895cfcdf327b9d0fa0203733b3340c881eb"
+				},
+				"sub-glitch.si.json": {
+					"sha256": "22effc825965b3ada44fe45da6b294480de518afce3b06e0ad5743a99e03a008"
+				},
+				"thumbnail.si.png": {
+					"sha256": "e488569f663b2a8860462769ec335367ecaf3ca0dbcf436e3923f9ccc57f1d21"
+				},
+				"sub-glitch.ta.json": {
+					"sha256": "28497ccbd285f21076fbbda802febbfb44e51e7382000fca601212d310b8c3e9"
+				},
+				"thumbnail.ta.png": {
+					"sha256": "5d1573b5954b41639427a684e552472dda443405d129ba17398b51c573ddc212"
+				},
+				"asset.json": {
+					"sha256": "89294d0631d96034fc0dfc0a48f5f7db855da31b7d7a314a74a00af37bd13c66"
+				}
+			}
+		},
+		{
+			"id": "sub-3d-press",
+			"name": "3D press",
+			"category": "subscribe-buttons",
+			"path": "subscribe-buttons/sub-3d-press",
+			"tags": [
+				"subscribe",
+				"youtube",
+				"button",
+				"සබ්ස්ක්‍රයිබ්",
+				"சப்ஸ்கிரைப்",
+				"3d",
+				"press",
+				"push",
+				"depth",
+				"subscribed"
+			],
+			"durationSec": 2.5,
+			"loop": false,
+			"width": 900,
+			"height": 340,
+			"colors": [
+				{
+					"id": "button",
+					"name": "Button",
+					"default": "#E53935"
+				},
+				{
+					"id": "side",
+					"name": "Button side",
+					"default": "#9E1F1C"
+				},
+				{
+					"id": "pressed",
+					"name": "Subscribed button",
+					"default": "#3A3F4B"
+				},
+				{
+					"id": "pressedSide",
+					"name": "Subscribed side",
+					"default": "#262A33"
+				},
+				{
+					"id": "text",
+					"name": "Text",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "shadow",
+					"name": "Shadow",
+					"default": "#0F1115"
+				}
+			],
+			"defaultVariant": "en",
+			"variants": [
+				{
+					"id": "en",
+					"name": "English",
+					"lang": "en"
+				},
+				{
+					"id": "si",
+					"name": "සිංහල",
+					"lang": "si"
+				},
+				{
+					"id": "ta",
+					"name": "தமிழ்",
+					"lang": "ta"
+				}
+			],
+			"files": {
+				"sub-3d-press.json": {
+					"sha256": "41ecd0618b33b5bd814d4295a764158f81a0733cfbf273fa8e0e9fd1606f0de0"
+				},
+				"thumbnail.png": {
+					"sha256": "88b2fc444a65ae621e6c1771625994b0769b3b972cfbffb41c54ea83c8ac78ab"
+				},
+				"sub-3d-press.si.json": {
+					"sha256": "dd09c60fbfd862258ad501885723392cb18a0f33a6981f62f2170b585200b304"
+				},
+				"thumbnail.si.png": {
+					"sha256": "f6f73ce4cf0f229e37108a478d654ec04191618682de5e2398df3e8269fd3782"
+				},
+				"sub-3d-press.ta.json": {
+					"sha256": "d14bf19d2ff12e27d9b554322aa769d3c4091c11181899a1ccdf9278bb3d8582"
+				},
+				"thumbnail.ta.png": {
+					"sha256": "b28431c68823239d38ade58daed44ad7e6b8f7303777151f8bcc6d23b7809e5c"
+				},
+				"asset.json": {
+					"sha256": "719991439bfe4753409f1a1b65c99b4b12da9bee763aad42a7dab35143280a0c"
+				}
+			}
+		},
+		{
+			"id": "sub-countdown",
+			"name": "Countdown end screen",
+			"category": "subscribe-buttons",
+			"path": "subscribe-buttons/sub-countdown",
+			"tags": [
+				"subscribe",
+				"youtube",
+				"button",
+				"සබ්ස්ක්‍රයිබ්",
+				"சப்ஸ்கிரைப்",
+				"countdown",
+				"end screen",
+				"timer",
+				"3 2 1",
+				"subscribed"
+			],
+			"durationSec": 4,
+			"loop": false,
+			"width": 900,
+			"height": 500,
+			"colors": [
+				{
+					"id": "button",
+					"name": "Button",
+					"default": "#E53935"
+				},
+				{
+					"id": "pressed",
+					"name": "Subscribed button",
+					"default": "#3A3F4B"
+				},
+				{
+					"id": "text",
+					"name": "Text",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "accent",
+					"name": "Ring & digits",
+					"default": "#F5A524"
+				},
+				{
+					"id": "track",
+					"name": "Track & badge",
+					"default": "#0F1115"
+				}
+			],
+			"defaultVariant": "en",
+			"variants": [
+				{
+					"id": "en",
+					"name": "English",
+					"lang": "en"
+				},
+				{
+					"id": "si",
+					"name": "සිංහල",
+					"lang": "si"
+				},
+				{
+					"id": "ta",
+					"name": "தமிழ்",
+					"lang": "ta"
+				}
+			],
+			"files": {
+				"sub-countdown.json": {
+					"sha256": "8d4a988a0c8728222a6349445c2866bc3355263e3a50578f90209395ecd0ca2f"
+				},
+				"thumbnail.png": {
+					"sha256": "c14b6ea6b9fcdd0cf3cfde6b3fa0add287e7cfeea349507f6507e022346216e9"
+				},
+				"sub-countdown.si.json": {
+					"sha256": "6795537ed337422ca0e873887a34330c95423ef0b6f4fc80a665363fb1b502b9"
+				},
+				"thumbnail.si.png": {
+					"sha256": "34d4dcb996e5efcf31d1ec259924692e8b82e6094587c6a1d0b79516e62f835a"
+				},
+				"sub-countdown.ta.json": {
+					"sha256": "d696b4fe442eee057248c8d2bd9e2e395f13b39daee0a2d6e6ef3442537fe1f9"
+				},
+				"thumbnail.ta.png": {
+					"sha256": "8889d24c7c918febf4c83dec98d7d08e83059b9bc54f45fec7146660ed800bc5"
+				},
+				"asset.json": {
+					"sha256": "94f29500a4bb3c0fab224101bbfadb0c465608cafbc6c5e81a0d27316094a4a1"
+				}
+			}
+		},
+		{
+			"id": "bell-notifications-on",
+			"name": "Notifications on",
+			"category": "subscribe-buttons",
+			"path": "subscribe-buttons/bell-notifications-on",
+			"tags": [
+				"bell",
+				"notification",
+				"notifications on",
+				"alert",
+				"subscribe",
+				"youtube",
+				"icon"
+			],
+			"durationSec": 3,
+			"loop": false,
+			"width": 600,
+			"height": 600,
+			"colors": [
+				{
+					"id": "bell",
+					"name": "Bell",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "disc",
+					"name": "Circle",
+					"default": "#0F1115"
+				},
+				{
+					"id": "accent",
+					"name": "Burst",
+					"default": "#F5A524"
+				},
+				{
+					"id": "badge",
+					"name": "Dot",
+					"default": "#E53935"
+				}
+			],
+			"files": {
+				"bell-notifications-on.json": {
+					"sha256": "6f40ee01e3b9576c628545c4e26d2bef3e83049c4e29bf093cadec22a488088c"
+				},
+				"thumbnail.png": {
+					"sha256": "8b3b8bbaf1cb1bbdb3133a61f01ba374fdd32eb15f7dd4b98c4d1e7baf3fb87c"
+				},
+				"asset.json": {
+					"sha256": "e1ba6dacbbe9f033efa4b01a2545ea8876a5db5403b9cec2cd3879e60d3378e1"
+				}
+			}
+		},
+		{
+			"id": "sub-join-pair",
+			"name": "Subscribe + join",
+			"category": "subscribe-buttons",
+			"path": "subscribe-buttons/sub-join-pair",
+			"tags": [
+				"subscribe",
+				"youtube",
+				"button",
+				"සබ්ස්ක්‍රයිබ්",
+				"சப்ஸ்கிரைப்",
+				"join",
+				"member",
+				"membership",
+				"pair",
+				"subscribed"
+			],
+			"durationSec": 3.5,
+			"loop": false,
+			"width": 1200,
+			"height": 300,
+			"colors": [
+				{
+					"id": "button",
+					"name": "Button",
+					"default": "#E53935"
+				},
+				{
+					"id": "pressed",
+					"name": "Subscribed button",
+					"default": "#3A3F4B"
+				},
+				{
+					"id": "text",
+					"name": "Text",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "member",
+					"name": "Join button",
+					"default": "#4C8DFF"
+				},
+				{
+					"id": "accent",
+					"name": "Sparkle",
+					"default": "#F5A524"
+				},
+				{
+					"id": "shadow",
+					"name": "Shadow",
+					"default": "#0F1115"
+				}
+			],
+			"defaultVariant": "en",
+			"variants": [
+				{
+					"id": "en",
+					"name": "English",
+					"lang": "en"
+				},
+				{
+					"id": "si",
+					"name": "සිංහල",
+					"lang": "si"
+				},
+				{
+					"id": "ta",
+					"name": "தமிழ்",
+					"lang": "ta"
+				}
+			],
+			"files": {
+				"sub-join-pair.json": {
+					"sha256": "9c01cad06ac2447f4d5043a90731d99d5eb2fe8d40cfb2e89ef9995801af2cfc"
+				},
+				"thumbnail.png": {
+					"sha256": "d3d85daa1a32901088fd714e62e22331facc574b5c8405dc7ad28ddbda7df4dc"
+				},
+				"sub-join-pair.si.json": {
+					"sha256": "9a061ff730ac589aa645791cee0b7a682946ae57c86c2d034e8cede71e2cdb4b"
+				},
+				"thumbnail.si.png": {
+					"sha256": "a83cae23048e89a11fd51fb79bbb70a61a1a60bcd426d2536bfa54380e1d182a"
+				},
+				"sub-join-pair.ta.json": {
+					"sha256": "039e89fe3e214897ddec210461016b3bf5c2449a81da532ffd1f78d39877fe35"
+				},
+				"thumbnail.ta.png": {
+					"sha256": "218169e223545ac042c5f1265795831754eb5b452f9d45ab4af5e2471c4f4d1f"
+				},
+				"asset.json": {
+					"sha256": "771113b56412fcebb4296378bc54b086b3dd9a572538ba02c76ef98c9cb368e6"
+				}
+			}
+		},
+		{
+			"id": "sub-sticker-confetti",
+			"name": "Sticker with confetti",
+			"category": "subscribe-buttons",
+			"path": "subscribe-buttons/sub-sticker-confetti",
+			"tags": [
+				"subscribe",
+				"youtube",
+				"button",
+				"සබ්ස්ක්‍රයිබ්",
+				"சப்ஸ்கிரைப்",
+				"sticker",
+				"badge",
+				"confetti",
+				"celebrate",
+				"tilted"
+			],
+			"durationSec": 3,
+			"loop": false,
+			"width": 900,
+			"height": 500,
+			"colors": [
+				{
+					"id": "button",
+					"name": "Button",
+					"default": "#E53935"
+				},
+				{
+					"id": "text",
+					"name": "Text",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "sticker",
+					"name": "Sticker edge",
+					"default": "#F4F6FA"
+				},
+				{
+					"id": "shadow",
+					"name": "Shadow",
+					"default": "#0F1115"
+				},
+				{
+					"id": "confetti1",
+					"name": "Confetti 1",
+					"default": "#F5A524"
+				},
+				{
+					"id": "confetti2",
+					"name": "Confetti 2",
+					"default": "#4C8DFF"
+				},
+				{
+					"id": "confetti3",
+					"name": "Confetti 3",
+					"default": "#2EC4B6"
+				}
+			],
+			"defaultVariant": "en",
+			"variants": [
+				{
+					"id": "en",
+					"name": "English",
+					"lang": "en"
+				},
+				{
+					"id": "si",
+					"name": "සිංහල",
+					"lang": "si"
+				},
+				{
+					"id": "ta",
+					"name": "தமிழ்",
+					"lang": "ta"
+				}
+			],
+			"files": {
+				"sub-sticker-confetti.json": {
+					"sha256": "8a5b2d6d2ffc35c1c8cac99e110ec9abd080ad26174516c360fe5f27190e61e5"
+				},
+				"thumbnail.png": {
+					"sha256": "bd11a060d8daf9a564ae9d4fa8d1c28a9085a072e2d9f4bc7632052f25078fe5"
+				},
+				"sub-sticker-confetti.si.json": {
+					"sha256": "f2522d3e52ae8547008ef7207bed301da93fb15fc12a458b4cd66887b7a1470b"
+				},
+				"thumbnail.si.png": {
+					"sha256": "a3a901d49280ba2b580a146e18b0b2e955bdf544e7849c393acea72345cadc7f"
+				},
+				"sub-sticker-confetti.ta.json": {
+					"sha256": "59a6dd8e227083162f43a2c6690f585886652f9db29829a07e245f5e1face638"
+				},
+				"thumbnail.ta.png": {
+					"sha256": "2d4c8c525a557bb1299da3ee527e02183828453a9cf1f76717e31a0202415dea"
+				},
+				"asset.json": {
+					"sha256": "53f9da429945b25b0694fbc99587c36700f72aa1a4f5b4689866a0f0d1266d68"
 				}
 			}
 		}

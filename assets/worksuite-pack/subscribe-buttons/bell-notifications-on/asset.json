@@ -1,0 +1,48 @@
+{
+	"schema": 1,
+	"id": "bell-notifications-on",
+	"name": "Notifications on",
+	"category": "subscribe-buttons",
+	"type": "lottie",
+	"file": "bell-notifications-on.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "A crossed-out bell loses its slash, fills in, rings and gets a dot: “turn on notifications” without words.",
+	"tags": [
+		"bell",
+		"notification",
+		"notifications on",
+		"alert",
+		"subscribe",
+		"youtube",
+		"icon"
+	],
+	"durationSec": 3,
+	"loop": false,
+	"aspect": "1:1",
+	"width": 600,
+	"height": 600,
+	"thumbnailAt": 0.7,
+	"colors": [
+		{
+			"id": "bell",
+			"name": "Bell",
+			"default": "#FFFFFF"
+		},
+		{
+			"id": "disc",
+			"name": "Circle",
+			"default": "#0F1115"
+		},
+		{
+			"id": "accent",
+			"name": "Burst",
+			"default": "#F5A524"
+		},
+		{
+			"id": "badge",
+			"name": "Dot",
+			"default": "#E53935"
+		}
+	]
+}

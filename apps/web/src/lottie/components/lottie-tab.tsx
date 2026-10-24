@@ -24,8 +24,8 @@ import { useEditor } from "@/editor/use-editor";
 import type { GraphicElement } from "@/timeline";
 import { useElementPreview } from "@/timeline/hooks/use-element-preview";
 import { mediaTimeFromSeconds, roundMediaTime } from "@/wasm";
-import { findPackAsset } from "../catalog";
-import { brandColorOverrides, resolveSlotColors, setSlotColor } from "../element";
+import { findPackAsset, type PackIndexAsset, resolvePackVariant } from "../catalog";
+import { brandColorOverrides, resolveSlotColors, setSlotColor, switchLottieVariant } from "../element";
 import type { LottieColorSlot, LottieElementData, LottieSource } from "../types";
 import { getUserLottie } from "../user-library";
 
@@ -52,6 +52,23 @@ function useColorSlots(source: LottieSource): LottieColorSlot[] | null {
 	return slots?.key === key ? slots.slots : null;
 }
 
+/** The library entry of a pack animation (for its language variants). */
+function usePackAsset(source: LottieSource): PackIndexAsset | null {
+	const assetId = source.kind === "pack" ? source.assetId : null;
+	const [asset, setAsset] = useState<PackIndexAsset | null>(null);
+	useEffect(() => {
+		if (!assetId) return;
+		let cancelled = false;
+		findPackAsset(assetId)
+			.then((found) => !cancelled && setAsset(found))
+			.catch(() => !cancelled && setAsset(null));
+		return () => {
+			cancelled = true;
+		};
+	}, [assetId]);
+	return asset && asset.id === assetId ? asset : null;
+}
+
 /** Properties for an animation (Lottie) graphic: colours, speed and looping. */
 export function LottieTab({
 	element,
@@ -69,6 +86,8 @@ export function LottieTab({
 	});
 	const live = (renderElement as GraphicElement).lottie ?? element.lottie;
 	const slots = useColorSlots(live.source);
+	const packAsset = usePackAsset(live.source);
+	const variants = packAsset?.variants ?? [];
 
 	const update = (lottie: LottieElementData, extra: Partial<GraphicElement> = {}) =>
 		editor.timeline.updateElements({
@@ -90,6 +109,34 @@ export function LottieTab({
 
 	return (
 		<div className="flex flex-col">
+			{packAsset && variants.length > 1 && (
+				<Section collapsible sectionKey={`${element.id}:lottie-language`}>
+					<SectionHeader>
+						<SectionTitle>Language</SectionTitle>
+					</SectionHeader>
+					<SectionContent>
+						<SectionFields>
+							<SectionField label="Words">
+								<Select
+									value={resolvePackVariant(packAsset, live.source.kind === "pack" ? live.source.variant : null)}
+									onValueChange={(variant) => update(switchLottieVariant({ data: live, asset: packAsset, variant }))}
+								>
+									<SelectTrigger className="w-full">
+										<SelectValue />
+									</SelectTrigger>
+									<SelectContent>
+										{variants.map((variant) => (
+											<SelectItem key={variant.id} value={variant.id} lang={variant.lang}>
+												{variant.name}
+											</SelectItem>
+										))}
+									</SelectContent>
+								</Select>
+							</SectionField>
+						</SectionFields>
+					</SectionContent>
+				</Section>
+			)}
 			<Section collapsible sectionKey={`${element.id}:lottie-colors`}>
 				<SectionHeader>
 					<SectionTitle>Colours</SectionTitle>

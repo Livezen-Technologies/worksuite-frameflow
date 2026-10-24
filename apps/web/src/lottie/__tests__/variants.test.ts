@@ -1,0 +1,102 @@
+import { describe, expect, test } from "bun:test";
+import { cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { validatePack } from "../../../../../scripts/assets/validate-worksuite-pack";
+import { type PackIndex, packAssetJsonUrl, packAssetThumbnailUrl, resolvePackVariant, searchPackAssets } from "../catalog";
+import { collectLottieColors, hasTextLayers } from "../colors";
+import { lottieDataFromPackAsset, switchLottieVariant } from "../element";
+import { lottieSourceFromKey, lottieSourceKey } from "../player";
+import type { LottieJson, WorksuiteAssetMeta } from "../types";
+
+const packDir = join(import.meta.dir, "..", "..", "..", "..", "..", "assets", "worksuite-pack");
+const index = JSON.parse(readFileSync(join(packDir, "index.json"), "utf8")) as PackIndex;
+const subscribe = index.assets.filter((a) => a.category === "subscribe-buttons");
+const meta = (path: string) => JSON.parse(readFileSync(join(packDir, path, "asset.json"), "utf8")) as WorksuiteAssetMeta;
+const withVariants = subscribe.filter((a) => a.variants?.length);
+
+describe("Subscribe buttons pack", () => {
+	test("16 assets, shown as “YouTube & subscribe”, 15 in English, Sinhala and Tamil", () => {
+		expect(subscribe).toHaveLength(16);
+		expect(index.categories.find((c) => c.id === "subscribe-buttons")?.name).toBe("YouTube & subscribe");
+		expect(withVariants).toHaveLength(15);
+		for (const asset of withVariants) {
+			expect(asset.variants?.map((v) => v.id)).toEqual(["en", "si", "ta"]);
+			expect(asset.defaultVariant).toBe("en");
+		}
+	});
+
+	test("search finds them by tags in all three languages", () => {
+		for (const q of ["subscribe", "youtube", "bell", "notification", "like", "සබ්ස්ක්‍රයිබ්", "சப்ஸ்கிரைப்"]) {
+			expect(searchPackAssets({ assets: subscribe, query: q }).length).toBeGreaterThan(0);
+		}
+		expect(searchPackAssets({ assets: index.assets, query: "", language: "si" })).toHaveLength(15);
+	});
+
+	test.each(subscribe.flatMap((a) => (meta(a.path).variants ?? [{ id: "default", file: `${a.id}.json` }]).map((v) => [`${a.id} ${v.id}`, a, v.file] as const)))(
+		"%s: no text layers and every colour is a slot",
+		(_name, asset, file) => {
+			const text = readFileSync(join(packDir, asset.path, file), "utf8");
+			const json = JSON.parse(text) as LottieJson;
+			expect(hasTextLayers(json)).toBe(false);
+			expect(text.includes('"ty":5')).toBe(false);
+			expect(collectLottieColors(json).sort()).toEqual(asset.colors.map((s) => s.default.toUpperCase()).sort());
+		},
+	);
+
+	test.each(withVariants.map((a) => [a.id, a] as const))("%s: variants share size and timing", (_id, asset) => {
+		const m = meta(asset.path);
+		const docs = (m.variants ?? []).map((v) => JSON.parse(readFileSync(join(packDir, asset.path, v.file), "utf8")) as LottieJson);
+		for (const doc of docs) {
+			expect([doc.w, doc.h, doc.fr, doc.ip, doc.op]).toEqual([docs[0].w, docs[0].h, docs[0].fr, docs[0].ip, docs[0].op]);
+		}
+	});
+
+	test("switching variant keeps colours, speed, loop and timing", () => {
+		const asset = withVariants[0];
+		const data = { ...lottieDataFromPackAsset(asset), colors: { "#E53935": "#123456" }, speed: 1.5, loop: true };
+		expect(data.source).toEqual({ kind: "pack", assetId: asset.id, variant: "en" });
+		const si = switchLottieVariant({ data, asset, variant: "si" });
+		expect(si.source).toEqual({ kind: "pack", assetId: asset.id, variant: "si" });
+		const { source: _a, ...rest } = si;
+		const { source: _b, ...before } = data;
+		expect(rest).toEqual(before);
+		expect(switchLottieVariant({ data, asset, variant: "fr" })).toBe(data);
+	});
+
+	test("variant URLs and source keys", () => {
+		const asset = withVariants[0];
+		expect(packAssetJsonUrl(asset, "en")).toBe(`/worksuite-pack/${asset.path}/${asset.id}.json`);
+		expect(packAssetJsonUrl(asset, "ta")).toBe(`/worksuite-pack/${asset.path}/${asset.id}.ta.json`);
+		expect(packAssetThumbnailUrl(asset, "si")).toBe(`/worksuite-pack/${asset.path}/thumbnail.si.png`);
+		expect(resolvePackVariant(asset, "xx")).toBe("en");
+		const source = { kind: "pack" as const, assetId: asset.id, variant: "si" };
+		expect(lottieSourceFromKey(lottieSourceKey(source))).toEqual(source);
+		expect(lottieSourceFromKey(lottieSourceKey({ kind: "pack", assetId: "x" }))).toEqual({ kind: "pack", assetId: "x" });
+	});
+
+	test("the validator catches broken variants", () => {
+		const dir = mkdtempSync(join(tmpdir(), "pack-"));
+		try {
+			const asset = withVariants[0];
+			cpSync(join(packDir, asset.path), join(dir, asset.path), { recursive: true });
+			const files = Object.keys(asset.files);
+			writeFileSync(join(dir, "index.json"), JSON.stringify({ assets: [{ ...asset, files: Object.fromEntries(files.map((f) => [f, asset.files[f]])) }] }));
+			expect(validatePack(dir)).toEqual([]);
+			const m = meta(asset.path);
+			const ta = JSON.parse(readFileSync(join(dir, asset.path, `${asset.id}.ta.json`), "utf8"));
+			ta.op += 30;
+			ta.layers.push({ ty: 5, ind: 99 });
+			writeFileSync(join(dir, asset.path, `${asset.id}.ta.json`), JSON.stringify(ta));
+			m.variants = [...(m.variants ?? []), { id: "si", name: "x", lang: "si", file: "nope.json", thumbnail: "nope.png" }];
+			writeFileSync(join(dir, asset.path, "asset.json"), JSON.stringify(m));
+			const problems = validatePack(dir).join("\n");
+			expect(problems).toContain("variant ta: has a text layer");
+			expect(problems).toContain("variant ta: length doesn't match");
+			expect(problems).toContain("duplicate variant si");
+			expect(problems).toContain("missing Lottie JSON");
+		} finally {
+			rmSync(dir, { recursive: true, force: true });
+		}
+	});
+});

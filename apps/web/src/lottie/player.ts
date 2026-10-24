@@ -35,13 +35,16 @@ export function loadLottieRuntime(): Promise<LottiePlayer> {
 }
 
 export function lottieSourceKey(source: LottieSource): string {
-	return source.kind === "pack" ? `pack:${source.assetId}` : `user:${source.id}`;
+	if (source.kind === "user") return `user:${source.id}`;
+	return source.variant ? `pack:${source.assetId}@${source.variant}` : `pack:${source.assetId}`;
 }
 
 export function lottieSourceFromKey(key: string): LottieSource {
 	const [kind, ...rest] = key.split(":");
 	const id = rest.join(":");
-	return kind === "pack" ? { kind: "pack", assetId: id } : { kind: "user", id };
+	if (kind !== "pack") return { kind: "user", id };
+	const [assetId, variant] = id.split("@");
+	return variant ? { kind: "pack", assetId, variant } : { kind: "pack", assetId };
 }
 
 const jsonCache = new Map<string, Promise<LottieJson>>();
@@ -55,7 +58,7 @@ export function loadLottieJson(source: LottieSource): Promise<LottieJson> {
 			if (source.kind === "pack") {
 				const asset = await findPackAsset(source.assetId);
 				if (!asset) throw new Error(`Animation "${source.assetId}" isn't in the library`);
-				const response = await fetch(packAssetJsonUrl(asset));
+				const response = await fetch(packAssetJsonUrl(asset, source.variant));
 				if (!response.ok) throw new Error(`Couldn't load animation "${source.assetId}"`);
 				return (await response.json()) as LottieJson;
 			}

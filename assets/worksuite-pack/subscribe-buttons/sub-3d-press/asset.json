@@ -1,0 +1,85 @@
+{
+	"schema": 1,
+	"id": "sub-3d-press",
+	"name": "3D press",
+	"category": "subscribe-buttons",
+	"type": "lottie",
+	"file": "sub-3d-press.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "A raised button that sinks into its base when pressed and stays down as “Subscribed”.",
+	"tags": [
+		"subscribe",
+		"youtube",
+		"button",
+		"සබ්ස්ක්‍රයිබ්",
+		"சப்ஸ்கிரைப்",
+		"3d",
+		"press",
+		"push",
+		"depth",
+		"subscribed"
+	],
+	"durationSec": 2.5,
+	"loop": false,
+	"aspect": "45:17",
+	"width": 900,
+	"height": 340,
+	"thumbnailAt": 0.35,
+	"colors": [
+		{
+			"id": "button",
+			"name": "Button",
+			"default": "#E53935"
+		},
+		{
+			"id": "side",
+			"name": "Button side",
+			"default": "#9E1F1C"
+		},
+		{
+			"id": "pressed",
+			"name": "Subscribed button",
+			"default": "#3A3F4B"
+		},
+		{
+			"id": "pressedSide",
+			"name": "Subscribed side",
+			"default": "#262A33"
+		},
+		{
+			"id": "text",
+			"name": "Text",
+			"default": "#FFFFFF"
+		},
+		{
+			"id": "shadow",
+			"name": "Shadow",
+			"default": "#0F1115"
+		}
+	],
+	"defaultVariant": "en",
+	"variants": [
+		{
+			"id": "en",
+			"name": "English",
+			"lang": "en",
+			"file": "sub-3d-press.json",
+			"thumbnail": "thumbnail.png"
+		},
+		{
+			"id": "si",
+			"name": "සිංහල",
+			"lang": "si",
+			"file": "sub-3d-press.si.json",
+			"thumbnail": "thumbnail.si.png"
+		},
+		{
+			"id": "ta",
+			"name": "தமிழ்",
+			"lang": "ta",
+			"file": "sub-3d-press.ta.json",
+			"thumbnail": "thumbnail.ta.png"
+		}
+	]
+}
