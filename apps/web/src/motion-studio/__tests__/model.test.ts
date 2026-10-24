@@ -70,3 +70,32 @@ describe("motion model", () => {
 		);
 	});
 });
+
+import { groupLayers, groupSelection, ungroup } from "../model";
+
+describe("nested groups", () => {
+	test("grouping whole groups nests them; ungroup moves contents up", () => {
+		let p = createMotionProject();
+		const [a, b, c] = (["rect", "ellipse", "star"] as const).map((kind) => createLayer({ kind, project: p }));
+		p = { ...p, layers: [a, b, c] };
+		p = groupSelection({ project: p, selection: [a.id, b.id], id: "g1", name: "Inner" });
+		p = groupSelection({ project: p, selection: [a.id, b.id, c.id], id: "g2", name: "Outer" });
+		expect(p.groups.find((g) => g.id === "g1")?.parentId).toBe("g2");
+		expect(groupLayers({ project: p, groupId: "g2" }).map((l) => l.id)).toEqual([a.id, b.id, c.id]);
+		expect(p.layers.find((l) => l.id === c.id)?.groupId).toBe("g2");
+		p = ungroup({ project: p, groupId: "g2" });
+		expect(p.groups.find((g) => g.id === "g1")?.parentId).toBeUndefined();
+		expect(p.layers.find((l) => l.id === c.id)?.groupId).toBeUndefined();
+		expect(p.layers.find((l) => l.id === a.id)?.groupId).toBe("g1");
+	});
+
+	test("grouping inside a group keeps the new group there", () => {
+		let p = createMotionProject();
+		const [a, b, c] = (["rect", "ellipse", "star"] as const).map((kind) => createLayer({ kind, project: p }));
+		p = { ...p, layers: [a, b, c] };
+		p = groupSelection({ project: p, selection: [a.id, b.id, c.id], id: "outer", name: "Outer" });
+		p = groupSelection({ project: p, selection: [a.id, b.id], id: "inner", name: "Inner" });
+		expect(p.groups.find((g) => g.id === "inner")?.parentId).toBe("outer");
+		expect(groupLayers({ project: p, groupId: "outer" })).toHaveLength(3);
+	});
+});

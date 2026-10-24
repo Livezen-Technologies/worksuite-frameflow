@@ -202,6 +202,49 @@ export async function exportMotion({
 	return new Blob([buffer], { type: format === "webm" ? "video/webm" : "video/mp4" });
 }
 
+/** Builds an animated GIF (data URL) from picture frames, e.g. when a Lottie brings a GIF back. */
+export async function framesToGif({ frames }: { frames: Array<{ src: string; duration: number }> }): Promise<string | null> {
+	const images = await Promise.all(
+		frames.map(
+			(f) =>
+				new Promise<HTMLImageElement | null>((resolve) => {
+					const img = new Image();
+					img.onload = () => resolve(img);
+					img.onerror = () => resolve(null);
+					img.src = f.src;
+				}),
+		),
+	);
+	const first = images.find(Boolean);
+	if (!first) return null;
+	const width = first.naturalWidth;
+	const height = first.naturalHeight;
+	const canvas = canvasOf({ width, height });
+	const ctx = canvas.getContext("2d", { willReadFrequently: true });
+	if (!ctx) return null;
+	const { GIFEncoder, quantize, applyPalette } = await import("gifenc");
+	const gif = GIFEncoder();
+	images.forEach((img, i) => {
+		ctx.clearRect(0, 0, width, height);
+		if (img) ctx.drawImage(img, 0, 0, width, height);
+		const { data } = ctx.getImageData(0, 0, width, height);
+		const palette = quantize(data, 256, { format: "rgba4444", oneBitAlpha: true });
+		const index = applyPalette(data, palette, "rgba4444");
+		const transparentIndex = palette.findIndex((c) => (c[3] ?? 255) === 0);
+		gif.writeFrame(index, width, height, {
+			palette,
+			delay: Math.round((frames[i]?.duration ?? 0.1) * 1000),
+			...(i === 0 ? { repeat: 0 } : {}),
+			...(transparentIndex >= 0 ? { transparent: true, transparentIndex } : {}),
+		});
+	});
+	gif.finish();
+	const bytes = gif.bytes();
+	let binary = "";
+	for (let i = 0; i < bytes.length; i += 0x8000) binary += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+	return `data:image/gif;base64,${btoa(binary)}`;
+}
+
 export function downloadBlob({ blob, name }: { blob: Blob; name: string }) {
 	const url = URL.createObjectURL(blob);
 	const a = document.createElement("a");

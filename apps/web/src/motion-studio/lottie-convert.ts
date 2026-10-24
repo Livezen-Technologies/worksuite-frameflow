@@ -252,6 +252,8 @@ export interface LottieImport {
 	project: MotionProject;
 	/** What couldn't be brought in as editable layers. */
 	warnings: string[];
+	/** Picture layers that were animated (frame sequences) and can be turned back into GIFs. */
+	animated: Array<{ layerId: string; frames: Array<{ src: string; start: number; duration: number }> }>;
 }
 
 export function lottieToMotion({ json, name }: { json: LottieJson; name?: string }): LottieImport {
@@ -269,6 +271,7 @@ export function lottieToMotion({ json, name }: { json: LottieJson; name?: string
 	for (const a of json.assets ?? []) if (isObj(a) && typeof a.id === "string") assets.set(a.id, a);
 	const shift = json.ip / fps;
 	const seenComps = new Set<string>();
+	const animated: LottieImport["animated"] = [];
 	const layers: Layer[] = [];
 
 	for (const raw of [...json.layers].reverse()) {
@@ -395,14 +398,22 @@ export function lottieToMotion({ json, name }: { json: LottieJson; name?: string
 			if (inner.length && inner.every((l) => l.ty === 2)) {
 				if (seenComps.has(String(raw.refId))) continue;
 				seenComps.add(String(raw.refId));
-				const firstFrame = [...inner].sort((a, b) => (numOf(a.ip) ?? 0) - (numOf(b.ip) ?? 0))[0];
+				const ordered = [...inner].sort((a, b) => (numOf(a.ip) ?? 0) - (numOf(b.ip) ?? 0));
+				const firstFrame = ordered[0];
 				const asset = firstFrame && typeof firstFrame.refId === "string" ? assets.get(firstFrame.refId) : undefined;
 				const src = asset && typeof asset.p === "string" ? asset.p : null;
 				if (src) {
 					const w = numOf(raw.w) ?? numOf(asset?.w) ?? 100;
 					const h = numOf(raw.h) ?? numOf(asset?.h) ?? 100;
-					layers.push({ ...build({ name: nm.replace(/ \(loop\)$/, ""), w, h, ox: 0, oy: 0 }), kind: "image", src, w, h });
-					warnings.add("Animated pictures came in as their first frame.");
+					const layer: Layer = { ...build({ name: nm.replace(/ \(loop\)$/, ""), w, h, ox: 0, oy: 0 }), kind: "image", src, w, h };
+					layers.push(layer);
+					const frames = ordered.flatMap((f) => {
+						const a = typeof f.refId === "string" ? assets.get(f.refId) : undefined;
+						const start = (numOf(f.ip) ?? 0) / fps;
+						const end = (numOf(f.op) ?? 0) / fps;
+						return a && typeof a.p === "string" ? [{ src: a.p, start, duration: Math.max(0.01, end - start) }] : [];
+					});
+					if (frames.length > 1) animated.push({ layerId: layer.id, frames });
 					continue;
 				}
 			}
@@ -412,7 +423,7 @@ export function lottieToMotion({ json, name }: { json: LottieJson; name?: string
 		else warnings.add(`A layer of an unsupported type (${String(ty)}) was left out.`);
 	}
 	project.layers = layers;
-	return { project, warnings: [...warnings] };
+	return { project, warnings: [...warnings], animated };
 }
 
 type Style = { fill: string | null; stroke: string | null; strokeWidth: number };
