@@ -83,6 +83,9 @@ export const OVERLAY_CSS = `
 .me-field{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--muted-foreground,#9aa2b5)}
 .me-field input[type=text],.me-field select,.me-field input[type=number]{background:var(--input,#141822);border:1px solid var(--border,#2a3040);color:var(--foreground,#e8eaf0);border-radius:6px;padding:6px 8px;font:inherit;font-size:13px}
 .me-field input[type=range]{accent-color:#4c8dff}
+.me-field input,.me-field select{min-width:0;width:100%}
+.me-props{overflow-x:hidden}
+.me-two>*{min-width:0}
 .me-two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .me-colors{display:flex;flex-direction:column;gap:6px}
 .me-color{display:flex;align-items:center;gap:8px;font-size:12px}
