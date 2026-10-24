@@ -168,6 +168,12 @@ export function hideLayerPaint(json: LottieJson, { paint, removed = [] }: { pain
 		layers: (json.layers as Array<Record<string, unknown>>).map((layer) => {
 			const name = String(layer.nm ?? "");
 			if (drop.has(name)) return { ...layer, hd: true };
+			if (hidePaint.has(name) && layer.ty === 5) {
+				// Imported text layer: blank its words, keep its transform for the live text.
+				const t = layer.t as { d?: { k?: Array<{ s?: Record<string, unknown> }> } } | undefined;
+				const k = (t?.d?.k ?? []).map((key) => ({ ...key, s: { ...key.s, t: "" } }));
+				return { ...layer, t: { ...t, d: { ...t?.d, k } } };
+			}
 			if (hidePaint.has(name)) return { ...layer, shapes: silence(layer.shapes) };
 			return layer;
 		}),

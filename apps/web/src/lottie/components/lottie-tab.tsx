@@ -28,6 +28,9 @@ import { findPackAsset, type PackIndexAsset, resolvePackVariant } from "../catal
 import { brandColorOverrides, resolveSlotColors, setSlotColor, switchLottieVariant } from "../element";
 import type { LottieColorSlot, LottieElementData, LottieSource } from "../types";
 import { getUserLottie } from "../user-library";
+import { exportLottieClip } from "../io/export-actions";
+import { toast } from "sonner";
+import { userAsset } from "../player";
 import { motionProjectIdOf } from "@/motion-studio/video-link";
 import { useMotionEditor } from "../motion-editor/store";
 
@@ -56,13 +59,14 @@ function useColorSlots(source: LottieSource): LottieColorSlot[] | null {
 
 /** The library entry of a pack animation (for its language variants). */
 function usePackAsset(source: LottieSource): PackIndexAsset | null {
-	const assetId = source.kind === "pack" ? source.assetId : null;
+	const assetId = source.kind === "pack" ? source.assetId : source.id;
 	const pack = source.kind === "pack" ? source.pack : undefined;
+	const isUser = source.kind === "user";
 	const [asset, setAsset] = useState<PackIndexAsset | null>(null);
 	useEffect(() => {
 		if (!assetId) return;
 		let cancelled = false;
-		findPackAsset(assetId, pack)
+		(isUser ? userAsset(assetId) : findPackAsset(assetId, pack))
 			.then((found) => !cancelled && setAsset(found))
 			.catch(() => !cancelled && setAsset(null));
 		return () => {
@@ -132,6 +136,23 @@ export function LottieTab({
 						Open in Motion Studio
 					</Button>
 				)}
+				<div className="mt-1.5 grid grid-cols-2 gap-1.5">
+					{(["json", "lottie"] as const).map((format) => (
+						<Button
+							key={format}
+							variant="outline"
+							size="sm"
+							data-export-lottie={format}
+							onClick={() =>
+								exportLottieClip({ lottie: live, name: element.name || "animation", format }).catch((e: unknown) =>
+									toast.error(e instanceof Error ? e.message : "Export failed"),
+								)
+							}
+						>
+							Export {format === "json" ? "JSON" : ".lottie"}
+						</Button>
+					))}
+				</div>
 				{(packAsset?.textSlots?.length || packAsset?.imageSlots?.length) ? (
 					<p className="text-muted-foreground mt-1.5 text-xs">Change the words, fonts and pictures (e.g. your channel photo).</p>
 				) : null}

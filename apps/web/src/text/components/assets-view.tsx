@@ -1,6 +1,7 @@
 "use client";
 
 import { PacksView } from "@/packs/components/packs-view";
+import { TextLibraryView } from "@/text-library/components/text-library-view";
 import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import { toast } from "sonner";
 import { PanelView } from "@/components/editor/panels/assets/views/base-panel";
@@ -267,11 +268,11 @@ function TextTemplatesView() {
 
 /** Text sidebar: text templates, or the social template packs (SP-09). */
 export function TextView() {
-	const [mode, setMode] = useState<"templates" | "packs">("templates");
+	const [mode, setMode] = useState<"templates" | "animate" | "packs">("templates");
 	return (
 		<div className="flex h-full flex-col">
 			<div className="flex gap-4 border-b px-3 pt-2" role="tablist">
-				{(["templates", "packs"] as const).map((m) => (
+				{(["templates", "animate", "packs"] as const).map((m) => (
 					<button
 						key={m}
 						type="button"
@@ -284,11 +285,11 @@ export function TextView() {
 							mode === m ? "border-primary text-foreground" : "text-muted-foreground border-transparent",
 						)}
 					>
-						{m === "templates" ? "Text" : "Packs"}
+						{m === "templates" ? "Text" : m === "animate" ? "Animate" : "Packs"}
 					</button>
 				))}
 			</div>
-			<div className="min-h-0 flex-1">{mode === "packs" ? <PacksView /> : <TextTemplatesView />}</div>
+			<div className="min-h-0 flex-1">{mode === "packs" ? <PacksView /> : mode === "animate" ? <TextLibraryView /> : <TextTemplatesView />}</div>
 		</div>
 	);
 }

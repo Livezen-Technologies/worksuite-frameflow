@@ -14,7 +14,8 @@ import {
 } from "./element";
 import { type LottieElementData, LOTTIE_GRAPHIC_DEFINITION_ID } from "./types";
 import { packSoundElements } from "./sounds";
-import { importUserLottie, type UserLottie } from "./user-library";
+import { importUserLottieFile, type UserLottie } from "./user-library";
+import type { ImportedAnimation } from "./io/import";
 
 function durationOf(data: LottieElementData): MediaTime {
 	return roundMediaTime({
@@ -186,17 +187,21 @@ export function userAnimationDragData({
 export async function importLottieFiles({
 	editor,
 	files,
+	pick,
 }: {
 	editor: EditorCore;
 	files: File[];
+	/** Chooses among the animations of a multi-animation .lottie. */
+	pick?: (choices: ImportedAnimation[]) => Promise<ImportedAnimation[]>;
 }): Promise<{ imported: UserLottie[]; failed: Array<{ name: string; reason: string }> }> {
 	const imported: UserLottie[] = [];
 	const failed: Array<{ name: string; reason: string }> = [];
 	for (const file of files) {
 		try {
-			const entry = await importUserLottie(file);
-			addUserAnimation({ editor, entry });
-			imported.push(entry);
+			for (const entry of await importUserLottieFile(file, pick)) {
+				addUserAnimation({ editor, entry });
+				imported.push(entry);
+			}
 		} catch (error) {
 			failed.push({ name: file.name, reason: error instanceof Error ? error.message : "Unknown error" });
 		}

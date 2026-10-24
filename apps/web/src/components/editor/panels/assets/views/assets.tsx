@@ -39,6 +39,7 @@ import { useFileUpload } from "@/media/use-file-upload";
 import { invokeAction } from "@/actions";
 import { processMediaAssets } from "@/media/processing";
 import { importLottieFiles } from "@/lottie/actions";
+import { pickDotLottieAnimations } from "@/lottie/io/pick";
 import { isLottieFile } from "@/lottie/user-library";
 import { showMediaUploadToast } from "@/media/upload-toast";
 import {
@@ -99,7 +100,7 @@ export function MediaView() {
 		const lottieFiles = picked.filter(isLottieFile);
 		const files = picked.filter((file) => !isLottieFile(file));
 		if (lottieFiles.length > 0) {
-			const { imported, failed } = await importLottieFiles({ editor, files: lottieFiles });
+			const { imported, failed } = await importLottieFiles({ editor, files: lottieFiles, pick: pickDotLottieAnimations });
 			if (imported.length > 0) {
 				toast.success(
 					imported.length === 1

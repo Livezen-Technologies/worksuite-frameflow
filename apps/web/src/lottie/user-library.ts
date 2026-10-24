@@ -1,7 +1,8 @@
 import { unzipSync, strFromU8 } from "fflate";
 import { IndexedDBAdapter } from "@/services/storage/indexeddb-adapter";
 import { detectColorSlots, hasTextLayers, parseLottie } from "./colors";
-import type { LottieColorSlot, LottieJson } from "./types";
+import type { LottieColorSlot, LottieJson, LottieTextSlot } from "./types";
+import { readLottieFile, type ImportedAnimation } from "./io/import";
 
 /**
  * Lottie files the user imported. Kept once per device, keyed by a hash of
@@ -12,6 +13,8 @@ export interface UserLottie {
 	name: string;
 	json: LottieJson;
 	colors: LottieColorSlot[];
+	/** Text layers of an imported file, editable like pack text slots. */
+	textSlots?: LottieTextSlot[];
 	importedAt: number;
 }
 
@@ -66,7 +69,40 @@ export function dotLottieText(bytes: Uint8Array): string {
 	return JSON.stringify(json);
 }
 
-/** Reads, checks and stores a user's Lottie file. */
+/**
+ * Reads a Lottie JSON or dotLottie file and stores the chosen animations
+ * (all of them unless `pick` narrows a multi-animation .lottie).
+ */
+export async function importUserLottieFile(
+	file: File,
+	pick?: (choices: ImportedAnimation[]) => Promise<ImportedAnimation[]>,
+): Promise<UserLottie[]> {
+	const found = readLottieFile({ name: file.name, bytes: new Uint8Array(await file.arrayBuffer()) });
+	const chosen = found.length > 1 && pick ? await pick(found) : found;
+	const out: UserLottie[] = [];
+	for (const anim of chosen) {
+		const text = JSON.stringify(anim.json);
+		const id = (await sha256(text)).slice(0, 32);
+		const existing = await store().get(id);
+		if (existing) {
+			out.push(existing);
+			continue;
+		}
+		const entry: UserLottie = {
+			id,
+			name: anim.name,
+			json: anim.json,
+			colors: anim.colors,
+			...(anim.textSlots.length ? { textSlots: anim.textSlots } : {}),
+			importedAt: Date.now(),
+		};
+		await store().set({ key: id, value: entry });
+		out.push(entry);
+	}
+	return out;
+}
+
+/** Reads, checks and stores a user's Lottie file (first animation only; see importUserLottieFile). */
 export async function importUserLottie(file: File): Promise<UserLottie> {
 	const text = file.name.toLowerCase().endsWith(".lottie")
 		? dotLottieText(new Uint8Array(await file.arrayBuffer()))
