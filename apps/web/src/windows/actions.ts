@@ -34,10 +34,12 @@ export async function openInNewWindow({
 	editor,
 	projectId,
 	goToProjects,
+	at,
 }: {
 	editor: EditorCore;
 	projectId: string;
 	goToProjects: () => void;
+	at?: { x: number; y: number };
 }) {
 	const bridge = windowsBridge();
 	if (!bridge) return;
@@ -47,5 +49,5 @@ export async function openInNewWindow({
 		await leaveProject({ editor, then: goToProjects });
 		await bridge.report({ projectId: null });
 	}
-	await bridge.open({ projectId });
+	await bridge.open({ projectId, at });
 }

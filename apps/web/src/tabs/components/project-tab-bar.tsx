@@ -144,8 +144,23 @@ export function ProjectTabBar() {
 							key={tab.id}
 							data-project-tab={tab.id}
 							draggable
-							onDragStart={() => {
+							onDragStart={(e) => {
 								dragFrom.current = index;
+								e.dataTransfer.setData("text/plain", tab.name);
+								e.dataTransfer.effectAllowed = "move";
+							}}
+							onDragEnd={(e) => {
+								dragFrom.current = null;
+								// Dropped outside the window: open the project in its own window there (MP-04).
+								if (!hasWindows || !droppedOutside(e)) return;
+								void openInNewWindow({
+									editor,
+									projectId: tab.id,
+									goToProjects: () => router.push("/projects"),
+									at: { x: e.screenX, y: e.screenY },
+								}).then(() => {
+									if (tab.id !== activeId) useProjectTabs.getState().close(tab.id);
+								});
 							}}
 							onDragOver={(e) => e.preventDefault()}
 							onDrop={() => {
@@ -267,5 +282,15 @@ export function ProjectTabBar() {
 				) : null}
 			</DropdownMenuContent>
 		</DropdownMenu>
+	);
+}
+
+/** Whether a drag ended beyond the edges of this window. */
+function droppedOutside(e: { clientX: number; clientY: number }) {
+	return (
+		e.clientX < 0 ||
+		e.clientY < 0 ||
+		e.clientX > window.innerWidth ||
+		e.clientY > window.innerHeight
 	);
 }

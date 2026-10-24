@@ -1,4 +1,4 @@
-const { BrowserWindow, ipcMain } = require("electron");
+const { BrowserWindow, ipcMain, screen } = require("electron");
 
 /**
  * Projects in their own windows (SRS MP-04, MP-08): open a project in a
@@ -54,7 +54,7 @@ module.exports = {
 		return { ok: true };
 	},
 
-	async open(_event, { projectId } = {}) {
+	async open(_event, { projectId, at } = {}) {
 		const id = String(projectId ?? "");
 		if (!id || !makeWindow) return { opened: false };
 		const existing = windowShowing(id);
@@ -63,6 +63,14 @@ module.exports = {
 			return { opened: false, focused: true };
 		}
 		const win = makeWindow();
+		// A tab dragged out of the window: put the new window where it was dropped.
+		if (Number.isFinite(at?.x) && Number.isFinite(at?.y)) {
+			const area = screen.getDisplayNearestPoint({ x: Math.round(at.x), y: Math.round(at.y) }).workArea;
+			const [width, height] = win.getSize();
+			const x = Math.min(Math.max(area.x, Math.round(at.x - width / 2)), area.x + area.width - Math.min(width, area.width));
+			const y = Math.min(Math.max(area.y, Math.round(at.y - 20)), area.y + area.height - Math.min(height, area.height));
+			win.setPosition(x, y);
+		}
 		win.on("closed", () => {
 			for (const [key] of showing) if (BrowserWindow.getAllWindows().every((w) => w.webContents.id !== key)) showing.delete(key);
 		});
