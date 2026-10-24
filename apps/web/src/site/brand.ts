@@ -10,4 +10,5 @@ export const SITE_INFO = {
 	favicon: "/favicon.ico",
 };
 
-export const DEFAULT_LOGO_URL = "/logos/worksuite/logo.svg";
+/** The FrameFlow app icon, same artwork as the installers. */
+export const DEFAULT_LOGO_URL = "/brand/app-icon.svg";

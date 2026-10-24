@@ -58,7 +58,7 @@ export function Header() {
 								<Image
 									src={DEFAULT_LOGO_URL}
 									alt="Worksuite FrameFlow Logo"
-									className="invert dark:invert-0"
+									className="rounded-[5px]"
 									width={32}
 									height={32}
 								/>

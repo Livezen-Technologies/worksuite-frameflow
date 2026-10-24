@@ -14,7 +14,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 ### Fixed
 
 - Project thumbnails on the home screen are no longer black: they show the first frame that has something on it (instead of the very first frame), and refresh while you edit and each time you open the project.
-- The FrameFlow logo in the app (home, settings, sign-in) is now the real app icon instead of a plain play button.
+- The FrameFlow logo in the app (home, settings, sign-in, the editor's top-left menu and the website header) is now the real app icon instead of a plain play button or the old "W" mark.
 - Local models now download from the Worksuite download center first and fall back to the public source, so a moved or private public link no longer stops the download (the "Download failed (404)" and "(401)" errors). The new "Local models" workflow mirrors every model to the download center. The public fallbacks now point at working copies of Real-ESRGAN x4plus, RIFE 4.7 and Whisper Medium.
 
 ## [1.2.0] - 2026-10-24
