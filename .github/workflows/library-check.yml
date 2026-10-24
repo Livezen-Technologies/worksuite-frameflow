@@ -25,4 +25,6 @@ jobs:
         env:
           BASE: ${{ inputs.base }}
           CHANNEL: ${{ inputs.channel }}
-        run: node scripts/assets/check-library-feed.mjs "$BASE" "$CHANNEL"
+        run: |
+          node scripts/assets/probe-library.mjs || true
+          node scripts/assets/check-library-feed.mjs "$BASE" "$CHANNEL"
