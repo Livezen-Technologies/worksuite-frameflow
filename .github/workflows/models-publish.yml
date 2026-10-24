@@ -26,6 +26,9 @@ jobs:
         with:
           node-version: 22
 
+      - name: Install the ONNX checker
+        run: pip install --quiet onnx
+
       - name: Download every model from its source
         run: node scripts/models/publish.mjs --out dist/models
 
