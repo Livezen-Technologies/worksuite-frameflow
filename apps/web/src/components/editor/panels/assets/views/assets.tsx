@@ -147,7 +147,7 @@ export function MediaView() {
 
 	const { isDragOver, dragProps, openFilePicker, fileInputProps } =
 		useFileUpload({
-			accept: `image/*,video/*,audio/*,${HEIF_ACCEPT},.insv,.360,.json,application/json`,
+			accept: `image/*,video/*,audio/*,${HEIF_ACCEPT},.insv,.360,.json,.lottie,application/json`,
 			multiple: true,
 			onFilesSelected: (files) => processFiles({ files }),
 		});

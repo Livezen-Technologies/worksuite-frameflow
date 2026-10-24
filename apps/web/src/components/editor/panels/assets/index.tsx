@@ -19,6 +19,7 @@ import { SettingsView } from "./views/settings";
 import { SoundsView } from "@/sounds/components/assets-view";
 import { ElementsView } from "@/elements/components/elements-view";
 import { TextView } from "@/text/components/assets-view";
+import { MotionGraphicsView } from "@/lottie/components/motion-graphics-view";
 import { EffectsView } from "@/effects/components/assets-view";
 
 export function AssetsPanel() {
@@ -30,6 +31,7 @@ export function AssetsPanel() {
 		sounds: <SoundsView />,
 		text: <TextView />,
 		stickers: <ElementsView />,
+		motion: <MotionGraphicsView />,
 		effects: <EffectsView />,
 		transitions: <TransitionsView />,
 		filters: <FiltersView />,

@@ -4,10 +4,15 @@ import { create } from "zustand";
 
 /**
  * What the startup screen asked the editor to do once the new project is
- * open: start a screen recording, or import the files dropped on it.
+ * open: start a screen recording, open the motion graphics or template
+ * library, or import the files dropped on it.
  * Kept in memory only; it is consumed as soon as the editor loads.
  */
-export type StartIntent = { kind: "record" } | { kind: "import"; files: File[] };
+export type StartIntent =
+	| { kind: "record" }
+	| { kind: "motion" }
+	| { kind: "templates" }
+	| { kind: "import"; files: File[] };
 
 export const useStartIntent = create<{
 	intent: StartIntent | null;

@@ -28,7 +28,7 @@ import {
 	type PackSoundCue,
 	packSoundUrl,
 } from "../catalog";
-import { listUserLotties, type UserLottie } from "../user-library";
+import { importUserLottie, listUserLotties, type UserLottie } from "../user-library";
 import { LottiePreview } from "./lottie-preview";
 import { AssetLibraryButton } from "@/asset-library/components/asset-library-button";
 
@@ -220,9 +220,32 @@ export function AnimationsView() {
 					</p>
 				)}
 			</div>
-			<p className="text-muted-foreground pb-2 text-[11px]">
-				Import your own Lottie (.json) files from Media.
-			</p>
+			<label className="text-muted-foreground hover:text-foreground flex cursor-pointer items-center justify-center gap-1 border border-dashed py-2 text-[11px]" data-lottie-import>
+				Import Lottie (.json or .lottie)
+				<input
+					type="file"
+					accept=".json,.lottie,application/json"
+					multiple
+					className="hidden"
+					onChange={(event) => {
+						const files = [...(event.target.files ?? [])];
+						event.target.value = "";
+						void (async () => {
+							for (const file of files) {
+								try {
+									const entry = await importUserLottie(file);
+									setImports((prev) => [entry, ...prev.filter((p) => p.id !== entry.id)]);
+								} catch (cause) {
+									toast.error(`Couldn't import ${file.name}`, {
+										description: cause instanceof Error ? cause.message : String(cause),
+									});
+								}
+							}
+							setCategory(MY_IMPORTS);
+						})();
+					}}
+				/>
+			</label>
 		</div>
 	);
 }

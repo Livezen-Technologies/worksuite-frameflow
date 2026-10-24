@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useSyncExternalStore } from "react";
-import { ChevronDown, Clapperboard, FolderOpen, MonitorPlay, Upload } from "lucide-react";
+import { ChevronDown, Clapperboard, FolderOpen, LayoutTemplate, MonitorPlay, Sparkles, Upload } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import {
@@ -98,7 +98,7 @@ export function StartPanel() {
 
 	return (
 		<section className="px-4" aria-label="Start" data-start-panel>
-			<div className="flex flex-col gap-3 md:flex-row">
+			<div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
 				<button
 					type="button"
 					className={tile}
@@ -151,6 +151,34 @@ export function StartPanel() {
 						</DropdownMenuContent>
 					</DropdownMenu>
 				</div>
+				<button
+					type="button"
+					className={tile}
+					disabled={busy}
+					onClick={() => void start({ intent: { kind: "motion" }, name: "Motion graphics" })}
+					data-start="motion"
+				>
+					<Sparkles className="text-primary size-7 shrink-0" />
+					<span className="flex flex-col gap-1">
+						<span className="text-base font-semibold">Motion graphics</span>
+						<span className="text-muted-foreground text-sm">
+							Animated titles, lower thirds, subscribe buttons and stickers. Import Lottie and edit colours, words and timing.
+						</span>
+					</span>
+				</button>
+				<button
+					type="button"
+					className={tile}
+					disabled={busy}
+					onClick={() => void start({ intent: { kind: "templates" }, name: "New project" })}
+					data-start="templates"
+				>
+					<LayoutTemplate className="text-primary size-7 shrink-0" />
+					<span className="flex flex-col gap-1">
+						<span className="text-base font-semibold">Templates</span>
+						<span className="text-muted-foreground text-sm">Start from a ready-made video template.</span>
+					</span>
+				</button>
 				{desktop && (
 					<button type="button" className={tile} onClick={openExisting} data-start="open">
 						<FolderOpen className="text-primary size-7 shrink-0" />

@@ -9,6 +9,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
+- **Motion graphics** and **Templates** on the start screen: each opens a new project with its library ready. The editor's sidebar has a new **Motion** tab with all animations, your imports and saved motion edits.
+- Import Lottie animations as `.lottie` (dotLottie) files as well as `.json`, from the Motion tab or Media; pictures inside the file are kept.
 - GIFs in Elements: search GIPHY for GIFs and transparent stickers, browse Trending, Reactions, Business, Social Media, Education, Effects and Emoji, with search suggestions, favourites and recently used. Click to preview, then Insert to timeline (or double-click) to add it at the playhead on its own layer. Needs a free GIPHY API key, pasted in the panel once.
 - Animated GIF and WebP files now play on the timeline and in exports (looping), instead of showing only their first frame.
 - The start screen has three main choices: **New screen recording** (opens the recorder ready to record the screen), **New video project** (with a menu of sizes and frame rates) and **Open existing project**. Drop video, audio or image files anywhere on it to start a project with them already on the timeline.

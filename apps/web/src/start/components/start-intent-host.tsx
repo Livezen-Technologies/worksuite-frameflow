@@ -25,6 +25,10 @@ export function StartIntentHost() {
 			useAssetsPanelStore.getState().setActiveTab("record");
 			return;
 		}
+		if (intent.kind === "motion" || intent.kind === "templates") {
+			useAssetsPanelStore.getState().setActiveTab(intent.kind);
+			return;
+		}
 		void (async () => {
 			try {
 				const assets = await processMediaAssets({ files: intent.files });

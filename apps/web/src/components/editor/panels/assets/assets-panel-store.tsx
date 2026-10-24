@@ -18,6 +18,7 @@ import {
 	Blend,
 	BriefcaseBusiness,
 	CircleDot,
+	Sparkles,
 	LayoutTemplate,
 	ScrollText,
 } from "lucide-react";
@@ -29,6 +30,7 @@ export const TAB_KEYS = [
 	"sounds",
 	"text",
 	"stickers",
+	"motion",
 	"effects",
 	"transitions",
 	"filters",
@@ -75,6 +77,12 @@ export const tabs = {
 	stickers: {
 		icon: createHugeiconsIcon({ icon: Happy01Icon }),
 		label: "Elements",
+	},
+	motion: {
+		icon: ({ className }: { className?: string }) => (
+			<Sparkles className={className} strokeWidth={1.75} />
+		),
+		label: "Motion",
 	},
 	effects: {
 		icon: createHugeiconsIcon({ icon: MagicWand05Icon }),
