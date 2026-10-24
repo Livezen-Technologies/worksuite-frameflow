@@ -239,3 +239,10 @@ test("built catalog from the repo packs verifies", async () => {
 	assert.ok(names.includes("pack.json") && names.includes("index.json"));
 	assert.ok(names.includes("subscribe-buttons/sub-avatar-bar/asset.json"));
 });
+
+test("catalog accepts the asset library's graphics, stickers and brand-kit packs", () => {
+	const pack = (type) => ({ ...makePack().entry, id: `lib-${type}`, type });
+	const catalog = { schema: 1, channel: "stable", packs: ["graphics", "stickers", "brand-kits"].map(pack) };
+	assert.deepEqual(io.catalogProblems(catalog), []);
+	assert.deepEqual(io.catalogProblems({ ...catalog, packs: [pack("holograms")] }), ["packs[0].type is invalid"]);
+});

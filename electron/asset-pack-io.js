@@ -240,7 +240,7 @@ function verifyCatalog(data, signature, publicKeyPem) {
 
 // ---------- catalog ----------
 
-const PACK_TYPES = ["motion", "text-templates", "video-templates", "sounds", "transitions", "effects", "filters", "color-profiles", "luts", "fonts"];
+const PACK_TYPES = ["motion", "text-templates", "video-templates", "sounds", "transitions", "effects", "filters", "color-profiles", "luts", "fonts", "graphics", "stickers", "brand-kits"];
 const PACK_ID = /^[a-z0-9][a-z0-9-]{0,63}$/;
 const SEMVER = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/;
 

@@ -464,6 +464,11 @@ const CONTENT_TYPES = {
 	".cube": "text/plain",
 	".mp4": "video/mp4",
 	".webm": "video/webm",
+	".gif": "image/gif",
+	".flac": "audio/flac",
+	".aac": "audio/aac",
+	".mov": "video/quicktime",
+	".txt": "text/plain",
 };
 
 // ---------- Electron glue ----------
@@ -485,7 +490,10 @@ function registerScheme() {
 	]);
 }
 
-function init({ isOffline } = {}) {
+/** Catalog checks while the app runs (Asset Library blueprint §8.2). */
+const SYNC_INTERVAL_MS = 15 * 60 * 1000;
+
+function init({ isOffline, onNetworkChange } = {}) {
 	const { app, BrowserWindow } = require("electron");
 	store = createAssetStore({
 		root: path.join(app.getPath("userData"), "assets"),
@@ -496,11 +504,21 @@ function init({ isOffline } = {}) {
 			for (const win of BrowserWindow.getAllWindows()) win.webContents.send("assets:changed", state);
 		},
 	});
-	// Catalog check and installed-pack updates shortly after start.
-	setTimeout(async () => {
+	const sync = async () => {
+		if (isOffline?.()) return;
 		await store.refreshCatalog();
 		if (store.getState().settings.autoUpdate) await store.updateAll();
-	}, 8000).unref?.();
+	};
+	// Catalog check and installed-pack updates shortly after start, then
+	// every 15 minutes and whenever the app comes back online, so newly
+	// published library assets appear without a restart.
+	setTimeout(sync, 8000).unref?.();
+	setInterval(sync, SYNC_INTERVAL_MS).unref?.();
+	let wasOffline = !!isOffline?.();
+	onNetworkChange?.((state) => {
+		if (wasOffline && !state.offline) sync();
+		wasOffline = !!state.offline;
+	});
 	return store;
 }
 

@@ -10,6 +10,9 @@ export const PACK_TYPES = [
 	"color-profiles",
 	"luts",
 	"fonts",
+	"graphics",
+	"stickers",
+	"brand-kits",
 ] as const;
 export type PackType = (typeof PACK_TYPES)[number];
 
@@ -24,6 +27,9 @@ export const PACK_TYPE_LABELS: Record<PackType, string> = {
 	"color-profiles": "Colour profiles",
 	luts: "LUTs",
 	fonts: "Fonts",
+	graphics: "Graphics & overlays",
+	stickers: "GIFs & stickers",
+	"brand-kits": "Brand kits",
 };
 
 /** One pack in catalog.json (see assets/packs/catalog.schema.json). */

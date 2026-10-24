@@ -503,7 +503,7 @@ if (!app.requestSingleInstanceLock()) {
 			);
 			account.init();
 			updates.init();
-			assetStore.init({ isOffline: () => network.getState().offline });
+			assetStore.init({ isOffline: () => network.getState().offline, onNetworkChange: network.onChange });
 			return createWindow();
 		})
 		.catch((err) => {
