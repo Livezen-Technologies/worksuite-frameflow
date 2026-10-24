@@ -3,7 +3,7 @@
 import { ZoomLane } from "@/screen-zoom/components/zoom-lane";
 import { useMotionEditor } from "@/lottie/motion-editor/store";
 import { TimelineClipMenuExtras } from "@/clip-actions/components/clip-menus";
-import { getTransitionDefinition } from "@/transitions/definitions";
+import { TransitionBar, TransitionDropMarker, useTransitionDrop } from "@/transitions/components/timeline-transition";
 import { createContext, useContext } from "react";
 import { useEditor } from "@/editor/use-editor";
 import { useAssetsPanelStore } from "@/components/editor/panels/assets/assets-panel-store";
@@ -580,23 +580,18 @@ function ElementInner({
 		visibleElement.type === "video" || visibleElement.type === "image"
 			? visibleElement.transitionIn
 			: undefined;
+	const transitionDrop = useTransitionDrop({ element, track });
 	return (
 		<div
+			{...transitionDrop.handlers}
 			className="absolute top-0 bottom-0"
 			style={{
 				left: `${ELEMENT_RING_WIDTH_PX}px`,
 				right: `${ELEMENT_RING_WIDTH_PX}px`,
 			}}
 		>
-			{transitionIn && (
-				<span
-					className="bg-caution text-caution-foreground pointer-events-none absolute top-1/2 left-0 z-10 flex h-4 min-w-4 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded px-0.5 text-[10px] font-bold"
-					title={`Transition in: ${getTransitionDefinition(transitionIn.type).name}, ${transitionIn.duration.toFixed(1)} s`}
-					aria-label={`Transition: ${getTransitionDefinition(transitionIn.type).name}`}
-				>
-					⇄
-				</span>
-			)}
+			{transitionIn && <TransitionBar element={visibleElement} track={track} pixelsPerSecond={pixelsPerSecond} />}
+			<TransitionDropMarker edge={transitionDrop.edge} />
 			<div
 				className="absolute inset-0 rounded-md"
 				style={
