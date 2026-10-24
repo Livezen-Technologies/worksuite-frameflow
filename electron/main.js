@@ -230,6 +230,7 @@ function registerAccountIpc() {
 	handleFrom("windows:report", (event, args) => projectWindows.report(event, args));
 	handleFrom("windows:open", (event, args) => projectWindows.open(event, args));
 	handleFrom("windows:move-to-main", (event, args) => projectWindows.moveToMain(event, args));
+	handleFrom("windows:take", (event, args) => projectWindows.take(event, args));
 	handleFrom("windows:is-main", (event) => projectWindows.isMain(event));
 
 	handle("app:version", () => app.getVersion());

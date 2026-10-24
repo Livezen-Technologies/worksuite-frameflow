@@ -91,6 +91,17 @@ module.exports = {
 		return { moved: true };
 	},
 
+	/** Main window: a tab was dragged in from a project window; close that window. */
+	take(event, { projectId } = {}) {
+		if (!main || event.sender.id !== main.webContents.id) return { taken: false };
+		const id = String(projectId ?? "");
+		const win = id && windowShowing(id, main.webContents.id);
+		if (!win) return { taken: false };
+		showing.delete(win.webContents.id);
+		win.close();
+		return { taken: true };
+	},
+
 	isMain(event) {
 		return !!main && event.sender.id === main.webContents.id;
 	},

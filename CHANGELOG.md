@@ -9,7 +9,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
-- Drag a project tab out of the window to open that project in its own window where you drop it.
+- Drag a project tab out of the window to open that project in its own window where you drop it, and drag it onto the main window's project switcher to bring it back.
 - Claude and OpenAI as AI providers: pick one in Settings → AI and add your own key for translation, clean-up and clip suggestions. Cloud transcription still uses Gemini.
 - Undo now survives a restart: reopen a project and Ctrl+Z steps back through your last 50 timeline edits, and redo works too.
 - Translation memory: when you correct an AI translation, FrameFlow shows Gemini your wording the next time it translates into that language, this project's corrections first. See how many it holds, or clear them, in Settings → AI.

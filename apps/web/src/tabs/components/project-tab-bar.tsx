@@ -118,6 +118,23 @@ export function ProjectTabBar() {
 					title="Open projects (Ctrl+1–9)"
 					className="hover:bg-accent flex h-8 min-w-0 items-center gap-1.5 rounded-md px-1.5"
 					data-project-switcher
+					// A tab dragged here from a project window moves that project back (MP-04).
+					onDragOver={(e) => {
+						if (isMainWindow && e.dataTransfer.types.includes(TAB_TYPE)) {
+							e.preventDefault();
+							e.dataTransfer.dropEffect = "move";
+						}
+					}}
+					onDrop={(e) => {
+						const id = e.dataTransfer.getData(TAB_TYPE);
+						if (!isMainWindow || !id || tabs.some((t) => t.id === id)) return;
+						e.preventDefault();
+						void windowsBridge()
+							?.take({ projectId: id })
+							.then(({ taken }) => {
+								if (taken) void go(id);
+							});
+					}}
 				>
 					<span className="bg-primary text-primary-foreground flex size-6 shrink-0 items-center justify-center rounded-md text-xs font-semibold">
 						{name.trim().charAt(0).toUpperCase() || "P"}
@@ -147,12 +164,13 @@ export function ProjectTabBar() {
 							onDragStart={(e) => {
 								dragFrom.current = index;
 								e.dataTransfer.setData("text/plain", tab.name);
+								e.dataTransfer.setData(TAB_TYPE, tab.id);
 								e.dataTransfer.effectAllowed = "move";
 							}}
 							onDragEnd={(e) => {
 								dragFrom.current = null;
 								// Dropped outside the window: open the project in its own window there (MP-04).
-								if (!hasWindows || !droppedOutside(e)) return;
+								if (!hasWindows || (e.dataTransfer?.dropEffect ?? "none") !== "none" || !droppedOutside(e)) return;
 								void openInNewWindow({
 									editor,
 									projectId: tab.id,
@@ -284,6 +302,9 @@ export function ProjectTabBar() {
 		</DropdownMenu>
 	);
 }
+
+/** Drag data naming the project a tab belongs to. */
+const TAB_TYPE = "application/x-frameflow-tab";
 
 /** Whether a drag ended beyond the edges of this window. */
 function droppedOutside(e: { clientX: number; clientY: number }) {

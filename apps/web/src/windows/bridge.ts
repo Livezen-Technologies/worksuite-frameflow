@@ -7,6 +7,8 @@ export interface ProjectWindowsBridge {
 		at?: { x: number; y: number };
 	}) => Promise<{ opened: boolean; focused?: boolean }>;
 	moveToMain: (args: { projectId: string }) => Promise<{ moved: boolean }>;
+	/** Main window: close the project window showing this project, to show it here. */
+	take: (args: { projectId: string }) => Promise<{ taken: boolean }>;
 	isMain: () => Promise<boolean>;
 	onNavigate: (listener: (url: string) => void) => () => void;
 }
