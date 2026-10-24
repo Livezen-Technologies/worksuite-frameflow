@@ -1,0 +1,42 @@
+{
+	"schema": 1,
+	"id": "highlight-words",
+	"kind": "animation",
+	"name": {
+		"en": "Highlight words",
+		"si": "ඉස්මතු කිරීම",
+		"ta": "சிறப்பித்தல்"
+	},
+	"category": "captions",
+	"tags": {
+		"en": [
+			"highlight",
+			"marker",
+			"captions"
+		],
+		"si": [
+			"ඉස්මතු"
+		],
+		"ta": [
+			"சிறப்பு"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "word",
+		"in": {
+			"effect": "highlight-sweep",
+			"duration": 0.4,
+			"delay": 0.1,
+			"stagger": 0.18,
+			"staggerOrder": "forward",
+			"direction": "right",
+			"easing": "ease-in-out",
+			"intensity": 1,
+			"params": {
+				"color": "#FFD400"
+			}
+		}
+	},
+	"duration": 3
+}

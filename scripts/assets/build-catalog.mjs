@@ -17,6 +17,7 @@ import { fileURLToPath } from "node:url";
 
 const require = createRequire(import.meta.url);
 const io = require("../../electron/asset-pack-io.js");
+import { buildTextPackIndex, isTextPackDir } from "./text-packs.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 export const PACKS_DIR = join(root, "assets", "packs");
@@ -104,7 +105,14 @@ export function packFiles({ dir, manifest }) {
 			for (const f of files) entries.push({ name: `sounds/${f}`, data: readFileSync(join(src, "sounds", f)) });
 		}
 	}
-	for (const f of walk(dir)) if (f !== "pack.json") entries.push({ name: f, data: readFileSync(join(dir, f)) });
+	if (isTextPackDir(dir)) {
+		// Text library packs: index.json is generated from categories.json + items/.
+		const built = buildTextPackIndex(dir);
+		if (built.problems.length) throw new Error(built.problems.join("; "));
+		index = { ...built.index, assets: built.index.items.map((i) => ({ id: i.id })) };
+		entries.push({ name: "index.json", data: Buffer.from(`${JSON.stringify(built.index, null, "\t")}\n`) });
+	}
+	for (const f of walk(dir)) if (f !== "pack.json" && !(index && f === "index.json")) entries.push({ name: f, data: readFileSync(join(dir, f)) });
 	if (index && !entries.some((e) => e.name === "index.json")) entries.unshift({ name: "index.json", data: Buffer.from(`${JSON.stringify(index, null, "\t")}\n`) });
 	entries.unshift({ name: "pack.json", data: Buffer.from(`${JSON.stringify(publicManifest, null, "\t")}\n`) });
 	return entries;
@@ -130,7 +138,8 @@ export function buildCatalog({ channel = "stable", out = join(root, "dist", "ass
 		writeFileSync(join(dest, `${base}.zip`), zip);
 		const thumb = thumbnailOf(entries);
 		if (thumb) writeFileSync(join(dest, `${base}.png`), thumb.data);
-		const index = JSON.parse(entries.find((e) => e.name === "index.json")?.data ?? "{}");
+		const parsed = JSON.parse(entries.find((e) => e.name === "index.json")?.data ?? "{}");
+		const index = parsed.items ? { assets: parsed.items } : parsed;
 		catalog.packs.push({
 			id: manifest.id,
 			type: manifest.type,

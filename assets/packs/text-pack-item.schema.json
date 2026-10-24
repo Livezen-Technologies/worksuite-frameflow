@@ -1,0 +1,601 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://worksuite.livezen.lk/schemas/text-pack-item.schema.json",
+	"title": "Text library item (text animation or text template)",
+	"description": "One file per item: assets/packs/text-animations/<pack>/items/<id>.json (kind animation) or assets/packs/text-templates/<pack>/items/<id>.json (kind template). The file name must be <id>.json.",
+	"oneOf": [
+		{
+			"$ref": "#/$defs/animationItem"
+		},
+		{
+			"$ref": "#/$defs/templateItem"
+		}
+	],
+	"$defs": {
+		"hex": {
+			"type": "string",
+			"pattern": "^#[0-9A-Fa-f]{6}$"
+		},
+		"localText": {
+			"type": "object",
+			"required": [
+				"en"
+			],
+			"properties": {
+				"en": {
+					"type": "string",
+					"minLength": 1
+				},
+				"si": {
+					"type": "string"
+				},
+				"ta": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false
+		},
+		"tags": {
+			"type": "object",
+			"required": [
+				"en",
+				"si",
+				"ta"
+			],
+			"properties": {
+				"en": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				},
+				"si": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				},
+				"ta": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				}
+			}
+		},
+		"easing": {
+			"oneOf": [
+				{
+					"enum": [
+						"linear",
+						"ease",
+						"ease-in",
+						"ease-out",
+						"ease-in-out",
+						"ease-in-quad",
+						"ease-out-quad",
+						"ease-in-out-quad",
+						"ease-in-cubic",
+						"ease-out-cubic",
+						"ease-in-out-cubic",
+						"ease-in-quart",
+						"ease-out-quart",
+						"ease-in-expo",
+						"ease-out-expo",
+						"ease-in-out-expo",
+						"ease-in-back",
+						"ease-out-back",
+						"ease-in-out-back",
+						"ease-out-elastic",
+						"ease-out-bounce",
+						"step"
+					]
+				},
+				{
+					"type": "array",
+					"items": {
+						"type": "number"
+					},
+					"minItems": 4,
+					"maxItems": 4,
+					"description": "cubic-bezier x1,y1,x2,y2 (x in 0..1)"
+				}
+			]
+		},
+		"phase": {
+			"type": "object",
+			"required": [
+				"effect",
+				"duration",
+				"delay",
+				"stagger",
+				"staggerOrder",
+				"direction",
+				"easing",
+				"intensity",
+				"params"
+			],
+			"additionalProperties": false,
+			"properties": {
+				"effect": {
+					"enum": [
+						"none",
+						"fade",
+						"slide",
+						"rise",
+						"drop",
+						"pop",
+						"scale-up",
+						"scale-down",
+						"zoom-blur",
+						"blur-in",
+						"typewriter",
+						"scramble",
+						"wave",
+						"bounce",
+						"elastic",
+						"flip-x",
+						"flip-y",
+						"rotate-in",
+						"skew-in",
+						"glitch",
+						"rgb-split",
+						"neon-flicker",
+						"mask-wipe",
+						"split-reveal",
+						"tracking-expand",
+						"highlight-sweep",
+						"underline-draw",
+						"box-reveal",
+						"stamp",
+						"shake",
+						"jitter",
+						"swing",
+						"colour-cycle",
+						"gradient-sweep",
+						"stroke-draw",
+						"3d-tilt",
+						"stretch",
+						"karaoke-fill",
+						"number-counter",
+						"shine",
+						"pulse",
+						"float",
+						"spin",
+						"blink"
+					]
+				},
+				"duration": {
+					"type": "number",
+					"minimum": 0,
+					"description": "seconds per unit (emphasis: loop period)"
+				},
+				"delay": {
+					"type": "number",
+					"minimum": 0
+				},
+				"stagger": {
+					"type": "number",
+					"minimum": 0,
+					"description": "seconds between units"
+				},
+				"staggerOrder": {
+					"type": "string",
+					"pattern": "^(forward|reverse|center-out|edges-in|random(\\(-?\\d+\\))?)$"
+				},
+				"direction": {
+					"enum": [
+						"left",
+						"right",
+						"up",
+						"down",
+						"in",
+						"out"
+					]
+				},
+				"easing": {
+					"$ref": "#/$defs/easing"
+				},
+				"intensity": {
+					"type": "number",
+					"minimum": 0,
+					"maximum": 2
+				},
+				"params": {
+					"type": "object",
+					"additionalProperties": {
+						"type": [
+							"number",
+							"string",
+							"boolean"
+						]
+					}
+				}
+			}
+		},
+		"keyframe": {
+			"type": "object",
+			"required": [
+				"t",
+				"v"
+			],
+			"properties": {
+				"t": {
+					"type": "number"
+				},
+				"v": {
+					"type": [
+						"number",
+						"string"
+					]
+				},
+				"easing": {
+					"$ref": "#/$defs/easing"
+				}
+			},
+			"additionalProperties": false
+		},
+		"textAnimation": {
+			"type": "object",
+			"required": [
+				"version",
+				"unit"
+			],
+			"additionalProperties": false,
+			"properties": {
+				"version": {
+					"const": 1
+				},
+				"unit": {
+					"enum": [
+						"grapheme",
+						"word",
+						"line",
+						"block"
+					]
+				},
+				"in": {
+					"$ref": "#/$defs/phase"
+				},
+				"emphasis": {
+					"$ref": "#/$defs/phase"
+				},
+				"out": {
+					"$ref": "#/$defs/phase"
+				},
+				"keyframes": {
+					"type": "object",
+					"required": [
+						"tracks"
+					],
+					"properties": {
+						"stagger": {
+							"type": "number",
+							"minimum": 0
+						},
+						"staggerOrder": {
+							"type": "string"
+						},
+						"tracks": {
+							"type": "object",
+							"propertyNames": {
+								"enum": [
+									"opacity",
+									"x",
+									"y",
+									"scale",
+									"rotation",
+									"skew",
+									"blur",
+									"tracking",
+									"fill",
+									"stroke"
+								]
+							},
+							"additionalProperties": {
+								"type": "array",
+								"items": {
+									"$ref": "#/$defs/keyframe"
+								}
+							}
+						}
+					}
+				},
+				"unitTimes": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"required": [
+							"start",
+							"end"
+						],
+						"properties": {
+							"start": {
+								"type": "number"
+							},
+							"end": {
+								"type": "number"
+							}
+						}
+					}
+				}
+			}
+		},
+		"style": {
+			"type": "object",
+			"description": "Partial TextAnimationStyle (font, colours, stroke, shadow, glow, plate, gradient)",
+			"properties": {
+				"fontFamily": {
+					"type": "string"
+				},
+				"fontWeight": {
+					"type": [
+						"number",
+						"string"
+					]
+				},
+				"fontStyle": {
+					"enum": [
+						"normal",
+						"italic"
+					]
+				},
+				"tracking": {
+					"type": "number"
+				},
+				"lineHeight": {
+					"type": "number"
+				},
+				"align": {
+					"enum": [
+						"left",
+						"center",
+						"right"
+					]
+				},
+				"fill": {
+					"$ref": "#/$defs/hex"
+				},
+				"gradient": {
+					"type": "array",
+					"items": {
+						"$ref": "#/$defs/hex"
+					},
+					"minItems": 2
+				},
+				"stroke": {
+					"type": "object",
+					"properties": {
+						"color": {
+							"$ref": "#/$defs/hex"
+						},
+						"width": {
+							"type": "number"
+						}
+					}
+				},
+				"shadow": {
+					"type": "object",
+					"properties": {
+						"color": {
+							"$ref": "#/$defs/hex"
+						},
+						"blur": {
+							"type": "number"
+						},
+						"x": {
+							"type": "number"
+						},
+						"y": {
+							"type": "number"
+						}
+					}
+				},
+				"glow": {
+					"type": "object",
+					"properties": {
+						"color": {
+							"$ref": "#/$defs/hex"
+						},
+						"size": {
+							"type": "number",
+							"description": "em"
+						}
+					}
+				},
+				"plate": {
+					"type": "object",
+					"properties": {
+						"color": {
+							"$ref": "#/$defs/hex"
+						},
+						"padding": {
+							"type": "number"
+						},
+						"radius": {
+							"type": "number"
+						}
+					}
+				}
+			}
+		},
+		"animationItem": {
+			"type": "object",
+			"required": [
+				"schema",
+				"id",
+				"kind",
+				"name",
+				"category",
+				"tags",
+				"animation"
+			],
+			"additionalProperties": false,
+			"properties": {
+				"schema": {
+					"const": 1
+				},
+				"id": {
+					"type": "string",
+					"pattern": "^[a-z0-9][a-z0-9-]{1,63}$"
+				},
+				"name": {
+					"$ref": "#/$defs/localText"
+				},
+				"category": {
+					"type": "string",
+					"description": "an id from the pack's categories.json"
+				},
+				"tags": {
+					"$ref": "#/$defs/tags"
+				},
+				"plan": {
+					"enum": [
+						"free",
+						"pro"
+					]
+				},
+				"kind": {
+					"const": "animation"
+				},
+				"animation": {
+					"$ref": "#/$defs/textAnimation"
+				},
+				"previewText": {
+					"$ref": "#/$defs/localText"
+				},
+				"style": {
+					"$ref": "#/$defs/style"
+				},
+				"duration": {
+					"type": "number",
+					"exclusiveMinimum": 0
+				}
+			}
+		},
+		"templateItem": {
+			"type": "object",
+			"required": [
+				"schema",
+				"id",
+				"kind",
+				"name",
+				"category",
+				"tags",
+				"duration",
+				"slots"
+			],
+			"additionalProperties": false,
+			"properties": {
+				"schema": {
+					"const": 1
+				},
+				"id": {
+					"type": "string",
+					"pattern": "^[a-z0-9][a-z0-9-]{1,63}$"
+				},
+				"name": {
+					"$ref": "#/$defs/localText"
+				},
+				"category": {
+					"type": "string",
+					"description": "an id from the pack's categories.json"
+				},
+				"tags": {
+					"$ref": "#/$defs/tags"
+				},
+				"plan": {
+					"enum": [
+						"free",
+						"pro"
+					]
+				},
+				"kind": {
+					"const": "template"
+				},
+				"duration": {
+					"type": "number",
+					"exclusiveMinimum": 0
+				},
+				"aspect": {
+					"type": "string"
+				},
+				"slots": {
+					"type": "array",
+					"minItems": 1,
+					"items": {
+						"type": "object",
+						"required": [
+							"id",
+							"name",
+							"text",
+							"x",
+							"y",
+							"size"
+						],
+						"additionalProperties": false,
+						"properties": {
+							"id": {
+								"type": "string"
+							},
+							"name": {
+								"type": "string"
+							},
+							"text": {
+								"$ref": "#/$defs/localText"
+							},
+							"x": {
+								"type": "number",
+								"minimum": 0,
+								"maximum": 1
+							},
+							"y": {
+								"type": "number",
+								"minimum": 0,
+								"maximum": 1
+							},
+							"size": {
+								"type": "number",
+								"minimum": 0,
+								"maximum": 1,
+								"description": "font size as a share of frame height"
+							},
+							"style": {
+								"$ref": "#/$defs/style"
+							},
+							"animation": {
+								"$ref": "#/$defs/textAnimation"
+							},
+							"start": {
+								"type": "number",
+								"minimum": 0
+							},
+							"end": {
+								"type": "number",
+								"minimum": 0
+							}
+						}
+					}
+				},
+				"background": {
+					"type": "object",
+					"properties": {
+						"packAsset": {
+							"type": "string"
+						},
+						"file": {
+							"type": "string"
+						},
+						"colors": {
+							"type": "object",
+							"additionalProperties": {
+								"$ref": "#/$defs/hex"
+							}
+						}
+					},
+					"additionalProperties": false
+				}
+			}
+		}
+	}
+}

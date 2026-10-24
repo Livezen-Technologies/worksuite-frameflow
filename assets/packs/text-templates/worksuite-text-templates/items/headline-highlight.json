@@ -1,0 +1,70 @@
+{
+	"schema": 1,
+	"id": "headline-highlight",
+	"kind": "template",
+	"name": {
+		"en": "Highlighted headline",
+		"si": "ඉස්මතු ශීර්ෂය",
+		"ta": "சிறப்பு தலைப்பு"
+	},
+	"category": "titles",
+	"tags": {
+		"en": [
+			"headline",
+			"highlight",
+			"news"
+		],
+		"si": [
+			"ඉස්මතු ශීර්ෂය"
+		],
+		"ta": [
+			"சிறப்பு தலைப்பு"
+		]
+	},
+	"duration": 5,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "headline",
+			"name": "Headline",
+			"text": {
+				"en": "Prices drop 20% this week",
+				"si": "මෙම සතියේ මිල 20%කින් අඩු වේ",
+				"ta": "இந்த வாரம் விலை 20% குறைவு"
+			},
+			"x": 0.5,
+			"y": 0.5,
+			"size": 0.07,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 800,
+				"fill": "#111827",
+				"plate": {
+					"color": "#FFFFFF",
+					"padding": 0.3,
+					"radius": 0.1
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "highlight-sweep",
+					"duration": 0.4,
+					"delay": 0.3,
+					"stagger": 0.15,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {
+						"color": "#FDE047"
+					}
+				}
+			}
+		}
+	],
+	"background": {
+		"packAsset": "co-highlight-swipe"
+	}
+}

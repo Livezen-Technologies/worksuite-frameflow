@@ -37,6 +37,10 @@ export function useTimelineDragDrop({
 		executeCommand: (command) => editor.command.execute({ command }),
 		insertElement: (args) => editor.timeline.insertElement(args),
 		addClipEffect: (args) => editor.timeline.addClipEffect(args),
+		applyTextAnimation: ({ trackId, elementId, textAnimation }) =>
+			editor.timeline.updateElements({
+				updates: [{ trackId, elementId, patch: { textAnimation: structuredClone(textAnimation) } }],
+			}),
 	};
 	const configRef = useCommittedRef(config);
 	const [controller] = useState(() => new DragDropController({ configRef }));

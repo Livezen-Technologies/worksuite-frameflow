@@ -1,0 +1,53 @@
+{
+	"schema": 1,
+	"id": "pop-letters",
+	"kind": "animation",
+	"name": {
+		"en": "Pop letters",
+		"si": "අකුරු පොප්",
+		"ta": "எழுத்து பாப்"
+	},
+	"category": "kinetic",
+	"tags": {
+		"en": [
+			"pop",
+			"letters",
+			"bouncy"
+		],
+		"si": [
+			"පොප්",
+			"අකුරු"
+		],
+		"ta": [
+			"பாப்",
+			"எழுத்து"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "grapheme",
+		"in": {
+			"effect": "pop",
+			"duration": 0.45,
+			"delay": 0,
+			"stagger": 0.035,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-out-back",
+			"intensity": 1,
+			"params": {}
+		},
+		"out": {
+			"effect": "scale-down",
+			"duration": 0.3,
+			"delay": 0,
+			"stagger": 0.02,
+			"staggerOrder": "reverse",
+			"direction": "up",
+			"easing": "ease-in",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"duration": 3
+}

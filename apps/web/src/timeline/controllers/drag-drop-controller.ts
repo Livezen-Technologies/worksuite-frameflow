@@ -31,6 +31,7 @@ import type {
 import type { TimelineDragData } from "@/timeline/drag";
 import type { MediaAsset } from "@/media/types";
 import type { ProcessedMediaAsset } from "@/media/processing";
+import type { TextAnimation } from "@/text-animation/types";
 import { roundFrameTime, type MediaTime } from "@/wasm";
 
 // --- Config ---
@@ -55,6 +56,8 @@ export interface DragDropConfig {
 		placement: { mode: "explicit"; trackId: string } | { mode: "auto"; trackType: "audio" };
 		element: CreateTimelineElement;
 	}) => void;
+	/** Applies a Text library animation to a clip (one undo step). */
+	applyTextAnimation?: (args: { trackId: string; elementId: string; textAnimation: TextAnimation }) => void;
 	addClipEffect: (args: {
 		trackId: string;
 		elementId: string;
@@ -109,6 +112,7 @@ function getTargetElementTypesForDrag({
 }): string[] | undefined {
 	if (dragData.type === "effect") return dragData.targetElementTypes;
 	if (dragData.type === "media") return dragData.targetElementTypes;
+	if (dragData.type === "text") return dragData.targetElementTypes;
 	return undefined;
 }
 
@@ -386,13 +390,23 @@ export class DragDropController {
 		target: DropTarget;
 		dragData: Extract<TimelineDragData, { type: "text" }>;
 	}): void {
-		const element = buildTextElement({
+		if (target.targetElement && dragData.textAnimation) {
+			// Dropped on a text or caption clip: apply the animation to it.
+			this.config.applyTextAnimation?.({
+				trackId: target.targetElement.trackId,
+				elementId: target.targetElement.elementId,
+				textAnimation: dragData.textAnimation,
+			});
+			return;
+		}
+		const built = buildTextElement({
 			raw: {
 				name: dragData.name ?? "",
-				params: { content: dragData.content ?? "" },
+				params: { ...(dragData.params ?? {}), content: dragData.content ?? "" },
 			},
 			startTime: target.xPosition,
 		});
+		const element = dragData.textAnimation ? { ...built, textAnimation: structuredClone(dragData.textAnimation) } : built;
 		this.insertAtTarget({ element, target, trackType: "text" });
 	}
 

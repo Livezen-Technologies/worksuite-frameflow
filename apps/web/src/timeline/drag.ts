@@ -3,6 +3,7 @@ import type { ParamValues } from "@/params";
 import type { PackIndexAsset } from "@/lottie/catalog";
 import type { LottieElementData } from "@/lottie/types";
 import type { MediaTime } from "@/wasm";
+import type { TextAnimation } from "@/text-animation/types";
 
 interface BaseDragData {
 	id: string;
@@ -18,6 +19,12 @@ export interface MediaDragData extends BaseDragData {
 export interface TextDragData extends BaseDragData {
 	type: "text";
 	content: string;
+	/** Style params for the new clip (Text library). */
+	params?: Partial<ParamValues>;
+	/** A Text library animation: added with the clip, or applied when dropped on a text clip. */
+	textAnimation?: TextAnimation;
+	/** Set with `textAnimation`: dropping on one of these applies instead of inserting. */
+	targetElementTypes?: Array<"text">;
 }
 
 export interface StickerDragData extends BaseDragData {

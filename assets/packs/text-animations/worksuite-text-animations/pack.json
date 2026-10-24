@@ -1,0 +1,32 @@
+{
+	"id": "worksuite-text-animations",
+	"type": "text-animations",
+	"version": "1.0.0",
+	"title": "Worksuite text animations",
+	"description": "Letter, word and line animations for titles and captions, with Sinhala and Tamil support.",
+	"tags": {
+		"en": [
+			"text",
+			"animation",
+			"titles",
+			"captions"
+		],
+		"si": [
+			"අකුරු",
+			"සජීවිකරණ"
+		],
+		"ta": [
+			"உரை",
+			"அசைவூட்டம்"
+		]
+	},
+	"languages": [
+		"en",
+		"si",
+		"ta"
+	],
+	"licence": "MIT",
+	"minAppVersion": "1.0.0",
+	"plan": "free",
+	"builtin": true
+}
