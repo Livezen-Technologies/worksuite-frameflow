@@ -9,6 +9,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
+- Motion Studio Lottie import: text that changes over time (like a countdown) comes in as one text layer per version, each shown at its time; animated GIFs exported from FrameFlow come back as pictures. GIFs up to 900 frames now stay animated in Lottie exports (long ones use smaller frames).
 - **Media library** on the home sidebar: every video, picture and sound from all your projects on this computer, with search, type filters, thumbnails and durations. Start a new project with a file, open its project, or download it.
 - **Exports** on the home sidebar: a history of everything you've exported (format, size, resolution, project and where it was saved), with Show in folder in the desktop app, Open project, and filters by format.
 - Animated GIFs in Motion Studio now follow the playhead on the canvas and stay animated in Lottie exports and in “Use in video” (each frame plays in a looping pre-composition).
