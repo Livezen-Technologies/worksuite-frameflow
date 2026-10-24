@@ -32,6 +32,8 @@ import { useDockStore } from "@/dock/store";
 import { isDefaultDock, type DockPanelId, type DockRow, type DockSlot } from "@/dock/layout";
 import type { ImperativePanelGroupHandle } from "react-resizable-panels";
 import { useWorkspaceStore } from "@/workspaces/store";
+import { AudioStudio } from "@/audio-studio/components/audio-studio";
+import { useStudioStore } from "@/audio-studio/store";
 import { useAssetsPanelStore } from "@/components/editor/panels/assets/assets-panel-store";
 import { useEditor } from "@/editor/use-editor";
 import { Cancel01Icon } from "@hugeicons/core-free-icons";
@@ -63,7 +65,7 @@ export default function Editor() {
 					<DegradedRendererBanner />
 					<EditorHeader />
 					<div className="min-h-0 min-w-0 flex-1">
-						<EditorLayout />
+						<EditorOrStudio />
 					</div>
 					<Onboarding />
 					<TranscriptEditor />
@@ -102,6 +104,12 @@ function DegradedRendererBanner() {
 			</Button>
 		</div>
 	);
+}
+
+/** The same project in the video editor or the Audio Studio; both edit one timeline. */
+function EditorOrStudio() {
+	const studio = useStudioStore((s) => s.studio);
+	return studio === "audio" ? <AudioStudio /> : <EditorLayout />;
 }
 
 function EditorLayout() {

@@ -6,6 +6,8 @@ import { createAudioContext, collectAudioClips } from "@/media/audio";
 import {
 	buildAudioGainAutomation,
 	getElementPitch,
+	getElementEq,
+	hasEq,
 	hasAnimatedVolume,
 } from "@/timeline/audio-state";
 import { createAudioMasteringChain } from "@/media/audio-mastering";
@@ -71,6 +73,7 @@ export class AudioManager {
 			void this.audioContext.close();
 			this.audioContext = null;
 			this.masterGain = null;
+			this.analyser = null;
 		}
 	}
 
@@ -133,6 +136,21 @@ export class AudioManager {
 		this.masterGain = input;
 		this.masterGain.gain.value = this.lastVolume;
 		return this.audioContext;
+	}
+
+	private analyser: AnalyserNode | null = null;
+
+	/** A tap on the mixed output for meters and the spectrum (Audio Studio). */
+	getAnalyser(): AnalyserNode | null {
+		const context = this.ensureAudioContext();
+		if (!context || !this.masterGain) return null;
+		if (!this.analyser) {
+			this.analyser = context.createAnalyser();
+			this.analyser.fftSize = 2048;
+			this.analyser.smoothingTimeConstant = 0.75;
+			this.masterGain.connect(this.analyser);
+		}
+		return this.analyser;
 	}
 
 	private updateGain(): void {
@@ -482,6 +500,7 @@ export class AudioManager {
 			this.hasCurveRetime({ clip }) ||
 			hasAnimatedVolume({ element: clip.timelineElement }) ||
 			getElementPitch({ element: clip.timelineElement }) !== 0 ||
+			hasEq(getElementEq({ element: clip.timelineElement })) ||
 			shouldMaintainPitch({
 				rate: clip.retime?.rate ?? 1,
 				maintainPitch: clip.retime?.maintainPitch,
@@ -551,6 +570,7 @@ export class AudioManager {
 			trimEnd: clip.trimEnd,
 			retime: clip.retime ?? null,
 			pitch: getElementPitch({ element: clip.timelineElement }),
+			eq: getElementEq({ element: clip.timelineElement }),
 		});
 	}
 
@@ -584,6 +604,7 @@ export class AudioManager {
 				retime: clip.retime,
 				maintainPitch: clip.retime?.maintainPitch === true,
 				pitchSemitones: getElementPitch({ element: clip.timelineElement }),
+				eq: getElementEq({ element: clip.timelineElement }),
 			});
 		})();
 

@@ -14,6 +14,8 @@ import {
 	isElementMuted,
 	resolveEffectiveAudioGain,
 	getElementPitch,
+	getElementEq,
+	hasEq,
 } from "@/timeline/audio-state";
 import { doesElementHaveEnabledAudio } from "@/timeline/audio-separation";
 import { canElementHaveAudio, hasMediaId } from "@/timeline/element-utils";
@@ -685,8 +687,10 @@ export async function createTimelineAudioBuffer({
 		if (element.muted) continue;
 
 		const pitchSemitones = getElementPitch({ element: element.timelineElement });
+		const eq = getElementEq({ element: element.timelineElement });
 		const renderedBuffer =
 			pitchSemitones !== 0 ||
+			hasEq(eq) ||
 			shouldMaintainPitch({
 				rate: element.retime?.rate ?? 1,
 				maintainPitch: element.retime?.maintainPitch,
@@ -699,6 +703,7 @@ export async function createTimelineAudioBuffer({
 						retime: element.retime,
 						maintainPitch: true,
 						pitchSemitones,
+						eq,
 					})
 				: undefined;
 

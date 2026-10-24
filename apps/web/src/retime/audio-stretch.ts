@@ -2,6 +2,31 @@ import { PitchShifter } from "soundtouchjs";
 import { clampRetimeRate, shouldMaintainPitch } from "@/retime/rate";
 import type { RetimeConfig } from "@/timeline";
 import { getSourceTimeAtClipTime } from "./resolve";
+import { type ClipEq, hasEq } from "@/timeline/audio-state";
+
+/** Runs a buffer through the 3-band EQ (and low cut) offline. */
+export async function applyEq({ buffer, eq }: { buffer: AudioBuffer; eq: ClipEq }): Promise<AudioBuffer> {
+	const context = new OfflineAudioContext(buffer.numberOfChannels, buffer.length, buffer.sampleRate);
+	const source = context.createBufferSource();
+	source.buffer = buffer;
+	let node: AudioNode = source;
+	const add = (type: BiquadFilterType, frequency: number, gain = 0) => {
+		const filter = context.createBiquadFilter();
+		filter.type = type;
+		filter.frequency.value = frequency;
+		filter.gain.value = gain;
+		if (type === "peaking") filter.Q.value = 0.9;
+		node.connect(filter);
+		node = filter;
+	};
+	if (eq.lowCut > 0) add("highpass", eq.lowCut);
+	if (eq.low) add("lowshelf", 200, eq.low);
+	if (eq.mid) add("peaking", 1200, eq.mid);
+	if (eq.high) add("highshelf", 5000, eq.high);
+	node.connect(context.destination);
+	source.start(0);
+	return context.startRendering();
+}
 
 const RATE_EPSILON = 1e-6;
 
@@ -150,6 +175,7 @@ export async function renderRetimedBuffer({
 	retime,
 	maintainPitch = false,
 	pitchSemitones = 0,
+	eq,
 }: {
 	audioContext: BaseAudioContext;
 	sourceBuffer: AudioBuffer;
@@ -159,6 +185,29 @@ export async function renderRetimedBuffer({
 	maintainPitch?: boolean;
 	/** Voice changer: shift the pitch without changing the speed. */
 	pitchSemitones?: number;
+	/** Equaliser, applied after speed and pitch. */
+	eq?: ClipEq;
+}): Promise<AudioBuffer> {
+	const rendered = await renderStretched({ audioContext, sourceBuffer, trimStart, clipDuration, retime, maintainPitch, pitchSemitones });
+	return eq && hasEq(eq) ? applyEq({ buffer: rendered, eq }) : rendered;
+}
+
+async function renderStretched({
+	audioContext,
+	sourceBuffer,
+	trimStart,
+	clipDuration,
+	retime,
+	maintainPitch,
+	pitchSemitones,
+}: {
+	audioContext: BaseAudioContext;
+	sourceBuffer: AudioBuffer;
+	trimStart: number;
+	clipDuration: number;
+	retime?: RetimeConfig;
+	maintainPitch: boolean;
+	pitchSemitones: number;
 }): Promise<AudioBuffer> {
 	const targetSampleRate = audioContext.sampleRate;
 	const rate = clampRetimeRate({ rate: retime?.rate ?? 1 });

@@ -56,6 +56,32 @@ export function getElementPitch({ element }: { element: AudioCapableElement }): 
 	return typeof value === "number" && Number.isFinite(value) ? Math.max(-12, Math.min(12, value)) : 0;
 }
 
+/** 3-band equaliser in dB (Audio Studio › EQ): low shelf, mid peak, high shelf. */
+export interface ClipEq {
+	low: number;
+	mid: number;
+	high: number;
+	/** High-pass cut-off in Hz (0 = off), for rumble or a "telephone" sound. */
+	lowCut: number;
+}
+
+export function getElementEq({ element }: { element: AudioCapableElement }): ClipEq {
+	const read = ({ key, min, max }: { key: string; min: number; max: number }) => {
+		const value = element.params[key];
+		return typeof value === "number" && Number.isFinite(value) ? Math.max(min, Math.min(max, value)) : 0;
+	};
+	return {
+		low: read({ key: "eq.low", min: -24, max: 24 }),
+		mid: read({ key: "eq.mid", min: -24, max: 24 }),
+		high: read({ key: "eq.high", min: -24, max: 24 }),
+		lowCut: read({ key: "eq.lowCut", min: 0, max: 2000 }),
+	};
+}
+
+export function hasEq(eq: ClipEq): boolean {
+	return eq.low !== 0 || eq.mid !== 0 || eq.high !== 0 || eq.lowCut > 0;
+}
+
 /** Volume changes over the clip: keyframes or fades. */
 export function hasAnimatedVolume({
 	element,

@@ -40,6 +40,7 @@ import { useActionHandler } from "@/actions/use-action-handler";
 import Image from "next/image";
 import { cn } from "@/utils/ui";
 import { WorkspaceBar } from "@/workspaces/components/workspace-bar";
+import { StudioSwitch } from "@/audio-studio/components/studio-switch";
 
 export function EditorHeader() {
 	return (
@@ -49,6 +50,7 @@ export function EditorHeader() {
 				<ProjectTabBar />
 				<EditableProjectName />
 			</div>
+			<StudioSwitch />
 			<WorkspaceBar />
 			<nav className="flex flex-1 items-center justify-end gap-2">
 				<InputModeButton />
