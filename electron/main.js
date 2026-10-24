@@ -22,6 +22,8 @@ const ai = require("./ai");
 const automation = require("./automation");
 const projectWindows = require("./project-windows");
 const nativeHelper = require("./native-helper");
+const converter = require("./converter");
+const downloader = require("./downloader");
 const masterExport = require("./master-export");
 
 const HOST = "127.0.0.1";
@@ -332,6 +334,33 @@ function registerAccountIpc() {
 		return source;
 	});
 	handle("recorder:open", () => openRecorder());
+	handleFrom("tools:convert", async (event, args = {}) => {
+		const output = await converter.convert({
+			...args,
+			folder: path.join(app.getPath("videos"), "Worksuite"),
+			onProgress: (progress) => event.sender.send("tools:convert-progress", { jobId: args.jobId, progress }),
+		});
+		rememberExport(output);
+		return { path: output };
+	});
+	handle("tools:cancel-convert", (jobId) => converter.cancel(jobId));
+	handleFrom("tools:download", async (event, args = {}) => {
+		const saved = await downloader.download({
+			jobId: args.jobId,
+			url: args.url,
+			folder: path.join(app.getPath("downloads"), "Worksuite"),
+			onProgress: (p) => event.sender.send("tools:download-progress", { jobId: args.jobId, ...p }),
+		});
+		rememberExport(saved.path);
+		return saved;
+	});
+	handle("tools:cancel-download", (jobId) => downloader.cancel(jobId));
+	// Reads back a file this app saved (converted or downloaded), to open it in the editor.
+	handle("tools:read-saved", async (filePath) => {
+		if (!savedExports.has(filePath)) throw new Error("Not allowed");
+		const data = await fs.promises.readFile(filePath);
+		return data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength);
+	});
 	handle("recorder:focus-main", () => focusMain());
 	handleFrom("recorder:minimize", (event) => BrowserWindow.fromWebContents(event.sender)?.minimize());
 	handle("capture:sources", () => capture.listSources());

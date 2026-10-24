@@ -61,7 +61,9 @@
       "privacy.js",
       "capture-bar/**",
       "project-windows.js",
-      "master-export.js"
+      "master-export.js",
+      "converter.js",
+      "downloader.js"
     ],
     "extraResources": [
       {

@@ -322,5 +322,7 @@ module.exports = {
 		await Promise.all([fs.promises.rm(j.input, { force: true }), fs.promises.rm(j.output, { force: true })]);
 	},
 
+	/** The H.264 encoder to use on this machine (hardware first), or null. */
+	pickEncoder,
 	_test: { proxyArgs, ffmpegPath },
 };
