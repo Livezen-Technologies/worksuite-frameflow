@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useT } from "@/i18n";
 import {
 	formatBytes,
@@ -119,9 +119,15 @@ export function AssetLibraryView({
 		for (const p of packs) map.set(p.type, (map.get(p.type) ?? 0) + 1);
 		return map;
 	}, [packs]);
-	const visible = useMemo(
+	const [category, setCategory] = useState<string | null>(null);
+	const searched = useMemo(
 		() => searchPacks({ packs, query, type, language, statusFilter, state, favorites }),
 		[packs, query, type, language, statusFilter, state, favorites],
+	);
+	const categories = useMemo(() => packCategories(packs.filter((p) => type === null || p.type === type)), [packs, type]);
+	const visible = useMemo(
+		() => (category ? searched.filter((p) => categories.of(p).includes(category)) : searched),
+		[searched, category, categories],
 	);
 	const selected = packs.find((p) => p.id === selectedId) ?? visible[0] ?? null;
 	const updates = packs.filter((p) => packStatus(p, state) === "update-available").length;
@@ -162,12 +168,18 @@ export function AssetLibraryView({
 				</button>
 			</div>
 			<div className="al-tabs" role="tablist">
-				<button type="button" role="tab" className="al-tab" aria-selected={type === null} onClick={() => setType(null)}>
+				<button type="button" role="tab" className="al-tab" aria-selected={type === null} onClick={() => {
+					setType(null);
+					setCategory(null);
+				}}>
 					{t("All")}
 					<span className="n">{packs.length}</span>
 				</button>
 				{PACK_TYPES.map((pt) => (
-					<button key={pt} type="button" role="tab" className="al-tab" aria-selected={type === pt} onClick={() => setType(pt)}>
+					<button key={pt} type="button" role="tab" className="al-tab" aria-selected={type === pt} onClick={() => {
+						setType(pt);
+						setCategory(null);
+					}}>
 						{t(PACK_TYPE_LABELS[pt])}
 						<span className="n">{counts.get(pt) ?? 0}</span>
 					</button>
@@ -198,6 +210,20 @@ export function AssetLibraryView({
 			)}
 			{status.stale && <div className="al-banner">{t("Offline — showing the packs from your last check.")}</div>}
 			<div className="al-body">
+				{categories.list.length > 1 && (
+					<nav className="al-cats" aria-label={t("Categories")} data-al-categories>
+						<button type="button" className="al-cat" aria-pressed={category === null} onClick={() => setCategory(null)}>
+							<span>{t("All")}</span>
+							<span className="al-cat-n">{categories.total}</span>
+						</button>
+						{categories.list.map(([name, n]) => (
+							<button key={name} type="button" className="al-cat" aria-pressed={category === name} onClick={() => setCategory(category === name ? null : name)}>
+								<span>{name}</span>
+								<span className="al-cat-n">{n}</span>
+							</button>
+						))}
+					</nav>
+				)}
 				<div className="al-main">
 					<div className="al-filters">
 						<button type="button" className="al-chip" aria-pressed={statusFilter === null} onClick={() => setStatusFilter(null)}>
@@ -241,6 +267,7 @@ export function AssetLibraryView({
 									state={state}
 									selected={selected?.id === pack.id}
 									thumb={resolveUrl(pack.thumbnailUrl, catalogBase)}
+									hoverPreview={pack.previewUrl ? resolveUrl(pack.previewUrl, catalogBase) : null}
 									onSelect={() => {
 										setSelectedId(pack.id);
 										setSide("detail");
@@ -309,11 +336,52 @@ function FavoriteButton({ on, onChange, t }: { on: boolean; onChange: (on: boole
 	);
 }
 
+function previewKind(url: string | null): "video" | "audio" | "image" | null {
+	const path = url?.split(/[?#]/)[0].toLowerCase() ?? "";
+	if (/\.(mp4|webm|mov|m4v)$/.test(path)) return "video";
+	if (/\.(mp3|wav|ogg|m4a|aac|flac)$/.test(path)) return "audio";
+	if (/\.(gif|webp|apng|png|jpe?g|avif)$/.test(path)) return "image";
+	return null;
+}
+
+/** Starts a pack's preview after the mouse rests on it briefly; sounds play out loud. */
+function useHoverPreview(url: string | null) {
+	const kind = previewKind(url);
+	const [active, setActive] = useState(false);
+	const timer = useRef<number | null>(null);
+	const audio = useRef<HTMLAudioElement | null>(null);
+	const stop = () => {
+		if (timer.current) window.clearTimeout(timer.current);
+		timer.current = null;
+		audio.current?.pause();
+		audio.current = null;
+		setActive(false);
+	};
+	useEffect(() => stop, []);
+	return {
+		kind,
+		active,
+		enter: () => {
+			if (!url || !kind) return;
+			timer.current = window.setTimeout(() => {
+				setActive(true);
+				if (kind === "audio") {
+					audio.current = new Audio(url);
+					audio.current.volume = 0.6;
+					void audio.current.play().catch(() => {});
+				}
+			}, 250);
+		},
+		leave: stop,
+	};
+}
+
 function PackCard({
 	pack,
 	state,
 	selected,
 	thumb,
+	hoverPreview,
 	onSelect,
 	favorite,
 	onFavorite,
@@ -324,6 +392,8 @@ function PackCard({
 	state: AssetStoreState;
 	selected: boolean;
 	thumb: string | null;
+	/** Played while the mouse rests on the card: video, animated image or sound. */
+	hoverPreview?: string | null;
 	onSelect: () => void;
 	favorite: boolean;
 	onFavorite?: (on: boolean) => void;
@@ -332,12 +402,15 @@ function PackCard({
 }) {
 	const status = packStatus(pack, state);
 	const download = state.downloads[pack.id];
+	const hover = useHoverPreview(hoverPreview ?? null);
 	return (
 		<button
 			type="button"
 			className="al-card"
 			aria-current={selected}
 			onClick={onSelect}
+			onMouseEnter={hover.enter}
+			onMouseLeave={hover.leave}
 			draggable={!!drag}
 			onDragStart={drag ? (event) => drag.start({ pack, event }) : undefined}
 			onDragEnd={drag?.end}
@@ -345,6 +418,11 @@ function PackCard({
 		>
 			<div className="al-thumb">
 				{thumb ? <img src={thumb} alt="" draggable={false} /> : <span className="ph">◆</span>}
+				{hover.active && hover.kind === "video" && hoverPreview && (
+					<video className="al-hover" src={hoverPreview} autoPlay muted loop playsInline />
+				)}
+				{hover.active && hover.kind === "image" && hoverPreview && <img className="al-hover" src={hoverPreview} alt="" draggable={false} />}
+				{hover.active && hover.kind === "audio" && <span className="al-hover-sound" aria-hidden>♪</span>}
 				{onFavorite && <FavoriteButton on={favorite} onChange={onFavorite} t={t} />}
 			</div>
 			<div className="al-card-body">
@@ -652,4 +730,29 @@ function HistoryPanel({ load, packs, t }: { load: NonNullable<AssetLibraryAction
 			)}
 		</div>
 	);
+}
+
+const GENERIC_TAGS = new Set(["worksuite", "free", "pack", "sound", "sounds", "sfx", "lut", "luts", "font", "fonts", "template", "templates", "text", "video", "graphics", "sticker", "stickers", "effect", "effects", "filter", "filters", "transition", "transitions", "motion", "lottie", "en", "si", "ta"]);
+const titleCase = (s: string) => s.replace(/(^|[\s-])(\p{L})/gu, (_m, a: string, b: string) => a + b.toUpperCase());
+
+/**
+ * Sub-categories for the sidebar: the pack's own tags when they group the
+ * packs, otherwise the title without its number ("Bold Cinematic 3" → "Bold Cinematic").
+ */
+function packCategories(packs: CatalogPack[]) {
+	const stem = (p: CatalogPack) => p.title.replace(/[\s_-]*\d+$/, "").trim() || p.title;
+	const tagsOf = (p: CatalogPack) => (p.tags.en ?? []).map((tag) => tag.toLowerCase().trim()).filter((tag) => tag && !GENERIC_TAGS.has(tag));
+	const tagCount = new Map<string, number>();
+	for (const p of packs) for (const tag of new Set(tagsOf(p))) tagCount.set(tag, (tagCount.get(tag) ?? 0) + 1);
+	// Useful tags group at least 2 packs but not nearly all of them.
+	const useful = [...tagCount].filter(([, n]) => n >= 2 && n < packs.length * 0.8);
+	const covered = packs.filter((p) => tagsOf(p).some((tag) => useful.some(([u]) => u === tag))).length;
+	const byTags = useful.length >= 2 && covered >= packs.length * 0.6;
+	const of = (p: CatalogPack): string[] =>
+		byTags ? tagsOf(p).filter((tag) => (tagCount.get(tag) ?? 0) >= 2).map(titleCase) : [stem(p)];
+	const counts = new Map<string, number>();
+	for (const p of packs) for (const c of new Set(of(p))) counts.set(c, (counts.get(c) ?? 0) + 1);
+	const list = [...counts].filter(([, n]) => n >= 2 || counts.size <= 40).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, 60);
+	if (!byTags) list.sort((a, b) => a[0].localeCompare(b[0]));
+	return { list, of, total: packs.length };
 }

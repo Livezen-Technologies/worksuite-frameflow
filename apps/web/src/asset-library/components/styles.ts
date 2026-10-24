@@ -22,6 +22,14 @@ export const OVERLAY_CSS = `
 .al-tab .n{opacity:.6;margin-left:5px;font-weight:450}
 .al-body{flex:1;display:flex;min-height:0}
 .al-main{flex:1;overflow:auto;padding:16px 18px}
+.al-hover{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
+.al-hover-sound{position:absolute;left:8px;bottom:8px;padding:2px 8px;border-radius:10px;background:rgba(0,0,0,.65);color:#fff;font-size:12px;animation:alPulse 1s ease-in-out infinite}
+@keyframes alPulse{50%{opacity:.4}}
+.al-cats{width:200px;flex-shrink:0;overflow:auto;padding:12px 8px;border-right:1px solid var(--al-border,rgba(255,255,255,.08));display:flex;flex-direction:column;gap:2px}
+.al-cat{display:flex;justify-content:space-between;gap:8px;padding:6px 10px;border-radius:6px;font-size:13px;text-align:left;color:inherit;opacity:.8;background:transparent;border:0;cursor:pointer}
+.al-cat:hover{background:rgba(255,255,255,.05);opacity:1}
+.al-cat[aria-pressed=true]{background:rgba(76,141,255,.18);color:#8fb6ff;opacity:1;font-weight:600}
+.al-cat-n{opacity:.55;font-variant-numeric:tabular-nums}
 .al-filters{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:14px}
 .al-chip{border:1px solid var(--border,#2a3040);border-radius:var(--ui-radius,5px);padding:3px 10px;background:none;color:var(--muted-foreground,#8b93a7);font:inherit;font-size:12px;cursor:pointer}
 .al-chip[aria-pressed=true]{background:#4c8dff22;border-color:#4c8dff;color:#cfe0ff}
