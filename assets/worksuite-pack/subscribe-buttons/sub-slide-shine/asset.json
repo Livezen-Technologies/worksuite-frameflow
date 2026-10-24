@@ -70,5 +70,11 @@
 			"file": "sub-slide-shine.ta.json",
 			"thumbnail": "thumbnail.ta.png"
 		}
+	],
+	"sounds": [
+		{
+			"file": "../../sounds/whoosh.wav",
+			"at": 0
+		}
 	]
 }

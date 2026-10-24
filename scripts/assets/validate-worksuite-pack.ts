@@ -47,7 +47,7 @@ function checkLottie(jsonPath: string, meta: { durationSec: number; width: numbe
 export function validatePack(packDir: string, { requireThumbnails = true } = {}): string[] {
 	const problems: string[] = [];
 	const ids = new Set<string>();
-	const categories = readdirSync(packDir).filter((d) => statSync(join(packDir, d)).isDirectory());
+	const categories = readdirSync(packDir).filter((d) => d !== "sounds" && statSync(join(packDir, d)).isDirectory());
 	for (const category of categories) {
 		for (const id of readdirSync(join(packDir, category))) {
 			const dir = join(packDir, category, id);
@@ -93,6 +93,17 @@ export function validatePack(packDir: string, { requireThumbnails = true } = {})
 			} else if ("defaultVariant" in meta) fail("defaultVariant without variants");
 			if (files.length === 0) files.push({ file: meta.file ?? `${id}.json`, thumbnail: meta.thumbnail ?? "thumbnail.png", label: "" });
 
+			if (meta.sounds !== undefined) {
+				if (!Array.isArray(meta.sounds)) fail("sounds must be a list");
+				else
+					for (const [i, cue] of meta.sounds.entries()) {
+						if (!cue || typeof cue.file !== "string" || !cue.file.endsWith(".wav")) { fail(`sound ${i + 1} needs a .wav file`); continue; }
+						if (!existsSync(join(dir, cue.file))) fail(`sound file ${cue.file} is missing`);
+						if (typeof cue.at !== "number" || !(cue.at >= 0 && cue.at < meta.durationSec)) fail(`sound ${cue.file} at ${cue.at} s is outside 0–${meta.durationSec} s`);
+						if (cue.gainDb !== undefined && (typeof cue.gainDb !== "number" || cue.gainDb < -40 || cue.gainDb > 12)) fail(`sound ${cue.file} gainDb ${cue.gainDb} is out of range`);
+					}
+			}
+
 			for (const { file, thumbnail, label } of files) {
 				const vfail = (msg: string) => fail(label + msg);
 				checkLottie(join(dir, file), meta, slots, vfail);
@@ -113,6 +124,14 @@ export function validatePack(packDir: string, { requireThumbnails = true } = {})
 	else {
 		const index = JSON.parse(readFileSync(indexPath, "utf8"));
 		if (index.assets.length !== ids.size) problems.push(`index.json lists ${index.assets.length} assets, found ${ids.size}`);
+		for (const [file, { sha256 }] of Object.entries((index.sounds ?? {}) as Record<string, { sha256: string }>)) {
+			const path = join(packDir, file);
+			if (!existsSync(path)) { problems.push(`index.json: ${file} is missing`); continue; }
+			const buf = readFileSync(path);
+			if (createHash("sha256").update(buf).digest("hex") !== sha256) problems.push(`index.json: ${file} hash is out of date`);
+			const wav = buf.toString("ascii", 0, 4) === "RIFF" && buf.toString("ascii", 8, 12) === "WAVE";
+			if (!wav || buf.readUInt16LE(22) !== 1 || buf.readUInt32LE(24) !== 48000 || buf.readUInt16LE(34) !== 16) problems.push(`${file} isn't a 48 kHz 16-bit mono WAV`);
+		}
 		for (const asset of index.assets) {
 			for (const [file, { sha256 }] of Object.entries(asset.files as Record<string, { sha256: string }>)) {
 				const path = join(packDir, asset.path, file);

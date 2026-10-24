@@ -16,7 +16,55 @@ export interface PackIndexAsset {
 	colors: LottieColorSlot[];
 	defaultVariant?: string;
 	variants?: LottieVariant[];
+	/** Sound effects placed with the animation (see `addPackAnimation`). */
+	sounds?: PackSoundCue[];
 	files: Record<string, { sha256: string }>;
+}
+
+/** A sound effect that goes with a library animation. */
+export interface PackSoundCue {
+	id: string;
+	/** Pack-relative path, e.g. "sounds/click.wav". */
+	file: string;
+	/** Seconds after the animation starts. */
+	at: number;
+	durationSec: number;
+	gainDb?: number;
+}
+
+/**
+ * Old asset ids that projects may still store, and what they are now.
+ * `cta-tap-here` (a pointing hand) became `cta-mouse-click`.
+ */
+export const PACK_ASSET_ALIASES: Record<string, string> = {
+	"cta-tap-here": "cta-mouse-click",
+};
+
+/** The asset an id refers to, following renames. */
+export function lookupPackAsset<T extends { id: string }>(assets: T[], assetId: string): T | null {
+	const id = assetId in PACK_ASSET_ALIASES ? PACK_ASSET_ALIASES[assetId] : assetId;
+	return assets.find((asset) => asset.id === id) ?? assets.find((asset) => asset.id === assetId) ?? null;
+}
+
+export function packSoundUrl(cue: Pick<PackSoundCue, "file">): string {
+	return `${PACK_BASE_URL}/${cue.file}`;
+}
+
+/** Where each of an animation's sounds goes when the animation starts at `startSeconds`. */
+export function packSoundPlacements({
+	asset,
+	startSeconds,
+}: {
+	asset: Pick<PackIndexAsset, "name" | "sounds">;
+	startSeconds: number;
+}): Array<{ name: string; url: string; startSeconds: number; durationSec: number; volumeDb?: number }> {
+	return (asset.sounds ?? []).map((cue) => ({
+		name: `${asset.name} — ${cue.id}`,
+		url: packSoundUrl(cue),
+		startSeconds: startSeconds + cue.at,
+		durationSec: cue.durationSec,
+		...(cue.gainDb !== undefined ? { volumeDb: cue.gainDb } : {}),
+	}));
 }
 
 export interface PackIndex {
@@ -44,7 +92,7 @@ export function loadPackIndex(): Promise<PackIndex> {
 
 export async function findPackAsset(assetId: string): Promise<PackIndexAsset | null> {
 	const index = await loadPackIndex();
-	return index.assets.find((asset) => asset.id === assetId) ?? null;
+	return lookupPackAsset(index.assets, assetId);
 }
 
 /** The variant actually used: `variant` when the asset has it, else its default (or none). */

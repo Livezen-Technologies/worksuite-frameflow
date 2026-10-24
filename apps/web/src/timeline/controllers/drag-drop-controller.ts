@@ -1,4 +1,5 @@
 import type { DragEvent } from "react";
+import { packSoundElements } from "@/lottie/sounds";
 import { processMediaAssets } from "@/media/processing";
 import { showMediaUploadToast } from "@/media/upload-toast";
 import {
@@ -51,7 +52,7 @@ export interface DragDropConfig {
 	}) => Promise<MediaAsset | null>;
 	executeCommand: (command: Command) => void;
 	insertElement: (args: {
-		placement: { mode: "explicit"; trackId: string };
+		placement: { mode: "explicit"; trackId: string } | { mode: "auto"; trackType: "audio" };
 		element: CreateTimelineElement;
 	}) => void;
 	addClipEffect: (args: {
@@ -426,6 +427,12 @@ export class DragDropController {
 			duration: dragData.duration,
 		});
 		this.insertAtTarget({ element, target, trackType: "graphic" });
+		// A library animation's sound effects go on audio tracks at the same start.
+		if (dragData.packAsset) {
+			for (const sound of packSoundElements({ asset: dragData.packAsset, startTime: target.xPosition })) {
+				this.config.insertElement({ element: sound, placement: { mode: "auto", trackType: "audio" } });
+			}
+		}
 	}
 
 	private executeMediaDrop({

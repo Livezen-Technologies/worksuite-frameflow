@@ -48,5 +48,11 @@
 			"name": "Cursor outline",
 			"default": "#F5A524"
 		}
+	],
+	"sounds": [
+		{
+			"file": "../../sounds/click.wav",
+			"at": 1.133
+		}
 	]
 }

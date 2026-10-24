@@ -37,5 +37,12 @@
 			"name": "Sound arcs",
 			"default": "#FFFFFF"
 		}
+	],
+	"sounds": [
+		{
+			"file": "../../sounds/ding.wav",
+			"at": 0.267,
+			"gainDb": -2
+		}
 	]
 }

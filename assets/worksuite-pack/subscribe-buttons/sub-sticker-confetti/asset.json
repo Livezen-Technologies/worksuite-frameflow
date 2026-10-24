@@ -86,5 +86,16 @@
 			"file": "sub-sticker-confetti.ta.json",
 			"thumbnail": "thumbnail.ta.png"
 		}
+	],
+	"sounds": [
+		{
+			"file": "../../sounds/pop.wav",
+			"at": 0.2
+		},
+		{
+			"file": "../../sounds/confetti.wav",
+			"at": 0.2,
+			"gainDb": -2
+		}
 	]
 }

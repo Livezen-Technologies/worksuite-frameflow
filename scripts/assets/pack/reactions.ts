@@ -1,5 +1,5 @@
 import { EASE, ellipse, fill, group, type Key, type LayerInput, path, pathData, rect, seeded, stroke, trim } from "../lottie-dsl";
-import { type AssetDef, cycle, LINE, PALETTE, slot, SQUARE } from "./common";
+import { type AssetDef, cue, cycle, LINE, PALETTE, slot, SQUARE } from "./common";
 
 // Reactions are 3 s seamless loops.
 const base = { category: "reactions", durationSec: 3, loop: true, ...SQUARE } as const;
@@ -58,6 +58,7 @@ export const reactions: AssetDef[] = [
 		description: "Confetti bursts from the centre, tumbles and drifts down, then bursts again.",
 		tags: ["confetti", "celebrate", "party", "burst", "win"],
 		colors: [slot("a", "Confetti 1", PALETTE.blue), slot("b", "Confetti 2", PALETTE.teal), slot("c", "Confetti 3", PALETTE.amber), slot("d", "Confetti 4", PALETTE.white)],
+		sounds: [cue("confetti", 0)],
 		build: ({ c }) => {
 			const rand = seeded(7);
 			const colors = [c("a"), c("b"), c("c"), c("d")];
