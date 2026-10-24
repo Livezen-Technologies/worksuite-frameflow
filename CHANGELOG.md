@@ -7,6 +7,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-10-24
+
 ### Added
 
 - **Whisper speech models in Settings → Local models**: download, check the size of, or remove the Tiny, Small, Medium and Large v3 Turbo models used by Captions, the transcript and Sync with voice, next to the AI export models.
