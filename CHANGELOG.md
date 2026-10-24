@@ -7,6 +7,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-10-24
+
 ### Added
 
 - **Recordings library** in the recorder window: every take is saved to Videos › Worksuite › Recordings and listed with a thumbnail, length, mode and markers, with Edit zooms (opens it in the editor), Quick export to MP4, Show in folder and Delete.
