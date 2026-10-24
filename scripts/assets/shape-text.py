@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Shapes the words of the Subscribe buttons pack into vector outlines.
+"""Shapes the words of the Subscribe and Follow buttons packs into vector outlines.
 
     python3 -I scripts/assets/shape-text.py
 
@@ -43,6 +43,28 @@ WORDS = {
     "ta.subscribe": ("tamil", "சப்ஸ்கிரைப்"),
     "ta.subscribed": ("tamil", "சப்ஸ்கிரைப்"),  # the tick carries "done"
     "ta.join": ("tamil", "இணையுங்கள்"),
+    # Follow buttons pack
+    "en.follow": ("latin", "FOLLOW"),
+    "en.following": ("latin", "FOLLOWING"),
+    "en.like": ("latin", "LIKE"),
+    "en.share": ("latin", "SHARE"),
+    "en.save": ("latin", "SAVE"),
+    "en.comment": ("latin", "COMMENT"),
+    "en.linkinbio": ("latin", "LINK IN BIO"),
+    "si.follow": ("sinhala", "ෆලෝ කරන්න"),
+    "si.following": ("sinhala", "ෆලෝ කළා"),
+    "si.like": ("sinhala", "ලයික්"),
+    "si.share": ("sinhala", "ෂෙයා කරන්න"),
+    "si.save": ("sinhala", "සේව් කරන්න"),
+    "si.comment": ("sinhala", "කමෙන්ට්"),
+    "si.linkinbio": ("sinhala", "බයෝ එකේ ලින්ක් එක"),
+    "ta.follow": ("tamil", "பின்தொடர்"),
+    "ta.following": ("tamil", "பின்தொடர்கிறீர்கள்"),
+    "ta.like": ("tamil", "லைக்"),
+    "ta.share": ("tamil", "பகிர்"),
+    "ta.save": ("tamil", "சேமி"),
+    "ta.comment": ("tamil", "கருத்து"),
+    "ta.linkinbio": ("tamil", "பயோவில் லிங்க்"),
     "digit.1": ("latin", "1"),
     "digit.2": ("latin", "2"),
     "digit.3": ("latin", "3"),

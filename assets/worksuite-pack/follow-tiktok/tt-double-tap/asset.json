@@ -1,0 +1,57 @@
+{
+	"schema": 1,
+	"id": "tt-double-tap",
+	"name": "Double-tap heart",
+	"category": "follow-tiktok",
+	"type": "lottie",
+	"file": "tt-double-tap.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "Two quick tap ripples, then a big tilted heart pops, throws off little hearts and floats away. No words.",
+	"tags": [
+		"tiktok",
+		"short video",
+		"vertical",
+		"reels",
+		"follow",
+		"following",
+		"button",
+		"social",
+		"ෆලෝ",
+		"ෆලෝ කරන්න",
+		"பின்தொடர்",
+		"double tap",
+		"heart",
+		"like",
+		"love",
+		"tap"
+	],
+	"durationSec": 2.5,
+	"loop": false,
+	"aspect": "1:1",
+	"width": 800,
+	"height": 800,
+	"thumbnailAt": 0.32,
+	"colors": [
+		{
+			"id": "heart",
+			"name": "Heart",
+			"default": "#F2416B"
+		},
+		{
+			"id": "small",
+			"name": "Small hearts",
+			"default": "#FF8FA8"
+		},
+		{
+			"id": "accent",
+			"name": "Taps & burst",
+			"default": "#FFFFFF"
+		},
+		{
+			"id": "shadow",
+			"name": "Shadow",
+			"default": "#0F1115"
+		}
+	]
+}

@@ -23,7 +23,8 @@ export interface PackIndex {
 	schema: 1;
 	name: string;
 	license: string;
-	categories: Array<{ id: string; name: string; count: number }>;
+	/** `group` (optional) shows related categories together under one heading. */
+	categories: Array<{ id: string; name: string; group?: string; count: number }>;
 	assets: PackIndexAsset[];
 }
 
@@ -105,4 +106,16 @@ export function searchPackAssets({
 		const haystack = [asset.name, asset.id, asset.category, ...asset.tags, ...(asset.variants ?? []).map((v) => v.name)].join(" ").toLowerCase();
 		return words.every((word) => haystack.includes(word));
 	});
+}
+
+/** Categories in library order, ungrouped first, then each group under its heading. */
+export function groupPackCategories(categories: PackIndex["categories"]): Array<{ group: string | null; categories: PackIndex["categories"] }> {
+	const out: Array<{ group: string | null; categories: PackIndex["categories"] }> = [];
+	for (const category of categories) {
+		const group = category.group ?? null;
+		const existing = out.find((g) => g.group === group);
+		if (existing) existing.categories.push(category);
+		else out.push({ group, categories: [category] });
+	}
+	return out.sort((a, b) => Number(a.group !== null) - Number(b.group !== null));
 }

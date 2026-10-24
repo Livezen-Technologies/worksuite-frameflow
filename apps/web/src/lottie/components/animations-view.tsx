@@ -16,6 +16,7 @@ import {
 import {
 	loadPackIndex,
 	packAssetThumbnailUrl,
+	groupPackCategories,
 	packLanguages,
 	resolvePackVariant,
 	searchPackAssets,
@@ -84,31 +85,33 @@ export function AnimationsView() {
 		category ? index.assets.filter((asset) => asset.category === category) : index.assets,
 	);
 
-	const chips: Array<{ id: string | null; name: string }> = [
-		{ id: null, name: "All" },
-		...index.categories.map(({ id, name }) => ({ id, name })),
-		...(imports.length ? [{ id: MY_IMPORTS, name: "My imports" }] : []),
-	];
+	const chip = (id: string | null, name: string) => (
+		<button
+			key={id ?? "all"}
+			type="button"
+			onClick={() => setCategory(id)}
+			className={cn(
+				"rounded-full border px-2 py-0.5 text-[11px]",
+				category === id
+					? "bg-primary text-primary-foreground border-primary"
+					: "text-muted-foreground hover:bg-accent",
+			)}
+		>
+			{name}
+		</button>
+	);
+	const groups = groupPackCategories(index.categories);
 
 	return (
 		<div className="flex h-full flex-col gap-2" data-animations-view>
-			<div className="flex flex-wrap gap-1">
-				{chips.map((chip) => (
-					<button
-						key={chip.id ?? "all"}
-						type="button"
-						onClick={() => setCategory(chip.id)}
-						className={cn(
-							"rounded-full border px-2 py-0.5 text-[11px]",
-							category === chip.id
-								? "bg-primary text-primary-foreground border-primary"
-								: "text-muted-foreground hover:bg-accent",
-						)}
-					>
-						{chip.name}
-					</button>
-				))}
-			</div>
+			{groups.map(({ group, categories }) => (
+				<div key={group ?? "main"} className="flex flex-wrap items-center gap-1" aria-label={group ?? "Categories"}>
+					{group && <span className="text-muted-foreground text-[11px]">{group}</span>}
+					{group === null && chip(null, "All")}
+					{categories.map(({ id, name }) => chip(id, name))}
+					{group === null && imports.length > 0 && chip(MY_IMPORTS, "My imports")}
+				</div>
+			))}
 			{languages.length > 1 && (
 				<div className="flex flex-wrap items-center gap-1" aria-label="Language">
 					<span className="text-muted-foreground text-[11px]">Language</span>

@@ -1,0 +1,89 @@
+{
+	"schema": 1,
+	"id": "fb-page-card",
+	"name": "Page follow card",
+	"category": "follow-facebook",
+	"type": "lottie",
+	"file": "fb-page-card.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "A page card with an empty avatar circle and name and handle lines (cover them with your own picture and text); its follow button is pressed.",
+	"tags": [
+		"facebook",
+		"fb",
+		"page",
+		"follow",
+		"following",
+		"button",
+		"social",
+		"ෆලෝ",
+		"ෆලෝ කරන්න",
+		"பின்தொடர்",
+		"card",
+		"profile",
+		"avatar",
+		"page follow"
+	],
+	"durationSec": 3.5,
+	"loop": false,
+	"aspect": "25:11",
+	"width": 1000,
+	"height": 440,
+	"thumbnailAt": 0.85,
+	"colors": [
+		{
+			"id": "panel",
+			"name": "Card",
+			"default": "#0F1115"
+		},
+		{
+			"id": "placeholder",
+			"name": "Avatar & text area",
+			"default": "#596070"
+		},
+		{
+			"id": "button",
+			"name": "Button",
+			"default": "#2F6FDE"
+		},
+		{
+			"id": "pressed",
+			"name": "Following button",
+			"default": "#3A3F4B"
+		},
+		{
+			"id": "text",
+			"name": "Text",
+			"default": "#FFFFFF"
+		},
+		{
+			"id": "cover",
+			"name": "Cover strip",
+			"default": "#24324F"
+		}
+	],
+	"defaultVariant": "en",
+	"variants": [
+		{
+			"id": "en",
+			"name": "English",
+			"lang": "en",
+			"file": "fb-page-card.json",
+			"thumbnail": "thumbnail.png"
+		},
+		{
+			"id": "si",
+			"name": "සිංහල",
+			"lang": "si",
+			"file": "fb-page-card.si.json",
+			"thumbnail": "thumbnail.si.png"
+		},
+		{
+			"id": "ta",
+			"name": "தமிழ்",
+			"lang": "ta",
+			"file": "fb-page-card.ta.json",
+			"thumbnail": "thumbnail.ta.png"
+		}
+	]
+}

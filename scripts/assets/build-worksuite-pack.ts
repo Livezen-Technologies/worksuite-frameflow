@@ -21,12 +21,14 @@ import { seasonal } from "./pack/seasonal";
 import { transitions } from "./pack/transitions";
 import { status } from "./pack/status";
 import { subscribeButtons } from "./pack/subscribe";
+import { followFacebook, followInstagram, followTikTok } from "./pack/follow";
 import { validatePack } from "./validate-worksuite-pack";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const packDir = join(root, "assets", "worksuite-pack");
 
-export const CATEGORIES: Array<{ id: string; name: string; assets: AssetDef[] }> = [
+/** `group` puts related categories together under one heading in the library. */
+export const CATEGORIES: Array<{ id: string; name: string; group?: string; assets: AssetDef[] }> = [
 	{ id: "lower-thirds", name: "Lower thirds", assets: lowerThirds },
 	{ id: "call-to-action", name: "Call to action", assets: callToAction },
 	{ id: "callouts", name: "Callouts", assets: callouts },
@@ -35,6 +37,9 @@ export const CATEGORIES: Array<{ id: string; name: string; assets: AssetDef[] }>
 	{ id: "transitions", name: "Transitions", assets: transitions },
 	{ id: "status-infographics", name: "Status & infographics", assets: status },
 	{ id: "subscribe-buttons", name: "YouTube & subscribe", assets: subscribeButtons },
+	{ id: "follow-facebook", name: "Facebook", group: "Social follow", assets: followFacebook },
+	{ id: "follow-tiktok", name: "TikTok", group: "Social follow", assets: followTikTok },
+	{ id: "follow-instagram", name: "Instagram", group: "Social follow", assets: followInstagram },
 ];
 
 const round = (value: unknown): unknown => {
@@ -128,7 +133,7 @@ function writePack({ thumbs }: { thumbs: boolean }) {
 		schema: 1,
 		name: "Worksuite Assets",
 		license: "MIT",
-		categories: CATEGORIES.map(({ id, name, assets }) => ({ id, name, count: assets.length })),
+		categories: CATEGORIES.map(({ id, name, group, assets }) => ({ id, name, ...(group ? { group } : {}), count: assets.length })),
 		assets: entries.map(({ dir, def, category }) => {
 			const variantNames = (def.variants ?? []).slice(1).flatMap((v) => Object.values(variantFiles(def.id, v.id, false)));
 			const files = [`${def.id}.json`, "thumbnail.png", ...variantNames, "asset.json"].filter((f) => existsSync(join(dir, f)));
@@ -169,7 +174,15 @@ function writeReadme(entries: Array<{ def: AssetDef; category: string }>) {
 	];
 	for (const category of CATEGORIES) {
 		const items = entries.filter((e) => e.category === category.id);
-		lines.push(`## ${category.name} (${items.length})`, "");
+		lines.push(`## ${category.group ? `${category.group}: ` : ""}${category.name} (${items.length})`, "");
+		if (category.id === "follow-facebook") {
+			lines.push(
+				"Original follow, like, share and save buttons in three moods named after the platforms they suit. The names are",
+				"only labels: there are no platform logos, glyphs, wordmarks or brand gradients, and the default colours are this",
+				"pack's own (every one a colour slot). Words come in English, Sinhala and Tamil, shaped like the subscribe buttons.",
+				"",
+			);
+		}
 		if (category.id === "subscribe-buttons") {
 			lines.push(
 				"Generic, brand-free subscribe, bell and like buttons. Assets with words come in English, Sinhala and Tamil",

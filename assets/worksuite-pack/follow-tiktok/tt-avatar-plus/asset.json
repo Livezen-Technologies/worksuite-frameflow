@@ -1,0 +1,67 @@
+{
+	"schema": 1,
+	"id": "tt-avatar-plus",
+	"name": "Avatar plus to tick",
+	"category": "follow-tiktok",
+	"type": "lottie",
+	"file": "tt-avatar-plus.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "The short-video follow: an empty avatar circle with a plus badge; tapped, the badge spins into a tick and tucks away. No words.",
+	"tags": [
+		"tiktok",
+		"short video",
+		"vertical",
+		"reels",
+		"follow",
+		"following",
+		"button",
+		"social",
+		"ෆලෝ",
+		"ෆලෝ කරන්න",
+		"பின்தொடர்",
+		"avatar",
+		"plus",
+		"tick",
+		"profile",
+		"icon"
+	],
+	"durationSec": 2.5,
+	"loop": false,
+	"aspect": "1:1",
+	"width": 500,
+	"height": 500,
+	"thumbnailAt": 0.25,
+	"colors": [
+		{
+			"id": "avatar",
+			"name": "Avatar area",
+			"default": "#596070"
+		},
+		{
+			"id": "ring",
+			"name": "Avatar ring",
+			"default": "#FFFFFF"
+		},
+		{
+			"id": "badge",
+			"name": "Plus badge",
+			"default": "#F2416B"
+		},
+		{
+			"id": "mark",
+			"name": "Plus",
+			"default": "#F4F6FA"
+		},
+		{
+			"id": "done",
+			"name": "Tick badge",
+			"default": "#FDFDFE"
+		},
+		{
+			"id": "accent",
+			"name": "Ripple",
+			"default": "#3ED6CF"
+		}
+	]
+}
