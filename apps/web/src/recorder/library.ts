@@ -34,14 +34,20 @@ export const useRecorderLibrary = create<{
 );
 
 /** Recorder-window preferences (CT-R2, CT-R4). */
-export const useRecorderPrefs = create<{
+interface RecorderPrefs {
 	folder: string | null;
 	encoder: "auto" | "sw";
+	/** Draw a ripple where you click, in the video (CT-R4). */
 	highlightClicks: boolean;
-	set: (patch: Partial<{ folder: string | null; encoder: "auto" | "sw"; highlightClicks: boolean }>) => void;
-}>()(
+	/** Show shortcuts and special keys you press, in the video (CT-R4). */
+	showKeys: boolean;
+	/** Private windows: cover them in the video, or pause the take. */
+	privateMode: "cover" | "pause";
+}
+
+export const useRecorderPrefs = create<RecorderPrefs & { set: (patch: Partial<RecorderPrefs>) => void }>()(
 	persist(
-		(set) => ({ folder: null, encoder: "auto", highlightClicks: true, set: (patch) => set(patch) }),
+		(set) => ({ folder: null, encoder: "auto", highlightClicks: true, showKeys: true, privateMode: "cover", set: (patch) => set(patch) }),
 		{ name: "frameflow-recorder-prefs", partialize: ({ set: _set, ...rest }) => rest },
 	),
 );

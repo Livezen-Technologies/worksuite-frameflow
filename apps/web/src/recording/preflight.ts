@@ -22,9 +22,9 @@ export const QUALITY_PROFILES: Record<
 		videoBitsPerSecond: 16_000_000,
 	},
 	max: {
-		label: "4K · 60 fps",
+		label: "4K · 30 fps",
 		height: 2160,
-		fps: 60,
+		fps: 30,
 		videoBitsPerSecond: 35_000_000,
 	},
 };

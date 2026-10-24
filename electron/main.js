@@ -4,6 +4,7 @@ const { app, BrowserWindow, clipboard, shell, dialog, ipcMain, Menu, nativeTheme
 const { spawn } = require("node:child_process");
 const capture = require("./capture");
 const cursorLog = require("./cursor-log");
+const recordingOverlay = require("./recording-overlay");
 const captureControls = require("./capture-controls");
 const privacy = require("./privacy");
 const network = require("./network");
@@ -436,6 +437,10 @@ function registerAccountIpc() {
 	handle("capture:sources", () => capture.listSources());
 	handle("capture:choose", (id) => capture.chooseSource(id));
 	handle("capture:permissions", () => capture.permissionStatus());
+	// Click ripples, keys pressed and private-window covers in the recording (CT-R4).
+	handle("capture:overlay-start", (args) => recordingOverlay.start(args ?? {}));
+	handle("capture:overlay-pause", (on) => recordingOverlay.setPaused(on));
+	handle("capture:overlay-stop", () => recordingOverlay.stop());
 	handle("capture:cursor-start", (args) => cursorLog.start(args ?? {}));
 	handle("capture:cursor-pause", () => cursorLog.pause());
 	handle("capture:cursor-resume", () => cursorLog.resume());
@@ -677,6 +682,7 @@ if (!app.requestSingleInstanceLock()) {
 app.on("before-quit", () => {
 	void privacy.doNotDisturb(false);
 	captureControls.dispose();
+	recordingOverlay.stop();
 	void automation.stop();
 	app.isQuitting = true;
 	if (server) server.kill();

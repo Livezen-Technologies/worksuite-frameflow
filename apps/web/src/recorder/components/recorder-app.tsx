@@ -61,7 +61,8 @@ function RecorderWindow() {
 	const recorder = useRef<Recorder | null>(null);
 	const [view, setView] = useState<View>("record");
 	const [take, setTake] = useState<Take | null>(null);
-	const folder = useRecorderPrefs((s) => s.folder);
+	const prefs = useRecorderPrefs();
+	const folder = prefs.folder;
 	const cameraPreview = useRef<HTMLVideoElement>(null);
 	const desktop = !!window.worksuite?.capture;
 
@@ -148,7 +149,7 @@ function RecorderWindow() {
 		let autoPaused = false;
 		const timer = window.setInterval(async () => {
 			const active = recorder.current;
-			if (!active || !capture?.windowNames || !screenOn) return;
+			if (!active || !capture?.windowNames || !screenOn || prefs.privateMode !== "pause") return;
 			const hit = findProtected({ windows: await capture.windowNames(), patterns: settings.protectedApps });
 			if (hit && !active.clock.paused) {
 				active.pause();
@@ -165,7 +166,7 @@ function RecorderWindow() {
 			window.clearInterval(timer);
 			if (settings.doNotDisturb) void capture?.doNotDisturb?.(false);
 		};
-	}, [phase, settings.doNotDisturb, settings.protectedApps, screenOn]);
+	}, [phase, settings.doNotDisturb, settings.protectedApps, screenOn, prefs.privateMode]);
 
 	const canRecord = screenOn || cameraOn || micOn;
 
@@ -189,6 +190,17 @@ function RecorderWindow() {
 			});
 			opened.onLevel(setLevel);
 			recorder.current = opened;
+			// Drawn on screen so it's in the video: clicks, keys, private-window covers (CT-R4).
+			if (screenOn && (prefs.highlightClicks || prefs.showKeys || prefs.privateMode === "cover")) {
+				await window.worksuite?.capture
+					?.overlayStart?.({
+						sourceId: source?.id ?? null,
+						keys: prefs.showKeys,
+						clicks: prefs.highlightClicks,
+						privatePatterns: prefs.privateMode === "cover" ? settings.protectedApps : [],
+					})
+					.catch(() => null);
+			}
 			for (let n = Math.max(0, settings.countdown); n > 0; n--) {
 				setCount(n);
 				await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -201,6 +213,7 @@ function RecorderWindow() {
 		} catch (error) {
 			recorder.current?.release();
 			recorder.current = null;
+			void window.worksuite?.capture?.overlayStop?.();
 			setPhase("setup");
 			toast.error(error instanceof Error ? error.message : "Couldn't start recording");
 		}
@@ -210,6 +223,7 @@ function RecorderWindow() {
 		const active = recorder.current;
 		if (!active) return;
 		setPhase("stopping");
+		void window.worksuite?.capture?.overlayStop?.();
 		try {
 			const finished = await active.stop();
 			setResult(finished);
@@ -251,6 +265,7 @@ function RecorderWindow() {
 	};
 
 	const discard = () => {
+		void window.worksuite?.capture?.overlayStop?.();
 		const active = recorder.current;
 		if (active) {
 			const id = active.id;
@@ -267,6 +282,7 @@ function RecorderWindow() {
 		if (active.clock.paused) active.resume();
 		else active.pause();
 		setPaused(active.clock.paused);
+		void window.worksuite?.capture?.overlayPause?.(active.clock.paused);
 	};
 
 	const finish = (keep: boolean) => {

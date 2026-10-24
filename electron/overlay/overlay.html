@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'self' 'unsafe-inline'" />
+<style>
+	html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: transparent; font-family: system-ui, sans-serif; }
+	.ripple { position: absolute; width: 56px; height: 56px; margin: -28px 0 0 -28px; border-radius: 50%; border: 3px solid rgba(255, 196, 0, 0.95); background: rgba(255, 196, 0, 0.25); animation: ripple 0.6s ease-out forwards; pointer-events: none; }
+	.ripple.right { border-color: rgba(80, 160, 255, 0.95); background: rgba(80, 160, 255, 0.25); }
+	@keyframes ripple { from { transform: scale(0.3); opacity: 1; } to { transform: scale(1.4); opacity: 0; } }
+	#keys { position: absolute; left: 50%; bottom: 8%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 6px; }
+	.key { padding: 10px 18px; border-radius: 10px; background: rgba(20, 20, 24, 0.82); color: #fff; font-size: 26px; font-weight: 600; box-shadow: 0 4px 18px rgba(0,0,0,.35); transition: opacity .4s; }
+	.mask { position: absolute; background: repeating-linear-gradient(45deg, #2a2d36 0 14px, #23262e 14px 28px); display: flex; align-items: center; justify-content: center; color: #cfd3dc; font-size: 18px; font-weight: 600; border-radius: 6px; }
+</style>
+</head>
+<body>
+<div id="masks"></div>
+<div id="keys"></div>
+<script>
+	const keys = document.getElementById("keys");
+	window.overlay.on("overlay:click", ({ x, y, button }) => {
+		const r = document.createElement("div");
+		r.className = "ripple" + (button === 2 ? " right" : "");
+		r.style.left = x + "px";
+		r.style.top = y + "px";
+		document.body.appendChild(r);
+		setTimeout(() => r.remove(), 650);
+	});
+	window.overlay.on("overlay:key", (text) => {
+		const k = document.createElement("div");
+		k.className = "key";
+		k.textContent = text;
+		keys.appendChild(k);
+		while (keys.children.length > 3) keys.firstChild.remove();
+		setTimeout(() => { k.style.opacity = "0"; setTimeout(() => k.remove(), 400); }, 1400);
+	});
+	const masks = document.getElementById("masks");
+	window.overlay.on("overlay:masks", (list) => {
+		masks.replaceChildren(...list.map((m) => {
+			const d = document.createElement("div");
+			d.className = "mask";
+			Object.assign(d.style, { left: m.x + "px", top: m.y + "px", width: m.width + "px", height: m.height + "px" });
+			d.textContent = "🔒 Private window hidden";
+			return d;
+		}));
+	});
+</script>
+</body>
+</html>

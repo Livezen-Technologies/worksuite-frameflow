@@ -470,6 +470,10 @@ export interface WorksuiteCaptureBridge {
 		screen: MediaAccess;
 	}>;
 	/** Cursor and click log while screen recording (SC-06). */
+	/** Click ripples, keys pressed and private-window covers drawn into the recording (CT-R4). */
+	overlayStart?: (args: { sourceId: string | null; keys: boolean; clicks: boolean; privatePatterns: string[] }) => Promise<{ input: boolean; masks: boolean }>;
+	overlayPause?: (on: boolean) => Promise<void>;
+	overlayStop?: () => Promise<void>;
 	cursorStart?: (args: {
 		sourceId: string | null;
 	}) => Promise<{ cursor: boolean; clicks: boolean; keys: boolean }>;

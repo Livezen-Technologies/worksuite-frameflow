@@ -9,13 +9,10 @@ const { screen, desktopCapturer } = require("electron");
  * Positions are 0–1 within the recorded display.
  */
 
-let hook = null;
-try {
-	// Native global input hook; without it the log has cursor movement only.
-	hook = require("uiohook-napi");
-} catch {
-	hook = null;
-}
+// Native global input hook; without it the log has cursor movement only.
+const inputHook = require("./input-hook");
+const hook = inputHook.available();
+const HANDLERS = { mousedown: (e) => onMouseDown(e), keydown: (e) => onKeyDown(e) };
 
 const SAMPLE_MS = 1000 / 30;
 let session = null;
@@ -52,9 +49,7 @@ async function displayFor(sourceId) {
 const MODIFIER_KEYS = new Set([29, 3613, 42, 54, 56, 3640, 3675, 3676]); // ctrl, shift, alt, meta (both sides)
 
 function keyName(event) {
-	if (!hook) return null;
-	const entry = Object.entries(hook.UiohookKey).find(([, code]) => code === event.keycode);
-	return entry ? entry[0] : `Key${event.keycode}`;
+	return inputHook.keyName(event.keycode);
 }
 
 function onMouseDown(event) {
@@ -107,15 +102,7 @@ module.exports = {
 			if (last && last[1] === x && last[2] === y) return;
 			s.samples.push([Math.round(elapsed(s) * 1000) / 1000, x, y]);
 		}, SAMPLE_MS);
-		if (hook) {
-			hook.uIOhook.on("mousedown", onMouseDown);
-			hook.uIOhook.on("keydown", onKeyDown);
-			try {
-				hook.uIOhook.start();
-			} catch {
-				// No permission (macOS Accessibility): cursor only.
-			}
-		}
+		inputHook.acquire(HANDLERS);
 		return module.exports.available();
 	},
 
@@ -135,15 +122,7 @@ module.exports = {
 		session = null;
 		if (!s) return null;
 		clearInterval(s.timer);
-		if (hook) {
-			hook.uIOhook.off("mousedown", onMouseDown);
-			hook.uIOhook.off("keydown", onKeyDown);
-			try {
-				hook.uIOhook.stop();
-			} catch {
-				// Already stopped.
-			}
-		}
+		inputHook.release(HANDLERS);
 		return {
 			version: 1,
 			display: { width: s.bounds.width, height: s.bounds.height },

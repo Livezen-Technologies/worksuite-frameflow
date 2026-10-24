@@ -244,8 +244,28 @@ export function RecorderSettings() {
 					<input type="checkbox" checked={settings.autoZoom} onChange={(e) => settings.set({ autoZoom: e.target.checked })} />
 					Zoom in on clicks and typing in the editor
 				</label>
+				<label className="flex items-center gap-2">
+					<input type="checkbox" checked={prefs.highlightClicks} onChange={(e) => prefs.set({ highlightClicks: e.target.checked })} data-recorder-clicks />
+					Highlight clicks in the video
+				</label>
+				<label className="flex items-center gap-2">
+					<input type="checkbox" checked={prefs.showKeys} onChange={(e) => prefs.set({ showKeys: e.target.checked })} data-recorder-keys />
+					Show shortcuts and keys pressed (never the letters you type)
+				</label>
+				<label className="flex items-center justify-between gap-2">
+					Private windows
+					<select
+						className="rounded border bg-transparent p-1"
+						value={prefs.privateMode}
+						onChange={(e) => prefs.set({ privateMode: e.target.value === "pause" ? "pause" : "cover" })}
+						data-recorder-private
+					>
+						<option value="cover">Cover them in the video</option>
+						<option value="pause">Pause the recording</option>
+					</select>
+				</label>
 				<label className="flex flex-col gap-1">
-					Pause while these windows are open (private apps)
+					Private apps (window names)
 					<input
 						className="rounded border bg-transparent px-2 py-1 text-xs"
 						defaultValue={settings.protectedApps.join(", ")}
