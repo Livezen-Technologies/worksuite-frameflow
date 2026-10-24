@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test";
 import fs from "node:fs";
 import path from "node:path";
 import { hexToRgba, lottieToMotion, motionToLottie, rgbaToHex } from "../lottie-convert";
-import { createLayer, createMotionProject, EASES, layerBounds, setKeyframe, valueAt } from "../model";
+import { createLayer, createMotionProject, EASES, layerBounds, setKeyframe, valueAt, type Layer } from "../model";
 
 const rasterizeText = async () => ({ src: "data:image/png;base64,AA==", w: 200, h: 60 });
 
@@ -14,7 +14,8 @@ describe("lottie conversion", () => {
 
 	test("export then import keeps shapes, transforms and keyframes", async () => {
 		const project = createMotionProject({ width: 800, height: 600, fps: 30, duration: 2 });
-		let rect = { ...createLayer({ kind: "rect", project }), radius: 12, rotation: 15 };
+		const base = createLayer({ kind: "rect", project });
+		let rect: Layer = base.kind === "rect" ? { ...base, radius: 12, rotation: 15 } : base;
 		rect = setKeyframe({ layer: rect, prop: "x", t: 0, v: 100, ease: EASES.easeOut });
 		rect = setKeyframe({ layer: rect, prop: "x", t: 1, v: 700 });
 		const star = { ...createLayer({ kind: "star", project }), x: 200, y: 150 };
@@ -100,5 +101,7 @@ describe("lottie import extras", () => {
 		expect(back.project.layers).toHaveLength(1);
 		const layer = back.project.layers[0];
 		expect(layer.kind === "image" && layer.src).toBe("data:image/png;base64,F0");
+		expect(back.animated).toHaveLength(1);
+		expect(back.animated[0].frames.map((f) => f.src)).toEqual(["data:image/png;base64,F0", "data:image/png;base64,F1"]);
 	});
 });
