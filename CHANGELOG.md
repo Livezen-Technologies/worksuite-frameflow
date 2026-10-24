@@ -7,6 +7,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+## [1.7.4] - 2026-10-24
+
 ### Changed
 - Asset Library: packs without a picture show a type sample (Sinhala, Tamil or Latin) instead of an empty box, pictures load as you scroll, and the font sidebar groups by style tags instead of listing every font.
 
