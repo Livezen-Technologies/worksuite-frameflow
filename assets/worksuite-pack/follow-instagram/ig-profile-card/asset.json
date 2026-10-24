@@ -1,0 +1,103 @@
+{
+	"schema": 1,
+	"id": "ig-profile-card",
+	"name": "Profile header card",
+	"category": "follow-instagram",
+	"type": "lottie",
+	"file": "ig-profile-card.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "A profile header with an empty avatar circle, three empty stat placeholders and a wide follow button that gets pressed. Cover the placeholders with your own picture and numbers.",
+	"tags": [
+		"instagram",
+		"insta",
+		"ig",
+		"story",
+		"follow",
+		"following",
+		"button",
+		"social",
+		"ෆලෝ",
+		"ෆලෝ කරන්න",
+		"பின்தொடர்",
+		"profile",
+		"header",
+		"card",
+		"avatar",
+		"stats",
+		"followers"
+	],
+	"durationSec": 3.5,
+	"loop": false,
+	"aspect": "25:14",
+	"width": 1000,
+	"height": 560,
+	"thumbnailAt": 0.85,
+	"colors": [
+		{
+			"id": "panel",
+			"name": "Card",
+			"default": "#0F1115"
+		},
+		{
+			"id": "placeholder",
+			"name": "Avatar & stats",
+			"default": "#596070"
+		},
+		{
+			"id": "ring",
+			"name": "Avatar ring",
+			"default": "#C93A82"
+		},
+		{
+			"id": "button",
+			"name": "Button",
+			"default": "#3B82F0"
+		},
+		{
+			"id": "pressed",
+			"name": "Following button",
+			"default": "#3A3F4B"
+		},
+		{
+			"id": "text",
+			"name": "Text",
+			"default": "#FFFFFF"
+		}
+	],
+	"defaultVariant": "en",
+	"variants": [
+		{
+			"id": "en",
+			"name": "English",
+			"lang": "en",
+			"file": "ig-profile-card.json",
+			"thumbnail": "thumbnail.png"
+		},
+		{
+			"id": "si",
+			"name": "සිංහල",
+			"lang": "si",
+			"file": "ig-profile-card.si.json",
+			"thumbnail": "thumbnail.si.png"
+		},
+		{
+			"id": "ta",
+			"name": "தமிழ்",
+			"lang": "ta",
+			"file": "ig-profile-card.ta.json",
+			"thumbnail": "thumbnail.ta.png"
+		}
+	],
+	"sounds": [
+		{
+			"file": "../../sounds/pop.wav",
+			"at": 0.2,
+			"gainDb": -4
+		},
+		{
+			"file": "../../sounds/click.wav",
+			"at": 2.2
+		}
+	]
+}

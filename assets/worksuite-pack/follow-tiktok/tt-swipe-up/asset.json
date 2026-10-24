@@ -1,0 +1,70 @@
+{
+	"schema": 1,
+	"id": "tt-swipe-up",
+	"name": "Swipe-up hint",
+	"category": "follow-tiktok",
+	"type": "lottie",
+	"file": "tt-swipe-up.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "A touch dot swipes up a track while three chevrons light up in turn: a looping “swipe up / scroll for more” hint. No words.",
+	"tags": [
+		"tiktok",
+		"short video",
+		"vertical",
+		"reels",
+		"follow",
+		"following",
+		"button",
+		"social",
+		"ෆලෝ",
+		"ෆලෝ කරන්න",
+		"பின்தொடர்",
+		"swipe up",
+		"scroll",
+		"hint",
+		"gesture",
+		"touch",
+		"9:16"
+	],
+	"durationSec": 2,
+	"loop": true,
+	"aspect": "2:3",
+	"width": 600,
+	"height": 900,
+	"thumbnailAt": 0.4,
+	"colors": [
+		{
+			"id": "chevron",
+			"name": "Chevrons",
+			"default": "#FFFFFF"
+		},
+		{
+			"id": "track",
+			"name": "Track",
+			"default": "#8A92A3"
+		},
+		{
+			"id": "dot",
+			"name": "Touch dot",
+			"default": "#F4F6FA"
+		},
+		{
+			"id": "outline",
+			"name": "Touch ring",
+			"default": "#0F1115"
+		},
+		{
+			"id": "accent",
+			"name": "Trail",
+			"default": "#3ED6CF"
+		}
+	],
+	"sounds": [
+		{
+			"file": "../../sounds/whoosh.wav",
+			"at": 0.133,
+			"gainDb": -6
+		}
+	]
+}

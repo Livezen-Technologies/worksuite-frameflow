@@ -1,0 +1,93 @@
+{
+	"schema": 1,
+	"id": "ig-save-pop",
+	"name": "Save bookmark pop",
+	"category": "follow-instagram",
+	"type": "lottie",
+	"file": "ig-save-pop.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "An outlined bookmark is tapped, fills with colour, pops with a burst and a “Save” label slides up under it.",
+	"tags": [
+		"instagram",
+		"insta",
+		"ig",
+		"story",
+		"follow",
+		"following",
+		"button",
+		"social",
+		"ෆලෝ",
+		"ෆලෝ කරන්න",
+		"பின்தொடர்",
+		"save",
+		"bookmark",
+		"saved",
+		"pop",
+		"සේව්",
+		"சேமி"
+	],
+	"durationSec": 2.5,
+	"loop": false,
+	"aspect": "1:1",
+	"width": 600,
+	"height": 600,
+	"thumbnailAt": 0.7,
+	"colors": [
+		{
+			"id": "icon",
+			"name": "Bookmark outline & text",
+			"default": "#FFFFFF"
+		},
+		{
+			"id": "saved",
+			"name": "Saved fill",
+			"default": "#F29A3E"
+		},
+		{
+			"id": "disc",
+			"name": "Circle & label",
+			"default": "#0F1115"
+		},
+		{
+			"id": "accent",
+			"name": "Burst",
+			"default": "#C93A82"
+		}
+	],
+	"defaultVariant": "en",
+	"variants": [
+		{
+			"id": "en",
+			"name": "English",
+			"lang": "en",
+			"file": "ig-save-pop.json",
+			"thumbnail": "thumbnail.png"
+		},
+		{
+			"id": "si",
+			"name": "සිංහල",
+			"lang": "si",
+			"file": "ig-save-pop.si.json",
+			"thumbnail": "thumbnail.si.png"
+		},
+		{
+			"id": "ta",
+			"name": "தமிழ்",
+			"lang": "ta",
+			"file": "ig-save-pop.ta.json",
+			"thumbnail": "thumbnail.ta.png"
+		}
+	],
+	"sounds": [
+		{
+			"file": "../../sounds/click.wav",
+			"at": 0.8,
+			"gainDb": -6
+		},
+		{
+			"file": "../../sounds/pop.wav",
+			"at": 0.867
+		}
+	]
+}

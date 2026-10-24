@@ -9,6 +9,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
+- “Social follow” in Animations: 18 original Facebook, TikTok and Instagram style follow, like, share and save buttons (follow → following, avatar plus badge, action rails, double-tap heart, link in bio and more), with words in English, Sinhala and Tamil. No platform logos.
+- The Follow buttons now come with sound effects (click on follow, pop on likes and saves, whoosh on slide-ins, ding on the bell), and the Facebook-style like is a neutral rounded badge with an outlined thumb and sparkles.
 - Sound effects for animations: an original click, pop, bell, whoosh and confetti shimmer are placed on an audio track, timed to the click, pop, bell or burst, when you add a subscribe button or the click, bell, like, mouse-click or confetti animations. Untick “Add sound” in Animations to leave them out; hover previews play sound after you click in the panel, with a mute button.
 - A “YouTube & subscribe” category in Animations: 16 original animated subscribe, bell and like buttons, with words in English, Sinhala and Tamil. Filter the library by language, or switch an added clip's language in its properties without losing its timing or colours.
 - The macOS app now includes FFmpeg (an LGPL-only build made by the new “FFmpeg for macOS” CI workflow), so proxies, HEIC and MKV conversion and the other FFmpeg features work on Mac too, on both Apple Silicon and Intel.

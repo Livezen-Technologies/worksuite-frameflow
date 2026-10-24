@@ -1,0 +1,74 @@
+{
+	"schema": 1,
+	"id": "ig-action-row",
+	"name": "Heart, comment, share, save row",
+	"category": "follow-instagram",
+	"type": "lottie",
+	"file": "ig-action-row.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "A feed-style row of heart, comment, paper-plane share and bookmark icons pops in; the heart is liked, then the bookmark is saved. No words.",
+	"tags": [
+		"instagram",
+		"insta",
+		"ig",
+		"story",
+		"follow",
+		"following",
+		"button",
+		"social",
+		"ෆලෝ",
+		"ෆලෝ කරන්න",
+		"பின்தொடர்",
+		"heart",
+		"like",
+		"comment",
+		"share",
+		"save",
+		"bookmark",
+		"action row"
+	],
+	"durationSec": 3.5,
+	"loop": false,
+	"aspect": "10:3",
+	"width": 1000,
+	"height": 300,
+	"thumbnailAt": 0.8,
+	"colors": [
+		{
+			"id": "icon",
+			"name": "Icons",
+			"default": "#FFFFFF"
+		},
+		{
+			"id": "liked",
+			"name": "Liked heart",
+			"default": "#C93A82"
+		},
+		{
+			"id": "saved",
+			"name": "Saved bookmark",
+			"default": "#F29A3E"
+		},
+		{
+			"id": "accent",
+			"name": "Burst",
+			"default": "#F5A524"
+		},
+		{
+			"id": "bar",
+			"name": "Bar",
+			"default": "#0F1115"
+		}
+	],
+	"sounds": [
+		{
+			"file": "../../sounds/pop.wav",
+			"at": 1.133
+		},
+		{
+			"file": "../../sounds/pop.wav",
+			"at": 2.333
+		}
+	]
+}

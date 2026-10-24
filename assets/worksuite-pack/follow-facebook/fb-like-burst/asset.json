@@ -1,0 +1,99 @@
+{
+	"schema": 1,
+	"id": "fb-like-burst",
+	"name": "Like sparkle badge",
+	"category": "follow-facebook",
+	"type": "lottie",
+	"file": "fb-like-burst.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "A rounded-square badge with an outlined thumbs-up pops in, the thumb gives a nod, sparkles burst around it and a “Like” label appears.",
+	"tags": [
+		"facebook",
+		"fb",
+		"page",
+		"follow",
+		"following",
+		"button",
+		"social",
+		"ෆලෝ",
+		"ෆලෝ කරන්න",
+		"பின்தொடர்",
+		"like",
+		"thumbs up",
+		"sparkle",
+		"badge",
+		"burst",
+		"ලයික්",
+		"லைக்"
+	],
+	"durationSec": 3,
+	"loop": false,
+	"aspect": "1:1",
+	"width": 800,
+	"height": 800,
+	"thumbnailAt": 0.55,
+	"colors": [
+		{
+			"id": "badge",
+			"name": "Badge",
+			"default": "#2B2F38"
+		},
+		{
+			"id": "icon",
+			"name": "Thumb & text",
+			"default": "#FFFFFF"
+		},
+		{
+			"id": "sparkle",
+			"name": "Sparkles",
+			"default": "#F5A524"
+		},
+		{
+			"id": "sparkle2",
+			"name": "Small sparkles",
+			"default": "#2EC4B6"
+		},
+		{
+			"id": "label",
+			"name": "Label pill",
+			"default": "#0F1115"
+		}
+	],
+	"defaultVariant": "en",
+	"variants": [
+		{
+			"id": "en",
+			"name": "English",
+			"lang": "en",
+			"file": "fb-like-burst.json",
+			"thumbnail": "thumbnail.png"
+		},
+		{
+			"id": "si",
+			"name": "සිංහල",
+			"lang": "si",
+			"file": "fb-like-burst.si.json",
+			"thumbnail": "thumbnail.si.png"
+		},
+		{
+			"id": "ta",
+			"name": "தமிழ்",
+			"lang": "ta",
+			"file": "fb-like-burst.ta.json",
+			"thumbnail": "thumbnail.ta.png"
+		}
+	],
+	"sounds": [
+		{
+			"file": "../../sounds/pop.wav",
+			"at": 0,
+			"gainDb": -2
+		},
+		{
+			"file": "../../sounds/pop.wav",
+			"at": 0.533,
+			"gainDb": -8
+		}
+	]
+}

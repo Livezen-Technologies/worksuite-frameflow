@@ -1,0 +1,81 @@
+{
+	"schema": 1,
+	"id": "tt-action-rail",
+	"name": "Side action rail",
+	"category": "follow-tiktok",
+	"type": "lottie",
+	"file": "tt-action-rail.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "A vertical rail of avatar-plus, heart, comment, bookmark and share buttons with empty count bars slides in; the heart is liked with a burst. Made for 9:16.",
+	"tags": [
+		"tiktok",
+		"short video",
+		"vertical",
+		"reels",
+		"follow",
+		"following",
+		"button",
+		"social",
+		"ෆලෝ",
+		"ෆලෝ කරන්න",
+		"பின்தொடர்",
+		"rail",
+		"side bar",
+		"heart",
+		"like",
+		"comment",
+		"bookmark",
+		"share",
+		"9:16"
+	],
+	"durationSec": 3.5,
+	"loop": false,
+	"aspect": "4:11",
+	"width": 400,
+	"height": 1100,
+	"thumbnailAt": 0.55,
+	"colors": [
+		{
+			"id": "icon",
+			"name": "Icons",
+			"default": "#FFFFFF"
+		},
+		{
+			"id": "liked",
+			"name": "Liked heart & badge",
+			"default": "#F2416B"
+		},
+		{
+			"id": "avatar",
+			"name": "Avatar area",
+			"default": "#596070"
+		},
+		{
+			"id": "count",
+			"name": "Count bars",
+			"default": "#C9CED8"
+		},
+		{
+			"id": "accent",
+			"name": "Burst",
+			"default": "#3ED6CF"
+		},
+		{
+			"id": "shadow",
+			"name": "Icon shadow",
+			"default": "#0F1115"
+		}
+	],
+	"sounds": [
+		{
+			"file": "../../sounds/whoosh.wav",
+			"at": 0,
+			"gainDb": -8
+		},
+		{
+			"file": "../../sounds/pop.wav",
+			"at": 1.6
+		}
+	]
+}

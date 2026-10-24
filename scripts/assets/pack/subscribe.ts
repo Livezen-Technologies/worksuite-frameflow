@@ -24,13 +24,13 @@ import shaped from "./subscribe-text.json";
 // asset with words has English, Sinhala and Tamil variants with identical
 // timing and colour slots.
 
-interface Word {
+export interface Word {
 	text: string;
 	advance: number;
 	bbox: [number, number, number, number];
 	contours: PathData[];
 }
-const WORDS = (shaped as unknown as { words: Record<string, Word> }).words;
+export const WORDS = (shaped as unknown as { words: Record<string, Word> }).words;
 
 const RED = "#E53935";
 const GREY = "#3A3F4B";
@@ -47,7 +47,7 @@ const commonTags = ["subscribe", "youtube", "button", "සබ්ස්ක්‍�
  * `cap` tall; Sinhala and Tamil (with their marks) are allowed a little
  * taller; everything shrinks to fit `maxW`.
  */
-function label(
+export function label(
 	key: string,
 	{ cap, maxW, color, at = [0, 0], opacity = 100, glow }: { cap: number; maxW: number; color: string; at?: number[]; opacity?: number | Key[]; glow?: { color: string; width: number; opacity: number | Key[] } },
 ): { shape: Shape; w: number; h: number } {
@@ -68,10 +68,10 @@ function label(
 	};
 }
 
-const lang = (ctx: AssetContext) => (ctx.variant === "default" ? "en" : ctx.variant);
+export const lang = (ctx: AssetContext) => (ctx.variant === "default" ? "en" : ctx.variant);
 
 /** A check mark centred on the origin, `size` wide, drawn on by `draw` (trim end keys). */
-function tick(color: string, size: number, width: number, draw: Key[], at: number[] = [0, 0]): Shape {
+export function tick(color: string, size: number, width: number, draw: Key[], at: number[] = [0, 0]): Shape {
 	const k = size / 2;
 	return group(
 		[path(pathData([[-k, 0], [-k * 0.3, k * 0.65], [k, -k * 0.7]])), trim(0, draw), stroke(color, width)],
@@ -94,11 +94,11 @@ function subscribedLabel(ctx: AssetContext, { at, cap, maxW, color, offset = [0,
 
 // ---------- shapes ----------
 
-const pill = (w: number, h: number, color: string, opacity: number | Key[] = 100, at: number[] = [0, 0]) =>
+export const pill = (w: number, h: number, color: string, opacity: number | Key[] = 100, at: number[] = [0, 0]) =>
 	group([rect([w, h], [0, 0], h / 2), fill(color, opacity)], { position: at }, "Pill");
 
 /** A closed rounded rectangle path centred on the origin, starting top-centre, clockwise. */
-function roundRectPath(w: number, h: number, r: number): PathData {
+export function roundRectPath(w: number, h: number, r: number): PathData {
 	const x = w / 2 - r;
 	const y = h / 2 - r;
 	const pts = [
@@ -116,7 +116,7 @@ const bellPath = pathData(
 );
 
 /** A bell hanging from the origin (its pivot), about 330 × 330 at scale 1. */
-function bell(color: string, { fillOpacity = 100, outline }: { fillOpacity?: number | Key[]; outline?: { color: string; width: number } } = {}): Shape[] {
+export function bell(color: string, { fillOpacity = 100, outline }: { fillOpacity?: number | Key[]; outline?: { color: string; width: number } } = {}): Shape[] {
 	const body: Shape[] = [path(bellPath)];
 	if (outline) body.push(stroke(outline.color, outline.width));
 	body.push(fill(color, fillOpacity));
@@ -127,7 +127,7 @@ function bell(color: string, { fillOpacity = 100, outline }: { fillOpacity?: num
 	];
 }
 
-const ringSwing = (start: number, amp = 18): Key[] => [
+export const ringSwing = (start: number, amp = 18): Key[] => [
 	[start, 0, EASE.soft],
 	[start + 6, amp],
 	[start + 14, -amp * 0.85],
@@ -138,7 +138,7 @@ const ringSwing = (start: number, amp = 18): Key[] => [
 ];
 
 /** Short lines bursting out from the origin at `start`. */
-function burst(color: string, start: number, { count = 8, r1 = 120, r2 = 170, width = 12, offset = 0 } = {}): Shape[] {
+export function burst(color: string, start: number, { count = 8, r1 = 120, r2 = 170, width = 12, offset = 0 } = {}): Shape[] {
 	return Array.from({ length: count }, (_, i) =>
 		group(
 			[
@@ -153,7 +153,7 @@ function burst(color: string, start: number, { count = 8, r1 = 120, r2 = 170, wi
 }
 
 /** A generic thumbs-up centred on the origin, about 260 tall at scale 1. */
-function thumb(color: string): Shape[] {
+export function thumb(color: string): Shape[] {
 	return [
 		group([rect([62, 150], [0, 0], 16), fill(color)], { position: [-98, 40] }, "Cuff"),
 		group([rect([150, 150], [0, 0], 34), fill(color)], { position: [10, 40] }, "Palm"),
@@ -164,15 +164,15 @@ function thumb(color: string): Shape[] {
 const cursorArrow = pathData([[0, 0], [0, 92], [24, 70], [40, 106], [56, 99], [40, 64], [70, 64]], true);
 
 /** Pop in (0 → overshoot → 100) then a squash when pressed at `press`. */
-const popPress = (pop: number, press?: number): Key[] => [
+export const popPress = (pop: number, press?: number): Key[] => [
 	[pop, [0, 0], EASE.out],
 	[pop + 9, [110, 110], EASE.inOut],
 	[pop + 16, [100, 100]],
 	...(press !== undefined ? ([[press, [100, 100], EASE.out], [press + 4, [92, 92], EASE.back], [press + 16, [100, 100]]] as Key[]) : []),
 ];
 
-const fadeIn = (t: number, len = 6): Key[] => [[t, 0, EASE.out], [t + len, 100]];
-const fadeOut = (t: number, len = 6): Key[] => [[t, 100, EASE.in], [t + len, 0]];
+export const fadeIn = (t: number, len = 6): Key[] => [[t, 0, EASE.out], [t + len, 100]];
+export const fadeOut = (t: number, len = 6): Key[] => [[t, 100, EASE.in], [t + len, 0]];
 
 /**
  * A subscribe pill that, pressed at `press`, turns its pressed colour and

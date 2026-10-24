@@ -18,7 +18,7 @@ describe("Worksuite Assets pack", () => {
 		expect(validatePack(packDir)).toEqual([]);
 	});
 
-	test("has 76 assets across the eight categories", () => {
+	test("has 94 assets across the eleven categories", () => {
 		const counts = Object.fromEntries(index.categories.map((c) => [c.id, c.count]));
 		expect(counts).toEqual({
 			"lower-thirds": 10,
@@ -29,8 +29,11 @@ describe("Worksuite Assets pack", () => {
 			transitions: 8,
 			"status-infographics": 8,
 			"subscribe-buttons": 16,
+			"follow-facebook": 6,
+			"follow-tiktok": 6,
+			"follow-instagram": 6,
 		});
-		expect(index.assets).toHaveLength(76);
+		expect(index.assets).toHaveLength(94);
 	});
 
 	test.each(index.assets.map((a) => [a.id, a] as const))("%s: metadata, size and colours", (_id, asset) => {

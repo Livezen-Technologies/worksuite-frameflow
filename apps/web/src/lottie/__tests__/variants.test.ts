@@ -3,7 +3,7 @@ import { cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:f
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { validatePack } from "../../../../../scripts/assets/validate-worksuite-pack";
-import { type PackIndex, packAssetJsonUrl, packAssetThumbnailUrl, resolvePackVariant, searchPackAssets } from "../catalog";
+import { groupPackCategories, type PackIndex, packAssetJsonUrl, packAssetThumbnailUrl, resolvePackVariant, searchPackAssets } from "../catalog";
 import { collectLottieColors, hasTextLayers } from "../colors";
 import { lottieDataFromPackAsset, switchLottieVariant } from "../element";
 import { lottieSourceFromKey, lottieSourceKey } from "../player";
@@ -30,7 +30,7 @@ describe("Subscribe buttons pack", () => {
 		for (const q of ["subscribe", "youtube", "bell", "notification", "like", "සබ්ස්ක්‍රයිබ්", "சப்ஸ்கிரைப்"]) {
 			expect(searchPackAssets({ assets: subscribe, query: q }).length).toBeGreaterThan(0);
 		}
-		expect(searchPackAssets({ assets: index.assets, query: "", language: "si" })).toHaveLength(15);
+		expect(searchPackAssets({ assets: subscribe, query: "", language: "si" })).toHaveLength(15);
 	});
 
 	test.each(subscribe.flatMap((a) => (meta(a.path).variants ?? [{ id: "default", file: `${a.id}.json` }]).map((v) => [`${a.id} ${v.id}`, a, v.file] as const)))(
@@ -99,5 +99,59 @@ describe("Subscribe buttons pack", () => {
 		} finally {
 			rmSync(dir, { recursive: true, force: true });
 		}
+	});
+});
+
+const FOLLOW = ["follow-facebook", "follow-tiktok", "follow-instagram"];
+const follow = index.assets.filter((a) => FOLLOW.includes(a.category));
+const followVariants = follow.filter((a) => a.variants?.length);
+// Brand values the pack must not use as defaults.
+const BRAND_HEX = ["#1877F2", "#0866FF", "#FE2C55", "#25F4EE", "#E1306C", "#833AB4", "#C13584", "#F77737", "#FCAF45", "#FD1D1D", "#405DE6", "#0095F6"];
+
+describe("Follow buttons pack", () => {
+	test("6 assets each under Facebook, TikTok and Instagram, grouped as “Social follow”", () => {
+		for (const id of FOLLOW) expect(follow.filter((a) => a.category === id)).toHaveLength(6);
+		expect(index.categories.filter((c) => FOLLOW.includes(c.id)).map((c) => [c.name, c.group])).toEqual([
+			["Facebook", "Social follow"],
+			["TikTok", "Social follow"],
+			["Instagram", "Social follow"],
+		]);
+		const groups = groupPackCategories(index.categories);
+		expect(groups[0].group).toBeNull();
+		expect(groups.find((g) => g.group === "Social follow")?.categories.map((c) => c.id)).toEqual(FOLLOW);
+	});
+
+	test("assets with words come in English, Sinhala and Tamil", () => {
+		expect(followVariants).toHaveLength(13);
+		for (const asset of followVariants) expect(asset.variants?.map((v) => v.id)).toEqual(["en", "si", "ta"]);
+		expect(searchPackAssets({ assets: follow, query: "", language: "ta" })).toHaveLength(13);
+		expect(searchPackAssets({ assets: index.assets, query: "", category: "follow-tiktok", language: "si" })).toHaveLength(2);
+	});
+
+	test("search finds them by platform and by Sinhala and Tamil words", () => {
+		for (const q of ["facebook", "tiktok", "instagram", "follow", "ෆලෝ", "பின்தொடர்", "link in bio", "save"]) {
+			expect(searchPackAssets({ assets: follow, query: q }).length).toBeGreaterThan(0);
+		}
+	});
+
+	test("no brand colours as defaults", () => {
+		for (const asset of follow) for (const s of asset.colors) expect(BRAND_HEX).not.toContain(s.default.toUpperCase());
+	});
+
+	test.each(follow.flatMap((a) => (meta(a.path).variants ?? [{ id: "default", file: `${a.id}.json` }]).map((v) => [`${a.id} ${v.id}`, a, v.file] as const)))(
+		"%s: no text layers and every colour is a slot",
+		(_name, asset, file) => {
+			const text = readFileSync(join(packDir, asset.path, file), "utf8");
+			const json = JSON.parse(text) as LottieJson;
+			expect(hasTextLayers(json)).toBe(false);
+			expect(text.includes('"ty":5')).toBe(false);
+			expect(collectLottieColors(json).sort()).toEqual(asset.colors.map((s) => s.default.toUpperCase()).sort());
+			expect([json.fr, json.op / json.fr >= 2, json.op / json.fr <= 4]).toEqual([30, true, true]);
+		},
+	);
+
+	test.each(followVariants.map((a) => [a.id, a] as const))("%s: variants share size and timing", (_id, asset) => {
+		const docs = (meta(asset.path).variants ?? []).map((v) => JSON.parse(readFileSync(join(packDir, asset.path, v.file), "utf8")) as LottieJson);
+		for (const doc of docs) expect([doc.w, doc.h, doc.fr, doc.ip, doc.op]).toEqual([docs[0].w, docs[0].h, docs[0].fr, docs[0].ip, docs[0].op]);
 	});
 });

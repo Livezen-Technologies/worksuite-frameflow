@@ -42,6 +42,24 @@
 			"id": "subscribe-buttons",
 			"name": "YouTube & subscribe",
 			"count": 16
+		},
+		{
+			"id": "follow-facebook",
+			"name": "Facebook",
+			"group": "Social follow",
+			"count": 6
+		},
+		{
+			"id": "follow-tiktok",
+			"name": "TikTok",
+			"group": "Social follow",
+			"count": 6
+		},
+		{
+			"id": "follow-instagram",
+			"name": "Instagram",
+			"group": "Social follow",
+			"count": 6
 		}
 	],
 	"sounds": {
@@ -4388,6 +4406,1903 @@
 				},
 				"asset.json": {
 					"sha256": "9720e23c48859dfcf0f6bea19564e383169a58f9694d7c3c7d399980c0eed043"
+				}
+			}
+		},
+		{
+			"id": "fb-follow-click",
+			"name": "Follow click",
+			"category": "follow-facebook",
+			"path": "follow-facebook/fb-follow-click",
+			"tags": [
+				"facebook",
+				"fb",
+				"page",
+				"follow",
+				"following",
+				"button",
+				"social",
+				"ෆලෝ",
+				"ෆලෝ කරන්න",
+				"பின்தொடர்",
+				"click",
+				"cursor",
+				"pill"
+			],
+			"durationSec": 3,
+			"loop": false,
+			"width": 900,
+			"height": 300,
+			"colors": [
+				{
+					"id": "button",
+					"name": "Button",
+					"default": "#2F6FDE"
+				},
+				{
+					"id": "pressed",
+					"name": "Following button",
+					"default": "#3A3F4B"
+				},
+				{
+					"id": "text",
+					"name": "Text & icon",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "cursor",
+					"name": "Cursor",
+					"default": "#F4F6FA"
+				},
+				{
+					"id": "shadow",
+					"name": "Shadow & outline",
+					"default": "#0F1115"
+				},
+				{
+					"id": "accent",
+					"name": "Click ripple",
+					"default": "#F5A524"
+				}
+			],
+			"defaultVariant": "en",
+			"variants": [
+				{
+					"id": "en",
+					"name": "English",
+					"lang": "en"
+				},
+				{
+					"id": "si",
+					"name": "සිංහල",
+					"lang": "si"
+				},
+				{
+					"id": "ta",
+					"name": "தமிழ்",
+					"lang": "ta"
+				}
+			],
+			"sounds": [
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0,
+					"durationSec": 0.12,
+					"gainDb": -4
+				},
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 1.4,
+					"durationSec": 0.06
+				}
+			],
+			"files": {
+				"fb-follow-click.json": {
+					"sha256": "7b82a178823d09784a5d1970318743706658e2cbe71ff417496d4b1160d9f791"
+				},
+				"thumbnail.png": {
+					"sha256": "d401ee04914a2b16742b7e6ef7f57cb6dba7da6cd0f40dbc2e423f5afe540c31"
+				},
+				"fb-follow-click.si.json": {
+					"sha256": "c1556390136aa573c1abc18b7d3c1a27891d575293671962a3db4b334e7684c9"
+				},
+				"thumbnail.si.png": {
+					"sha256": "14f0334e60fc05b4f6af6670b0c1851199771420d7fe3ef336378bebc6d1001d"
+				},
+				"fb-follow-click.ta.json": {
+					"sha256": "1ee9b7d657399b31e876a06fa2a57749e0e9b937c41646254189e0b57d7974de"
+				},
+				"thumbnail.ta.png": {
+					"sha256": "e3c9a678d6a745e2b875d8a4bed045b0552ccdd871bba380fe26505ef90efe12"
+				},
+				"asset.json": {
+					"sha256": "2d8d30ee3b25618afa08d4d94e24891b2c3233a95009005b2d1535d84a8cff40"
+				}
+			}
+		},
+		{
+			"id": "fb-page-card",
+			"name": "Page follow card",
+			"category": "follow-facebook",
+			"path": "follow-facebook/fb-page-card",
+			"tags": [
+				"facebook",
+				"fb",
+				"page",
+				"follow",
+				"following",
+				"button",
+				"social",
+				"ෆලෝ",
+				"ෆලෝ කරන්න",
+				"பின்தொடர்",
+				"card",
+				"profile",
+				"avatar",
+				"page follow"
+			],
+			"durationSec": 3.5,
+			"loop": false,
+			"width": 1000,
+			"height": 440,
+			"colors": [
+				{
+					"id": "panel",
+					"name": "Card",
+					"default": "#0F1115"
+				},
+				{
+					"id": "placeholder",
+					"name": "Avatar & text area",
+					"default": "#596070"
+				},
+				{
+					"id": "button",
+					"name": "Button",
+					"default": "#2F6FDE"
+				},
+				{
+					"id": "pressed",
+					"name": "Following button",
+					"default": "#3A3F4B"
+				},
+				{
+					"id": "text",
+					"name": "Text",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "cover",
+					"name": "Cover strip",
+					"default": "#24324F"
+				}
+			],
+			"defaultVariant": "en",
+			"variants": [
+				{
+					"id": "en",
+					"name": "English",
+					"lang": "en"
+				},
+				{
+					"id": "si",
+					"name": "සිංහල",
+					"lang": "si"
+				},
+				{
+					"id": "ta",
+					"name": "தமிழ்",
+					"lang": "ta"
+				}
+			],
+			"sounds": [
+				{
+					"id": "whoosh",
+					"file": "sounds/whoosh.wav",
+					"at": 0,
+					"durationSec": 0.35,
+					"gainDb": -8
+				},
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0.733,
+					"durationSec": 0.12,
+					"gainDb": -4
+				},
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 2.133,
+					"durationSec": 0.06
+				}
+			],
+			"files": {
+				"fb-page-card.json": {
+					"sha256": "73a4d2135c3e89a27fb61def31ebc54945564ee21c140ad3e9c64e1cf586bdcc"
+				},
+				"thumbnail.png": {
+					"sha256": "534be1d6fac58c0d0f22fb2895ab06425342d4807c523279b991383d6be3065e"
+				},
+				"fb-page-card.si.json": {
+					"sha256": "e19a0a0814e4ad32718c5da3c5b3a747c663a95883d106b5cc003f848b723d7d"
+				},
+				"thumbnail.si.png": {
+					"sha256": "e44beda85c54c168e68c28cd8d6bd091bb6dcead014d87e0680d74d1f53f3edd"
+				},
+				"fb-page-card.ta.json": {
+					"sha256": "78a6b0f47868c958b10378777d2c80946072a5652d923eded1b8269140bd720a"
+				},
+				"thumbnail.ta.png": {
+					"sha256": "de91e41f1b0e12e0337dc28938bb063392d35ea6d9e2dd0ca3cfb94f931ce02c"
+				},
+				"asset.json": {
+					"sha256": "6f65536b7d8c22ba0032549da26288e7a24c0aaf3473c4dec0ab1f7b30a9f0bd"
+				}
+			}
+		},
+		{
+			"id": "fb-like-burst",
+			"name": "Like sparkle badge",
+			"category": "follow-facebook",
+			"path": "follow-facebook/fb-like-burst",
+			"tags": [
+				"facebook",
+				"fb",
+				"page",
+				"follow",
+				"following",
+				"button",
+				"social",
+				"ෆලෝ",
+				"ෆලෝ කරන්න",
+				"பின்தொடர்",
+				"like",
+				"thumbs up",
+				"sparkle",
+				"badge",
+				"burst",
+				"ලයික්",
+				"லைக்"
+			],
+			"durationSec": 3,
+			"loop": false,
+			"width": 800,
+			"height": 800,
+			"colors": [
+				{
+					"id": "badge",
+					"name": "Badge",
+					"default": "#2B2F38"
+				},
+				{
+					"id": "icon",
+					"name": "Thumb & text",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "sparkle",
+					"name": "Sparkles",
+					"default": "#F5A524"
+				},
+				{
+					"id": "sparkle2",
+					"name": "Small sparkles",
+					"default": "#2EC4B6"
+				},
+				{
+					"id": "label",
+					"name": "Label pill",
+					"default": "#0F1115"
+				}
+			],
+			"defaultVariant": "en",
+			"variants": [
+				{
+					"id": "en",
+					"name": "English",
+					"lang": "en"
+				},
+				{
+					"id": "si",
+					"name": "සිංහල",
+					"lang": "si"
+				},
+				{
+					"id": "ta",
+					"name": "தமிழ்",
+					"lang": "ta"
+				}
+			],
+			"sounds": [
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0,
+					"durationSec": 0.12,
+					"gainDb": -2
+				},
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0.533,
+					"durationSec": 0.12,
+					"gainDb": -8
+				}
+			],
+			"files": {
+				"fb-like-burst.json": {
+					"sha256": "e39cdb39382aff7d60f24b14a154c946cca1512c70ba6efd70a541129452d589"
+				},
+				"thumbnail.png": {
+					"sha256": "651a622d7e68e1ef54475598dc4f2b3966fe5da984fac6fd9f666b8341ff4533"
+				},
+				"fb-like-burst.si.json": {
+					"sha256": "2d01a661e6c3e04f88ea464e2ba56601f2f9e6f2b096beb50d60ad8caf38b44a"
+				},
+				"thumbnail.si.png": {
+					"sha256": "6b03524198c3418953bde768ac284c3598de4e39983e847d96c14a54b1321992"
+				},
+				"fb-like-burst.ta.json": {
+					"sha256": "f917e1a68f41168d602ad7576ea4f6205d71679fa3846bfae0cdbb30fdd08ee1"
+				},
+				"thumbnail.ta.png": {
+					"sha256": "e9dc21cf1468caefbe5dc0e493022ae8316aa76bd47989d1ede08baab1e70aee"
+				},
+				"asset.json": {
+					"sha256": "a21cb3d3bfaac2223d55047147b8deea1dadd686ecc64d18a33c24bae2a47577"
+				}
+			}
+		},
+		{
+			"id": "fb-share-flyout",
+			"name": "Share fly-out",
+			"category": "follow-facebook",
+			"path": "follow-facebook/fb-share-flyout",
+			"tags": [
+				"facebook",
+				"fb",
+				"page",
+				"follow",
+				"following",
+				"button",
+				"social",
+				"ෆලෝ",
+				"ෆලෝ කරන්න",
+				"பின்தொடர்",
+				"share",
+				"arrow",
+				"fly",
+				"ෂෙයා",
+				"பகிர்"
+			],
+			"durationSec": 3,
+			"loop": false,
+			"width": 900,
+			"height": 400,
+			"colors": [
+				{
+					"id": "button",
+					"name": "Button",
+					"default": "#2F6FDE"
+				},
+				{
+					"id": "text",
+					"name": "Text & arrow",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "accent",
+					"name": "Trail",
+					"default": "#F5A524"
+				},
+				{
+					"id": "shadow",
+					"name": "Shadow",
+					"default": "#0F1115"
+				}
+			],
+			"defaultVariant": "en",
+			"variants": [
+				{
+					"id": "en",
+					"name": "English",
+					"lang": "en"
+				},
+				{
+					"id": "si",
+					"name": "සිංහල",
+					"lang": "si"
+				},
+				{
+					"id": "ta",
+					"name": "தமிழ்",
+					"lang": "ta"
+				}
+			],
+			"sounds": [
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0,
+					"durationSec": 0.12,
+					"gainDb": -4
+				},
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 1,
+					"durationSec": 0.06
+				},
+				{
+					"id": "whoosh",
+					"file": "sounds/whoosh.wav",
+					"at": 1.133,
+					"durationSec": 0.35
+				}
+			],
+			"files": {
+				"fb-share-flyout.json": {
+					"sha256": "bd7dc518bb2f05f4405aa722614c40ce1e828d827aca434196922d388cf4fc3c"
+				},
+				"thumbnail.png": {
+					"sha256": "9f397f9b3146d4030039dd514ba45c925e513f25bb4bfa337c018ed49aa8afa9"
+				},
+				"fb-share-flyout.si.json": {
+					"sha256": "1df68f29138ac2fd4642f78048095bdbde203ff3f23c4b9c55fb0bf16a44b713"
+				},
+				"thumbnail.si.png": {
+					"sha256": "64884ed09ce5af71e89c68d24ab16fdea232ff7546cf81f0b2252015894f1be3"
+				},
+				"fb-share-flyout.ta.json": {
+					"sha256": "7ad70ee203a1b2d78cce9c62672442a7085998b93850935e43815576a134fb0b"
+				},
+				"thumbnail.ta.png": {
+					"sha256": "7c6b285a9c023a31075312140917d8dc10fc7793bd06f62fffa1efb045464290"
+				},
+				"asset.json": {
+					"sha256": "c63476cce6f562845665bc323816b4632f22cfa290f048382e9f2a1d7c906154"
+				}
+			}
+		},
+		{
+			"id": "fb-follow-lower-third",
+			"name": "Follow the page lower third",
+			"category": "follow-facebook",
+			"path": "follow-facebook/fb-follow-lower-third",
+			"tags": [
+				"facebook",
+				"fb",
+				"page",
+				"follow",
+				"following",
+				"button",
+				"social",
+				"ෆලෝ",
+				"ෆලෝ කරන්න",
+				"பின்தொடர்",
+				"lower third",
+				"bar",
+				"page",
+				"name"
+			],
+			"durationSec": 4,
+			"loop": false,
+			"width": 1600,
+			"height": 300,
+			"colors": [
+				{
+					"id": "panel",
+					"name": "Bar",
+					"default": "#0F1115"
+				},
+				{
+					"id": "placeholder",
+					"name": "Text area",
+					"default": "#596070"
+				},
+				{
+					"id": "accent",
+					"name": "Accent strip",
+					"default": "#F5A524"
+				},
+				{
+					"id": "button",
+					"name": "Button",
+					"default": "#2F6FDE"
+				},
+				{
+					"id": "pressed",
+					"name": "Following button",
+					"default": "#3A3F4B"
+				},
+				{
+					"id": "text",
+					"name": "Text",
+					"default": "#FFFFFF"
+				}
+			],
+			"defaultVariant": "en",
+			"variants": [
+				{
+					"id": "en",
+					"name": "English",
+					"lang": "en"
+				},
+				{
+					"id": "si",
+					"name": "සිංහල",
+					"lang": "si"
+				},
+				{
+					"id": "ta",
+					"name": "தமிழ்",
+					"lang": "ta"
+				}
+			],
+			"sounds": [
+				{
+					"id": "whoosh",
+					"file": "sounds/whoosh.wav",
+					"at": 0,
+					"durationSec": 0.35,
+					"gainDb": -4
+				},
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 2.067,
+					"durationSec": 0.06
+				},
+				{
+					"id": "whoosh",
+					"file": "sounds/whoosh.wav",
+					"at": 3.333,
+					"durationSec": 0.35,
+					"gainDb": -6
+				}
+			],
+			"files": {
+				"fb-follow-lower-third.json": {
+					"sha256": "c62cbce8d3bae69cc2540197df59d2fe789d7f3916c727b324c3b6419e285701"
+				},
+				"thumbnail.png": {
+					"sha256": "cf610a0c4a020914d495dad8eb56c2eb2725c13d4476e45f5516ef0cbdb9a1ce"
+				},
+				"fb-follow-lower-third.si.json": {
+					"sha256": "4ddb1b0cd2d57279f9dd6be2844761c31e467d430c7ffbfec1f41d659aa06878"
+				},
+				"thumbnail.si.png": {
+					"sha256": "e32100eb3848c2183f322024258a3e61ab420200ea9e8efb2df4a6dc8ea45a0b"
+				},
+				"fb-follow-lower-third.ta.json": {
+					"sha256": "48caf44760fe24d23f344625b9d1a60075099d8214fcdc6b350d08fa037565d2"
+				},
+				"thumbnail.ta.png": {
+					"sha256": "8fcd41e11b76b23eb02005bfae27106370b0a30507436bcb3787869960c02884"
+				},
+				"asset.json": {
+					"sha256": "0410d1ac704574954ed319343246bfccec66745ecc5fd5b2a7ea3416b183db76"
+				}
+			}
+		},
+		{
+			"id": "fb-bell-follow",
+			"name": "Follow + bell",
+			"category": "follow-facebook",
+			"path": "follow-facebook/fb-bell-follow",
+			"tags": [
+				"facebook",
+				"fb",
+				"page",
+				"follow",
+				"following",
+				"button",
+				"social",
+				"ෆලෝ",
+				"ෆලෝ කරන්න",
+				"பின்தொடர்",
+				"bell",
+				"notification",
+				"ring"
+			],
+			"durationSec": 3.5,
+			"loop": false,
+			"width": 1000,
+			"height": 300,
+			"colors": [
+				{
+					"id": "button",
+					"name": "Button",
+					"default": "#2F6FDE"
+				},
+				{
+					"id": "pressed",
+					"name": "Following & bell circle",
+					"default": "#3A3F4B"
+				},
+				{
+					"id": "text",
+					"name": "Text",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "accent",
+					"name": "Bell & burst",
+					"default": "#F5A524"
+				},
+				{
+					"id": "shadow",
+					"name": "Shadow",
+					"default": "#0F1115"
+				}
+			],
+			"defaultVariant": "en",
+			"variants": [
+				{
+					"id": "en",
+					"name": "English",
+					"lang": "en"
+				},
+				{
+					"id": "si",
+					"name": "සිංහල",
+					"lang": "si"
+				},
+				{
+					"id": "ta",
+					"name": "தமிழ்",
+					"lang": "ta"
+				}
+			],
+			"sounds": [
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0,
+					"durationSec": 0.12,
+					"gainDb": -4
+				},
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 0.867,
+					"durationSec": 0.06
+				},
+				{
+					"id": "ding",
+					"file": "sounds/ding.wav",
+					"at": 1.667,
+					"durationSec": 0.6,
+					"gainDb": -2
+				}
+			],
+			"files": {
+				"fb-bell-follow.json": {
+					"sha256": "35a4c2552194bbe816d931a7008f75ae92f7742524a1ca69afed3aa9a5aebf57"
+				},
+				"thumbnail.png": {
+					"sha256": "158d8ce2a1be68457658e6d765c9d0f44406145c47602811150164538b1a1ed8"
+				},
+				"fb-bell-follow.si.json": {
+					"sha256": "11a49fbaee1e9a37019605a5793cfe153c3c027518049462b7677cc9898bc2df"
+				},
+				"thumbnail.si.png": {
+					"sha256": "b017a31ad10daf13b6f67f94eb0cdc47419eaa35ea7a0a9a886b000ba549f75c"
+				},
+				"fb-bell-follow.ta.json": {
+					"sha256": "56b6360bdeb8703c86dbb255a872ae328ffe3db8d2174bbbf0e76170a7b8753c"
+				},
+				"thumbnail.ta.png": {
+					"sha256": "5e3e131bdae62b55f94927080608ac56599c92575f53d73898995db9ee2a10c4"
+				},
+				"asset.json": {
+					"sha256": "da357c63ed7b4815a1d55ffdbd7cfb8d81d1a342cd0c975447b103dc73a48389"
+				}
+			}
+		},
+		{
+			"id": "tt-avatar-plus",
+			"name": "Avatar plus to tick",
+			"category": "follow-tiktok",
+			"path": "follow-tiktok/tt-avatar-plus",
+			"tags": [
+				"tiktok",
+				"short video",
+				"vertical",
+				"reels",
+				"follow",
+				"following",
+				"button",
+				"social",
+				"ෆලෝ",
+				"ෆලෝ කරන්න",
+				"பின்தொடர்",
+				"avatar",
+				"plus",
+				"tick",
+				"profile",
+				"icon"
+			],
+			"durationSec": 2.5,
+			"loop": false,
+			"width": 500,
+			"height": 500,
+			"colors": [
+				{
+					"id": "avatar",
+					"name": "Avatar area",
+					"default": "#596070"
+				},
+				{
+					"id": "ring",
+					"name": "Avatar ring",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "badge",
+					"name": "Plus badge",
+					"default": "#F2416B"
+				},
+				{
+					"id": "mark",
+					"name": "Plus",
+					"default": "#F4F6FA"
+				},
+				{
+					"id": "done",
+					"name": "Tick badge",
+					"default": "#FDFDFE"
+				},
+				{
+					"id": "accent",
+					"name": "Ripple",
+					"default": "#3ED6CF"
+				}
+			],
+			"sounds": [
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0.267,
+					"durationSec": 0.12,
+					"gainDb": -4
+				},
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 0.933,
+					"durationSec": 0.06
+				}
+			],
+			"files": {
+				"tt-avatar-plus.json": {
+					"sha256": "91ee0907f1ce16a354437cba60d171af236ab19366beadaed6d08683c92eb3bb"
+				},
+				"thumbnail.png": {
+					"sha256": "c0daff078027971c76cbeb2bd912467f11f25b79a7f2411691ef368c771b64bf"
+				},
+				"asset.json": {
+					"sha256": "5f850a3307e5d2da497416cd875a7f403db9ce7a237559350be1481089eb1e11"
+				}
+			}
+		},
+		{
+			"id": "tt-action-rail",
+			"name": "Side action rail",
+			"category": "follow-tiktok",
+			"path": "follow-tiktok/tt-action-rail",
+			"tags": [
+				"tiktok",
+				"short video",
+				"vertical",
+				"reels",
+				"follow",
+				"following",
+				"button",
+				"social",
+				"ෆලෝ",
+				"ෆලෝ කරන්න",
+				"பின்தொடர்",
+				"rail",
+				"side bar",
+				"heart",
+				"like",
+				"comment",
+				"bookmark",
+				"share",
+				"9:16"
+			],
+			"durationSec": 3.5,
+			"loop": false,
+			"width": 400,
+			"height": 1100,
+			"colors": [
+				{
+					"id": "icon",
+					"name": "Icons",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "liked",
+					"name": "Liked heart & badge",
+					"default": "#F2416B"
+				},
+				{
+					"id": "avatar",
+					"name": "Avatar area",
+					"default": "#596070"
+				},
+				{
+					"id": "count",
+					"name": "Count bars",
+					"default": "#C9CED8"
+				},
+				{
+					"id": "accent",
+					"name": "Burst",
+					"default": "#3ED6CF"
+				},
+				{
+					"id": "shadow",
+					"name": "Icon shadow",
+					"default": "#0F1115"
+				}
+			],
+			"sounds": [
+				{
+					"id": "whoosh",
+					"file": "sounds/whoosh.wav",
+					"at": 0,
+					"durationSec": 0.35,
+					"gainDb": -8
+				},
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 1.6,
+					"durationSec": 0.12
+				}
+			],
+			"files": {
+				"tt-action-rail.json": {
+					"sha256": "e199b1063427c02169e3b8c2d0cf911deb0d4fae4ceeb1fc4eedfff268e71e9b"
+				},
+				"thumbnail.png": {
+					"sha256": "339bbb37608f496addb9908f4de846e38278cbe310cfb0becd4730889089d359"
+				},
+				"asset.json": {
+					"sha256": "da671341438bd87bbd7ad4880d10b878bda2b67d9735170e5d27a47a7a2040f4"
+				}
+			}
+		},
+		{
+			"id": "tt-double-tap",
+			"name": "Double-tap heart",
+			"category": "follow-tiktok",
+			"path": "follow-tiktok/tt-double-tap",
+			"tags": [
+				"tiktok",
+				"short video",
+				"vertical",
+				"reels",
+				"follow",
+				"following",
+				"button",
+				"social",
+				"ෆලෝ",
+				"ෆලෝ කරන්න",
+				"பின்தொடர்",
+				"double tap",
+				"heart",
+				"like",
+				"love",
+				"tap"
+			],
+			"durationSec": 2.5,
+			"loop": false,
+			"width": 800,
+			"height": 800,
+			"colors": [
+				{
+					"id": "heart",
+					"name": "Heart",
+					"default": "#F2416B"
+				},
+				{
+					"id": "small",
+					"name": "Small hearts",
+					"default": "#FF8FA8"
+				},
+				{
+					"id": "accent",
+					"name": "Taps & burst",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "shadow",
+					"name": "Shadow",
+					"default": "#0F1115"
+				}
+			],
+			"sounds": [
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 0.067,
+					"durationSec": 0.06,
+					"gainDb": -10
+				},
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 0.3,
+					"durationSec": 0.06,
+					"gainDb": -10
+				},
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0.533,
+					"durationSec": 0.12
+				}
+			],
+			"files": {
+				"tt-double-tap.json": {
+					"sha256": "7c64b109b37972a03c380911dd1c700bfb6571ba816c784b8b9e6631c179bda1"
+				},
+				"thumbnail.png": {
+					"sha256": "19eb147d439a00344c08c32d98366be7a104244d4d6d53e244c2fd5f68d4a2dc"
+				},
+				"asset.json": {
+					"sha256": "e179e7fda04cbf80cc990d876de5f710b42fe05e01d37f0bf477726f79e5d417"
+				}
+			}
+		},
+		{
+			"id": "tt-part2-sticker",
+			"name": "Follow for part 2 sticker",
+			"category": "follow-tiktok",
+			"path": "follow-tiktok/tt-part2-sticker",
+			"tags": [
+				"tiktok",
+				"short video",
+				"vertical",
+				"reels",
+				"follow",
+				"following",
+				"button",
+				"social",
+				"ෆලෝ",
+				"ෆලෝ කරන්න",
+				"பின்தொடர்",
+				"part 2",
+				"series",
+				"sticker",
+				"frame",
+				"episode"
+			],
+			"durationSec": 3,
+			"loop": false,
+			"width": 900,
+			"height": 600,
+			"colors": [
+				{
+					"id": "sticker",
+					"name": "Sticker",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "panel",
+					"name": "Text area",
+					"default": "#E7EAF0"
+				},
+				{
+					"id": "button",
+					"name": "Button",
+					"default": "#F2416B"
+				},
+				{
+					"id": "text",
+					"name": "Button text",
+					"default": "#F4F6FA"
+				},
+				{
+					"id": "badge",
+					"name": "Badge",
+					"default": "#3ED6CF"
+				},
+				{
+					"id": "digit",
+					"name": "Badge digit",
+					"default": "#0F1115"
+				},
+				{
+					"id": "shadow",
+					"name": "Shadow",
+					"default": "#0B0C10"
+				}
+			],
+			"defaultVariant": "en",
+			"variants": [
+				{
+					"id": "en",
+					"name": "English",
+					"lang": "en"
+				},
+				{
+					"id": "si",
+					"name": "සිංහල",
+					"lang": "si"
+				},
+				{
+					"id": "ta",
+					"name": "தமிழ்",
+					"lang": "ta"
+				}
+			],
+			"sounds": [
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0,
+					"durationSec": 0.12
+				},
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0.467,
+					"durationSec": 0.12,
+					"gainDb": -8
+				}
+			],
+			"files": {
+				"tt-part2-sticker.json": {
+					"sha256": "b53865f2b51b31885db272b58b97d972e9f116e4181b24c619e8d5c2873f39b1"
+				},
+				"thumbnail.png": {
+					"sha256": "f22ba218f4924badc629d0817159e55aac1026a601c51c46b5c9e6e170c779a6"
+				},
+				"tt-part2-sticker.si.json": {
+					"sha256": "c91a362cd6c982d946dec3f7dbeb758b0a369e7a83d6a9767d13ce7a38cb1355"
+				},
+				"thumbnail.si.png": {
+					"sha256": "2f810c6f6509118e1691d8d39493f3521c1b414943ebc19e06e68eab069eb62a"
+				},
+				"tt-part2-sticker.ta.json": {
+					"sha256": "6f2cf768a2c0bb2c8efadb560ee8498803fb0c961838529d091461465c86f98e"
+				},
+				"thumbnail.ta.png": {
+					"sha256": "e46086a27aaf5d2227da946d99b1c4b3bc9f26dc5ac0b9bd44d2d0cbfc5ef58c"
+				},
+				"asset.json": {
+					"sha256": "47cad68633445dca9ed055666df67b58c3e53e273322e802aae34715954a381e"
+				}
+			}
+		},
+		{
+			"id": "tt-swipe-up",
+			"name": "Swipe-up hint",
+			"category": "follow-tiktok",
+			"path": "follow-tiktok/tt-swipe-up",
+			"tags": [
+				"tiktok",
+				"short video",
+				"vertical",
+				"reels",
+				"follow",
+				"following",
+				"button",
+				"social",
+				"ෆලෝ",
+				"ෆලෝ කරන්න",
+				"பின்தொடர்",
+				"swipe up",
+				"scroll",
+				"hint",
+				"gesture",
+				"touch",
+				"9:16"
+			],
+			"durationSec": 2,
+			"loop": true,
+			"width": 600,
+			"height": 900,
+			"colors": [
+				{
+					"id": "chevron",
+					"name": "Chevrons",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "track",
+					"name": "Track",
+					"default": "#8A92A3"
+				},
+				{
+					"id": "dot",
+					"name": "Touch dot",
+					"default": "#F4F6FA"
+				},
+				{
+					"id": "outline",
+					"name": "Touch ring",
+					"default": "#0F1115"
+				},
+				{
+					"id": "accent",
+					"name": "Trail",
+					"default": "#3ED6CF"
+				}
+			],
+			"sounds": [
+				{
+					"id": "whoosh",
+					"file": "sounds/whoosh.wav",
+					"at": 0.133,
+					"durationSec": 0.35,
+					"gainDb": -6
+				}
+			],
+			"files": {
+				"tt-swipe-up.json": {
+					"sha256": "a88a92de8fb6134d41b333dc55ffdd692b14d595ee792b6c6719644eac7022b5"
+				},
+				"thumbnail.png": {
+					"sha256": "8afd847378cfb5be98277a0d3b442c45981c22018bd45e398be580a53db0eea9"
+				},
+				"asset.json": {
+					"sha256": "87996b00814072c79d46493c27689401cbd83699bbd4061fe82d7a631fd1fcc8"
+				}
+			}
+		},
+		{
+			"id": "tt-comment-reply",
+			"name": "Comment reply + follow",
+			"category": "follow-tiktok",
+			"path": "follow-tiktok/tt-comment-reply",
+			"tags": [
+				"tiktok",
+				"short video",
+				"vertical",
+				"reels",
+				"follow",
+				"following",
+				"button",
+				"social",
+				"ෆලෝ",
+				"ෆලෝ කරන්න",
+				"பின்தொடர்",
+				"comment",
+				"reply",
+				"bubble",
+				"කමෙන්ට්",
+				"கருத்து"
+			],
+			"durationSec": 3.5,
+			"loop": false,
+			"width": 1000,
+			"height": 500,
+			"colors": [
+				{
+					"id": "bubble",
+					"name": "Bubble",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "placeholder",
+					"name": "Avatar & text area",
+					"default": "#C4C9D3"
+				},
+				{
+					"id": "chip",
+					"name": "Comment tag",
+					"default": "#0F1115"
+				},
+				{
+					"id": "button",
+					"name": "Button",
+					"default": "#F2416B"
+				},
+				{
+					"id": "pressed",
+					"name": "Following button",
+					"default": "#3A3F4B"
+				},
+				{
+					"id": "text",
+					"name": "Text",
+					"default": "#F4F6FA"
+				},
+				{
+					"id": "shadow",
+					"name": "Shadow",
+					"default": "#0B0C10"
+				}
+			],
+			"defaultVariant": "en",
+			"variants": [
+				{
+					"id": "en",
+					"name": "English",
+					"lang": "en"
+				},
+				{
+					"id": "si",
+					"name": "සිංහල",
+					"lang": "si"
+				},
+				{
+					"id": "ta",
+					"name": "தமிழ்",
+					"lang": "ta"
+				}
+			],
+			"sounds": [
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0,
+					"durationSec": 0.12,
+					"gainDb": -4
+				},
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 2.067,
+					"durationSec": 0.06
+				}
+			],
+			"files": {
+				"tt-comment-reply.json": {
+					"sha256": "8ff3d15374fc710ca2eb0fd6367399128b0d7056387ceae7c8ec4f2409b8c68e"
+				},
+				"thumbnail.png": {
+					"sha256": "7b4f4b05118e35ba662d0c95c16a5d12a6118f1aa4925902bec430d760fe3eaf"
+				},
+				"tt-comment-reply.si.json": {
+					"sha256": "3a7c127fc99db95cbcb8bc8cfaf760e10547c2213ea43d0d390e77889c60b925"
+				},
+				"thumbnail.si.png": {
+					"sha256": "ce5ae14e922513d205a349751940271c5b5f3a52aeba41dca4d25bd523a3be90"
+				},
+				"tt-comment-reply.ta.json": {
+					"sha256": "14dedcd1fad7be44f11852eba238fcd9d34ccdba9caaf2d9beb14e92ab2ed1b8"
+				},
+				"thumbnail.ta.png": {
+					"sha256": "8ec277ac6aad8c6d67901c0c5d7e9af197d107de70633176709164a226dda1b3"
+				},
+				"asset.json": {
+					"sha256": "70a30e25a763271140ee8d7357601c4a5bde0685c942de58b8bc345faac6e567"
+				}
+			}
+		},
+		{
+			"id": "ig-follow-toggle",
+			"name": "Follow to following",
+			"category": "follow-instagram",
+			"path": "follow-instagram/ig-follow-toggle",
+			"tags": [
+				"instagram",
+				"insta",
+				"ig",
+				"story",
+				"follow",
+				"following",
+				"button",
+				"social",
+				"ෆලෝ",
+				"ෆලෝ කරන්න",
+				"பின்தொடர்",
+				"toggle",
+				"tap",
+				"rounded"
+			],
+			"durationSec": 2.5,
+			"loop": false,
+			"width": 900,
+			"height": 300,
+			"colors": [
+				{
+					"id": "button",
+					"name": "Button",
+					"default": "#3B82F0"
+				},
+				{
+					"id": "pressed",
+					"name": "Following button",
+					"default": "#2C3038"
+				},
+				{
+					"id": "text",
+					"name": "Text",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "accent",
+					"name": "Ripple",
+					"default": "#F29A3E"
+				},
+				{
+					"id": "shadow",
+					"name": "Shadow",
+					"default": "#0F1115"
+				}
+			],
+			"defaultVariant": "en",
+			"variants": [
+				{
+					"id": "en",
+					"name": "English",
+					"lang": "en"
+				},
+				{
+					"id": "si",
+					"name": "සිංහල",
+					"lang": "si"
+				},
+				{
+					"id": "ta",
+					"name": "தமிழ்",
+					"lang": "ta"
+				}
+			],
+			"sounds": [
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0,
+					"durationSec": 0.12,
+					"gainDb": -4
+				},
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 0.933,
+					"durationSec": 0.06
+				}
+			],
+			"files": {
+				"ig-follow-toggle.json": {
+					"sha256": "a3f52739587b44a9e100706d854d4e2db9c88b64f97049afd1d3d5a2ee67daa6"
+				},
+				"thumbnail.png": {
+					"sha256": "d9f8b21ba9ba87b50b9f6377f18b752540d808fe6436478ab77be72e0f2ed9da"
+				},
+				"ig-follow-toggle.si.json": {
+					"sha256": "3454a7c1b52778ba10af017d4897b388592cd964833498a3f6e5cceb119f7bfd"
+				},
+				"thumbnail.si.png": {
+					"sha256": "aff63d8adc66201c0d1ac011166b51237672c32f9ed54ae550922a3e4e92f381"
+				},
+				"ig-follow-toggle.ta.json": {
+					"sha256": "66fb469a43ba38d8778c6ab891b7d944c5d4220fe9fd10bcdd89c9f3224573fd"
+				},
+				"thumbnail.ta.png": {
+					"sha256": "761fb9536109de62e368dfc18e1a3619feaba9fd56abc4179f8df482b5ee2246"
+				},
+				"asset.json": {
+					"sha256": "365098f155e343d471f5d5b1fa0581965c8a7bf30f20042d7523c115325400b0"
+				}
+			}
+		},
+		{
+			"id": "ig-profile-card",
+			"name": "Profile header card",
+			"category": "follow-instagram",
+			"path": "follow-instagram/ig-profile-card",
+			"tags": [
+				"instagram",
+				"insta",
+				"ig",
+				"story",
+				"follow",
+				"following",
+				"button",
+				"social",
+				"ෆලෝ",
+				"ෆලෝ කරන්න",
+				"பின்தொடர்",
+				"profile",
+				"header",
+				"card",
+				"avatar",
+				"stats",
+				"followers"
+			],
+			"durationSec": 3.5,
+			"loop": false,
+			"width": 1000,
+			"height": 560,
+			"colors": [
+				{
+					"id": "panel",
+					"name": "Card",
+					"default": "#0F1115"
+				},
+				{
+					"id": "placeholder",
+					"name": "Avatar & stats",
+					"default": "#596070"
+				},
+				{
+					"id": "ring",
+					"name": "Avatar ring",
+					"default": "#C93A82"
+				},
+				{
+					"id": "button",
+					"name": "Button",
+					"default": "#3B82F0"
+				},
+				{
+					"id": "pressed",
+					"name": "Following button",
+					"default": "#3A3F4B"
+				},
+				{
+					"id": "text",
+					"name": "Text",
+					"default": "#FFFFFF"
+				}
+			],
+			"defaultVariant": "en",
+			"variants": [
+				{
+					"id": "en",
+					"name": "English",
+					"lang": "en"
+				},
+				{
+					"id": "si",
+					"name": "සිංහල",
+					"lang": "si"
+				},
+				{
+					"id": "ta",
+					"name": "தமிழ்",
+					"lang": "ta"
+				}
+			],
+			"sounds": [
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0.2,
+					"durationSec": 0.12,
+					"gainDb": -4
+				},
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 2.2,
+					"durationSec": 0.06
+				}
+			],
+			"files": {
+				"ig-profile-card.json": {
+					"sha256": "b68a5fbfe8ac5dfdbbb13e31e64ae88e3df55d4dbab3c313b3afd20cc0b883d6"
+				},
+				"thumbnail.png": {
+					"sha256": "e120cf61cf0e7ca1329f08409dea6e878c00a9cd23d7ffe2f68133097a944a5f"
+				},
+				"ig-profile-card.si.json": {
+					"sha256": "f560fed87c9a5c8e4879962e5b46ab9756dcc9947739d4e66fc55ef61272604d"
+				},
+				"thumbnail.si.png": {
+					"sha256": "b0ecc68a7a20924b1c965994995e17eed41eb2e8c34712843714565360d33340"
+				},
+				"ig-profile-card.ta.json": {
+					"sha256": "c3868e867deab29292a2990524d9f5119f4f6b685eba3ea56e4f80b6b272c735"
+				},
+				"thumbnail.ta.png": {
+					"sha256": "36ec75ad25969d26cf44d511abf2099c763441a9ac5bc47224a03787013a0b25"
+				},
+				"asset.json": {
+					"sha256": "ee2980b90461195cad1cafd9c24ac63da6481e6f539b28888e9e598bbd65058d"
+				}
+			}
+		},
+		{
+			"id": "ig-story-sticker",
+			"name": "Story tap sticker",
+			"category": "follow-instagram",
+			"path": "follow-instagram/ig-story-sticker",
+			"tags": [
+				"instagram",
+				"insta",
+				"ig",
+				"story",
+				"follow",
+				"following",
+				"button",
+				"social",
+				"ෆලෝ",
+				"ෆලෝ කරන්න",
+				"பின்தொடர்",
+				"sticker",
+				"tap",
+				"tilt",
+				"story sticker"
+			],
+			"durationSec": 3,
+			"loop": false,
+			"width": 800,
+			"height": 400,
+			"colors": [
+				{
+					"id": "sticker",
+					"name": "Sticker",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "text",
+					"name": "Text & icon",
+					"default": "#C93A82"
+				},
+				{
+					"id": "done",
+					"name": "Following text",
+					"default": "#2E9E6A"
+				},
+				{
+					"id": "accent",
+					"name": "Tap ring",
+					"default": "#F29A3E"
+				},
+				{
+					"id": "shadow",
+					"name": "Shadow",
+					"default": "#0F1115"
+				}
+			],
+			"defaultVariant": "en",
+			"variants": [
+				{
+					"id": "en",
+					"name": "English",
+					"lang": "en"
+				},
+				{
+					"id": "si",
+					"name": "සිංහල",
+					"lang": "si"
+				},
+				{
+					"id": "ta",
+					"name": "தமிழ்",
+					"lang": "ta"
+				}
+			],
+			"sounds": [
+				{
+					"id": "whoosh",
+					"file": "sounds/whoosh.wav",
+					"at": 0,
+					"durationSec": 0.35,
+					"gainDb": -8
+				},
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 1.533,
+					"durationSec": 0.06
+				}
+			],
+			"files": {
+				"ig-story-sticker.json": {
+					"sha256": "7de80bb3c9a8ef491f0e082e0a74ab15495cb760267b6dcc0849295175565ba0"
+				},
+				"thumbnail.png": {
+					"sha256": "c6f6595b66ed932f2684ae656eba0470334d2b1f114e671f35808afcb6d1e62f"
+				},
+				"ig-story-sticker.si.json": {
+					"sha256": "fbc9b61356e296a5f760e9a5888a7484ce6063648508869a8f7ad69eeecdccbe"
+				},
+				"thumbnail.si.png": {
+					"sha256": "3f3584ad2dcde0795318d34b81d1ed278e0e610b44431838393edab3bf6608fc"
+				},
+				"ig-story-sticker.ta.json": {
+					"sha256": "ce9a6c8f5dd45cfb618fab1a988c77d0884a5e83ad70159e8410e4a61a781ad4"
+				},
+				"thumbnail.ta.png": {
+					"sha256": "463a1cf0f0f4295d2bf57c5fe485a85a3bb260c6ace417a5f96b30095d7bca7d"
+				},
+				"asset.json": {
+					"sha256": "e3d3048d50de2d6eae213ce56d7a7d296fa568ae35fad38ff3fad857a9345dc3"
+				}
+			}
+		},
+		{
+			"id": "ig-action-row",
+			"name": "Heart, comment, share, save row",
+			"category": "follow-instagram",
+			"path": "follow-instagram/ig-action-row",
+			"tags": [
+				"instagram",
+				"insta",
+				"ig",
+				"story",
+				"follow",
+				"following",
+				"button",
+				"social",
+				"ෆලෝ",
+				"ෆලෝ කරන්න",
+				"பின்தொடர்",
+				"heart",
+				"like",
+				"comment",
+				"share",
+				"save",
+				"bookmark",
+				"action row"
+			],
+			"durationSec": 3.5,
+			"loop": false,
+			"width": 1000,
+			"height": 300,
+			"colors": [
+				{
+					"id": "icon",
+					"name": "Icons",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "liked",
+					"name": "Liked heart",
+					"default": "#C93A82"
+				},
+				{
+					"id": "saved",
+					"name": "Saved bookmark",
+					"default": "#F29A3E"
+				},
+				{
+					"id": "accent",
+					"name": "Burst",
+					"default": "#F5A524"
+				},
+				{
+					"id": "bar",
+					"name": "Bar",
+					"default": "#0F1115"
+				}
+			],
+			"sounds": [
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 1.133,
+					"durationSec": 0.12
+				},
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 2.333,
+					"durationSec": 0.12
+				}
+			],
+			"files": {
+				"ig-action-row.json": {
+					"sha256": "bb7822c9b62014cbc87b58e5398437334d073a62a282f2b03f2693b9e1da7de9"
+				},
+				"thumbnail.png": {
+					"sha256": "3fe559a1eb7aefe2be002d8470a4495bd69d1736e8391eaf37b512b08c2dc57b"
+				},
+				"asset.json": {
+					"sha256": "488d55c513bc2e205547553af1ff25105c10ffe270947ab58fba5d72e07a7d3b"
+				}
+			}
+		},
+		{
+			"id": "ig-link-in-bio",
+			"name": "Link in bio pointer",
+			"category": "follow-instagram",
+			"path": "follow-instagram/ig-link-in-bio",
+			"tags": [
+				"instagram",
+				"insta",
+				"ig",
+				"story",
+				"follow",
+				"following",
+				"button",
+				"social",
+				"ෆලෝ",
+				"ෆලෝ කරන්න",
+				"பின்தொடர்",
+				"link in bio",
+				"bio",
+				"link",
+				"pointer",
+				"arrow",
+				"බයෝ",
+				"பயோ"
+			],
+			"durationSec": 2,
+			"loop": true,
+			"width": 900,
+			"height": 360,
+			"colors": [
+				{
+					"id": "button",
+					"name": "Pill",
+					"default": "#C93A82"
+				},
+				{
+					"id": "text",
+					"name": "Text & icon",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "arrow",
+					"name": "Arrow",
+					"default": "#F29A3E"
+				},
+				{
+					"id": "shadow",
+					"name": "Shadow",
+					"default": "#0F1115"
+				}
+			],
+			"defaultVariant": "en",
+			"variants": [
+				{
+					"id": "en",
+					"name": "English",
+					"lang": "en"
+				},
+				{
+					"id": "si",
+					"name": "සිංහල",
+					"lang": "si"
+				},
+				{
+					"id": "ta",
+					"name": "தமிழ்",
+					"lang": "ta"
+				}
+			],
+			"sounds": [
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0,
+					"durationSec": 0.12,
+					"gainDb": -6
+				}
+			],
+			"files": {
+				"ig-link-in-bio.json": {
+					"sha256": "b64d8fe400561fd06b66339289db537474fde36a0a0f6cde1572771f5b6e53c3"
+				},
+				"thumbnail.png": {
+					"sha256": "dcbccdffa27c760081e82b363ff359b9ca640031f642ee8ebd05ba05f2ca4ec6"
+				},
+				"ig-link-in-bio.si.json": {
+					"sha256": "b864943d1d72726714d232437bb45a0bd3fa2ca86cfa178ec196d77d14835a5d"
+				},
+				"thumbnail.si.png": {
+					"sha256": "435111f61615463845c50b2a67a08dde133c5210f2c0728cfaad3f8c83567ac6"
+				},
+				"ig-link-in-bio.ta.json": {
+					"sha256": "ce8afdaab6d64eca2e8c2e925f2ce25b3414db4b0817206cd098072d74687124"
+				},
+				"thumbnail.ta.png": {
+					"sha256": "f6d476aeaa631b60abbfec40abcbbd96a8669a16f2f4e106b2fb6d4fa7861166"
+				},
+				"asset.json": {
+					"sha256": "4eab49fbae6cfff939bbd827229fad3b687b2c527deccbbfd7fec2880b12ea14"
+				}
+			}
+		},
+		{
+			"id": "ig-save-pop",
+			"name": "Save bookmark pop",
+			"category": "follow-instagram",
+			"path": "follow-instagram/ig-save-pop",
+			"tags": [
+				"instagram",
+				"insta",
+				"ig",
+				"story",
+				"follow",
+				"following",
+				"button",
+				"social",
+				"ෆලෝ",
+				"ෆලෝ කරන්න",
+				"பின்தொடர்",
+				"save",
+				"bookmark",
+				"saved",
+				"pop",
+				"සේව්",
+				"சேமி"
+			],
+			"durationSec": 2.5,
+			"loop": false,
+			"width": 600,
+			"height": 600,
+			"colors": [
+				{
+					"id": "icon",
+					"name": "Bookmark outline & text",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "saved",
+					"name": "Saved fill",
+					"default": "#F29A3E"
+				},
+				{
+					"id": "disc",
+					"name": "Circle & label",
+					"default": "#0F1115"
+				},
+				{
+					"id": "accent",
+					"name": "Burst",
+					"default": "#C93A82"
+				}
+			],
+			"defaultVariant": "en",
+			"variants": [
+				{
+					"id": "en",
+					"name": "English",
+					"lang": "en"
+				},
+				{
+					"id": "si",
+					"name": "සිංහල",
+					"lang": "si"
+				},
+				{
+					"id": "ta",
+					"name": "தமிழ்",
+					"lang": "ta"
+				}
+			],
+			"sounds": [
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 0.8,
+					"durationSec": 0.06,
+					"gainDb": -6
+				},
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0.867,
+					"durationSec": 0.12
+				}
+			],
+			"files": {
+				"ig-save-pop.json": {
+					"sha256": "d71179147077c12fd87b5be0c2306ed95fbf339e145d3483a8a477b7667f16e4"
+				},
+				"thumbnail.png": {
+					"sha256": "18a7550dcd6ae26916b0eb0927aa52d29cc50ae5a6898f14a48c9637acc00263"
+				},
+				"ig-save-pop.si.json": {
+					"sha256": "5a6c700f3576b334613345be99b07c05e01b4376417df5c16f82822abc5faa5d"
+				},
+				"thumbnail.si.png": {
+					"sha256": "f91fa28273c7a01737870e8553bf2d0ed8654e2e1aab7690f9e389fe4fa9af1a"
+				},
+				"ig-save-pop.ta.json": {
+					"sha256": "0c663ad696087fa42a330d579b1ea3b2bacc408564ff7b6dc69dad92b82f9a42"
+				},
+				"thumbnail.ta.png": {
+					"sha256": "99f4bd5f8882d15f72094a6339c2d2558203656d8b1480a1c4c70bd029535150"
+				},
+				"asset.json": {
+					"sha256": "74df9d1a6a0cbecfe2febf03b2fc582b05ed8ea4940b645bfb4f9f354e787456"
 				}
 			}
 		}

@@ -1,0 +1,95 @@
+{
+	"schema": 1,
+	"id": "fb-share-flyout",
+	"name": "Share fly-out",
+	"category": "follow-facebook",
+	"type": "lottie",
+	"file": "fb-share-flyout.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "A share button is tapped and its arrow flies out with a trail of dots, then swings back in.",
+	"tags": [
+		"facebook",
+		"fb",
+		"page",
+		"follow",
+		"following",
+		"button",
+		"social",
+		"ෆලෝ",
+		"ෆලෝ කරන්න",
+		"பின்தொடர்",
+		"share",
+		"arrow",
+		"fly",
+		"ෂෙයා",
+		"பகிர்"
+	],
+	"durationSec": 3,
+	"loop": false,
+	"aspect": "9:4",
+	"width": 900,
+	"height": 400,
+	"thumbnailAt": 0.9,
+	"colors": [
+		{
+			"id": "button",
+			"name": "Button",
+			"default": "#2F6FDE"
+		},
+		{
+			"id": "text",
+			"name": "Text & arrow",
+			"default": "#FFFFFF"
+		},
+		{
+			"id": "accent",
+			"name": "Trail",
+			"default": "#F5A524"
+		},
+		{
+			"id": "shadow",
+			"name": "Shadow",
+			"default": "#0F1115"
+		}
+	],
+	"defaultVariant": "en",
+	"variants": [
+		{
+			"id": "en",
+			"name": "English",
+			"lang": "en",
+			"file": "fb-share-flyout.json",
+			"thumbnail": "thumbnail.png"
+		},
+		{
+			"id": "si",
+			"name": "සිංහල",
+			"lang": "si",
+			"file": "fb-share-flyout.si.json",
+			"thumbnail": "thumbnail.si.png"
+		},
+		{
+			"id": "ta",
+			"name": "தமிழ்",
+			"lang": "ta",
+			"file": "fb-share-flyout.ta.json",
+			"thumbnail": "thumbnail.ta.png"
+		}
+	],
+	"sounds": [
+		{
+			"file": "../../sounds/pop.wav",
+			"at": 0,
+			"gainDb": -4
+		},
+		{
+			"file": "../../sounds/click.wav",
+			"at": 1
+		},
+		{
+			"file": "../../sounds/whoosh.wav",
+			"at": 1.133
+		}
+	]
+}
