@@ -23,6 +23,10 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 - New and changed packs appear in the Asset Library as soon as they're published while you're signed in and online, instead of at the next 15-minute check.
 - The Asset Library and the panels' Downloaded sections are now in Sinhala and Tamil when you choose either language.
 
+### Changed
+
+- The Asset Library now loads from the FrameFlow library at https://frameflow.worksuitecloud.com/library. Every pack, Free and Pro, downloads and works without signing in; signing in only adds favourites, download history and syncing across devices.
+
 ### Fixed
 
 - The desktop app no longer fails to start with "Cannot find module './library-account'".

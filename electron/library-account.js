@@ -9,7 +9,7 @@ const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
 
-const LIBRARY_API = process.env.WSC_LIBRARY_API || "https://library.frameflow.worksuitecloud.com";
+const LIBRARY_API = process.env.WSC_LIBRARY_API || "https://frameflow.worksuitecloud.com/library";
 /** Sync ops that change what the catalog lists. */
 const CATALOG_OPS = new Set(["upsert", "unpublish", "deprecate", "delete"]);
 

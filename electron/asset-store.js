@@ -12,7 +12,7 @@ const path = require("node:path");
 const io = require("./asset-pack-io");
 const { createLibraryAccount } = require("./library-account");
 
-const ASSET_BASE = process.env.WSC_ASSET_URL || "https://download.worksuitecloud.com/assets";
+const ASSET_BASE = process.env.WSC_ASSET_URL || "https://frameflow.worksuitecloud.com/library";
 const CHANNELS = ["stable", "beta"];
 /** Public half of the catalog signing key (private half: CI secret ASSET_SIGNING_KEY). */
 const CATALOG_PUBLIC_KEY =
