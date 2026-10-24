@@ -1,6 +1,8 @@
 "use client";
 
 import { create } from "zustand";
+import type { SessionManifest } from "@/recording/storage";
+import type { RecordedFile } from "@/recording/storage";
 
 /**
  * What the startup screen asked the editor to do once the new project is
@@ -12,7 +14,9 @@ export type StartIntent =
 	| { kind: "record" }
 	| { kind: "motion" }
 	| { kind: "templates" }
-	| { kind: "import"; files: File[] };
+	| { kind: "import"; files: File[] }
+	/** A take from the standalone recorder window, opened for editing. */
+	| { kind: "recording"; session: SessionManifest; files: RecordedFile[] };
 
 export const useStartIntent = create<{
 	intent: StartIntent | null;

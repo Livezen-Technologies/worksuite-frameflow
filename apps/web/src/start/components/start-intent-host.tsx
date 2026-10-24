@@ -6,6 +6,8 @@ import { useAssetsPanelStore } from "@/components/editor/panels/assets/assets-pa
 import { useEditor } from "@/editor/use-editor";
 import { processMediaAssets } from "@/media/processing";
 import { useRecordingSettings } from "@/recording/settings";
+import { placeRecording } from "@/recording/place";
+import { deleteSessionData } from "@/recording/storage";
 import { defaultStillDuration } from "@/timeline/creation";
 import { buildElementFromMedia } from "@/timeline/element-utils";
 import { addMediaTime, mediaTimeFromSeconds, ZERO_MEDIA_TIME } from "@/wasm";
@@ -23,6 +25,19 @@ export function StartIntentHost() {
 		if (intent.kind === "record") {
 			useRecordingSettings.getState().set({ mode: "screen" });
 			useAssetsPanelStore.getState().setActiveTab("record");
+			return;
+		}
+		if (intent.kind === "recording") {
+			void placeRecording({ editor, session: intent.session, files: intent.files, autoZoom: false })
+				.then(() => {
+					toast.success("Your recording is on the timeline");
+					void deleteSessionData(intent.session.id);
+				})
+				.catch((error: unknown) =>
+					toast.error("Couldn't add the recording", {
+						description: error instanceof Error ? error.message : String(error),
+					}),
+				);
 			return;
 		}
 		if (intent.kind === "motion" || intent.kind === "templates") {

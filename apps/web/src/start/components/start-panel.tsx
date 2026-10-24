@@ -38,6 +38,13 @@ export function StartPanel() {
 		}
 	};
 
+	// The desktop app records in its own small window; the browser records in the editor.
+	const record = () => {
+		const recorder = window.worksuite?.recorder;
+		if (recorder) void recorder.open();
+		else void start({ intent: { kind: "record" }, name: "Screen recording" });
+	};
+
 	const openExisting = () =>
 		void openProjectFolder()
 			.then((opened) => opened && router.push(`/editor/${opened.projectId}`))
@@ -97,7 +104,7 @@ export function StartPanel() {
 				void start({ name: "New project" });
 			} else if (key === "r" && e.shiftKey) {
 				e.preventDefault();
-				void start({ intent: { kind: "record" }, name: "Screen recording" });
+				record();
 			}
 		};
 		window.addEventListener("keydown", onKey);
@@ -147,7 +154,7 @@ export function StartPanel() {
 					type="button"
 					className={card}
 					disabled={busy}
-					onClick={() => void start({ intent: { kind: "record" }, name: "Screen recording" })}
+					onClick={record}
 					data-start="record"
 				>
 					<div className={art} aria-hidden>

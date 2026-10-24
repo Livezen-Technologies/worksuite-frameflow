@@ -1,21 +1,15 @@
 import { cn } from "@/utils/ui";
 
-/** FrameFlow play mark: a dark play triangle on an accent tile. */
+/** The FrameFlow app icon (same artwork as the installers, electron/build/icon.svg). */
 export function BrandMark({ className }: { className?: string }) {
 	return (
-		<span
-			className={cn(
-				"bg-primary inline-flex size-7 shrink-0 items-center justify-center rounded-[7px]",
-				className,
-			)}
+		// eslint-disable-next-line @next/next/no-img-element -- a small static SVG
+		<img
+			src="/brand/app-icon.svg"
+			alt=""
 			aria-hidden="true"
-		>
-			<svg viewBox="0 0 24 24" className="size-1/2" fill="currentColor">
-				<polygon
-					points="7 4 19 12 7 20 7 4"
-					className="text-primary-foreground"
-				/>
-			</svg>
-		</span>
+			draggable={false}
+			className={cn("inline-block size-7 shrink-0 rounded-[7px]", className)}
+		/>
 	);
 }

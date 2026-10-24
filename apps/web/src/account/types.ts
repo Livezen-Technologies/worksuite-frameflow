@@ -93,6 +93,30 @@ declare global {
 			automation?: AutomationBridge;
 			helper?: NativeHelperBridge;
 			windows?: ProjectWindowsBridge;
+			/** Tools › Video converter and Video downloader (desktop). */
+			tools?: {
+				pathForFile: (file: File) => string;
+				convert: (args: {
+					jobId: string;
+					input: string;
+					format: string;
+					height?: number;
+					quality?: string;
+					durationSeconds?: number;
+				}) => Promise<{ path: string }>;
+				cancelConvert: (jobId: string) => Promise<void>;
+				onConvertProgress: (listener: (p: { jobId: string; progress: number }) => void) => () => void;
+				download: (args: { jobId: string; url: string }) => Promise<{ path: string; name: string; bytes: number }>;
+				cancelDownload: (jobId: string) => Promise<void>;
+				onDownloadProgress: (listener: (p: { jobId: string; received: number; total: number }) => void) => () => void;
+				readSaved: (filePath: string) => Promise<ArrayBuffer>;
+			};
+			/** The standalone recorder window. */
+			recorder?: {
+				open: () => Promise<void>;
+				focusMain: () => Promise<void>;
+				minimize: () => Promise<void>;
+			};
 		};
 	}
 }

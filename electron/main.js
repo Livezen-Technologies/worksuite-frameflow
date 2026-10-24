@@ -22,6 +22,8 @@ const ai = require("./ai");
 const automation = require("./automation");
 const projectWindows = require("./project-windows");
 const nativeHelper = require("./native-helper");
+const converter = require("./converter");
+const downloader = require("./downloader");
 const masterExport = require("./master-export");
 
 const HOST = "127.0.0.1";
@@ -201,6 +203,45 @@ function guardWindow(win, origin) {
 	});
 }
 
+// The standalone recorder (Camtasia-style): a small window that stays on
+// top and is left out of screen captures, so it never shows in a recording.
+let recorderWindow = null;
+let mainWindow = null;
+function openRecorder() {
+	if (recorderWindow && !recorderWindow.isDestroyed()) {
+		recorderWindow.show();
+		recorderWindow.focus();
+		return;
+	}
+	recorderWindow = new BrowserWindow({
+		...WINDOW_OPTIONS,
+		width: 900,
+		height: 260,
+		minWidth: 760,
+		minHeight: 220,
+		resizable: true,
+		maximizable: false,
+		fullscreenable: false,
+		alwaysOnTop: true,
+		title: "FrameFlow Recorder",
+		backgroundColor: windowBackground(),
+	});
+	recorderWindow.setContentProtection(true);
+	guardWindow(recorderWindow, appOrigin);
+	recorderWindow.on("closed", () => {
+		recorderWindow = null;
+	});
+	void recorderWindow.loadURL(`${appOrigin}/recorder`);
+}
+
+function focusMain() {
+	const win = mainWindow && !mainWindow.isDestroyed() ? mainWindow : BrowserWindow.getAllWindows().find((w) => w !== recorderWindow);
+	if (!win) return;
+	if (win.isMinimized()) win.restore();
+	win.show();
+	win.focus();
+}
+
 async function createWindow() {
 	const origin = await startServer();
 	appOrigin = origin;
@@ -220,6 +261,7 @@ async function createWindow() {
 		},
 	});
 
+	mainWindow = win;
 	capture.setupCapture({ session: win.webContents.session, origin });
 	captureControls.init({ window: win });
 	network.guardSession({
@@ -291,6 +333,36 @@ function registerAccountIpc() {
 		for (const win of BrowserWindow.getAllWindows()) if (!win.isDestroyed()) win.setBackgroundColor(windowBackground());
 		return source;
 	});
+	handle("recorder:open", () => openRecorder());
+	handleFrom("tools:convert", async (event, args = {}) => {
+		const output = await converter.convert({
+			...args,
+			folder: path.join(app.getPath("videos"), "Worksuite"),
+			onProgress: (progress) => event.sender.send("tools:convert-progress", { jobId: args.jobId, progress }),
+		});
+		rememberExport(output);
+		return { path: output };
+	});
+	handle("tools:cancel-convert", (jobId) => converter.cancel(jobId));
+	handleFrom("tools:download", async (event, args = {}) => {
+		const saved = await downloader.download({
+			jobId: args.jobId,
+			url: args.url,
+			folder: path.join(app.getPath("downloads"), "Worksuite"),
+			onProgress: (p) => event.sender.send("tools:download-progress", { jobId: args.jobId, ...p }),
+		});
+		rememberExport(saved.path);
+		return saved;
+	});
+	handle("tools:cancel-download", (jobId) => downloader.cancel(jobId));
+	// Reads back a file this app saved (converted or downloaded), to open it in the editor.
+	handle("tools:read-saved", async (filePath) => {
+		if (!savedExports.has(filePath)) throw new Error("Not allowed");
+		const data = await fs.promises.readFile(filePath);
+		return data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength);
+	});
+	handle("recorder:focus-main", () => focusMain());
+	handleFrom("recorder:minimize", (event) => BrowserWindow.fromWebContents(event.sender)?.minimize());
 	handle("capture:sources", () => capture.listSources());
 	handle("capture:choose", (id) => capture.chooseSource(id));
 	handle("capture:permissions", () => capture.permissionStatus());

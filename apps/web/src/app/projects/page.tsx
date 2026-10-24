@@ -259,6 +259,25 @@ function ProjectsSidebar() {
 			<Link href="/exports" className={item}>
 				<span className={dot} /> Exports {count(exportCount)}
 			</Link>
+			<div className="text-muted-foreground mt-4 px-3 pb-1 text-[11px] font-semibold tracking-wider uppercase">Tools</div>
+			<button
+				type="button"
+				className={item}
+				onClick={() => {
+					const recorder = window.worksuite?.recorder;
+					if (recorder) void recorder.open();
+					else document.querySelector<HTMLButtonElement>('[data-start="record"]')?.click();
+				}}
+				data-tool="recorder"
+			>
+				<span className={dot} /> Screen recorder
+			</button>
+			<Link href="/tools/convert" className={item} data-tool="convert">
+				<span className={dot} /> Video converter
+			</Link>
+			<Link href="/tools/download" className={item} data-tool="download">
+				<span className={dot} /> Video downloader
+			</Link>
 			<div className="flex-1" />
 			<StorageCard />
 			<div className="bg-card mt-2 flex flex-col gap-1 border p-3 text-xs">

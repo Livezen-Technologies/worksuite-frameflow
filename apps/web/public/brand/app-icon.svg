@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <title>WorkSuite FrameFlow</title>
+  <rect width="1024" height="1024" rx="230" fill="#001842"/>
+  <rect x="196" y="236" width="520" height="368" rx="58" fill="#00DAF2"/>
+  <rect x="308" y="340" width="520" height="368" rx="58" fill="#0A6CFF" stroke="#001842" stroke-width="26"/>
+  <path d="M530 466 L660 524 L530 582 Z" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="26" stroke-linejoin="round"/>
+  <rect x="196" y="782" width="632" height="24" rx="12" fill="#0E3170"/>
+  <rect x="196" y="782" width="404" height="24" rx="12" fill="#00DAF2"/>
+  <rect x="588" y="756" width="24" height="76" rx="12" fill="#FFFFFF"/>
+</svg>

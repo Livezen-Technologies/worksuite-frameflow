@@ -55,6 +55,13 @@ export interface RecorderOptions {
 	 * from the input log instead, which can be restyled later (SC-15).
 	 */
 	hideCursor?: boolean;
+	/** Record without a microphone (the standalone recorder's mic switch). */
+	micOff?: boolean;
+	/**
+	 * One video file with the microphone and system audio mixed in, instead
+	 * of a separate mic WAV (the standalone recorder saves a single video).
+	 */
+	singleFile?: boolean;
 }
 
 export interface RecordingResult {
@@ -161,7 +168,7 @@ export class Recorder {
 			this.options;
 		const quality = QUALITY_PROFILES[profile];
 		// Ask for each device only when the mode needs it (AR-19, SC-10).
-		try {
+		if (!this.options.micOff) try {
 			this.mic = await navigator.mediaDevices.getUserMedia({
 				audio: {
 					...(micId ? { deviceId: { exact: micId } } : {}),
@@ -264,6 +271,20 @@ export class Recorder {
 		};
 	}
 
+	/** The video stream with the mic and its own audio mixed into one track. */
+	private mixed(video: MediaStream): MediaStream {
+		const sources = [video, this.mic].filter(
+			(stream): stream is MediaStream => !!stream && stream.getAudioTracks().length > 0,
+		);
+		if (sources.length === 0) return video;
+		const context = this.audioContext ?? new AudioContext({ sampleRate: SAMPLE_RATE });
+		this.audioContext = context;
+		const destination = context.createMediaStreamDestination();
+		for (const stream of sources)
+			context.createMediaStreamSource(new MediaStream(stream.getAudioTracks())).connect(destination);
+		return new MediaStream([...video.getVideoTracks(), ...destination.stream.getAudioTracks()]);
+	}
+
 	private async startMeter(): Promise<void> {
 		if (!this.mic) return;
 		const context = new AudioContext({ sampleRate: SAMPLE_RATE });
@@ -286,7 +307,7 @@ export class Recorder {
 	private onAudio(channels: Float32Array[]): void {
 		const level = Math.max(...channels.map((c) => peakDb(c)));
 		for (const listener of this.levelListeners) listener(level);
-		if (!this.recording || this.clock.paused) return;
+		if (!this.recording || this.clock.paused || this.options.singleFile) return;
 		const wanted = this.options.channelCount;
 		this.pcm.push(
 			Array.from({ length: wanted }, (_, i) => channels[i] ?? channels[0]),
@@ -374,11 +395,12 @@ export class Recorder {
 			this.recorders.push({ role, recorder });
 			tracks.push({ role, label, format: "webm" });
 		};
+		const single = !!this.options.singleFile;
 		if (this.screen) {
 			addRecorder({
 				role: "screen",
 				label: "Screen recording",
-				stream: this.screen,
+				stream: single ? this.mixed(this.screen) : this.screen,
 				videoBitsPerSecond: QUALITY_PROFILES[profile].videoBitsPerSecond,
 			});
 		}
@@ -386,11 +408,12 @@ export class Recorder {
 			addRecorder({
 				role: "camera",
 				label: "Camera",
-				stream: this.camera,
+				// Without a screen, the camera video carries the sound.
+				stream: single && !this.screen ? this.mixed(this.camera) : this.camera,
 				videoBitsPerSecond: CAMERA_BITS_PER_SECOND,
 			});
 		}
-		if (this.mic) {
+		if (this.mic && !single) {
 			tracks.push({
 				role: "mic",
 				label: mode === "voiceover" ? "Voiceover" : "Microphone",

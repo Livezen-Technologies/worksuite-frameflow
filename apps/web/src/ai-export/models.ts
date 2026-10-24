@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { portalModelUrl } from "@/models/portal";
 
 /**
  * On-device AI models for export (SRS EX-20, EX-21). Nothing ships in the
@@ -12,7 +13,7 @@ export interface AiModelInfo {
 	kind: AiModelKind;
 	name: string;
 	licence: string;
-	/** Where "Download" fetches it from; any compatible .onnx can be imported instead. */
+	/** Public source, tried when the download center doesn't have it; any compatible .onnx can be imported instead. */
 	url: string;
 	approxBytes: number;
 	about: string;
@@ -24,7 +25,7 @@ export const AI_MODELS: AiModelInfo[] = [
 		kind: "upscale",
 		name: "Real-ESRGAN x4plus",
 		licence: "BSD-3-Clause",
-		url: "https://huggingface.co/qualcomm/Real-ESRGAN-x4plus/resolve/main/Real-ESRGAN-x4plus.onnx",
+		url: "https://huggingface.co/crustythesockk/RealESRGAN-x4plus-dynamic/resolve/main/Real-ESRGAN-x4plus.onnx",
 		approxBytes: 67_000_000,
 		about:
 			"AI Ultra HD: restores detail when exporting above the project size and cleans up noise and compression artefacts.",
@@ -34,7 +35,7 @@ export const AI_MODELS: AiModelInfo[] = [
 		kind: "interpolate",
 		name: "RIFE (frame interpolation)",
 		licence: "MIT",
-		url: "https://huggingface.co/onnx-community/rife-v4.6/resolve/main/onnx/model.onnx",
+		url: "https://huggingface.co/yuvraj108c/rife-onnx/resolve/main/rife47_ensemble_True_scale_1_sim.onnx",
 		approxBytes: 21_000_000,
 		about:
 			"Optical flow: makes in-between frames for smoother motion when the export frame rate is double the project's.",
@@ -93,9 +94,7 @@ export async function downloadModel(id: string): Promise<void> {
 		errors: { ...state.errors, [id]: "" },
 	});
 	try {
-		const response = await fetch(model.url);
-		if (!response.ok || !response.body)
-			throw new Error(`Download failed (${response.status})`);
+		const response = await fetchFirst([portalModelUrl(model.id), model.url]);
 		const total = Number(response.headers.get("content-length") ?? model.approxBytes);
 		const reader = response.body.getReader();
 		const parts: Uint8Array[] = [];
@@ -154,4 +153,20 @@ export function modelFor(kind: AiModelKind): AiModelInfo {
 	const model = AI_MODELS.find((m) => m.kind === kind);
 	if (!model) throw new Error(`No ${kind} model`);
 	return model;
+}
+
+/** The first source that answers; the error names every source's status. */
+async function fetchFirst(urls: string[]): Promise<Response & { body: ReadableStream<Uint8Array> }> {
+	const failures: string[] = [];
+	for (const url of urls) {
+		try {
+			const response = await fetch(url);
+			if (response.ok && response.body)
+				return Object.assign(response, { body: response.body });
+			failures.push(String(response.status));
+		} catch {
+			failures.push("offline");
+		}
+	}
+	throw new Error(`Download failed (${failures.join(", ")})`);
 }

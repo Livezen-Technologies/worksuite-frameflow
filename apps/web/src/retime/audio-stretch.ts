@@ -73,12 +73,14 @@ async function buildPitchPreservedBuffer({
 	clipDuration,
 	rate,
 	targetSampleRate,
+	pitchSemitones = 0,
 }: {
 	sourceBuffer: AudioBuffer;
 	trimStart: number;
 	clipDuration: number;
 	rate: number;
 	targetSampleRate: number;
+	pitchSemitones?: number;
 }): Promise<AudioBuffer> {
 	const nativeSampleRate = sourceBuffer.sampleRate;
 	const sourceDuration = clipDuration * rate;
@@ -135,7 +137,7 @@ async function buildPitchPreservedBuffer({
 	);
 	const shifter = new PitchShifter(stretchCtx, resampledBuffer, 4096);
 	shifter.tempo = rate;
-	shifter.pitch = 1;
+	shifter.pitch = 2 ** (pitchSemitones / 12);
 	shifter.connect(stretchCtx.destination);
 	return stretchCtx.startRendering();
 }
@@ -147,6 +149,7 @@ export async function renderRetimedBuffer({
 	clipDuration,
 	retime,
 	maintainPitch = false,
+	pitchSemitones = 0,
 }: {
 	audioContext: BaseAudioContext;
 	sourceBuffer: AudioBuffer;
@@ -154,6 +157,8 @@ export async function renderRetimedBuffer({
 	clipDuration: number;
 	retime?: RetimeConfig;
 	maintainPitch?: boolean;
+	/** Voice changer: shift the pitch without changing the speed. */
+	pitchSemitones?: number;
 }): Promise<AudioBuffer> {
 	const targetSampleRate = audioContext.sampleRate;
 	const rate = clampRetimeRate({ rate: retime?.rate ?? 1 });
@@ -161,13 +166,14 @@ export async function renderRetimedBuffer({
 		shouldMaintainPitch({ rate, maintainPitch }) &&
 		Math.abs(rate - 1) > RATE_EPSILON;
 
-	if (usePitchPreservation) {
+	if (usePitchPreservation || pitchSemitones !== 0) {
 		return buildPitchPreservedBuffer({
 			sourceBuffer,
 			trimStart,
 			clipDuration,
 			rate,
 			targetSampleRate,
+			pitchSemitones,
 		});
 	}
 

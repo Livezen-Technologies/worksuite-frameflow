@@ -1,6 +1,6 @@
 // Exposes the Worksuite account to the editor UI. Tokens never cross this
 // bridge: the page only sees sign-in state and the cached profile.
-const { contextBridge, ipcRenderer } = require("electron");
+const { contextBridge, ipcRenderer, webUtils } = require("electron");
 
 contextBridge.exposeInMainWorld("worksuite", {
 	app: {
@@ -129,6 +129,30 @@ contextBridge.exposeInMainWorld("worksuite", {
 		removeMedia: (args) => ipcRenderer.invoke("folders:remove-media", args),
 		show: (args) => ipcRenderer.invoke("folders:show", args),
 		move: (args) => ipcRenderer.invoke("folders:move", args),
+	},
+	tools: {
+		/** The file's place on disk (dropped or chosen files only). */
+		pathForFile: (file) => webUtils.getPathForFile(file),
+		convert: (args) => ipcRenderer.invoke("tools:convert", args),
+		cancelConvert: (jobId) => ipcRenderer.invoke("tools:cancel-convert", jobId),
+		download: (args) => ipcRenderer.invoke("tools:download", args),
+		cancelDownload: (jobId) => ipcRenderer.invoke("tools:cancel-download", jobId),
+		onDownloadProgress: (listener) => {
+			const handler = (_event, payload) => listener(payload);
+			ipcRenderer.on("tools:download-progress", handler);
+			return () => ipcRenderer.removeListener("tools:download-progress", handler);
+		},
+		readSaved: (filePath) => ipcRenderer.invoke("tools:read-saved", filePath),
+		onConvertProgress: (listener) => {
+			const handler = (_event, payload) => listener(payload);
+			ipcRenderer.on("tools:convert-progress", handler);
+			return () => ipcRenderer.removeListener("tools:convert-progress", handler);
+		},
+	},
+	recorder: {
+		open: () => ipcRenderer.invoke("recorder:open"),
+		focusMain: () => ipcRenderer.invoke("recorder:focus-main"),
+		minimize: () => ipcRenderer.invoke("recorder:minimize"),
 	},
 	files: {
 		saveExport: (args) => ipcRenderer.invoke("files:save-export", args),

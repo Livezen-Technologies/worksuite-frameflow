@@ -44,7 +44,7 @@ export function Footer() {
 								alt="Worksuite FrameFlow"
 								width={24}
 								height={24}
-								className="invert dark:invert-0"
+								className="rounded-[5px]"
 							/>
 							<span className="text-lg font-bold">Worksuite FrameFlow</span>
 						</div>

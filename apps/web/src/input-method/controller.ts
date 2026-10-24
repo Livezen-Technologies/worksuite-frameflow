@@ -1,5 +1,6 @@
 "use client";
 
+import { caretRect } from "./caret";
 import { create } from "zustand";
 import { toast } from "sonner";
 import { nextWordSuggestions, suggest, wordBefore } from "./candidates";
@@ -41,7 +42,8 @@ interface CandidateState {
 	candidates: string[];
 	selected: number;
 	latin: string;
-	anchor: { left: number; top: number } | null;
+	/** Under the caret; `above` is where to flip to when there's no room below. */
+	anchor: { left: number; top: number; above: number } | null;
 	doc: Document | null;
 }
 
@@ -117,12 +119,12 @@ function showNextWords({ field }: { field: Field }) {
 	const words = nextWordSuggestions({ previous, nextWords });
 	if (words.length === 0) return;
 	following = { field, at };
-	const rect = field.getBoundingClientRect();
+	const caret = caretRect(field);
 	useCandidates.setState({
 		candidates: words,
 		selected: 0,
 		latin: "",
-		anchor: { left: rect.left, top: rect.bottom + 4 },
+		anchor: { left: caret.left, top: caret.bottom + 4, above: caret.top - 4 },
 		doc: field.ownerDocument,
 	});
 }
@@ -143,12 +145,12 @@ function showCandidates({ comp }: { comp: Composition }) {
 	candidates = english
 		? [comp.keys, ...candidates.slice(0, 4)]
 		: [...candidates.slice(0, 5), comp.keys];
-	const rect = comp.field.getBoundingClientRect();
+	const caret = caretRect(comp.field);
 	useCandidates.setState({
 		candidates,
 		selected: 0,
 		latin: comp.keys,
-		anchor: { left: rect.left, top: rect.bottom + 4 },
+		anchor: { left: caret.left, top: caret.bottom + 4, above: caret.top - 4 },
 		doc: comp.field.ownerDocument,
 	});
 }

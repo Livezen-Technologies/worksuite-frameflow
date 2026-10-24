@@ -1,7 +1,7 @@
 "use client";
 
 import type { EditorCore } from "@/core";
-import type { TextElement, TimelineElement } from "@/timeline";
+import type { TimelineElement } from "@/timeline";
 import { hasMediaId, isVisualElement } from "@/timeline/element-utils";
 import { TICKS_PER_SECOND } from "@/wasm";
 import { type ClipRef, mediaOf } from "./actions";
@@ -51,12 +51,12 @@ export async function trackText({
 	onProgress,
 }: {
 	editor: EditorCore;
-	text: { trackId: string; element: TextElement };
+	text: { trackId: string; element: TimelineElement };
 	onProgress?: (fraction: number) => void;
 }): Promise<number> {
 	const video = videoUnder({ editor, element: text.element });
 	if (!video)
-		throw new Error("Put the text over a video clip, with the playhead on it.");
+		throw new Error("Put it over a video clip, with the playhead on it.");
 	const asset = mediaOf({ editor, element: video.element });
 	if (!asset?.width || !asset.height)
 		throw new Error("Couldn't read the video's size.");
@@ -85,8 +85,9 @@ export async function trackText({
 	const perPixel = (asset.width * contain * scale) / samples.width;
 	const videoX = Number(video.element.params["transform.positionX"] ?? 0);
 	const videoY = Number(video.element.params["transform.positionY"] ?? 0);
-	const textX = Number(text.element.params["transform.positionX"] ?? 0);
-	const textY = Number(text.element.params["transform.positionY"] ?? 0);
+	const params: Record<string, unknown> = "params" in text.element ? text.element.params : {};
+	const textX = Number(params["transform.positionX"] ?? 0);
+	const textY = Number(params["transform.positionY"] ?? 0);
 	const cx = (textX - videoX) / perPixel + samples.width / 2;
 	const cy = (textY - videoY) / perPixel + samples.height / 2;
 	const path = trackPatch({
@@ -132,7 +133,7 @@ export function clearTracking({
 	text,
 }: {
 	editor: EditorCore;
-	text: { trackId: string; element: TextElement };
+	text: { trackId: string; element: TimelineElement };
 }) {
 	const animations = { ...(text.element.animations ?? {}) };
 	delete animations["transform.positionX"];

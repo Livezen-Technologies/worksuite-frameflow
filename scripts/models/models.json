@@ -1,0 +1,51 @@
+{
+	"$comment": "On-device models mirrored to the download center (models/). `sources` are tried in order; `search` finds an .onnx on Hugging Face when none answers. Whisper repos are copied with their q4 files in Hugging Face's layout (models/hf/<repo>/resolve/main/...). `expect` checks a file's image inputs (count of [N,3,H,W] inputs) and minimum size before it's accepted.",
+	"onnx": [
+		{
+			"id": "realesrgan-x4",
+			"sources": [
+				"https://huggingface.co/crustythesockk/RealESRGAN-x4plus-dynamic/resolve/main/Real-ESRGAN-x4plus.onnx"
+			],
+			"search": [
+				"Real-ESRGAN-x4plus",
+				"RealESRGAN_x4plus",
+				"Real-ESRGAN",
+				"realesrgan"
+			],
+			"match": "esrgan.*x4|x4.*esrgan",
+			"expect": {
+				"imageInputs": 1,
+				"minBytes": 10000000
+			}
+		},
+		{
+			"id": "rife",
+			"sources": [
+				"https://huggingface.co/yuvraj108c/rife-onnx/resolve/main/rife47_ensemble_True_scale_1_sim.onnx"
+			],
+			"search": [
+				"rife onnx",
+				"rife"
+			],
+			"match": "rife",
+			"expect": {
+				"imageInputs": 2,
+				"minBytes": 5000000
+			}
+		}
+	],
+	"whisper": [
+		[
+			"onnx-community/whisper-tiny"
+		],
+		[
+			"onnx-community/whisper-small"
+		],
+		[
+			"onnx-community/whisper-medium-ONNX"
+		],
+		[
+			"onnx-community/whisper-large-v3-turbo"
+		]
+	]
+}

@@ -4,7 +4,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Captions, Expand, FileUp, Scissors, Search } from "lucide-react";
 import { toast } from "sonner";
 import { CutTimeRangeCommand } from "@/commands/timeline";
-import { useAssetsPanelStore } from "@/components/editor/panels/assets/assets-panel-store";
 import { PanelView } from "@/components/editor/panels/assets/views/base-panel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,6 +14,7 @@ import { mediaTimeFromSeconds, TICKS_PER_SECOND } from "@/wasm";
 import { buildSubtitlesFromTranscript } from "../build";
 import { formatClock, importTranscript } from "../format";
 import { useTranscriptStore } from "../store";
+import { TranscribeCard } from "./transcribe-card";
 import {
 	createTranscript,
 	cutTranscriptRange,
@@ -161,16 +161,7 @@ export function TranscriptSidebar() {
 			/>
 			{!transcript || transcript.segments.length === 0 ? (
 				<div className="flex flex-col gap-2" data-transcript-empty>
-					<p className="text-muted-foreground m-0 text-sm leading-relaxed">
-						Edit your video by editing its words. Make a transcript first:
-					</p>
-					<Button
-						onClick={() =>
-							useAssetsPanelStore.getState().setActiveTab("captions")
-						}
-					>
-						<Captions /> Transcribe (Sinhala, Tamil, English)
-					</Button>
+					<TranscribeCard />
 					{captionCues.length > 0 && (
 						<Button variant="outline" onClick={fromCaptions}>
 							Use the {captionCues.length} captions on the timeline

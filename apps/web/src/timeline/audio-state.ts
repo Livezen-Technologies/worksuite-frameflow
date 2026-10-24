@@ -38,15 +38,39 @@ export function isElementMuted({
 	return element.params.muted === true;
 }
 
+/** Fade-in and fade-out lengths in seconds (Audio › Basic). */
+export function getElementFades({ element }: { element: AudioCapableElement }): {
+	fadeIn: number;
+	fadeOut: number;
+} {
+	const read = (key: string) => {
+		const value = element.params[key];
+		return typeof value === "number" && Number.isFinite(value) ? Math.max(0, value) : 0;
+	};
+	return { fadeIn: read("fadeIn"), fadeOut: read("fadeOut") };
+}
+
+/** Voice changer pitch in semitones; 0 leaves the voice as it is. */
+export function getElementPitch({ element }: { element: AudioCapableElement }): number {
+	const value = element.params.voicePitch;
+	return typeof value === "number" && Number.isFinite(value) ? Math.max(-12, Math.min(12, value)) : 0;
+}
+
+/** Volume changes over the clip: keyframes or fades. */
 export function hasAnimatedVolume({
 	element,
 }: {
 	element: AudioCapableElement;
 }): boolean {
-	return hasKeyframesForPath({
-		animations: element.animations,
-		propertyPath: "volume",
-	});
+	const { fadeIn, fadeOut } = getElementFades({ element });
+	return (
+		fadeIn > 0 ||
+		fadeOut > 0 ||
+		hasKeyframesForPath({
+			animations: element.animations,
+			propertyPath: "volume",
+		})
+	);
 }
 
 import { TICKS_PER_SECOND } from "@/wasm";
@@ -71,7 +95,18 @@ export function resolveEffectiveAudioGain({
 		localTime: Math.round(localTime * TICKS_PER_SECOND),
 	});
 
-	return dBToLinear(resolvedDb);
+	return dBToLinear(resolvedDb) * fadeGain({ element, localTime });
+}
+
+/** 0–1 ramp for the fades, on the clip's own time (seconds). */
+function fadeGain({ element, localTime }: { element: AudioCapableElement; localTime: number }): number {
+	const { fadeIn, fadeOut } = getElementFades({ element });
+	if (fadeIn <= 0 && fadeOut <= 0) return 1;
+	const duration = element.duration / TICKS_PER_SECOND;
+	let gain = 1;
+	if (fadeIn > 0) gain = Math.min(gain, Math.max(0, localTime / fadeIn));
+	if (fadeOut > 0) gain = Math.min(gain, Math.max(0, (duration - localTime) / fadeOut));
+	return gain;
 }
 
 export function buildWaveformGainSamples({

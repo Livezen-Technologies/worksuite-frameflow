@@ -6,6 +6,7 @@ import { SpeedCurvePanel } from "./speed-curve";
 import { useEditor } from "@/editor/use-editor";
 import { NumberField } from "@/components/ui/number-field";
 import { Switch } from "@/components/ui/switch";
+import { Slider } from "@/components/ui/slider";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { DashboardSpeed02Icon } from "@hugeicons/core-free-icons";
 import { buildConstantRetime } from "@/retime";
@@ -194,6 +195,26 @@ function NormalSpeed({
 							}
 							isDefault={rate === DEFAULT_RETIME_RATE}
 						/>
+						{/* 0.1x–5x on a log scale, so 1x sits near the middle like CapCut. */}
+						<Slider
+							className="mt-3"
+							min={0}
+							max={1}
+							step={0.001}
+							value={[speedToSlider(rate)]}
+							onValueChange={([v]) => {
+								const next = sliderToSpeed(v ?? 0.5);
+								pendingRateRef.current = next;
+								editor.timeline.previewElements({
+									updates: [
+										{ trackId, elementId: element.id, updates: { retime: buildRetime({ rate: next, maintainPitch }) } },
+									],
+								});
+							}}
+							onValueCommit={() => commitRetime({ rate: pendingRateRef.current, maintainPitch })}
+							aria-label="Speed"
+							data-speed-slider
+						/>
 					</SectionField>
 					<SectionField label="Duration">
 						<div className="flex items-center gap-2">
@@ -223,7 +244,9 @@ function NormalSpeed({
 						</div>
 					</SectionField>
 					<div className="flex items-center justify-between">
-						<span className="text-sm">Change pitch</span>
+						<span className="text-sm font-semibold" title="On: the sound goes higher when sped up and lower when slowed down">
+							Pitch
+						</span>
 						<Switch
 							checked={!maintainPitch}
 							disabled={!isPitchPreserveAvailable}
@@ -236,4 +259,17 @@ function NormalSpeed({
 			</SectionContent>
 		</Section>
 	);
+}
+
+const SLIDER_MIN = 0.1;
+const SLIDER_MAX = 5;
+
+function speedToSlider(rate: number): number {
+	const clamped = Math.min(SLIDER_MAX, Math.max(SLIDER_MIN, rate));
+	return Math.log(clamped / SLIDER_MIN) / Math.log(SLIDER_MAX / SLIDER_MIN);
+}
+
+function sliderToSpeed(value: number): number {
+	const rate = SLIDER_MIN * (SLIDER_MAX / SLIDER_MIN) ** value;
+	return Math.round(rate * 100) / 100;
 }

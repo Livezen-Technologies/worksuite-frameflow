@@ -30,6 +30,8 @@ import {
 } from "@/effects/components/effects-tab";
 import { MasksTab } from "@/masks/components/masks-tab";
 import { SpeedTab } from "@/speed/components/speed-tab";
+import { AudioBasicTab } from "@/audio-tools/components/audio-basic-tab";
+import { VoiceChangerTab } from "@/audio-tools/components/voice-changer-tab";
 import { GraphicTab } from "@/graphics/components/graphic-tab";
 import { LottieTab } from "@/lottie/components/lottie-tab";
 import { OcShapesIcon } from "@/components/icons";
@@ -52,8 +54,8 @@ import { BasicTab } from "@/clip-actions/components/basic-tab";
 import { AnimationTab } from "@/animation/components/animation-tab";
 import { SpherePinTab, SphereTab } from "@/vr/components/sphere-tab";
 import { findSpherePlaceEffect } from "@/vr/projection";
-import { VoiceTab } from "@/audio-tools/components/voice-tab";
-import { Mic } from "lucide-react";
+import { Mic, PaintBucket } from "lucide-react";
+import { BackgroundContent } from "@/components/editor/panels/assets/views/settings/background";
 
 const TRANSFORM_PARAM_KEYS = [
 	"transform.positionX",
@@ -234,6 +236,20 @@ function buildBasicTab({
 	};
 }
 
+/** The canvas behind the clip: colour, blur or a pattern (applies to the whole project). */
+function buildBackgroundTab(): PropertiesTabDef {
+	return {
+		id: "background",
+		label: "Background",
+		icon: <PaintBucket size={16} />,
+		content: () => (
+			<div className="p-4" data-clip-background>
+				<BackgroundContent />
+			</div>
+		),
+	};
+}
+
 function buildSphereTab({
 	element,
 }: {
@@ -369,10 +385,23 @@ function getVideoConfig({
 		defaultTab: element.multicam ? "multicam" : "basic",
 		tabs: [
 			buildBasicTab({ element }),
-			buildTransformTab({ element }),
+			buildBackgroundTab(),
 			buildAnimationTab({ element, thumbnail: mediaAsset?.thumbnailUrl }),
-			...(showAudioTab ? [buildAudioTab({ element })] : []),
 			buildSpeedTab({ element }),
+			...(showAudioTab
+				? [
+						buildAudioTab({ element }),
+						{
+							id: "voice",
+							label: "Voice changer",
+							icon: <Mic size={16} />,
+							content: ({ trackId }: { trackId: string }) => (
+								<VoiceChangerTab element={element} trackId={trackId} />
+							),
+						},
+					]
+				: []),
+			buildTransformTab({ element }),
 			buildSphereTab({ element }),
 			buildBlendingTab({ element }),
 			buildMasksTab({ element }),
@@ -411,6 +440,15 @@ function buildZoomTab({
 	};
 }
 
+function buildTrackingTab({ element }: { element: TimelineElement }): PropertiesTabDef {
+	return {
+		id: "tracking",
+		label: "Motion tracking",
+		icon: <Crosshair size={16} />,
+		content: ({ trackId }) => <TrackingTab element={element} trackId={trackId} />,
+	};
+}
+
 function getImageConfig({
 	element,
 	thumbnail,
@@ -422,8 +460,10 @@ function getImageConfig({
 		defaultTab: "basic",
 		tabs: [
 			buildBasicTab({ element }),
-			buildTransformTab({ element }),
+			buildBackgroundTab(),
 			buildAnimationTab({ element, thumbnail }),
+			buildTrackingTab({ element }),
+			buildTransformTab({ element }),
 			...buildSpherePinTabs({ element }),
 			buildBlendingTab({ element }),
 			buildMasksTab({ element }),
@@ -459,6 +499,7 @@ function getGraphicConfig({
 			buildGraphicTab({ element }),
 			buildTransformTab({ element }),
 			buildAnimationTab({ element }),
+			buildTrackingTab({ element }),
 			buildBlendingTab({ element }),
 			buildMasksTab({ element }),
 			buildClipEffectsTab({ element }),
@@ -474,13 +515,18 @@ function getAudioConfig({
 	return {
 		defaultTab: "audio",
 		tabs: [
-			buildAudioTab({ element }),
+			{
+				id: "audio",
+				label: "Basic",
+				icon: <HugeiconsIcon icon={MusicNote03Icon} size={16} />,
+				content: ({ trackId }) => <AudioBasicTab element={element} trackId={trackId} />,
+			},
 			{
 				id: "voice",
-				label: "Voice",
+				label: "Voice changer",
 				icon: <Mic size={16} />,
 				content: ({ trackId }) => (
-					<VoiceTab element={element} trackId={trackId} />
+					<VoiceChangerTab element={element} trackId={trackId} />
 				),
 			},
 			buildSpeedTab({ element }),
