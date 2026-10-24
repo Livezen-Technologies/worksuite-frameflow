@@ -68,6 +68,8 @@ import { useElementSelection } from "@/timeline/hooks/element/use-element-select
 import { resolveStickerId } from "@/stickers";
 import { buildGraphicPreviewUrl } from "@/graphics";
 import { useLottieThumbnail } from "@/lottie/components/use-lottie-thumbnail";
+import { cachedFilmstripFrame, filmstripFrame } from "@/media/filmstrip";
+import { filmstripTiles } from "@/timeline/filmstrip-layout";
 import Image from "next/image";
 import {
 	ScissorIcon,
@@ -85,7 +87,7 @@ import {
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { uppercase } from "@/utils/string";
-import { useMemo, type ComponentProps, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ComponentProps, type ReactNode } from "react";
 import type { SelectedKeyframeRef, ElementKeyframe } from "@/animation/types";
 import { cn } from "@/utils/ui";
 import { usePropertiesStore } from "@/components/editor/panels/properties/stores/properties-store";
@@ -1189,6 +1191,14 @@ function TiledMediaContent({
 					pointerEvents: "none",
 				}}
 			/>
+			{element.type === "video" && mediaAsset && (
+				<VideoFilmstrip
+					element={element}
+					asset={mediaAsset}
+					tileWidth={tileWidth}
+					trackHeight={trackHeight}
+				/>
+			)}
 			<MediaElementHeader
 				name={mediaAsset?.name}
 				leading={
@@ -1199,6 +1209,111 @@ function TiledMediaContent({
 				hasFade={true}
 			/>
 		</>
+	);
+}
+
+/**
+ * The frames of a video clip, each tile showing the source moment under it
+ * (trim, speed and zoom included). The poster frame underneath fills tiles
+ * until their frame is decoded; tiles off screen never ask for one.
+ */
+function VideoFilmstrip({
+	element,
+	asset,
+	tileWidth,
+	trackHeight,
+}: {
+	element: VideoElement;
+	asset: MediaAsset;
+	tileWidth: number;
+	trackHeight: number;
+}) {
+	const pixelsPerSecond = useContext(PixelsPerSecondContext);
+	const tiles = useMemo(
+		() =>
+			pixelsPerSecond
+				? filmstripTiles({
+						duration: element.duration / TICKS_PER_SECOND,
+						trimStart: element.trimStart / TICKS_PER_SECOND,
+						rate: element.retime?.rate ?? 1,
+						sourceDuration: asset.duration,
+						pixelsPerSecond,
+						tileWidth,
+					})
+				: [],
+		[element.duration, element.trimStart, element.retime?.rate, asset.duration, pixelsPerSecond, tileWidth],
+	);
+	const height = Math.round(trackHeight * (typeof window === "undefined" ? 1 : window.devicePixelRatio || 1));
+	return (
+		<div className="pointer-events-none absolute inset-0 overflow-hidden" data-filmstrip>
+			{tiles.map((tile) => (
+				<FilmstripTileImage
+					key={`${tile.left}:${tile.sourceTime}`}
+					asset={asset}
+					time={tile.sourceTime}
+					height={height}
+					left={tile.left}
+					width={tile.width}
+					tileWidth={tileWidth}
+				/>
+			))}
+		</div>
+	);
+}
+
+function FilmstripTileImage({
+	asset,
+	time,
+	height,
+	left,
+	width,
+	tileWidth,
+}: {
+	asset: MediaAsset;
+	time: number;
+	height: number;
+	left: number;
+	width: number;
+	tileWidth: number;
+}) {
+	const ref = useRef<HTMLDivElement>(null);
+	const [url, setUrl] = useState(() => cachedFilmstripFrame({ assetId: asset.id, time, height }));
+	useEffect(() => {
+		if (url) return;
+		const node = ref.current;
+		if (!node) return;
+		const controller = new AbortController();
+		// Only tiles in view (the timeline's scroll area clips the rest) decode.
+		const observer = new IntersectionObserver(
+			(entries) => {
+				if (!entries.some((e) => e.isIntersecting)) return;
+				observer.disconnect();
+				void filmstripFrame({ asset, time, height, signal: controller.signal }).then((next) => {
+					if (next && !controller.signal.aborted) setUrl(next);
+				});
+			},
+			{ rootMargin: "0px 400px" },
+		);
+		observer.observe(node);
+		return () => {
+			observer.disconnect();
+			controller.abort();
+		};
+	}, [asset, time, height, url]);
+	return (
+		<div
+			ref={ref}
+			className="absolute inset-y-0"
+			data-filmstrip-tile={time}
+			style={{
+				left,
+				width,
+				backgroundImage: url ? `url(${url})` : undefined,
+				backgroundSize: `${tileWidth}px 100%`,
+				backgroundPosition: "left center",
+				backgroundRepeat: "no-repeat",
+			}}
+		/>
 	);
 }
 

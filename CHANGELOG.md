@@ -164,6 +164,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Fixed
 
+- Video clips on the timeline show a real filmstrip: each thumbnail is the frame at that point of the clip, and they update when you trim, move, zoom or change the speed (they used to repeat one frame). Frames load only for what's on screen.
 - The “Tap here” and “Finger tap” animations used a pointing hand that could read as a rude gesture. They are now “Mouse click” (a computer mouse whose left button clicks) and “Cursor click” (a mouse cursor clicking the subscribe button). Projects that used “Tap here” get “Mouse click”.
 
 - Media deleted from a project saved as a project folder is now also removed from the folder's media folder on the next save.
