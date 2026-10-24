@@ -5,7 +5,7 @@ import { renderAnimatedText } from "@/text-animation/render";
 import type { TextAnimationStyle } from "@/text-animation/types";
 import type { LibraryEntry, TextLibraryContent } from "../library-content";
 import { localName, searchItems, type TextLibraryAnimation, type TextLibraryItem, type TextLibraryTemplate } from "../manifest";
-import { drawTemplateFrame } from "../template-render";
+import { aspectBox, drawTemplateFrame } from "../template-render";
 import { PreviewCanvas } from "./text-preview-canvas";
 
 export type LibraryTab = "animations" | "templates";
@@ -39,6 +39,19 @@ const ROW_H = TILE_H + 30;
 const COLS = 2;
 
 const PREVIEW_STYLE: Partial<TextAnimationStyle> = { fontSize: 20 };
+
+/** A template in its own aspect (9:16 and 1:1 are letterboxed in the 16:9 tile). */
+function drawTemplateTile(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D, template: TextLibraryTemplate, t: number, lang: string, text: string) {
+	const box = aspectBox(template.aspect, TILE_W, TILE_H);
+	ctx.save();
+	if (box.width < TILE_W || box.height < TILE_H) {
+		ctx.fillStyle = "rgba(255, 255, 255, 0.06)";
+		ctx.fillRect(box.x, box.y, box.width, box.height);
+	}
+	ctx.translate(box.x, box.y);
+	drawTemplateFrame({ ctx, template, width: box.width, height: box.height, time: t, lang, override: text });
+	ctx.restore();
+}
 
 function Tile({
 	item,
@@ -74,7 +87,7 @@ function Tile({
 			? (ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D, t: number) =>
 					renderAnimatedText({ ctx, text: shown, animation: item.animation, time: t, duration, x: TILE_W / 2, y: TILE_H / 2, style: { fontFamily: "Inter, Noto Sans Sinhala, Noto Sans Tamil", fontWeight: 700, tracking: 0, lineHeight: 1.15, align: "center", fill: "#FFFFFF", ...item.style, ...PREVIEW_STYLE, fontSize: 20, maxWidth: TILE_W * 0.9 } })
 			: (ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D, t: number) =>
-					drawTemplateFrame({ ctx, template: item as TextLibraryTemplate, width: TILE_W, height: TILE_H, time: t, lang, override: text });
+					drawTemplateTile(ctx, item as TextLibraryTemplate, t, lang, text);
 	return (
 		<div className="flex flex-col gap-1" data-text-library-item={item.id} style={{ width: TILE_W }}>
 			<button

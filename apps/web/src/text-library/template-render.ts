@@ -12,6 +12,16 @@ const BASE: TextAnimationStyle = {
 	fill: "#FFFFFF",
 };
 
+/** The largest box of a template's aspect ("9:16", "1:1"…) centred in a w×h tile. */
+export function aspectBox(aspect: string | undefined, width: number, height: number): { x: number; y: number; width: number; height: number } {
+	const m = /^(\d+(?:\.\d+)?):(\d+(?:\.\d+)?)$/.exec(aspect ?? "");
+	const ratio = m ? Number(m[1]) / Number(m[2]) : width / height;
+	if (!(ratio > 0) || Math.abs(ratio - width / height) < 0.01) return { x: 0, y: 0, width, height };
+	const w = Math.min(width, height * ratio);
+	const h = w / ratio;
+	return { x: (width - w) / 2, y: (height - h) / 2, width: w, height: h };
+}
+
 /** Draws a template's text slots at time `t` into a w×h box (thumbnails, previews). */
 export function drawTemplateFrame({
 	ctx,
