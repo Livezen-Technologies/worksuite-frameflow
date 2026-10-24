@@ -141,7 +141,9 @@ contextBridge.exposeInMainWorld("worksuite", {
 		repair: (args) => ipcRenderer.invoke("tools:repair", args),
 		chooseFolder: () => ipcRenderer.invoke("tools:choose-folder"),
 		cancelConvert: (jobId) => ipcRenderer.invoke("tools:cancel-convert", jobId),
+		inspectLink: (url) => ipcRenderer.invoke("tools:inspect-link", { url }),
 		download: (args) => ipcRenderer.invoke("tools:download", args),
+		pauseDownload: (jobId) => ipcRenderer.invoke("tools:pause-download", jobId),
 		cancelDownload: (jobId) => ipcRenderer.invoke("tools:cancel-download", jobId),
 		onDownloadProgress: (listener) => {
 			const handler = (_event, payload) => listener(payload);

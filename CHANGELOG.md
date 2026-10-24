@@ -9,6 +9,10 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
+- **Video downloader redesign**: paste many links at once (or press Ctrl+V anywhere) and each one is checked first, showing its title, length, size and quality choices, or why it can't be downloaded (DRM-protected streams, private links). HLS and DASH streams without DRM can now be saved.
+- Downloader options: quality (best, a specific quality, smallest or audio only), keep the original or convert, and download only part of a video. You confirm you own the video or have permission the first time you download from each site.
+- **Download queue**: 1 to 4 downloads at once, a speed limit, pause and resume (paused downloads continue where they stopped, even after a restart), and a size check when each one finishes.
+- **Download library**: search, filter by site, total size, add to a project or show in the folder.
 - **Loudness meter** in the Music & Audio Editor: measure the whole mix's integrated loudness (LUFS), true peak (dBTP) and loudness range against a target (Podcast, YouTube, Broadcast, Audiobook, Music).
 - **Clean up voice** panel: one-click presets (Podcast, Phone/Zoom call, Noisy street, Room echo, Narration) and sliders for noise reduction, echo removal, low cut, presence, de-esser and compressor. Heard in the preview and the export, and undo works.
 - **Parametric EQ** with a draggable curve (double-click to add a band, right-click to remove), and a **Dynamics** tab with a compressor and a −1 dB limiter.

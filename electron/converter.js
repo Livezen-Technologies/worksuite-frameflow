@@ -362,4 +362,4 @@ async function capabilities() {
 	return { available: !!binary(), gpus: caps.gpus ?? [], cpu: !!caps.cpu };
 }
 
-module.exports = { probe, convert, trim, merge, repair, cancel, capabilities, FORMATS, _test: { parseProbe, convertArgs, bitrateFor } };
+module.exports = { runFfmpeg: run, probe, convert, trim, merge, repair, cancel, capabilities, FORMATS, _test: { parseProbe, convertArgs, bitrateFor } };

@@ -110,7 +110,20 @@ declare global {
 				chooseFolder: () => Promise<string | null>;
 				cancelConvert: (jobId: string) => Promise<void>;
 				onConvertProgress: (listener: (p: { jobId: string; progress: number }) => void) => () => void;
-				download: (args: { jobId: string; url: string }) => Promise<{ path: string; name: string; bytes: number }>;
+				inspectLink: (url: string) => Promise<LinkInfo>;
+				download: (args: {
+					jobId: string;
+					url: string;
+					kind?: LinkInfo["kind"];
+					name?: string;
+					title?: string;
+					start?: number;
+					end?: number;
+					audioOnly?: boolean;
+					duration?: number;
+					speedLimit?: number;
+				}) => Promise<{ path: string; name: string; bytes: number }>;
+				pauseDownload: (jobId: string) => Promise<boolean>;
 				cancelDownload: (jobId: string) => Promise<void>;
 				onDownloadProgress: (listener: (p: { jobId: string; received: number; total: number }) => void) => () => void;
 				readSaved: (filePath: string) => Promise<ArrayBuffer>;
@@ -374,6 +387,23 @@ export type MediaAccess =
 	| "restricted"
 	| "not-determined"
 	| "unknown";
+
+/** What the downloader learns about a link before downloading (DL-01). */
+export interface LinkInfo {
+	ok: boolean;
+	host: string;
+	reason?: string;
+	kind?: "file" | "hls" | "dash";
+	url?: string;
+	name?: string;
+	title?: string | null;
+	bytes?: number;
+	type?: string;
+	duration?: number;
+	resumable?: boolean;
+	audio?: boolean;
+	variants?: { url: string; height: number; bandwidth: number; label: string }[];
+}
 
 /** What the converter learns about a file before converting it (CV-01). */
 export interface MediaProbe {

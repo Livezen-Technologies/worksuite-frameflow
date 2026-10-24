@@ -370,17 +370,25 @@ function registerAccountIpc() {
 		return result.canceled ? null : result.filePaths[0] ?? null;
 	});
 	handle("tools:cancel-convert", (jobId) => converter.cancel(jobId));
+	const downloadFolder = () => path.join(app.getPath("downloads"), "Worksuite");
+	handle("tools:inspect-link", (args = {}) => downloader.inspect({ url: args.url }));
 	handleFrom("tools:download", async (event, args = {}) => {
-		const saved = await downloader.download({
-			jobId: args.jobId,
-			url: args.url,
-			folder: path.join(app.getPath("downloads"), "Worksuite"),
-			onProgress: (p) => event.sender.send("tools:download-progress", { jobId: args.jobId, ...p }),
-		});
+		const onProgress = (p) => event.sender.send("tools:download-progress", { jobId: args.jobId, ...p });
+		const common = { jobId: args.jobId, url: args.url, folder: downloadFolder(), onProgress };
+		const saved =
+			args.kind === "hls" || args.kind === "dash"
+				? await downloader.downloadStream({ ...common, title: args.title, start: args.start, end: args.end, audioOnly: args.audioOnly, duration: args.duration, runFfmpeg: converter.runFfmpeg })
+				: await downloader.downloadFile({ ...common, name: args.name, speedLimit: Number(args.speedLimit) || 0 });
 		rememberExport(saved.path);
 		return saved;
 	});
-	handle("tools:cancel-download", (jobId) => downloader.cancel(jobId));
+	// Streams can't resume mid-way: pausing stops FFmpeg and resume starts over.
+	handle("tools:pause-download", (jobId) => downloader.pause(jobId) || (converter.cancel(jobId), false));
+	handle("tools:cancel-download", (jobId) => {
+		downloader.cancel(jobId);
+		converter.cancel(jobId);
+		return downloader.discard({ jobId, folder: downloadFolder() });
+	});
 	// Reads back a file this app saved (converted or downloaded), to open it in the editor.
 	handle("tools:read-saved", async (filePath) => {
 		if (!savedExports.has(filePath)) throw new Error("Not allowed");
