@@ -13,6 +13,7 @@ import {
 	hasAnimatedVolume,
 	isElementMuted,
 	resolveEffectiveAudioGain,
+	getElementPitch,
 } from "@/timeline/audio-state";
 import { doesElementHaveEnabledAudio } from "@/timeline/audio-separation";
 import { canElementHaveAudio, hasMediaId } from "@/timeline/element-utils";
@@ -683,19 +684,23 @@ export async function createTimelineAudioBuffer({
 	for (const element of audioElements) {
 		if (element.muted) continue;
 
-		const renderedBuffer = shouldMaintainPitch({
-			rate: element.retime?.rate ?? 1,
-			maintainPitch: element.retime?.maintainPitch,
-		})
-			? await renderRetimedBuffer({
-					audioContext: context,
-					sourceBuffer: element.buffer,
-					trimStart: element.trimStart,
-					clipDuration: element.duration,
-					retime: element.retime,
-					maintainPitch: true,
-				})
-			: undefined;
+		const pitchSemitones = getElementPitch({ element: element.timelineElement });
+		const renderedBuffer =
+			pitchSemitones !== 0 ||
+			shouldMaintainPitch({
+				rate: element.retime?.rate ?? 1,
+				maintainPitch: element.retime?.maintainPitch,
+			})
+				? await renderRetimedBuffer({
+						audioContext: context,
+						sourceBuffer: element.buffer,
+						trimStart: element.trimStart,
+						clipDuration: element.duration,
+						retime: element.retime,
+						maintainPitch: true,
+						pitchSemitones,
+					})
+				: undefined;
 
 		const source = renderedBuffer ?? element.buffer;
 		mixAudioChannels({

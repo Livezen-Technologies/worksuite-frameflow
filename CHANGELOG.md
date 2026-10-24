@@ -9,6 +9,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
+- **Audio clip panels, CapCut-style**: **Basic** has volume (dB, with keyframes), **fade in and out** sliders (heard in preview and export, and shown on the waveform), a **Noise reduction** switch, **Beats detection** (marks the music's beats on the timeline so cuts land on them; switch off to remove the marks) and **Enhance voice** (clean up, trim silence, duck music). The new **Voice changer** tab has presets (Chipmunk, Child, Higher, Lower, Deep, Giant, Monster) and a pitch slider (±12 semitones) that change the voice without changing its speed.
 - **Screen recorder window** (desktop): New screen recording (or Ctrl+Shift+R) opens a small recorder that stays on top, like Camtasia, with switches for Full screen or a Region (drag the area, shown in pixels), Camera (live preview, pick the camera), Microphone (live level, pick the mic) and System audio, and a big Rec button with countdown, pause, stop and discard. The recorder is left out of the recording. When you stop, choose **Save video…** (one file with your voice and system sound mixed in) or **Open in editor** to cut and export it.
 - **Whisper speech models in Settings → Local models**: download, check the size of, or remove the Tiny, Small, Medium and Large v3 Turbo models used by Captions, the transcript and Sync with voice, next to the AI export models.
 

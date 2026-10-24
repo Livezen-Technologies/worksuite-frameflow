@@ -30,6 +30,8 @@ import {
 } from "@/effects/components/effects-tab";
 import { MasksTab } from "@/masks/components/masks-tab";
 import { SpeedTab } from "@/speed/components/speed-tab";
+import { AudioBasicTab } from "@/audio-tools/components/audio-basic-tab";
+import { VoiceChangerTab } from "@/audio-tools/components/voice-changer-tab";
 import { GraphicTab } from "@/graphics/components/graphic-tab";
 import { LottieTab } from "@/lottie/components/lottie-tab";
 import { OcShapesIcon } from "@/components/icons";
@@ -52,7 +54,6 @@ import { BasicTab } from "@/clip-actions/components/basic-tab";
 import { AnimationTab } from "@/animation/components/animation-tab";
 import { SpherePinTab, SphereTab } from "@/vr/components/sphere-tab";
 import { findSpherePlaceEffect } from "@/vr/projection";
-import { VoiceTab } from "@/audio-tools/components/voice-tab";
 import { Mic } from "lucide-react";
 
 const TRANSFORM_PARAM_KEYS = [
@@ -474,13 +475,18 @@ function getAudioConfig({
 	return {
 		defaultTab: "audio",
 		tabs: [
-			buildAudioTab({ element }),
+			{
+				id: "audio",
+				label: "Basic",
+				icon: <HugeiconsIcon icon={MusicNote03Icon} size={16} />,
+				content: ({ trackId }) => <AudioBasicTab element={element} trackId={trackId} />,
+			},
 			{
 				id: "voice",
-				label: "Voice",
+				label: "Voice changer",
 				icon: <Mic size={16} />,
 				content: ({ trackId }) => (
-					<VoiceTab element={element} trackId={trackId} />
+					<VoiceChangerTab element={element} trackId={trackId} />
 				),
 			},
 			buildSpeedTab({ element }),

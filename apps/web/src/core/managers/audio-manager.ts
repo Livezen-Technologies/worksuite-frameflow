@@ -5,6 +5,7 @@ import type { AudioClipSource } from "@/media/audio";
 import { createAudioContext, collectAudioClips } from "@/media/audio";
 import {
 	buildAudioGainAutomation,
+	getElementPitch,
 	hasAnimatedVolume,
 } from "@/timeline/audio-state";
 import { createAudioMasteringChain } from "@/media/audio-mastering";
@@ -480,6 +481,7 @@ export class AudioManager {
 		return (
 			this.hasCurveRetime({ clip }) ||
 			hasAnimatedVolume({ element: clip.timelineElement }) ||
+			getElementPitch({ element: clip.timelineElement }) !== 0 ||
 			shouldMaintainPitch({
 				rate: clip.retime?.rate ?? 1,
 				maintainPitch: clip.retime?.maintainPitch,
@@ -548,6 +550,7 @@ export class AudioManager {
 			trimStart: clip.trimStart,
 			trimEnd: clip.trimEnd,
 			retime: clip.retime ?? null,
+			pitch: getElementPitch({ element: clip.timelineElement }),
 		});
 	}
 
@@ -580,6 +583,7 @@ export class AudioManager {
 				clipDuration: clip.duration,
 				retime: clip.retime,
 				maintainPitch: clip.retime?.maintainPitch === true,
+				pitchSemitones: getElementPitch({ element: clip.timelineElement }),
 			});
 		})();
 
