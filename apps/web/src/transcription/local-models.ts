@@ -12,10 +12,10 @@ const CACHE = "transformers-cache";
 
 /** Rough q4 download sizes, for the list before a model is on the device. */
 export const WHISPER_APPROX_BYTES: Record<TranscriptionModelId, number> = {
-	"whisper-tiny": 45_000_000,
-	"whisper-small": 170_000_000,
-	"whisper-medium": 500_000_000,
-	"whisper-large-v3-turbo": 600_000_000,
+	"whisper-tiny": 100_000_000,
+	"whisper-small": 304_000_000,
+	"whisper-medium": 685_000_000,
+	"whisper-large-v3-turbo": 764_000_000,
 };
 
 export const WHISPER_DEFAULT = DEFAULT_TRANSCRIPTION_MODEL;

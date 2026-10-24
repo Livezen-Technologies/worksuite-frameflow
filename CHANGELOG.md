@@ -13,7 +13,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Fixed
 
-- Local models now download from the Worksuite download center first and fall back to the public source, so a moved or private public link no longer stops the download (the "Download failed (404)" and "(401)" errors). The new "Local models" workflow mirrors every model to the download center.
+- Local models now download from the Worksuite download center first and fall back to the public source, so a moved or private public link no longer stops the download (the "Download failed (404)" and "(401)" errors). The new "Local models" workflow mirrors every model to the download center. The public fallbacks now point at working copies of Real-ESRGAN x4plus, RIFE 4.7 and Whisper Medium.
 
 ## [1.2.0] - 2026-10-24
 

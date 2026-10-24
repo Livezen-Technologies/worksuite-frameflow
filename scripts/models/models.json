@@ -4,7 +4,7 @@
 		{
 			"id": "realesrgan-x4",
 			"sources": [
-				"https://huggingface.co/qualcomm/Real-ESRGAN-x4plus/resolve/main/Real-ESRGAN-x4plus.onnx"
+				"https://huggingface.co/crustythesockk/RealESRGAN-x4plus-dynamic/resolve/main/Real-ESRGAN-x4plus.onnx"
 			],
 			"search": [
 				"Real-ESRGAN-x4plus",
@@ -21,7 +21,7 @@
 		{
 			"id": "rife",
 			"sources": [
-				"https://huggingface.co/onnx-community/rife-v4.6/resolve/main/onnx/model.onnx"
+				"https://huggingface.co/yuvraj108c/rife-onnx/resolve/main/rife47_ensemble_True_scale_1_sim.onnx"
 			],
 			"search": [
 				"rife onnx",
@@ -42,9 +42,7 @@
 			"onnx-community/whisper-small"
 		],
 		[
-			"onnx-community/whisper-medium",
-			"onnx-community/whisper-medium-ONNX",
-			"Xenova/whisper-medium"
+			"onnx-community/whisper-medium-ONNX"
 		],
 		[
 			"onnx-community/whisper-large-v3-turbo"

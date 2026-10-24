@@ -25,7 +25,7 @@ export const AI_MODELS: AiModelInfo[] = [
 		kind: "upscale",
 		name: "Real-ESRGAN x4plus",
 		licence: "BSD-3-Clause",
-		url: "https://huggingface.co/qualcomm/Real-ESRGAN-x4plus/resolve/main/Real-ESRGAN-x4plus.onnx",
+		url: "https://huggingface.co/crustythesockk/RealESRGAN-x4plus-dynamic/resolve/main/Real-ESRGAN-x4plus.onnx",
 		approxBytes: 67_000_000,
 		about:
 			"AI Ultra HD: restores detail when exporting above the project size and cleans up noise and compression artefacts.",
@@ -35,7 +35,7 @@ export const AI_MODELS: AiModelInfo[] = [
 		kind: "interpolate",
 		name: "RIFE (frame interpolation)",
 		licence: "MIT",
-		url: "https://huggingface.co/onnx-community/rife-v4.6/resolve/main/onnx/model.onnx",
+		url: "https://huggingface.co/yuvraj108c/rife-onnx/resolve/main/rife47_ensemble_True_scale_1_sim.onnx",
 		approxBytes: 21_000_000,
 		about:
 			"Optical flow: makes in-between frames for smoother motion when the export frame rate is double the project's.",
