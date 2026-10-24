@@ -4,6 +4,7 @@ import { ProjectSettingsDialog } from "@/project-settings/components/project-set
 import { ProjectDefaultsSync } from "@/project-settings/components/project-defaults-sync";
 import { PasteAttributesDialog } from "@/tabs/components/paste-attributes-dialog";
 import { StartIntentHost } from "@/start/components/start-intent-host";
+import { AutoTranscribeHost } from "@/transcript/components/auto-transcribe-host";
 import { MotionLinkSync } from "@/motion-studio/components/motion-link-sync";
 import { PopoutPanel } from "@/popout/popout-panel";
 import { SphereWatcher } from "@/vr/components/sphere-watcher";
@@ -78,6 +79,7 @@ export default function Editor() {
 					<SphereWatcher />
 					<PasteAttributesDialog />
 					<StartIntentHost />
+					<AutoTranscribeHost />
 			<MotionLinkSync />
 				</div>
 			</EditorProvider>

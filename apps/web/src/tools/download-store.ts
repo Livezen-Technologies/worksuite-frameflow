@@ -22,6 +22,10 @@ export interface DownloadItem {
 	start?: number;
 	end?: number;
 	openWhenDone: boolean;
+	/** Save the link's subtitles next to the video as .srt (DL-04). */
+	saveSubs: boolean;
+	/** Transcribe with local Whisper after opening it in the editor (DL-07). */
+	transcribe: string | null;
 	status: DownloadStatus;
 	received: number;
 	total: number;
@@ -40,12 +44,17 @@ interface State {
 	parallel: number;
 	/** Bytes per second, 0 = no limit. */
 	speedLimit: number;
+	/** Hold the queue on mobile data (DL-06). */
+	unmeteredOnly: boolean;
+	/** True while the queue waits for Wi-Fi or Ethernet. */
+	held: boolean;
 	add: (items: DownloadItem[]) => void;
 	patch: (args: { id: string; patch: Partial<DownloadItem> }) => void;
 	remove: (id: string) => void;
 	grantRights: (host: string) => void;
 	setParallel: (n: number) => void;
 	setSpeedLimit: (n: number) => void;
+	setUnmeteredOnly: (on: boolean) => void;
 }
 
 export const useDownloads = create<State>()(
@@ -55,12 +64,15 @@ export const useDownloads = create<State>()(
 			rightsHosts: [],
 			parallel: 2,
 			speedLimit: 0,
+			unmeteredOnly: false,
+			held: false,
 			add: (items) => set((s) => ({ items: [...s.items, ...items] })),
 			patch: ({ id, patch }) => set((s) => ({ items: s.items.map((i) => (i.id === id ? { ...i, ...patch } : i)) })),
 			remove: (id) => set((s) => ({ items: s.items.filter((i) => i.id !== id) })),
 			grantRights: (host) => set((s) => ({ rightsHosts: s.rightsHosts.includes(host) ? s.rightsHosts : [...s.rightsHosts, host] })),
 			setParallel: (parallel) => set({ parallel: Math.max(1, Math.min(4, parallel)) }),
 			setSpeedLimit: (speedLimit) => set({ speedLimit }),
+			setUnmeteredOnly: (unmeteredOnly) => set({ unmeteredOnly }),
 		}),
 		{
 			name: "frameflow-downloads",
@@ -70,6 +82,7 @@ export const useDownloads = create<State>()(
 				return {
 					...current,
 					...p,
+					held: false,
 					items: (p.items ?? []).map((i) => (i.status === "downloading" || i.status === "processing" ? { ...i, status: "paused", speed: 0 } : i)),
 				};
 			},
@@ -98,6 +111,23 @@ export function pumpQueue({ onFinished }: { onFinished?: (item: DownloadItem) =>
 			useDownloads.getState().patch({ id: jobId, patch: { received, total, speed: Math.max(0, speed) } });
 		});
 	}
+	const { items, unmeteredOnly } = useDownloads.getState();
+	if (!items.some((i) => i.status === "queued")) return;
+	// Wi-Fi or Ethernet only: wait while the only connection is mobile data.
+	if (unmeteredOnly) {
+		void tools.connection().then((kind) => {
+			const held = kind === "cellular";
+			useDownloads.setState({ held });
+			if (held) setTimeout(() => pumpQueue({ onFinished }), 20_000);
+			else startQueued({ onFinished });
+		});
+		return;
+	}
+	useDownloads.setState({ held: false });
+	startQueued({ onFinished });
+}
+
+function startQueued({ onFinished }: { onFinished?: (item: DownloadItem) => void }) {
 	const { items, parallel } = useDownloads.getState();
 	const free = parallel - active.size;
 	for (const item of items.filter((i) => i.status === "queued").slice(0, Math.max(0, free))) {
@@ -141,6 +171,9 @@ async function run(item: DownloadItem) {
 					? await tools.convert({ jobId: item.id, input: saved.path, options: { format: format ?? "mp4-h264", start: item.start, end: item.end } })
 					: await tools.trim({ jobId: item.id, input: saved.path, start: item.start ?? 0, end: item.end ?? item.info.duration ?? 1e9 });
 			saved = { path: result.path, name: result.path.split(/[\\/]/).pop() ?? saved.name, bytes: result.bytes };
+		}
+		if (item.saveSubs && item.info.subtitles?.length) {
+			await tools.saveSubtitles({ videoPath: saved.path, subtitles: item.info.subtitles }).catch(() => []);
 		}
 		patch({ id: item.id, patch: { status: "done", path: saved.path, bytes: saved.bytes, speed: 0, finishedAt: Date.now() } });
 	} catch (error) {

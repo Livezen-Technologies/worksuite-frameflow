@@ -387,6 +387,11 @@ function registerAccountIpc() {
 		return saved;
 	});
 	// Streams can't resume mid-way: pausing stops FFmpeg and resume starts over.
+	handle("tools:save-subtitles", (args = {}) => {
+		if (!savedExports.has(args.videoPath)) throw new Error("Not allowed");
+		return downloader.saveSubtitles({ subtitles: args.subtitles, videoPath: args.videoPath, runFfmpeg: converter.runFfmpeg });
+	});
+	handle("network:connection", () => network.connectionKind());
 	handle("tools:pause-download", (jobId) => downloader.pause(jobId) || (converter.cancel(jobId), false));
 	handle("tools:cancel-download", (jobId) => {
 		downloader.cancel(jobId);

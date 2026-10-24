@@ -105,6 +105,111 @@ function hlsVariants(text, base) {
 
 const hlsDuration = (text) => (text.match(/#EXTINF:([\d.]+)/g) ?? []).reduce((n, m) => n + Number(m.slice(8)), 0);
 
+/**
+ * Public share links from Google Drive, Dropbox and OneDrive turned into
+ * their direct-download form (DL-02). Only links shared with "anyone with
+ * the link" work; private files need the owner's sign-in, which we don't do.
+ */
+function resolveShareLink(url) {
+	let u;
+	try {
+		u = new URL(String(url).trim());
+	} catch {
+		return { url, source: null };
+	}
+	const host = u.hostname.replace(/^www\./, "");
+	if (host === "drive.google.com" || host === "docs.google.com") {
+		const id = /\/d\/([\w-]{10,})/.exec(u.pathname)?.[1] ?? u.searchParams.get("id");
+		if (id) return { url: `https://drive.usercontent.google.com/download?id=${id}&export=download&confirm=t`, source: "Google Drive" };
+	}
+	if (host === "dropbox.com" || host.endsWith(".dropbox.com")) {
+		u.searchParams.delete("dl");
+		u.searchParams.set("dl", "1");
+		return { url: u.href, source: "Dropbox" };
+	}
+	if (host === "1drv.ms" || host === "onedrive.live.com") {
+		const encoded = Buffer.from(u.href).toString("base64").replace(/=+$/, "").replace(/\//g, "_").replace(/\+/g, "-");
+		return { url: `https://api.onedrive.com/v1.0/shares/u!${encoded}/root/content`, source: "OneDrive" };
+	}
+	if (host.endsWith(".sharepoint.com")) {
+		u.searchParams.set("download", "1");
+		return { url: u.href, source: "OneDrive" };
+	}
+	return { url: u.href, source: null };
+}
+
+/** Subtitle tracks a page publishes (<track src=...vtt>). */
+function pageSubtitles(html, pageUrl) {
+	const out = [];
+	for (const m of html.matchAll(/<track\b[^>]*>/gi)) {
+		const tag = m[0];
+		const kind = /kind=["']([^"']+)["']/i.exec(tag)?.[1] ?? "subtitles";
+		const src = /src=["']([^"']+)["']/i.exec(tag)?.[1];
+		if (!src || !/subtitles|captions/i.test(kind)) continue;
+		try {
+			out.push({ url: new URL(src.replace(/&amp;/g, "&"), pageUrl).href, lang: /srclang=["']([^"']+)["']/i.exec(tag)?.[1] ?? "und", format: "vtt" });
+		} catch {
+			// Not a usable address.
+		}
+	}
+	return out;
+}
+
+/** Subtitle renditions in an HLS master playlist. */
+function hlsSubtitles(text, base) {
+	const out = [];
+	for (const line of text.split(/\r?\n/)) {
+		if (!/^#EXT-X-MEDIA:.*TYPE=SUBTITLES/.test(line)) continue;
+		const uri = /URI="([^"]+)"/.exec(line)?.[1];
+		if (!uri) continue;
+		out.push({ url: new URL(uri, base).href, lang: /LANGUAGE="([^"]+)"/.exec(line)?.[1] ?? /NAME="([^"]+)"/.exec(line)?.[1] ?? "und", format: "hls" });
+	}
+	return out;
+}
+
+/** WebVTT to SubRip (DL-04 "save subtitles as .srt"). */
+function vttToSrt(vtt) {
+	const blocks = String(vtt).replace(/\r/g, "").split(/\n{2,}/);
+	const cues = [];
+	for (const block of blocks) {
+		const lines = block.split("\n");
+		const at = lines.findIndex((l) => l.includes("-->"));
+		if (at < 0) continue;
+		const fix = (t) => {
+			const parts = t.trim().split(/\s/)[0].split(":");
+			if (parts.length === 2) parts.unshift("00");
+			return parts.join(":").replace(".", ",");
+		};
+		const [from, to] = lines[at].split("-->");
+		const text = lines.slice(at + 1).join("\n").replace(/<[^>]+>/g, "").trim();
+		if (text) cues.push(`${cues.length + 1}\n${fix(from)} --> ${fix(to)}\n${text}`);
+	}
+	return cues.join("\n\n") + (cues.length ? "\n" : "");
+}
+
+/** Saves subtitles next to a downloaded video as <name>.<lang>.srt. */
+async function saveSubtitles({ subtitles, videoPath, runFfmpeg, fetchImpl = fetch }) {
+	const saved = [];
+	const stem = videoPath.slice(0, videoPath.length - path.extname(videoPath).length);
+	for (const sub of subtitles ?? []) {
+		const out = `${stem}.${safeName(sub.lang || "und")}.srt`;
+		try {
+			if (sub.format === "hls") {
+				await runFfmpeg({ args: ["-protocol_whitelist", "http,https,tcp,tls,crypto", "-i", sub.url, out] });
+			} else {
+				const res = await fetchImpl(parseUrl(sub.url));
+				if (!res.ok) continue;
+				const text = await res.text();
+				await fs.promises.writeFile(out, /-->/.test(text) && !/^\s*\d+\s*\n/.test(text) ? vttToSrt(text) : text);
+			}
+			saved.push(out);
+		} catch {
+			// One missing subtitle file shouldn't fail the download.
+		}
+	}
+	return saved;
+}
+
 function parseUrl(url) {
 	let target;
 	try {
@@ -121,8 +226,11 @@ function parseUrl(url) {
  * quality choices and whether it may be downloaded.
  */
 async function inspect({ url, fetchImpl = fetch }) {
-	const target = parseUrl(url);
-	const host = target.hostname.replace(/^www\./, "");
+	const original = parseUrl(url);
+	const shared = resolveShareLink(original.href);
+	const target = parseUrl(shared.url);
+	const host = shared.source ?? original.hostname.replace(/^www\./, "");
+	let subtitles = [];
 	const head = async (u) => {
 		const controller = new AbortController();
 		const res = await fetchImpl(u, { signal: controller.signal, redirect: "follow", headers: { Range: "bytes=0-0" } });
@@ -131,19 +239,32 @@ async function inspect({ url, fetchImpl = fetch }) {
 	let { res, done } = await head(target);
 	if (!res.ok && res.status !== 206) {
 		done();
-		if (res.status === 401 || res.status === 403) return { ok: false, host, reason: "This link is private or needs a sign-in, so it can't be downloaded." };
+		if (res.status === 401 || res.status === 403 || (shared.source && res.status === 404))
+			return { ok: false, host, reason: shared.source ? `This ${shared.source} file isn't shared publicly. Set it to "Anyone with the link" and try again.` : "This link is private or needs a sign-in, so it can't be downloaded." };
 		return { ok: false, host, reason: `The site answered ${res.status}.` };
 	}
 	let type = res.headers.get("content-type") ?? "";
 	let mediaUrl = res.url;
 	let title = null;
-	if (!isMedia(type, mediaUrl) && !streamKind(type, mediaUrl)) {
+	// A media file served as a generic download (share links): judged by the name it's saved under.
+	const named = (r) => {
+		const disposition = r.headers.get("content-disposition") ?? "";
+		const generic = /octet-stream|binary/i.test(r.headers.get("content-type") ?? "");
+		if (!/filename/i.test(disposition) && !generic) return "";
+		return fileNameFor({ url: r.url, type: "", disposition });
+	};
+	if (shared.source && /html/i.test(type)) {
+		done();
+		return { ok: false, host, reason: `This ${shared.source} file isn't shared publicly, or it's a folder. Share the file with "Anyone with the link" and try again.` };
+	}
+	if (!isMedia(type, mediaUrl) && !streamKind(type, mediaUrl) && !MEDIA_EXT.test(named(res))) {
 		if (!/html/i.test(type)) {
 			done();
 			return { ok: false, host, reason: "That link isn't a video or audio file." };
 		}
 		const html = await res.text();
 		title = pageTitle(html);
+		subtitles = pageSubtitles(html, res.url);
 		const found = findVideoInPage(html, res.url);
 		if (!found) return { ok: false, host, title, reason: "No video file on that page. Paste a link that points straight to the video file." };
 		({ res, done } = await head(found));
@@ -159,8 +280,9 @@ async function inspect({ url, fetchImpl = fetch }) {
 		const text = await res.text();
 		const reason = drmReason(text, kind);
 		if (reason) return { ok: false, host, title, kind, reason };
-		if (kind === "dash") return { ok: true, host, kind, url: mediaUrl, title: title ?? fileStem(mediaUrl), variants: [] };
+		if (kind === "dash") return { ok: true, host, kind, url: mediaUrl, title: title ?? fileStem(mediaUrl), variants: [], subtitles };
 		const variants = hlsVariants(text, mediaUrl);
+		subtitles = [...subtitles, ...hlsSubtitles(text, mediaUrl)];
 		let duration = hlsDuration(text);
 		if (!duration && variants[0]) {
 			const media = await (await fetchImpl(variants[0].url)).text();
@@ -168,10 +290,10 @@ async function inspect({ url, fetchImpl = fetch }) {
 			if (inner) return { ok: false, host, title, kind, reason: inner };
 			duration = hlsDuration(media);
 		}
-		return { ok: true, host, kind, url: mediaUrl, title: title ?? fileStem(mediaUrl), duration: duration || undefined, variants };
+		return { ok: true, host, kind, url: mediaUrl, title: title ?? fileStem(mediaUrl), duration: duration || undefined, variants, subtitles };
 	}
 	done();
-	if (!isMedia(type, mediaUrl)) return { ok: false, host, title, reason: "The page's video link isn't a file that can be saved." };
+	if (!isMedia(type, mediaUrl) && !MEDIA_EXT.test(named(res))) return { ok: false, host, title, reason: "The page's video link isn't a file that can be saved." };
 	const range = /\/(\d+)$/.exec(res.headers.get("content-range") ?? "")?.[1];
 	const bytes = Number(range ?? res.headers.get("content-length") ?? 0) || undefined;
 	const name = fileNameFor({ url: mediaUrl, type, disposition: res.headers.get("content-disposition") });
@@ -179,7 +301,9 @@ async function inspect({ url, fetchImpl = fetch }) {
 		ok: true,
 		host,
 		kind: "file",
-		url: mediaUrl,
+		// Share links can redirect to short-lived addresses: keep the stable one.
+		url: shared.source ? target.href : mediaUrl,
+		subtitles,
 		name,
 		title: title ?? name.replace(/\.[^.]+$/, ""),
 		bytes,
@@ -236,7 +360,8 @@ async function downloadFile({ jobId, url, folder, name, speedLimit = 0, onProgre
 		let total = 0;
 		if (response) {
 			const type = response.headers.get("content-type") ?? "";
-			if (!isMedia(type, response.url) && !/octet-stream/i.test(type)) throw new Error("That link isn't a video or audio file.");
+			if (!isMedia(type, response.url) && !/octet-stream|binary/i.test(type) && !MEDIA_EXT.test(fileNameFor({ url: response.url, type, disposition: response.headers.get("content-disposition") })))
+				throw new Error("That link isn't a video or audio file.");
 			name ??= fileNameFor({ url: response.url, type, disposition: response.headers.get("content-disposition") });
 			if (response.status !== 206) have = 0; // The server ignored the range: start over.
 			const range = /\/(\d+)$/.exec(response.headers.get("content-range") ?? "")?.[1];
@@ -313,10 +438,11 @@ async function discard({ jobId, folder }) {
 
 module.exports = {
 	inspect,
+	saveSubtitles,
 	downloadFile,
 	downloadStream,
 	pause,
 	cancel,
 	discard,
-	_test: { findVideoInPage, fileNameFor, isMedia, drmReason, hlsVariants, hlsDuration, pageTitle, streamKind, throttle },
+	_test: { resolveShareLink, pageSubtitles, hlsSubtitles, vttToSrt, findVideoInPage, fileNameFor, isMedia, drmReason, hlsVariants, hlsDuration, pageTitle, streamKind, throttle },
 };

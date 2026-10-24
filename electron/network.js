@@ -24,6 +24,22 @@ function load() {
 	return settings;
 }
 
+/**
+ * What kind of connection is up (DL-06 "Wi-Fi/Ethernet only"): "cellular"
+ * when the only active external links look like mobile data or a phone
+ * hotspot over USB, otherwise "wifi-or-ethernet". Judged from interface
+ * names, since desktop systems don't report metered connections reliably.
+ */
+const CELLULAR = /^(wwan|ppp|rmnet|ccmni|usb\d|rndis|enx[0-9a-f]{12}$)|cellular|mobile|wwan|iphone|android/i;
+function connectionKind(interfaces = require("node:os").networkInterfaces()) {
+	const active = Object.entries(interfaces)
+		.filter(([, addrs]) => (addrs ?? []).some((a) => !a.internal && a.family === "IPv4"))
+		.map(([name]) => name)
+		.filter((name) => !/^(lo|docker|br-|veth|virbr|vmnet|vboxnet|tun|tap|utun|zt|tailscale|wg)/i.test(name));
+	if (!active.length) return "offline";
+	return active.every((name) => CELLULAR.test(name)) ? "cellular" : "wifi-or-ethernet";
+}
+
 function getState() {
 	return { ...load() };
 }
@@ -66,4 +82,5 @@ function guardSession({ session, origin, allow = [] }) {
 	});
 }
 
-module.exports = { getState, update, onChange, isOffline, assertOnline, guardSession, OfflineError };
+module.exports = {
+	connectionKind, getState, update, onChange, isOffline, assertOnline, guardSession, OfflineError };

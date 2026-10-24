@@ -9,8 +9,13 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
+- **Google Drive, Dropbox and OneDrive links** in the video downloader: paste a link to a file shared with "Anyone with the link" and it downloads directly. Private files and folders are refused with an explanation.
+- **Save subtitles**: when a page or stream publishes subtitles, the downloader can save them next to the video as .srt files (one per language).
+- **Transcribe after download**: tick "Transcribe with Whisper" and pick Sinhala, Tamil, English or Detect; the video opens in the editor and its transcript is made on this computer.
+- **Wi-Fi or Ethernet only**: the download queue can wait while you're on mobile data and start again when you connect.
 - **Click highlights and keys in recordings**: the recorder can draw a ripple where you click and show the shortcuts and special keys you press (Ctrl + S, Enter, arrows…) in the video. Plain typing shows only as "Typing…", never the letters.
 - **Private windows covered in recordings**: windows of the apps you mark private (password managers by default) are covered with a "Private window hidden" panel that follows them, instead of pausing the recording. Pausing is still available in Settings.
+
 ### Changed
 
 - The recorder's 4K setting now records at 30 fps.

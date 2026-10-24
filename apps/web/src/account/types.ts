@@ -124,6 +124,9 @@ declare global {
 					speedLimit?: number;
 				}) => Promise<{ path: string; name: string; bytes: number }>;
 				pauseDownload: (jobId: string) => Promise<boolean>;
+				/** Saves the link's subtitles next to the video as .srt (DL-04). */
+				saveSubtitles: (args: { videoPath: string; subtitles: NonNullable<LinkInfo["subtitles"]> }) => Promise<string[]>;
+				connection: () => Promise<"cellular" | "wifi-or-ethernet" | "offline">;
 				cancelDownload: (jobId: string) => Promise<void>;
 				onDownloadProgress: (listener: (p: { jobId: string; received: number; total: number }) => void) => () => void;
 				readSaved: (filePath: string) => Promise<ArrayBuffer>;
@@ -410,6 +413,7 @@ export interface LinkInfo {
 	resumable?: boolean;
 	audio?: boolean;
 	variants?: { url: string; height: number; bandwidth: number; label: string }[];
+	subtitles?: { url: string; lang: string; format: "vtt" | "hls" }[];
 }
 
 /** What the converter learns about a file before converting it (CV-01). */

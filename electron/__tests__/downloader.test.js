@@ -48,3 +48,26 @@ test("page title and stream kinds", () => {
 	assert.equal(_test.streamKind("", "https://x/a.mpd?t=1"), "dash");
 	assert.equal(_test.streamKind("video/mp4", "https://x/a.mp4"), null);
 });
+
+test("turns cloud share links into direct downloads", () => {
+	const drive = _test.resolveShareLink("https://drive.google.com/file/d/1AbCdEfGhIjKlMnOp/view?usp=sharing");
+	assert.equal(drive.source, "Google Drive");
+	assert.equal(drive.url, "https://drive.usercontent.google.com/download?id=1AbCdEfGhIjKlMnOp&export=download&confirm=t");
+	const box = _test.resolveShareLink("https://www.dropbox.com/scl/fi/abc/clip.mp4?rlkey=x&dl=0");
+	assert.equal(box.source, "Dropbox");
+	assert.match(box.url, /dl=1$/);
+	assert.doesNotMatch(box.url, /dl=0/);
+	const one = _test.resolveShareLink("https://1drv.ms/v/s!AbC");
+	assert.equal(one.source, "OneDrive");
+	assert.match(one.url, /^https:\/\/api\.onedrive\.com\/v1\.0\/shares\/u!aHR0cHM6Ly8xZHJ2Lm1zL3Yvcy[^=]*\/root\/content$/);
+	assert.equal(_test.resolveShareLink("https://example.com/a.mp4").source, null);
+});
+
+test("finds subtitles on pages and in HLS, and converts WebVTT to SRT", () => {
+	const page = '<video src="a.mp4"><track kind="captions" src="/subs/en.vtt" srclang="en"><track kind="chapters" src="c.vtt"></video>';
+	assert.deepEqual(_test.pageSubtitles(page, "https://x.com/watch"), [{ url: "https://x.com/subs/en.vtt", lang: "en", format: "vtt" }]);
+	const hls = '#EXTM3U\n#EXT-X-MEDIA:TYPE=SUBTITLES,GROUP-ID="s",NAME="Sinhala",LANGUAGE="si",URI="subs/si.m3u8"\n';
+	assert.deepEqual(_test.hlsSubtitles(hls, "https://cdn.x.com/v/master.m3u8"), [{ url: "https://cdn.x.com/v/subs/si.m3u8", lang: "si", format: "hls" }]);
+	const srt = _test.vttToSrt("WEBVTT\n\n00:01.000 --> 00:02.500 align:start\n<b>Hello</b>\n\n1\n01:00:03.000 --> 01:00:04.000\nWorld\n");
+	assert.equal(srt, "1\n00:00:01,000 --> 00:00:02,500\nHello\n\n2\n01:00:03,000 --> 01:00:04,000\nWorld\n");
+});

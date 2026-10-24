@@ -147,6 +147,8 @@ contextBridge.exposeInMainWorld("worksuite", {
 		inspectLink: (url) => ipcRenderer.invoke("tools:inspect-link", { url }),
 		download: (args) => ipcRenderer.invoke("tools:download", args),
 		pauseDownload: (jobId) => ipcRenderer.invoke("tools:pause-download", jobId),
+		saveSubtitles: (args) => ipcRenderer.invoke("tools:save-subtitles", args),
+		connection: () => ipcRenderer.invoke("network:connection"),
 		cancelDownload: (jobId) => ipcRenderer.invoke("tools:cancel-download", jobId),
 		onDownloadProgress: (listener) => {
 			const handler = (_event, payload) => listener(payload);

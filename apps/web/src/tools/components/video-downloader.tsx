@@ -13,6 +13,8 @@ import { formatBytes, LibraryPageShell } from "@/library/components/page-shell";
 import { formatDuration } from "@/recording/session";
 import { cn } from "@/utils/ui";
 import { cancelItem, type DownloadItem, pauseItem, pumpQueue, resumeItem, useDownloads } from "../download-store";
+import { TRANSCRIPTION_LANGUAGES } from "@/transcription/supported-languages";
+import type { TranscriptionLanguage } from "@/transcription/types";
 import { openSavedInEditor } from "../open-in-editor";
 
 type Tab = "add" | "queue" | "library";
@@ -20,6 +22,14 @@ type Checked = { link: string; state: "checking" | "ready"; info?: LinkInfo; sel
 
 const LINK = /https?:\/\/[^\s"'<>]+/g;
 const errorText = (e: unknown) => (e instanceof Error ? e.message : String(e)).replace(/^Error invoking remote method '[^']+': (Error: )?/, "");
+
+const TRANSCRIBE_LANGUAGES = [
+	["si", "Sinhala"],
+	["ta", "Tamil"],
+	["en", "English"],
+	["auto", "Detect"],
+] as const;
+const languageOf = (code: string | null): TranscriptionLanguage | null => TRANSCRIPTION_LANGUAGES.find((l) => l.code === code)?.code ?? (code === "auto" ? "auto" : null);
 
 /** "1:30" or "90" → seconds. */
 function parseTime(text: string): number | undefined {
@@ -46,17 +56,20 @@ export function VideoDownloader() {
 
 	// Keep the queue moving whenever something is queued.
 	const queued = items.filter((i) => i.status === "queued").length;
+	const unmeteredOnly = useDownloads((s) => s.unmeteredOnly);
 	useEffect(() => {
 		if (!queued) return;
 		pumpQueue({
 			onFinished: (item) => {
 				toast.success(`Downloaded ${item.title}`);
-				if (item.openWhenDone && item.path) {
-					void openSavedInEditor({ editor, filePath: item.path, push: router.push }).catch((e: unknown) => toast.error(errorText(e)));
+				if ((item.openWhenDone || item.transcribe) && item.path) {
+					void openSavedInEditor({ editor, filePath: item.path, push: router.push, transcribe: languageOf(item.transcribe) }).catch((e: unknown) =>
+						toast.error(errorText(e)),
+					);
 				}
 			},
 		});
-	}, [queued, editor, router]);
+	}, [queued, unmeteredOnly, editor, router]);
 
 	return (
 		<LibraryPageShell
@@ -216,6 +229,7 @@ function LinkCard({ item, onToggle, onRemove }: { item: Checked; onToggle: () =>
 									info.duration ? formatDuration(info.duration) : null,
 									info.bytes ? formatBytes(info.bytes) : null,
 									info.variants?.length ? info.variants.map((v) => v.label).join(" / ") : null,
+									info.subtitles?.length ? `subtitles: ${info.subtitles.map((x) => x.lang).join(", ")}` : null,
 								]
 									.filter(Boolean)
 									.join(" · ")
@@ -243,7 +257,10 @@ function OptionsDialog({ open, links, onOpenChange, onQueued }: { open: boolean;
 	const [from, setFrom] = useState("");
 	const [to, setTo] = useState("");
 	const [openWhenDone, setOpenWhenDone] = useState(false);
+	const [saveSubs, setSaveSubs] = useState(true);
+	const [transcribe, setTranscribe] = useState<string | null>(null);
 	const [rights, setRights] = useState(false);
+	const hasSubs = links.some((l) => l.info?.subtitles?.length);
 	const hosts = [...new Set(links.map((l) => l.info?.host ?? ""))];
 	const needRights = hosts.filter((h) => !rightsHosts.includes(h));
 	const qualities = useMemo(() => {
@@ -276,6 +293,8 @@ function OptionsDialog({ open, links, onOpenChange, onQueued }: { open: boolean;
 					start,
 					end,
 					openWhenDone,
+					saveSubs,
+					transcribe,
 					status: "queued",
 					received: 0,
 					total: info.bytes ?? 0,
@@ -330,6 +349,26 @@ function OptionsDialog({ open, links, onOpenChange, onQueued }: { open: boolean;
 					<label className="flex items-center gap-2">
 						<input type="checkbox" checked={openWhenDone} onChange={(e) => setOpenWhenDone(e.target.checked)} /> Open in the editor when done
 					</label>
+					{hasSubs && (
+						<label className="flex items-center gap-2">
+							<input type="checkbox" checked={saveSubs} onChange={(e) => setSaveSubs(e.target.checked)} data-download-subs /> Save subtitles as .srt next to the video
+						</label>
+					)}
+					<div className="flex items-center gap-2">
+						<label className="flex items-center gap-2">
+							<input type="checkbox" checked={!!transcribe} onChange={(e) => setTranscribe(e.target.checked ? "si" : null)} data-download-transcribe /> Transcribe with
+							Whisper
+						</label>
+						{transcribe && (
+							<select className="rounded border bg-transparent p-1" value={transcribe} onChange={(e) => setTranscribe(e.target.value)} aria-label="Spoken language">
+								{TRANSCRIBE_LANGUAGES.map(([code, label]) => (
+									<option key={code} value={code}>
+										{label}
+									</option>
+								))}
+							</select>
+						)}
+					</div>
 					{needRights.length > 0 && (
 						<label className="flex items-start gap-2 rounded-md border border-amber-500/40 bg-amber-500/10 p-2" data-download-rights>
 							<input type="checkbox" checked={rights} onChange={(e) => setRights(e.target.checked)} className="mt-0.5" />
@@ -356,7 +395,7 @@ const LIMITS = [
 ] as const;
 
 function Queue() {
-	const { items, parallel, speedLimit, setParallel, setSpeedLimit } = useDownloads();
+	const { items, parallel, speedLimit, unmeteredOnly, held, setParallel, setSpeedLimit, setUnmeteredOnly } = useDownloads();
 	const list = items.filter((i) => i.status !== "done");
 	return (
 		<div className="mx-auto flex max-w-4xl flex-col gap-3" data-downloader-queue>
@@ -379,8 +418,17 @@ function Queue() {
 						))}
 					</select>
 				</label>
+				<label className="flex items-center gap-2">
+					<input type="checkbox" checked={unmeteredOnly} onChange={(e) => setUnmeteredOnly(e.target.checked)} data-download-unmetered />
+					Wi-Fi or Ethernet only
+				</label>
 				<span className="ml-auto text-xs">Paused downloads pick up where they stopped, even after a restart.</span>
 			</div>
+			{held && (
+				<p className="m-0 rounded-md border border-amber-500/40 bg-amber-500/10 p-2 text-sm text-amber-300" data-download-held>
+					{"Waiting for Wi-Fi or Ethernet: you're on mobile data. Downloads start when you connect, or turn off \"Wi-Fi or Ethernet only\"."}
+				</p>
+			)}
 			{list.length === 0 && <p className="text-muted-foreground py-16 text-center text-sm">Nothing downloading. Add links to start.</p>}
 			{list.map((item) => (
 				<QueueRow key={item.id} item={item} />
