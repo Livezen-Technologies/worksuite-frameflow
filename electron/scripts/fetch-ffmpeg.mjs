@@ -56,7 +56,14 @@ if (isLocal) {
 const extract = path.join(work, "x");
 fs.mkdirSync(extract);
 if (archive.endsWith(".zip") && process.platform !== "win32") execFileSync("unzip", ["-q", archive, "-d", extract]);
-else execFileSync("tar", ["-xf", archive, "-C", extract]);
+// Windows: its own bsdtar, not Git's GNU tar (which reads "C:" as a remote host).
+else
+	execFileSync(
+		process.platform === "win32"
+			? path.join(process.env.SystemRoot ?? "C:\\Windows", "System32", "tar.exe")
+			: "tar",
+		["-xf", archive, "-C", extract],
+	);
 
 const find = (dir, name) => {
 	for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
