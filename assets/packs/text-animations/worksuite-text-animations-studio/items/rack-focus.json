@@ -1,0 +1,76 @@
+{
+	"schema": 1,
+	"id": "rack-focus",
+	"kind": "animation",
+	"name": {
+		"en": "Rack focus",
+		"si": "සිනමා ක්‍රමයෙන් පෙනීම",
+		"ta": "சினிமா மெல்லத் தோன்றல்"
+	},
+	"category": "blur-focus",
+	"tags": {
+		"en": [
+			"rack",
+			"focus",
+			"fade",
+			"blocks",
+			"blur focus",
+			"cinematic"
+		],
+		"si": [
+			"ක්‍රමයෙන් පෙනීම",
+			"සම්පූර්ණ",
+			"සිනමා"
+		],
+		"ta": [
+			"மெல்லத் தோன்றல்",
+			"முழு",
+			"சினிமா"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "block",
+		"in": {
+			"effect": "fade",
+			"duration": 0.5,
+			"delay": 0,
+			"stagger": 0,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-out",
+			"intensity": 1,
+			"params": {}
+		},
+		"keyframes": {
+			"tracks": {
+				"blur": [
+					{
+						"t": 0,
+						"v": 0.45,
+						"easing": "ease-in-out"
+					},
+					{
+						"t": 1.2,
+						"v": 0
+					},
+					{
+						"t": 2.6,
+						"v": 0,
+						"easing": "ease-in-out"
+					},
+					{
+						"t": 3.4,
+						"v": 0.3
+					}
+				]
+			}
+		}
+	},
+	"style": {
+		"fontFamily": "Inter",
+		"fontWeight": 800,
+		"fill": "#FFFFFF"
+	},
+	"duration": 3
+}

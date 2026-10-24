@@ -1,0 +1,78 @@
+{
+	"schema": 1,
+	"id": "slam-and-shake",
+	"kind": "animation",
+	"name": {
+		"en": "Slam and shake",
+		"si": "බර මුද්‍රාව",
+		"ta": "கனமான முத்திரை"
+	},
+	"category": "kinetic",
+	"tags": {
+		"en": [
+			"slam",
+			"and",
+			"shake",
+			"stamp",
+			"words",
+			"kinetic",
+			"heavy",
+			"loop"
+		],
+		"si": [
+			"මුද්‍රාව",
+			"සෙලවීම",
+			"වචන",
+			"බර",
+			"ලූප"
+		],
+		"ta": [
+			"முத்திரை",
+			"குலுக்கல்",
+			"சொற்கள்",
+			"கனமான",
+			"சுழற்சி"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "word",
+		"in": {
+			"effect": "stamp",
+			"duration": 0.3,
+			"delay": 0,
+			"stagger": 0.3,
+			"staggerOrder": "forward",
+			"direction": "in",
+			"easing": "ease-in-cubic",
+			"intensity": 1.6,
+			"params": {}
+		},
+		"emphasis": {
+			"effect": "shake",
+			"duration": 0.5,
+			"delay": 0,
+			"stagger": 0,
+			"staggerOrder": "forward",
+			"direction": "right",
+			"easing": "linear",
+			"intensity": 0.4,
+			"params": {}
+		}
+	},
+	"previewText": {
+		"en": "MAKE IT LOUD",
+		"si": "හඬ නඟමු",
+		"ta": "உரக்கச் சொல்லுங்கள்"
+	},
+	"style": {
+		"fontFamily": "Archivo Black",
+		"fontWeight": 400,
+		"fill": "#FFFFFF",
+		"stroke": {
+			"color": "#FF5C8A",
+			"width": 2
+		}
+	},
+	"duration": 3
+}

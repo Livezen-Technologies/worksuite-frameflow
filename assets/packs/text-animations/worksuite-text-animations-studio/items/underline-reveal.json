@@ -1,0 +1,54 @@
+{
+	"schema": 1,
+	"id": "underline-reveal",
+	"kind": "animation",
+	"name": {
+		"en": "Underline reveal",
+		"si": "පිරිසිදු යටි ඉර",
+		"ta": "சுத்தமான அடிக்கோடு"
+	},
+	"category": "reveals",
+	"tags": {
+		"en": [
+			"underline",
+			"reveal",
+			"underline draw",
+			"words",
+			"reveals",
+			"clean"
+		],
+		"si": [
+			"යටි ඉර",
+			"වචන",
+			"පිරිසිදු"
+		],
+		"ta": [
+			"அடிக்கோடு",
+			"சொற்கள்",
+			"சுத்தமான"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "word",
+		"in": {
+			"effect": "underline-draw",
+			"duration": 0.6,
+			"delay": 0,
+			"stagger": 0.12,
+			"staggerOrder": "forward",
+			"direction": "right",
+			"easing": "ease-in-out-cubic",
+			"intensity": 1,
+			"params": {
+				"color": "#FFD166"
+			}
+		}
+	},
+	"style": {
+		"fontFamily": "Inter",
+		"fontWeight": 800,
+		"fill": "#FFFFFF"
+	},
+	"duration": 3
+}

@@ -72,6 +72,114 @@ The client must allow loopback redirect URIs (`http://127.0.0.1:<any port>/callb
 
 `/v1/me` may list workspaces as `workspaces: [{ id, name, type: "personal" | "team", role, plan, storage_quota, storage_used }]` with an optional `active_workspace_id`. When it lists more than one, FrameFlow shows a workspace switcher and remembers the choice on the device.
 
+## Text animations and the Text library
+
+Animated text is drawn by one engine (`apps/web/src/text-animation/`, plain TypeScript, no React) for the editor preview, exports, library thumbnails and Lottie text slots, so they always match. A text or caption clip stores a `textAnimation` next to its params; a Lottie text slot override can carry one too.
+
+### The `TextAnimation` format
+
+JSON, versioned (`"version": 1`), documented by [`assets/packs/text-pack-item.schema.json`](assets/packs/text-pack-item.schema.json) (`$defs/textAnimation`):
+
+```json
+{
+  "version": 1,
+  "unit": "word",
+  "in":       { "effect": "rise", "duration": 0.6, "delay": 0, "stagger": 0.08, "staggerOrder": "forward", "direction": "up", "easing": "ease-out-cubic", "intensity": 1, "params": {} },
+  "emphasis": { "effect": "pulse", "duration": 1.4, "delay": 0, "stagger": 0.1, "staggerOrder": "forward", "direction": "in", "easing": "ease-in-out", "intensity": 0.6, "params": {} },
+  "out":      { "effect": "fade", "duration": 0.4, "delay": 0, "stagger": 0.03, "staggerOrder": "reverse", "direction": "up", "easing": [0.4, 0, 1, 1], "intensity": 1, "params": {} },
+  "keyframes": { "stagger": 0.05, "tracks": { "y": [{ "t": 0, "v": 0.5, "easing": "ease-out-back" }, { "t": 0.6, "v": 0 }], "fill": [{ "t": 1, "v": "#FFFFFF" }, { "t": 2, "v": "#FFD400" }] } }
+}
+```
+
+- `unit`: `grapheme` (letters; Sinhala/Tamil conjuncts such as ශ්‍රී, ක්‍ය, க்ஷ stay whole), `word`, `line` or `block`.
+- Phases: `in` plays from the clip start, `out` ends at the clip end, `emphasis` loops in between. Times are seconds; `stagger` is the gap between units; `staggerOrder` is `forward`, `reverse`, `center-out`, `edges-in` or `random(<seed>)`.
+- `easing`: a name (`linear`, `ease`, `ease-in`, `ease-out`, `ease-in-out`, `ease-{in,out,in-out}-{quad,cubic,expo,back}`, `ease-in-quart`, `ease-out-quart`, `ease-out-elastic`, `ease-out-bounce`, `step`) or `[x1, y1, x2, y2]`.
+- `intensity` 0–2 (1 = as designed); `params` are effect-specific (table below).
+- `keyframes.tracks`: `opacity`, `x`, `y` (em), `scale`, `rotation`, `skew` (degrees), `blur`, `tracking` (em), `fill`, `stroke` (#RRGGBB); `t` is seconds from the clip start, with easing per key.
+
+Effect ids (43; ids never change — add new ones in `effects.ts`):
+
+| id | name | phases | params |
+| --- | --- | --- | --- |
+| `fade` | Fade | in/out | — |
+| `slide` | Slide | in/out | distance |
+| `rise` | Rise | in/out | — |
+| `drop` | Drop | in/out | — |
+| `pop` | Pop | in/out | — |
+| `scale-up` | Scale up | in/out | — |
+| `scale-down` | Scale down | in/out | — |
+| `zoom-blur` | Zoom blur | in/out | — |
+| `blur-in` | Blur | in/out | — |
+| `typewriter` | Typewriter | in/out | caret |
+| `scramble` | Scramble / decode | in/out | rate |
+| `wave` | Wave | in/emphasis/out | height |
+| `bounce` | Bounce | in/emphasis/out | — |
+| `elastic` | Elastic | in/out | — |
+| `flip-x` | Flip X | in/out | — |
+| `flip-y` | Flip Y | in/out | — |
+| `rotate-in` | Rotate | in/out | angle |
+| `skew-in` | Skew | in/out | — |
+| `glitch` | Glitch | in/emphasis/out | rate |
+| `rgb-split` | RGB split | in/emphasis/out | — |
+| `neon-flicker` | Neon flicker | in/emphasis/out | color, rate |
+| `mask-wipe` | Mask wipe | in/out | — |
+| `split-reveal` | Split reveal | in/out | — |
+| `tracking-expand` | Tracking expand | in/out | — |
+| `highlight-sweep` | Highlight sweep | in/emphasis/out | color |
+| `underline-draw` | Underline draw | in/out | color |
+| `box-reveal` | Box reveal | in/out | color |
+| `stamp` | Stamp | in/out | — |
+| `shake` | Shake | in/emphasis/out | — |
+| `jitter` | Jitter | in/emphasis/out | rate |
+| `swing` | Swing | in/emphasis/out | — |
+| `colour-cycle` | Colour cycle | in/emphasis/out | color |
+| `gradient-sweep` | Gradient sweep | in/emphasis/out | from, to |
+| `stroke-draw` | Stroke draw | in/out | color |
+| `3d-tilt` | 3D tilt | in/emphasis/out | — |
+| `stretch` | Stretch | in/emphasis/out | — |
+| `karaoke-fill` | Karaoke fill | in/emphasis | color |
+| `number-counter` | Number counter | in | from, decimals, separator |
+| `shine` | Shine | in/emphasis/out | — |
+| `pulse` | Pulse | in/emphasis/out | — |
+| `float` | Float | in/emphasis/out | — |
+| `spin` | Spin | in/emphasis/out | — |
+| `blink` | Blink | emphasis | — |
+
+### Adding library content (Stage 2)
+
+Packs live in `assets/packs/text-animations/<pack-id>/` and `assets/packs/text-templates/<pack-id>/`:
+
+```
+pack.json          download-center manifest (id, type, version, title, description, tags {en,si,ta}, licence, plan…)
+categories.json    [{ "id": "titles", "name": { "en": "Titles", "si": "මාතෘකා", "ta": "தலைப்புகள்" } }]
+items/<id>.json    one item per file, file name = id
+```
+
+An animation item:
+
+```json
+{ "schema": 1, "id": "rise-words", "kind": "animation", "name": { "en": "Rise words", "si": "…", "ta": "…" }, "category": "basic",
+  "tags": { "en": ["rise"], "si": ["නැගීම"], "ta": ["எழுச்சி"] }, "duration": 3, "previewText": { "en": "Optional" }, "style": { "fill": "#FFFFFF" },
+  "animation": { "version": 1, "unit": "word", "in": { … } } }
+```
+
+A template item is one or more text slots (position and size as shares of the frame), each with its own style and `TextAnimation`, plus an optional Lottie background (`{ "packAsset": "<worksuite-pack id>" }` or `{ "file": "lottie/x.json" }` inside the pack, with `colors` overrides):
+
+```json
+{ "schema": 1, "id": "title-rise", "kind": "template", "name": { "en": "Bold title" }, "category": "titles", "tags": { "en": [], "si": [], "ta": [] },
+  "duration": 4, "aspect": "16:9", "background": { "packAsset": "co-underline" },
+  "slots": [{ "id": "title", "name": "Title", "text": { "en": "BIG NEWS", "si": "විශේෂ පුවතක්", "ta": "முக்கிய செய்தி" },
+             "x": 0.5, "y": 0.45, "size": 0.12, "style": { "fontWeight": 800, "fill": "#FFFFFF" }, "animation": { … } }] }
+```
+
+The Studio packs (`worksuite-text-animations-studio`, `worksuite-text-templates-studio`: 250 animations and 250 templates) are generated from hand-designed recipe tables in `scripts/assets/text-content/` (phases in a compact notation, looks, slot layouts, motions and default texts in English, Sinhala and Tamil). Edit the tables, not the item files, and run `node scripts/assets/generate-text-content.mjs` (`--check` fails when the files are out of date). It sizes each template slot so the longest of its three languages fits the frame, and lists every Sinhala and Tamil string in `docs/text-content-review-si-ta.md` for native-speaker review.
+
+Then run `node scripts/assets/text-packs.mjs` (structure) and `bun test src/text-library` in `apps/web` (full check: effect ids, easings, categories, unique ids, schema in sync). `index.json` is generated from these files for the app (`apps/web/scripts/copy-text-packs.mjs`, run by `dev`/`build`) and for the download center (`build-catalog.mjs`, pack types `text-animations` and `text-templates`). Search covers names and tags in all three languages, so give every item Sinhala and Tamil tags.
+
+### Lottie export of text
+
+Export (text clip properties, template tiles, animation clip properties) writes Lottie JSON or dotLottie v2 (`manifest.json`, `a/`, `i/`, `t/` with colour slots as a theme). Latin text with transform-only effects becomes Lottie text layers (one per unit, sampled keyframes, font references — the font must exist where it plays). Sinhala, Tamil and effects Lottie text can't express (blur, wipes, highlights, RGB split, shine…) are exported as engine-drawn image frames, pixel-identical to the preview but not resolution-independent; vector glyph outlines aren't produced because the bundled fonts are WOFF2 and the app has no text shaper.
+
 ## Changelog and releases
 
 Changes are listed in [CHANGELOG.md](CHANGELOG.md). Every change adds a line under **Unreleased**, and CI fails a pull request that doesn't (label it `skip-changelog` for changes with nothing user-facing).

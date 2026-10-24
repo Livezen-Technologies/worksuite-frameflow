@@ -1,0 +1,50 @@
+{
+	"schema": 1,
+	"id": "centre-fade-letters",
+	"kind": "animation",
+	"name": {
+		"en": "Centre fade letters",
+		"si": "මැද සිට ක්‍රමයෙන් පෙනීම",
+		"ta": "நடுவிலிருந்து மெல்லத் தோன்றல்"
+	},
+	"category": "reveals",
+	"tags": {
+		"en": [
+			"centre",
+			"fade",
+			"letters",
+			"reveals"
+		],
+		"si": [
+			"ක්‍රමයෙන් පෙනීම",
+			"අකුරු",
+			"මැද සිට"
+		],
+		"ta": [
+			"மெல்லத் தோன்றல்",
+			"எழுத்துகள்",
+			"நடுவிலிருந்து"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "grapheme",
+		"in": {
+			"effect": "fade",
+			"duration": 0.6,
+			"delay": 0,
+			"stagger": 0.04,
+			"staggerOrder": "center-out",
+			"direction": "up",
+			"easing": "ease-out-quad",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"style": {
+		"fontFamily": "Inter",
+		"fontWeight": 800,
+		"fill": "#FFFFFF"
+	},
+	"duration": 3
+}

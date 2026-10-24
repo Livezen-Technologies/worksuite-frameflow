@@ -1,0 +1,133 @@
+{
+	"schema": 1,
+	"id": "lt-boxed-reveal",
+	"kind": "template",
+	"name": {
+		"en": "Boxed reveal name",
+		"si": "පැහැදිලි පහළ පටිය",
+		"ta": "தெளிவான கீழ் பட்டை"
+	},
+	"category": "lower-thirds",
+	"tags": {
+		"en": [
+			"boxed",
+			"reveal",
+			"name",
+			"lower third",
+			"interview",
+			"landscape",
+			"16:9",
+			"box reveal",
+			"fade",
+			"crisp"
+		],
+		"si": [
+			"නම",
+			"සම්මුඛ සාකච්ඡාව",
+			"තිරස්",
+			"කොටුව",
+			"ක්‍රමයෙන් පෙනීම",
+			"පැහැදිලි"
+		],
+		"ta": [
+			"பெயர்",
+			"நேர்காணல்",
+			"கிடைமட்ட",
+			"பெட்டி",
+			"மெல்லத் தோன்றல்",
+			"தெளிவான"
+		]
+	},
+	"duration": 5,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "name",
+			"name": "Name",
+			"text": {
+				"en": "Ishara Silva",
+				"si": "ඉෂාරා සිල්වා",
+				"ta": "இஷாரா சில்வா"
+			},
+			"x": 0.27,
+			"y": 0.79,
+			"size": 0.059,
+			"style": {
+				"fontFamily": "Raleway",
+				"fontWeight": 800,
+				"fill": "#F8FAFC"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "line",
+				"in": {
+					"effect": "box-reveal",
+					"duration": 0.9,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-in-out-cubic",
+					"intensity": 1,
+					"params": {
+						"color": "#38BDF8"
+					}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "role",
+			"name": "Role",
+			"text": {
+				"en": "Designer",
+				"si": "නිර්මාණකරු",
+				"ta": "வடிவமைப்பாளர்"
+			},
+			"x": 0.27,
+			"y": 0.865,
+			"size": 0.043,
+			"style": {
+				"fontFamily": "Raleway",
+				"fontWeight": 500,
+				"fill": "#CBD5E1"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "fade",
+					"duration": 0.5,
+					"delay": 0.3,
+					"stagger": 0.05,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

@@ -1,0 +1,62 @@
+{
+	"schema": 1,
+	"id": "count-percent",
+	"kind": "animation",
+	"name": {
+		"en": "Count to percent",
+		"si": "සුමට අංක ගණනය",
+		"ta": "மிருதுவான எண் எண்ணிக்கை"
+	},
+	"category": "counters-numbers",
+	"tags": {
+		"en": [
+			"count",
+			"to",
+			"percent",
+			"number counter",
+			"blocks",
+			"counters numbers",
+			"smooth"
+		],
+		"si": [
+			"අංක ගණනය",
+			"සම්පූර්ණ",
+			"සුමට"
+		],
+		"ta": [
+			"எண் எண்ணிக்கை",
+			"முழு",
+			"மிருதுவான"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "block",
+		"in": {
+			"effect": "number-counter",
+			"duration": 2,
+			"delay": 0,
+			"stagger": 0,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-out-expo",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"previewText": {
+		"en": "98%",
+		"si": "98%",
+		"ta": "98%"
+	},
+	"style": {
+		"fontFamily": "Oswald",
+		"fontWeight": 700,
+		"fill": "#FFD166",
+		"glow": {
+			"color": "#F59E0B",
+			"size": 0.2
+		}
+	},
+	"duration": 3.5
+}

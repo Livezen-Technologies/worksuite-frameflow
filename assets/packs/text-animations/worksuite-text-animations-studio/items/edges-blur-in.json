@@ -1,0 +1,53 @@
+{
+	"schema": 1,
+	"id": "edges-blur-in",
+	"kind": "animation",
+	"name": {
+		"en": "Edges blur-in",
+		"si": "පැති බොඳ",
+		"ta": "பக்க மங்கல்"
+	},
+	"category": "blur-focus",
+	"tags": {
+		"en": [
+			"edges",
+			"blur",
+			"in",
+			"blur in",
+			"letters",
+			"blur focus",
+			"side"
+		],
+		"si": [
+			"බොඳ",
+			"අකුරු",
+			"පැති"
+		],
+		"ta": [
+			"மங்கல்",
+			"எழுத்துகள்",
+			"பக்க"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "grapheme",
+		"in": {
+			"effect": "blur-in",
+			"duration": 0.6,
+			"delay": 0,
+			"stagger": 0.04,
+			"staggerOrder": "edges-in",
+			"direction": "in",
+			"easing": "ease-out",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"style": {
+		"fontFamily": "Inter",
+		"fontWeight": 800,
+		"fill": "#FFFFFF"
+	},
+	"duration": 3
+}

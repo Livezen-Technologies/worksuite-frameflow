@@ -1,0 +1,94 @@
+{
+	"schema": 1,
+	"id": "kp-rise-up",
+	"kind": "template",
+	"name": {
+		"en": "Rise up",
+		"si": "උත්කර්ෂවත් චලන පෝස්ටරය",
+		"ta": "பிரமாண்ட இயக்க சுவரொட்டி"
+	},
+	"category": "kinetic-posters",
+	"tags": {
+		"en": [
+			"rise",
+			"up",
+			"kinetic",
+			"poster",
+			"typography",
+			"landscape",
+			"16:9",
+			"fade",
+			"grand"
+		],
+		"si": [
+			"චලන",
+			"පෝස්ටරය",
+			"තිරස්",
+			"නැගීම",
+			"ක්‍රමයෙන් පෙනීම",
+			"උත්කර්ෂවත්"
+		],
+		"ta": [
+			"இயக்கம்",
+			"சுவரொட்டி",
+			"கிடைமட்ட",
+			"எழுச்சி",
+			"மெல்லத் தோன்றல்",
+			"பிரமாண்ட"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "RISE UP",
+				"si": "නැගී සිටින්න",
+				"ta": "எழுந்து நில்லுங்கள்"
+			},
+			"x": 0.5,
+			"y": 0.5,
+			"size": 0.098,
+			"style": {
+				"fontFamily": "Bebas Neue",
+				"fontWeight": 400,
+				"fill": "#FFD166",
+				"tracking": 0.03,
+				"shadow": {
+					"color": "#000000",
+					"blur": 16,
+					"x": 0,
+					"y": 4
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "rise",
+					"duration": 0.7,
+					"delay": 0,
+					"stagger": 0.08,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

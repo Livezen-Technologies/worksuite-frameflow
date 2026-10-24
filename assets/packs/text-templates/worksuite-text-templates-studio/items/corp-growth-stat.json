@@ -1,0 +1,131 @@
+{
+	"schema": 1,
+	"id": "corp-growth-stat",
+	"kind": "template",
+	"name": {
+		"en": "Growth stat",
+		"si": "ප්‍රබල ව්‍යාපාරික මාතෘකාව",
+		"ta": "வலுவான நிறுவனத் தலைப்பு"
+	},
+	"category": "corporate",
+	"tags": {
+		"en": [
+			"growth",
+			"stat",
+			"corporate",
+			"business",
+			"presentation",
+			"landscape",
+			"16:9",
+			"number counter",
+			"fade",
+			"bold"
+		],
+		"si": [
+			"ව්‍යාපාරික",
+			"ඉදිරිපත් කිරීම",
+			"තිරස්",
+			"අංක ගණනය",
+			"ක්‍රමයෙන් පෙනීම",
+			"ප්‍රබල"
+		],
+		"ta": [
+			"நிறுவனம்",
+			"விளக்கக்காட்சி",
+			"கிடைமட்ட",
+			"எண் எண்ணிக்கை",
+			"மெல்லத் தோன்றல்",
+			"வலுவான"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "number",
+			"name": "Number",
+			"text": {
+				"en": "+24%",
+				"si": "+24%",
+				"ta": "+24%"
+			},
+			"x": 0.5,
+			"y": 0.42,
+			"size": 0.2,
+			"style": {
+				"fontFamily": "Montserrat",
+				"fontWeight": 800,
+				"fill": "#93C5FD"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "block",
+				"in": {
+					"effect": "number-counter",
+					"duration": 1.6,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "label",
+			"name": "Label",
+			"text": {
+				"en": "Growth this year",
+				"si": "මේ වසරේ වර්ධනය",
+				"ta": "இந்த ஆண்டு வளர்ச்சி"
+			},
+			"x": 0.5,
+			"y": 0.66,
+			"size": 0.056,
+			"style": {
+				"fontFamily": "Montserrat",
+				"fontWeight": 500,
+				"fill": "#93C5FD"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "fade",
+					"duration": 0.6,
+					"delay": 0.3,
+					"stagger": 0.05,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

@@ -1,0 +1,101 @@
+{
+	"schema": 1,
+	"id": "min-sinhala",
+	"kind": "template",
+	"name": {
+		"en": "Sinhala minimal",
+		"si": "සරල සරල මාතෘකාව",
+		"ta": "எளிய எளிய தலைப்பு"
+	},
+	"category": "minimal",
+	"tags": {
+		"en": [
+			"sinhala",
+			"minimal",
+			"clean",
+			"simple",
+			"landscape",
+			"16:9",
+			"fade"
+		],
+		"si": [
+			"සරල",
+			"පිරිසිදු",
+			"තිරස්",
+			"ක්‍රමයෙන් පෙනීම"
+		],
+		"ta": [
+			"எளிமை",
+			"சுத்தம்",
+			"கிடைமட்ட",
+			"மெல்லத் தோன்றல்",
+			"எளிய"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "Hello",
+				"si": "ආයුබෝවන්",
+				"ta": "வணக்கம்"
+			},
+			"x": 0.5,
+			"y": 0.5,
+			"size": 0.13,
+			"style": {
+				"fontFamily": "Noto Sans Sinhala",
+				"fontWeight": 700,
+				"fill": "#FFFFFF",
+				"stroke": {
+					"color": "#000000",
+					"width": 5
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "fade",
+					"duration": 1,
+					"delay": 0,
+					"stagger": 0.12,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.8,
+					"delay": 0,
+					"stagger": 0.05,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in",
+					"intensity": 1,
+					"params": {}
+				},
+				"keyframes": {
+					"tracks": {
+						"scale": [
+							{
+								"t": 0,
+								"v": 1.08,
+								"easing": "ease-out-cubic"
+							},
+							{
+								"t": 4,
+								"v": 1
+							}
+						]
+					}
+				}
+			}
+		}
+	]
+}

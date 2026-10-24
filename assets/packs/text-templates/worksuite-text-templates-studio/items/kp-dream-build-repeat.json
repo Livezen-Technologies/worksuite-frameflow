@@ -1,0 +1,211 @@
+{
+	"schema": 1,
+	"id": "kp-dream-build-repeat",
+	"kind": "template",
+	"name": {
+		"en": "Dream, build, repeat",
+		"si": "ජවසම්පන්න චලන පෝස්ටරය",
+		"ta": "துடிப்பான இயக்க சுவரொட்டி"
+	},
+	"category": "kinetic-posters",
+	"tags": {
+		"en": [
+			"dream",
+			"build",
+			"repeat",
+			"kinetic",
+			"poster",
+			"typography",
+			"landscape",
+			"16:9",
+			"scale down",
+			"pulse",
+			"fade",
+			"energetic"
+		],
+		"si": [
+			"චලන",
+			"පෝස්ටරය",
+			"තිරස්",
+			"කුඩා වීම",
+			"ස්පන්දනය",
+			"ක්‍රමයෙන් පෙනීම",
+			"ජවසම්පන්න"
+		],
+		"ta": [
+			"இயக்கம்",
+			"சுவரொட்டி",
+			"கிடைமட்ட",
+			"சிறிதாதல்",
+			"துடிப்பு",
+			"மெல்லத் தோன்றல்",
+			"துடிப்பான"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "word1",
+			"name": "Word 1",
+			"text": {
+				"en": "DREAM",
+				"si": "සිහින",
+				"ta": "கனவு"
+			},
+			"x": 0.5,
+			"y": 0.29,
+			"size": 0.151,
+			"style": {
+				"fontFamily": "Anton",
+				"fontWeight": 400,
+				"fill": "#FFFFFF"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "scale-down",
+					"duration": 0.35,
+					"delay": 0,
+					"stagger": 0.3,
+					"staggerOrder": "forward",
+					"direction": "out",
+					"easing": "ease-out-expo",
+					"intensity": 1,
+					"params": {}
+				},
+				"emphasis": {
+					"effect": "pulse",
+					"duration": 0.6,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "linear",
+					"intensity": 0.4,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "word2",
+			"name": "Word 2",
+			"text": {
+				"en": "BUILD",
+				"si": "ගොඩනඟන්න",
+				"ta": "கட்டு"
+			},
+			"x": 0.5,
+			"y": 0.5,
+			"size": 0.175,
+			"style": {
+				"fontFamily": "Anton",
+				"fontWeight": 400,
+				"fill": "#FF3B3B"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "scale-down",
+					"duration": 0.35,
+					"delay": 0.35,
+					"stagger": 0.3,
+					"staggerOrder": "forward",
+					"direction": "out",
+					"easing": "ease-out-expo",
+					"intensity": 1,
+					"params": {}
+				},
+				"emphasis": {
+					"effect": "pulse",
+					"duration": 0.6,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "linear",
+					"intensity": 0.4,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "word3",
+			"name": "Word 3",
+			"text": {
+				"en": "REPEAT",
+				"si": "නැවත",
+				"ta": "மீண்டும்"
+			},
+			"x": 0.5,
+			"y": 0.71,
+			"size": 0.151,
+			"style": {
+				"fontFamily": "Anton",
+				"fontWeight": 400,
+				"fill": "#FFFFFF"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "scale-down",
+					"duration": 0.35,
+					"delay": 0.7,
+					"stagger": 0.3,
+					"staggerOrder": "forward",
+					"direction": "out",
+					"easing": "ease-out-expo",
+					"intensity": 1,
+					"params": {}
+				},
+				"emphasis": {
+					"effect": "pulse",
+					"duration": 0.6,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "linear",
+					"intensity": 0.4,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

@@ -1,0 +1,103 @@
+{
+	"schema": 1,
+	"id": "min-ocean",
+	"kind": "template",
+	"name": {
+		"en": "Ocean",
+		"si": "සිසිල් සරල මාතෘකාව",
+		"ta": "குளிர்ந்த எளிய தலைப்பு"
+	},
+	"category": "minimal",
+	"tags": {
+		"en": [
+			"ocean",
+			"minimal",
+			"clean",
+			"simple",
+			"landscape",
+			"16:9",
+			"rise",
+			"wave",
+			"fade",
+			"cool"
+		],
+		"si": [
+			"සරල",
+			"පිරිසිදු",
+			"තිරස්",
+			"නැගීම",
+			"රැල්ල",
+			"ක්‍රමයෙන් පෙනීම",
+			"සිසිල්"
+		],
+		"ta": [
+			"எளிமை",
+			"சுத்தம்",
+			"கிடைமட்ட",
+			"எழுச்சி",
+			"அலை",
+			"மெல்லத் தோன்றல்",
+			"குளிர்ந்த"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "Ocean",
+				"si": "සාගරය",
+				"ta": "கடல்"
+			},
+			"x": 0.5,
+			"y": 0.5,
+			"size": 0.13,
+			"style": {
+				"fontFamily": "DM Serif Display",
+				"fontWeight": 400,
+				"fill": "#F8FAFC"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "grapheme",
+				"in": {
+					"effect": "rise",
+					"duration": 0.5,
+					"delay": 0,
+					"stagger": 0.03,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"emphasis": {
+					"effect": "wave",
+					"duration": 1.6,
+					"delay": 0,
+					"stagger": 0.08,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "linear",
+					"intensity": 1,
+					"params": {
+						"height": 0.15
+					}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

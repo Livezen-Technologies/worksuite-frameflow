@@ -1,0 +1,176 @@
+{
+	"schema": 1,
+	"id": "corp-square",
+	"kind": "template",
+	"name": {
+		"en": "Square company card",
+		"si": "හතරැස් ව්‍යාපාරික මාතෘකාව",
+		"ta": "சதுர நிறுவனத் தலைப்பு"
+	},
+	"category": "corporate",
+	"tags": {
+		"en": [
+			"square",
+			"company",
+			"card",
+			"corporate",
+			"business",
+			"presentation",
+			"1:1",
+			"tracking expand",
+			"fade",
+			"rise"
+		],
+		"si": [
+			"ව්‍යාපාරික",
+			"ඉදිරිපත් කිරීම",
+			"හතරැස්",
+			"පරතරය",
+			"ක්‍රමයෙන් පෙනීම",
+			"නැගීම"
+		],
+		"ta": [
+			"நிறுவனம்",
+			"விளக்கக்காட்சி",
+			"சதுரம்",
+			"இடைவெளி",
+			"மெல்லத் தோன்றல்",
+			"எழுச்சி",
+			"சதுர"
+		]
+	},
+	"duration": 4,
+	"aspect": "1:1",
+	"slots": [
+		{
+			"id": "label",
+			"name": "Label",
+			"text": {
+				"en": "Q3 2026",
+				"si": "2026 තෙවන කාර්තුව",
+				"ta": "2026 மூன்றாம் காலாண்டு"
+			},
+			"x": 0.5,
+			"y": 0.28,
+			"size": 0.046,
+			"style": {
+				"fontFamily": "Raleway",
+				"fontWeight": 700,
+				"fill": "#38BDF8",
+				"tracking": 0.06
+			},
+			"animation": {
+				"version": 1,
+				"unit": "grapheme",
+				"in": {
+					"effect": "tracking-expand",
+					"duration": 1,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "out",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "Quarterly results",
+				"si": "කාර්තුමය ප්‍රතිඵල",
+				"ta": "காலாண்டு முடிவுகள்"
+			},
+			"x": 0.5,
+			"y": 0.46,
+			"size": 0.061,
+			"style": {
+				"fontFamily": "Raleway",
+				"fontWeight": 800,
+				"fill": "#F8FAFC"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "rise",
+					"duration": 0.7,
+					"delay": 0.3,
+					"stagger": 0.08,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "subtitle",
+			"name": "Subtitle",
+			"text": {
+				"en": "Livezen Studio",
+				"si": "ලිව්සෙන් ස්ටුඩියෝ",
+				"ta": "லிவ்சென் ஸ்டுடியோ"
+			},
+			"x": 0.5,
+			"y": 0.62,
+			"size": 0.05,
+			"style": {
+				"fontFamily": "Raleway",
+				"fontWeight": 500,
+				"fill": "#CBD5E1"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "fade",
+					"duration": 0.6,
+					"delay": 0.6,
+					"stagger": 0.04,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

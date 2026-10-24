@@ -1,0 +1,180 @@
+{
+	"schema": 1,
+	"id": "end-vertical",
+	"kind": "template",
+	"name": {
+		"en": "Vertical end card",
+		"si": "සිරස් අවසන් තිරය",
+		"ta": "செங்குத்து இறுதித் திரை"
+	},
+	"category": "end-screens",
+	"tags": {
+		"en": [
+			"vertical",
+			"end",
+			"card",
+			"end screen",
+			"outro",
+			"thanks",
+			"9:16",
+			"story",
+			"pop",
+			"rise",
+			"fade"
+		],
+		"si": [
+			"අවසානය",
+			"ස්තූතියි",
+			"සිරස්",
+			"පොප්",
+			"නැගීම",
+			"ක්‍රමයෙන් පෙනීම"
+		],
+		"ta": [
+			"முடிவு",
+			"நன்றி",
+			"செங்குத்து",
+			"பாப்",
+			"எழுச்சி",
+			"மெல்லத் தோன்றல்"
+		]
+	},
+	"duration": 5,
+	"aspect": "9:16",
+	"slots": [
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "Thanks for watching",
+				"si": "නැරඹුවාට ස්තූතියි",
+				"ta": "பார்த்ததற்கு நன்றி"
+			},
+			"x": 0.5,
+			"y": 0.4,
+			"size": 0.032,
+			"style": {
+				"fontFamily": "Poppins",
+				"fontWeight": 800,
+				"fill": "#FFFFFF"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "pop",
+					"duration": 0.45,
+					"delay": 0,
+					"stagger": 0.08,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "ease-out-back",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "pop",
+					"duration": 0.3,
+					"delay": 0,
+					"stagger": 0.04,
+					"staggerOrder": "reverse",
+					"direction": "in",
+					"easing": "ease-in-back",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "subtitle",
+			"name": "Subtitle",
+			"text": {
+				"en": "More videos every week",
+				"si": "සෑම සතියකම තවත් වීඩියෝ",
+				"ta": "வாரந்தோறும் வீடியோக்கள்"
+			},
+			"x": 0.5,
+			"y": 0.48,
+			"size": 0.026,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 500,
+				"fill": "#CBD5E1"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "rise",
+					"duration": 0.5,
+					"delay": 0.3,
+					"stagger": 0.05,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "button",
+			"name": "Button",
+			"text": {
+				"en": "JOIN NOW",
+				"si": "දැන් එක්වන්න",
+				"ta": "இப்போதே இணையுங்கள்"
+			},
+			"x": 0.5,
+			"y": 0.58,
+			"size": 0.03,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 800,
+				"fill": "#FFFFFF",
+				"plate": {
+					"color": "#F97316",
+					"padding": 0.45,
+					"radius": 0.5
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "pop",
+					"duration": 0.45,
+					"delay": 0.6,
+					"stagger": 0.08,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "ease-out-back",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "pop",
+					"duration": 0.3,
+					"delay": 0,
+					"stagger": 0.04,
+					"staggerOrder": "reverse",
+					"direction": "in",
+					"easing": "ease-in-back",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

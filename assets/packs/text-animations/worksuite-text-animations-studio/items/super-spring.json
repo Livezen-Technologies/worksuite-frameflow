@@ -1,0 +1,51 @@
+{
+	"schema": 1,
+	"id": "super-spring",
+	"kind": "animation",
+	"name": {
+		"en": "Super spring",
+		"si": "විශාල ප්‍රත්‍යාස්ථ",
+		"ta": "பெரிய மீள்தன்மை"
+	},
+	"category": "elastic",
+	"tags": {
+		"en": [
+			"super",
+			"spring",
+			"elastic",
+			"words",
+			"big"
+		],
+		"si": [
+			"ප්‍රත්‍යාස්ථ",
+			"වචන",
+			"විශාල"
+		],
+		"ta": [
+			"மீள்தன்மை",
+			"சொற்கள்",
+			"பெரிய"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "word",
+		"in": {
+			"effect": "elastic",
+			"duration": 1.2,
+			"delay": 0,
+			"stagger": 0.1,
+			"staggerOrder": "forward",
+			"direction": "right",
+			"easing": "ease-out-elastic",
+			"intensity": 1.6,
+			"params": {}
+		}
+	},
+	"style": {
+		"fontFamily": "Anton",
+		"fontWeight": 400,
+		"fill": "#FFE14D"
+	},
+	"duration": 3
+}

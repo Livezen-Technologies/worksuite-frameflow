@@ -1,0 +1,53 @@
+{
+	"schema": 1,
+	"id": "domino-flip",
+	"kind": "animation",
+	"name": {
+		"en": "Domino flip",
+		"si": "වේගවත් පෙරළීම",
+		"ta": "வேகமான புரட்டல்"
+	},
+	"category": "3d-flips",
+	"tags": {
+		"en": [
+			"domino",
+			"flip",
+			"flip x",
+			"letters",
+			"3d flips",
+			"quick"
+		],
+		"si": [
+			"පෙරළීම",
+			"අකුරු",
+			"වේගවත්"
+		],
+		"ta": [
+			"புரட்டல்",
+			"எழுத்துகள்",
+			"வேகமான"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "grapheme",
+		"in": {
+			"effect": "flip-x",
+			"duration": 0.4,
+			"delay": 0,
+			"stagger": 0.06,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-out-cubic",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"style": {
+		"fontFamily": "Bebas Neue",
+		"fontWeight": 400,
+		"fill": "#FFFFFF",
+		"tracking": 0.04
+	},
+	"duration": 3
+}

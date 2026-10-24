@@ -1,0 +1,178 @@
+{
+	"schema": 1,
+	"id": "step-vertical",
+	"kind": "template",
+	"name": {
+		"en": "Vertical step",
+		"si": "සිරස් පියවර",
+		"ta": "செங்குத்து படி"
+	},
+	"category": "tutorial-steps",
+	"tags": {
+		"en": [
+			"vertical",
+			"step",
+			"tutorial",
+			"how to",
+			"9:16",
+			"story",
+			"tracking expand",
+			"fade",
+			"rise"
+		],
+		"si": [
+			"පාඩම",
+			"පියවර",
+			"සිරස්",
+			"පරතරය",
+			"ක්‍රමයෙන් පෙනීම",
+			"නැගීම"
+		],
+		"ta": [
+			"பயிற்சி",
+			"படி",
+			"செங்குத்து",
+			"இடைவெளி",
+			"மெல்லத் தோன்றல்",
+			"எழுச்சி"
+		]
+	},
+	"duration": 4,
+	"aspect": "9:16",
+	"slots": [
+		{
+			"id": "label",
+			"name": "Label",
+			"text": {
+				"en": "STEP 1",
+				"si": "පියවර 1",
+				"ta": "படி 1"
+			},
+			"x": 0.5,
+			"y": 0.3,
+			"size": 0.034,
+			"style": {
+				"fontFamily": "Rubik",
+				"fontWeight": 800,
+				"fill": "#111827",
+				"plate": {
+					"color": "#FACC15",
+					"padding": 0.35,
+					"radius": 0.2
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "grapheme",
+				"in": {
+					"effect": "tracking-expand",
+					"duration": 1,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "out",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "Add your photo",
+				"si": "ඡායාරූපය එක් කරන්න",
+				"ta": "படம் சேர்க்கவும்"
+			},
+			"x": 0.5,
+			"y": 0.4,
+			"size": 0.036,
+			"style": {
+				"fontFamily": "Rubik",
+				"fontWeight": 700,
+				"fill": "#FFFFFF"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "rise",
+					"duration": 0.7,
+					"delay": 0.3,
+					"stagger": 0.08,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "subtitle",
+			"name": "Subtitle",
+			"text": {
+				"en": "Takes about 2 minutes",
+				"si": "මිනිත්තු 2ක් පමණ ගතවේ",
+				"ta": "சுமார் 2 நிமிடங்கள் ஆகும்"
+			},
+			"x": 0.5,
+			"y": 0.5,
+			"size": 0.025,
+			"style": {
+				"fontFamily": "Rubik",
+				"fontWeight": 400,
+				"fill": "#E2E8F0"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "fade",
+					"duration": 0.6,
+					"delay": 0.6,
+					"stagger": 0.04,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

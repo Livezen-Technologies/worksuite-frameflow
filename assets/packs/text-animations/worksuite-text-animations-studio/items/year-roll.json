@@ -1,0 +1,61 @@
+{
+	"schema": 1,
+	"id": "year-roll",
+	"kind": "animation",
+	"name": {
+		"en": "Year roll",
+		"si": "සම්භාව්‍ය අංක ගණනය",
+		"ta": "கிளாசிக் எண் எண்ணிக்கை"
+	},
+	"category": "counters-numbers",
+	"tags": {
+		"en": [
+			"year",
+			"roll",
+			"number counter",
+			"blocks",
+			"counters numbers",
+			"classic"
+		],
+		"si": [
+			"අංක ගණනය",
+			"සම්පූර්ණ",
+			"සම්භාව්‍ය"
+		],
+		"ta": [
+			"எண் எண்ணிக்கை",
+			"முழு",
+			"கிளாசிக்"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "block",
+		"in": {
+			"effect": "number-counter",
+			"duration": 2,
+			"delay": 0,
+			"stagger": 0,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-out-cubic",
+			"intensity": 1,
+			"params": {
+				"from": 1990,
+				"separator": false
+			}
+		}
+	},
+	"previewText": {
+		"en": "2026",
+		"si": "2026",
+		"ta": "2026"
+	},
+	"style": {
+		"fontFamily": "Bebas Neue",
+		"fontWeight": 400,
+		"fill": "#FFFFFF",
+		"tracking": 0.04
+	},
+	"duration": 3.5
+}

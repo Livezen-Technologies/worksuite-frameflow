@@ -1,0 +1,69 @@
+{
+	"schema": 1,
+	"id": "focus-and-settle",
+	"kind": "animation",
+	"name": {
+		"en": "Focus and settle",
+		"si": "අලංකාර බොඳ",
+		"ta": "நேர்த்தியான மங்கல்"
+	},
+	"category": "blur-focus",
+	"tags": {
+		"en": [
+			"focus",
+			"and",
+			"settle",
+			"blur in",
+			"words",
+			"blur focus",
+			"elegant"
+		],
+		"si": [
+			"බොඳ",
+			"වචන",
+			"අලංකාර"
+		],
+		"ta": [
+			"மங்கல்",
+			"சொற்கள்",
+			"நேர்த்தியான"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "word",
+		"in": {
+			"effect": "blur-in",
+			"duration": 0.9,
+			"delay": 0,
+			"stagger": 0.1,
+			"staggerOrder": "forward",
+			"direction": "in",
+			"easing": "ease-out-cubic",
+			"intensity": 1,
+			"params": {}
+		},
+		"keyframes": {
+			"stagger": 0.1,
+			"tracks": {
+				"scale": [
+					{
+						"t": 0,
+						"v": 1.18,
+						"easing": "ease-out-cubic"
+					},
+					{
+						"t": 1.1,
+						"v": 1
+					}
+				]
+			}
+		}
+	},
+	"style": {
+		"fontFamily": "Playfair Display",
+		"fontWeight": 700,
+		"fill": "#FFF4E0"
+	},
+	"duration": 3
+}

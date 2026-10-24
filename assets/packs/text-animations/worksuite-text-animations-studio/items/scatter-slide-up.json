@@ -1,0 +1,52 @@
+{
+	"schema": 1,
+	"id": "scatter-slide-up",
+	"kind": "animation",
+	"name": {
+		"en": "Scatter slide up",
+		"si": "අහඹු ලිස්සීම",
+		"ta": "சீரற்ற சறுக்கல்"
+	},
+	"category": "slides",
+	"tags": {
+		"en": [
+			"scatter",
+			"slide",
+			"up",
+			"letters",
+			"slides",
+			"random"
+		],
+		"si": [
+			"ලිස්සීම",
+			"අකුරු",
+			"අහඹු"
+		],
+		"ta": [
+			"சறுக்கல்",
+			"எழுத்துகள்",
+			"சீரற்ற"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "grapheme",
+		"in": {
+			"effect": "slide",
+			"duration": 0.5,
+			"delay": 0,
+			"stagger": 0.03,
+			"staggerOrder": "random(11)",
+			"direction": "up",
+			"easing": "ease-out-cubic",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"style": {
+		"fontFamily": "Inter",
+		"fontWeight": 800,
+		"fill": "#FFFFFF"
+	},
+	"duration": 3
+}

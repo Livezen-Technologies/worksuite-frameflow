@@ -1,0 +1,84 @@
+{
+	"schema": 1,
+	"id": "count-stamp",
+	"kind": "animation",
+	"name": {
+		"en": "Count and stamp",
+		"si": "ප්‍රබල අංක ගණනය",
+		"ta": "வலுவான எண் எண்ணிக்கை"
+	},
+	"category": "counters-numbers",
+	"tags": {
+		"en": [
+			"count",
+			"and",
+			"stamp",
+			"number counter",
+			"blocks",
+			"counters numbers",
+			"bold"
+		],
+		"si": [
+			"අංක ගණනය",
+			"සම්පූර්ණ",
+			"ප්‍රබල"
+		],
+		"ta": [
+			"எண் எண்ணிக்கை",
+			"முழு",
+			"வலுவான"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "block",
+		"in": {
+			"effect": "number-counter",
+			"duration": 1.2,
+			"delay": 0,
+			"stagger": 0,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-out-cubic",
+			"intensity": 1,
+			"params": {}
+		},
+		"keyframes": {
+			"tracks": {
+				"scale": [
+					{
+						"t": 0,
+						"v": 2.2,
+						"easing": "ease-in-cubic"
+					},
+					{
+						"t": 0.35,
+						"v": 1
+					}
+				],
+				"rotation": [
+					{
+						"t": 0,
+						"v": -8,
+						"easing": "ease-out-back"
+					},
+					{
+						"t": 0.5,
+						"v": 0
+					}
+				]
+			}
+		}
+	},
+	"previewText": {
+		"en": "98%",
+		"si": "98%",
+		"ta": "98%"
+	},
+	"style": {
+		"fontFamily": "Anton",
+		"fontWeight": 400,
+		"fill": "#FFE14D"
+	},
+	"duration": 3
+}

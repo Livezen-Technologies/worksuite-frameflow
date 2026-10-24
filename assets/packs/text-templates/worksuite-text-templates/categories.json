@@ -1,0 +1,42 @@
+[
+	{
+		"id": "titles",
+		"name": {
+			"en": "Titles",
+			"si": "මාතෘකා",
+			"ta": "தலைப்புகள்"
+		}
+	},
+	{
+		"id": "lower-thirds",
+		"name": {
+			"en": "Lower thirds",
+			"si": "පහළ පටි",
+			"ta": "கீழ் பட்டைகள்"
+		}
+	},
+	{
+		"id": "social",
+		"name": {
+			"en": "Social",
+			"si": "සමාජ මාධ්‍ය",
+			"ta": "சமூக ஊடகம்"
+		}
+	},
+	{
+		"id": "captions",
+		"name": {
+			"en": "Captions",
+			"si": "උපසිරැසි",
+			"ta": "வசனங்கள்"
+		}
+	},
+	{
+		"id": "quotes",
+		"name": {
+			"en": "Quotes",
+			"si": "උපුටා දැක්වීම්",
+			"ta": "மேற்கோள்கள்"
+		}
+	}
+]

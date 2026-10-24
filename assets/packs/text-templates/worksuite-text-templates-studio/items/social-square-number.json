@@ -1,0 +1,129 @@
+{
+	"schema": 1,
+	"id": "social-square-number",
+	"kind": "template",
+	"name": {
+		"en": "Square stat",
+		"si": "හතරැස් සමාජ මාධ්‍ය පෝස්ටුව",
+		"ta": "சதுர சமூக ஊடகப் பதிவு"
+	},
+	"category": "social",
+	"tags": {
+		"en": [
+			"square",
+			"stat",
+			"social",
+			"post",
+			"reel",
+			"short",
+			"1:1",
+			"number counter",
+			"fade"
+		],
+		"si": [
+			"සමාජ මාධ්‍ය",
+			"පෝස්ටුව",
+			"හතරැස්",
+			"අංක ගණනය",
+			"ක්‍රමයෙන් පෙනීම"
+		],
+		"ta": [
+			"சமூக ஊடகம்",
+			"பதிவு",
+			"சதுரம்",
+			"எண் எண்ணிக்கை",
+			"மெல்லத் தோன்றல்",
+			"சதுர"
+		]
+	},
+	"duration": 4,
+	"aspect": "1:1",
+	"slots": [
+		{
+			"id": "number",
+			"name": "Number",
+			"text": {
+				"en": "10,000",
+				"si": "10,000",
+				"ta": "10,000"
+			},
+			"x": 0.5,
+			"y": 0.42,
+			"size": 0.198,
+			"style": {
+				"fontFamily": "Poppins",
+				"fontWeight": 800,
+				"fill": "#2DD4BF"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "block",
+				"in": {
+					"effect": "number-counter",
+					"duration": 1.6,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "label",
+			"name": "Label",
+			"text": {
+				"en": "Thank you, followers!",
+				"si": "අනුගාමිකයන්ට ස්තූතියි!",
+				"ta": "பின்தொடர்பவர்களுக்கு நன்றி!"
+			},
+			"x": 0.5,
+			"y": 0.64,
+			"size": 0.038,
+			"style": {
+				"fontFamily": "Poppins",
+				"fontWeight": 400,
+				"fill": "#99F6E4"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "fade",
+					"duration": 0.6,
+					"delay": 0.3,
+					"stagger": 0.05,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

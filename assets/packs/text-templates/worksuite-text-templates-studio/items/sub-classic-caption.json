@@ -1,0 +1,88 @@
+{
+	"schema": 1,
+	"id": "sub-classic-caption",
+	"kind": "template",
+	"name": {
+		"en": "Classic caption",
+		"si": "සම්භාව්‍ය උපසිරැසිය",
+		"ta": "கிளாசிக் துணைத் தலைப்பு"
+	},
+	"category": "subtitles",
+	"tags": {
+		"en": [
+			"classic",
+			"caption",
+			"subtitle",
+			"text",
+			"landscape",
+			"16:9",
+			"rise",
+			"fade"
+		],
+		"si": [
+			"උපසිරැසි",
+			"තිරස්",
+			"නැගීම",
+			"ක්‍රමයෙන් පෙනීම",
+			"සම්භාව්‍ය"
+		],
+		"ta": [
+			"வசனம்",
+			"கிடைமட்ட",
+			"எழுச்சி",
+			"மெல்லத் தோன்றல்",
+			"கிளாசிக்"
+		]
+	},
+	"duration": 4.5,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "caption",
+			"name": "Caption",
+			"text": {
+				"en": "Every journey starts with one step",
+				"si": "සෑම ගමනක්ම එක් පියවරකින් අරඹයි",
+				"ta": "ஒவ்வொரு பயணமும் ஒரு அடியில் தொடங்கும்"
+			},
+			"x": 0.5,
+			"y": 0.86,
+			"size": 0.051,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 800,
+				"fill": "#FFFFFF",
+				"stroke": {
+					"color": "#000000",
+					"width": 5
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "rise",
+					"duration": 0.3,
+					"delay": 0,
+					"stagger": 0.25,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

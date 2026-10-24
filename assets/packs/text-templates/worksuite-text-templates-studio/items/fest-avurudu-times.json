@@ -1,0 +1,149 @@
+{
+	"schema": 1,
+	"id": "fest-avurudu-times",
+	"kind": "template",
+	"name": {
+		"en": "Auspicious times card",
+		"si": "සම්භාව්‍ය සුබ පැතුම",
+		"ta": "கிளாசிக் வாழ்த்து"
+	},
+	"category": "festive",
+	"tags": {
+		"en": [
+			"auspicious",
+			"times",
+			"card",
+			"festival",
+			"greeting",
+			"sri lanka",
+			"landscape",
+			"16:9",
+			"mask wipe",
+			"fade",
+			"split reveal",
+			"classic",
+			"avurudu",
+			"new year",
+			"april"
+		],
+		"si": [
+			"උත්සවය",
+			"සුබ පැතුම්",
+			"තිරස්",
+			"පිසදැමීම",
+			"ක්‍රමයෙන් පෙනීම",
+			"බෙදී මතුවීම",
+			"සම්භාව්‍ය",
+			"අවුරුද්ද",
+			"අලුත් අවුරුද්ද"
+		],
+		"ta": [
+			"பண்டிகை",
+			"வாழ்த்து",
+			"கிடைமட்ட",
+			"துடைப்பு",
+			"மெல்லத் தோன்றல்",
+			"பிளந்து தோன்றல்",
+			"கிளாசிக்",
+			"புத்தாண்டு",
+			"சித்திரை"
+		]
+	},
+	"duration": 4.5,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "label",
+			"name": "Label",
+			"text": {
+				"en": "Auspicious times",
+				"si": "නැකැත් වේලාවන්",
+				"ta": "சுப நேரங்கள்"
+			},
+			"x": 0.5,
+			"y": 0.34,
+			"size": 0.052,
+			"style": {
+				"fontFamily": "Arima",
+				"fontWeight": 700,
+				"fill": "#FCD34D",
+				"tracking": 0.06
+			},
+			"animation": {
+				"version": 1,
+				"unit": "block",
+				"in": {
+					"effect": "mask-wipe",
+					"duration": 0.5,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "Sinhala & Tamil New Year",
+				"si": "සිංහල හා දෙමළ අලුත් අවුරුද්ද",
+				"ta": "சிங்கள தமிழ் புத்தாண்டு"
+			},
+			"x": 0.5,
+			"y": 0.5,
+			"size": 0.083,
+			"style": {
+				"fontFamily": "Abhaya Libre",
+				"fontWeight": 800,
+				"fill": "#FCD34D",
+				"shadow": {
+					"color": "#000000",
+					"blur": 12,
+					"x": 0,
+					"y": 3
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "split-reveal",
+					"duration": 0.8,
+					"delay": 0.25,
+					"stagger": 0.08,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out-expo",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "split-reveal",
+					"duration": 0.5,
+					"delay": 0,
+					"stagger": 0.05,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-expo",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

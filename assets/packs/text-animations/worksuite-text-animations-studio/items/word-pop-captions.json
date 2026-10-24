@@ -1,0 +1,61 @@
+{
+	"schema": 1,
+	"id": "word-pop-captions",
+	"kind": "animation",
+	"name": {
+		"en": "Word pop captions",
+		"si": "විනෝදජනක පොප්",
+		"ta": "விளையாட்டான பாப்"
+	},
+	"category": "karaoke-captions",
+	"tags": {
+		"en": [
+			"word",
+			"pop",
+			"captions",
+			"words",
+			"karaoke captions",
+			"playful"
+		],
+		"si": [
+			"පොප්",
+			"වචන",
+			"විනෝදජනක"
+		],
+		"ta": [
+			"பாப்",
+			"சொற்கள்",
+			"விளையாட்டான"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "word",
+		"in": {
+			"effect": "pop",
+			"duration": 0.25,
+			"delay": 0,
+			"stagger": 0.35,
+			"staggerOrder": "forward",
+			"direction": "in",
+			"easing": "ease-out-back",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"previewText": {
+		"en": "Every word lands on the beat",
+		"si": "හැම වචනයක්ම තාලයට එයි",
+		"ta": "ஒவ்வொரு சொல்லும் தாளத்தில் வரும்"
+	},
+	"style": {
+		"fontFamily": "Inter",
+		"fontWeight": 800,
+		"fill": "#FFFFFF",
+		"stroke": {
+			"color": "#000000",
+			"width": 3
+		}
+	},
+	"duration": 3.5
+}

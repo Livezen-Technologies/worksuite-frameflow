@@ -1,0 +1,32 @@
+{
+	"id": "worksuite-text-templates",
+	"type": "text-templates",
+	"version": "1.0.0",
+	"title": "Worksuite text templates",
+	"description": "Animated titles, lower thirds, captions and social cards made of editable text slots.",
+	"tags": {
+		"en": [
+			"text",
+			"templates",
+			"titles",
+			"lower thirds"
+		],
+		"si": [
+			"අකුරු",
+			"සැකිලි"
+		],
+		"ta": [
+			"உரை",
+			"வார்ப்புருக்கள்"
+		]
+	},
+	"languages": [
+		"en",
+		"si",
+		"ta"
+	],
+	"licence": "MIT",
+	"minAppVersion": "1.0.0",
+	"plan": "free",
+	"builtin": true
+}

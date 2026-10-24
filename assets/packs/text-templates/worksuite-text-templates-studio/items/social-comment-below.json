@@ -1,0 +1,146 @@
+{
+	"schema": 1,
+	"id": "social-comment-below",
+	"kind": "template",
+	"name": {
+		"en": "Comment below",
+		"si": "මිත්‍රශීලී සමාජ මාධ්‍ය පෝස්ටුව",
+		"ta": "நட்பான சமூக ஊடகப் பதிவு"
+	},
+	"category": "social",
+	"tags": {
+		"en": [
+			"comment",
+			"below",
+			"social",
+			"post",
+			"reel",
+			"short",
+			"vertical",
+			"9:16",
+			"story",
+			"drop",
+			"fade",
+			"rise",
+			"friendly"
+		],
+		"si": [
+			"සමාජ මාධ්‍ය",
+			"පෝස්ටුව",
+			"සිරස්",
+			"වැටීම",
+			"ක්‍රමයෙන් පෙනීම",
+			"නැගීම",
+			"මිත්‍රශීලී"
+		],
+		"ta": [
+			"சமூக ஊடகம்",
+			"பதிவு",
+			"செங்குத்து",
+			"விழுதல்",
+			"மெல்லத் தோன்றல்",
+			"எழுச்சி",
+			"நட்பான"
+		]
+	},
+	"duration": 4,
+	"aspect": "9:16",
+	"slots": [
+		{
+			"id": "hook",
+			"name": "Hook",
+			"text": {
+				"en": "Comment below",
+				"si": "පහතින් අදහස් දක්වන්න",
+				"ta": "கருத்து சொல்லுங்கள்"
+			},
+			"x": 0.5,
+			"y": 0.17,
+			"size": 0.03,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 900,
+				"fill": "#111111",
+				"plate": {
+					"color": "#FFD400",
+					"padding": 0.3,
+					"radius": 0.08
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "grapheme",
+				"in": {
+					"effect": "drop",
+					"duration": 0.8,
+					"delay": 0,
+					"stagger": 0.04,
+					"staggerOrder": "forward",
+					"direction": "down",
+					"easing": "ease-out-bounce",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "caption",
+			"name": "Caption",
+			"text": {
+				"en": "Tag a friend",
+				"si": "යාළුවෙක් ටැග් කරන්න",
+				"ta": "நண்பரை டேக் செய்க"
+			},
+			"x": 0.5,
+			"y": 0.8,
+			"size": 0.034,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 700,
+				"fill": "#FFFFFF",
+				"plate": {
+					"color": "#111111",
+					"padding": 0.3,
+					"radius": 0.08
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "rise",
+					"duration": 0.5,
+					"delay": 0.3,
+					"stagger": 0.05,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

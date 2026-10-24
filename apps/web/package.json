@@ -4,8 +4,8 @@
   "private": true,
   "packageManager": "bun@1.2.18",
   "scripts": {
-    "predev": "node scripts/copy-libheif.mjs && node scripts/copy-ort.mjs && node scripts/copy-worksuite-pack.mjs",
-    "prebuild": "node scripts/copy-libheif.mjs && node scripts/copy-ort.mjs && node scripts/copy-worksuite-pack.mjs",
+    "predev": "node scripts/copy-libheif.mjs && node scripts/copy-ort.mjs && node scripts/copy-worksuite-pack.mjs && node scripts/copy-text-packs.mjs",
+    "prebuild": "node scripts/copy-libheif.mjs && node scripts/copy-ort.mjs && node scripts/copy-worksuite-pack.mjs && node scripts/copy-text-packs.mjs",
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",

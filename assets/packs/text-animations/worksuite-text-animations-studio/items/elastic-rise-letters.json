@@ -1,0 +1,50 @@
+{
+	"schema": 1,
+	"id": "elastic-rise-letters",
+	"kind": "animation",
+	"name": {
+		"en": "Elastic rise letters",
+		"si": "ජවසම්පන්න ප්‍රත්‍යාස්ථ",
+		"ta": "துடிப்பான மீள்தன்மை"
+	},
+	"category": "elastic",
+	"tags": {
+		"en": [
+			"elastic",
+			"rise",
+			"letters",
+			"energetic"
+		],
+		"si": [
+			"ප්‍රත්‍යාස්ථ",
+			"අකුරු",
+			"ජවසම්පන්න"
+		],
+		"ta": [
+			"மீள்தன்மை",
+			"எழுத்துகள்",
+			"துடிப்பான"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "grapheme",
+		"in": {
+			"effect": "elastic",
+			"duration": 0.9,
+			"delay": 0,
+			"stagger": 0.04,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-out-elastic",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"style": {
+		"fontFamily": "Rubik",
+		"fontWeight": 800,
+		"fill": "#FFFFFF"
+	},
+	"duration": 3
+}

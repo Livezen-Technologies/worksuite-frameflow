@@ -1,0 +1,62 @@
+{
+	"schema": 1,
+	"id": "karaoke-letters",
+	"kind": "animation",
+	"name": {
+		"en": "Karaoke letters",
+		"si": "වේගවත් කැරෝකේ",
+		"ta": "வேகமான கரோக்கே"
+	},
+	"category": "karaoke-captions",
+	"tags": {
+		"en": [
+			"karaoke",
+			"letters",
+			"karaoke fill",
+			"karaoke captions",
+			"quick"
+		],
+		"si": [
+			"කැරෝකේ",
+			"අකුරු",
+			"වේගවත්"
+		],
+		"ta": [
+			"கரோக்கே",
+			"எழுத்துகள்",
+			"வேகமான"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "grapheme",
+		"in": {
+			"effect": "karaoke-fill",
+			"duration": 0.08,
+			"delay": 0,
+			"stagger": 0.08,
+			"staggerOrder": "forward",
+			"direction": "right",
+			"easing": "linear",
+			"intensity": 1,
+			"params": {
+				"color": "#A3E635"
+			}
+		}
+	},
+	"previewText": {
+		"en": "Follow along with me",
+		"si": "මා සමඟ එක්ව එන්න",
+		"ta": "என்னுடன் தொடருங்கள்"
+	},
+	"style": {
+		"fontFamily": "Inter",
+		"fontWeight": 800,
+		"fill": "#FFFFFF",
+		"stroke": {
+			"color": "#000000",
+			"width": 3
+		}
+	},
+	"duration": 3
+}

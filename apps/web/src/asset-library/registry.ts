@@ -79,6 +79,13 @@ export async function registerInstalledPack(pack: Pick<InstalledPack, "id" | "ty
 		for (const face of faces) document.fonts.add(face);
 		fonts.set(pack.id, faces);
 		content.set(pack.id, { type: "fonts", items: list.map((f) => ({ id: f.family, name: f.family, url: `${base}/${f.file}`, packId: pack.id, raw: f })) });
+	} else if (pack.type === "text-animations" || pack.type === "text-templates") {
+		// Text library items are inline in index.json; `url` is the pack base for files they reference.
+		const list = (index.items as Array<{ id: string; name?: { en?: string } }>) ?? [];
+		content.set(pack.id, {
+			type: pack.type,
+			items: list.map((item) => ({ id: `${pack.id}/${item.id}`, name: item.name?.en ?? item.id, url: base, packId: pack.id, raw: item })),
+		});
 	} else {
 		const list = (index.items as Array<{ id: string; name?: string; file: string }>) ?? [];
 		content.set(pack.id, {

@@ -1,0 +1,212 @@
+{
+	"schema": 1,
+	"id": "social-vertical-poster",
+	"kind": "template",
+	"name": {
+		"en": "Vertical poster words",
+		"si": "හඬ නඟන සමාජ මාධ්‍ය පෝස්ටුව",
+		"ta": "உரத்த சமூக ஊடகப் பதிவு"
+	},
+	"category": "social",
+	"tags": {
+		"en": [
+			"vertical",
+			"poster",
+			"words",
+			"social",
+			"post",
+			"reel",
+			"short",
+			"9:16",
+			"story",
+			"scale down",
+			"pulse",
+			"fade",
+			"loud"
+		],
+		"si": [
+			"සමාජ මාධ්‍ය",
+			"පෝස්ටුව",
+			"සිරස්",
+			"කුඩා වීම",
+			"ස්පන්දනය",
+			"ක්‍රමයෙන් පෙනීම",
+			"හඬ නඟන"
+		],
+		"ta": [
+			"சமூக ஊடகம்",
+			"பதிவு",
+			"செங்குத்து",
+			"சிறிதாதல்",
+			"துடிப்பு",
+			"மெல்லத் தோன்றல்",
+			"உரத்த"
+		]
+	},
+	"duration": 4,
+	"aspect": "9:16",
+	"slots": [
+		{
+			"id": "word1",
+			"name": "Word 1",
+			"text": {
+				"en": "DREAM",
+				"si": "සිහින",
+				"ta": "கனவு"
+			},
+			"x": 0.5,
+			"y": 0.38,
+			"size": 0.081,
+			"style": {
+				"fontFamily": "Anton",
+				"fontWeight": 400,
+				"fill": "#FFFFFF"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "scale-down",
+					"duration": 0.35,
+					"delay": 0,
+					"stagger": 0.3,
+					"staggerOrder": "forward",
+					"direction": "out",
+					"easing": "ease-out-expo",
+					"intensity": 1,
+					"params": {}
+				},
+				"emphasis": {
+					"effect": "pulse",
+					"duration": 0.6,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "linear",
+					"intensity": 0.4,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "word2",
+			"name": "Word 2",
+			"text": {
+				"en": "BUILD",
+				"si": "ගොඩනඟන්න",
+				"ta": "கட்டு"
+			},
+			"x": 0.5,
+			"y": 0.47,
+			"size": 0.076,
+			"style": {
+				"fontFamily": "Anton",
+				"fontWeight": 400,
+				"fill": "#FF3B3B"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "scale-down",
+					"duration": 0.35,
+					"delay": 0.35,
+					"stagger": 0.3,
+					"staggerOrder": "forward",
+					"direction": "out",
+					"easing": "ease-out-expo",
+					"intensity": 1,
+					"params": {}
+				},
+				"emphasis": {
+					"effect": "pulse",
+					"duration": 0.6,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "linear",
+					"intensity": 0.4,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "word3",
+			"name": "Word 3",
+			"text": {
+				"en": "REPEAT",
+				"si": "නැවත",
+				"ta": "மீண்டும்"
+			},
+			"x": 0.5,
+			"y": 0.56,
+			"size": 0.076,
+			"style": {
+				"fontFamily": "Anton",
+				"fontWeight": 400,
+				"fill": "#FFFFFF"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "scale-down",
+					"duration": 0.35,
+					"delay": 0.7,
+					"stagger": 0.3,
+					"staggerOrder": "forward",
+					"direction": "out",
+					"easing": "ease-out-expo",
+					"intensity": 1,
+					"params": {}
+				},
+				"emphasis": {
+					"effect": "pulse",
+					"duration": 0.6,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "linear",
+					"intensity": 0.4,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

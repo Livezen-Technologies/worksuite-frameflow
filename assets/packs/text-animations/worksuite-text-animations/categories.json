@@ -1,0 +1,58 @@
+[
+	{
+		"id": "basic",
+		"name": {
+			"en": "Basic",
+			"si": "මූලික",
+			"ta": "அடிப்படை"
+		}
+	},
+	{
+		"id": "titles",
+		"name": {
+			"en": "Titles",
+			"si": "මාතෘකා",
+			"ta": "தலைப்புகள்"
+		}
+	},
+	{
+		"id": "kinetic",
+		"name": {
+			"en": "Kinetic",
+			"si": "චලන",
+			"ta": "இயக்கம்"
+		}
+	},
+	{
+		"id": "reveal",
+		"name": {
+			"en": "Reveal",
+			"si": "මතුවීම",
+			"ta": "வெளிப்பாடு"
+		}
+	},
+	{
+		"id": "glitch",
+		"name": {
+			"en": "Glitch & tech",
+			"si": "ග්ලිච්",
+			"ta": "கிளிட்ச்"
+		}
+	},
+	{
+		"id": "loops",
+		"name": {
+			"en": "Loops",
+			"si": "ලූප",
+			"ta": "சுழற்சி"
+		}
+	},
+	{
+		"id": "captions",
+		"name": {
+			"en": "Captions",
+			"si": "උපසිරැසි",
+			"ta": "வசனங்கள்"
+		}
+	}
+]

@@ -1,0 +1,52 @@
+{
+	"schema": 1,
+	"id": "reverse-slide-words",
+	"kind": "animation",
+	"name": {
+		"en": "Reverse slide words",
+		"si": "ආපසු ලිස්සීම",
+		"ta": "தலைகீழ் சறுக்கல்"
+	},
+	"category": "slides",
+	"tags": {
+		"en": [
+			"reverse",
+			"slide",
+			"words",
+			"slides"
+		],
+		"si": [
+			"ලිස්සීම",
+			"වචන",
+			"ආපසු"
+		],
+		"ta": [
+			"சறுக்கல்",
+			"சொற்கள்",
+			"தலைகீழ்"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "word",
+		"in": {
+			"effect": "slide",
+			"duration": 0.6,
+			"delay": 0,
+			"stagger": 0.08,
+			"staggerOrder": "reverse",
+			"direction": "left",
+			"easing": "ease-out-cubic",
+			"intensity": 1,
+			"params": {
+				"distance": 1.6
+			}
+		}
+	},
+	"style": {
+		"fontFamily": "Space Grotesk",
+		"fontWeight": 700,
+		"fill": "#FFFFFF"
+	},
+	"duration": 3
+}

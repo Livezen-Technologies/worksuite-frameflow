@@ -1,0 +1,87 @@
+{
+	"schema": 1,
+	"id": "subscribe-cta",
+	"kind": "template",
+	"name": {
+		"en": "Subscribe call",
+		"si": "දායක වන්න",
+		"ta": "சந்தா அழைப்பு"
+	},
+	"category": "social",
+	"tags": {
+		"en": [
+			"subscribe",
+			"cta",
+			"youtube"
+		],
+		"si": [
+			"දායක වන්න"
+		],
+		"ta": [
+			"சந்தா அழைப்பு"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "cta",
+			"name": "Call to action",
+			"text": {
+				"en": "SUBSCRIBE",
+				"si": "දායක වන්න",
+				"ta": "சந்தா செய்யுங்கள்"
+			},
+			"x": 0.5,
+			"y": 0.5,
+			"size": 0.1,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 800,
+				"fill": "#FFFFFF",
+				"plate": {
+					"color": "#DC2626",
+					"padding": 0.35,
+					"radius": 0.25
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "block",
+				"in": {
+					"effect": "pop",
+					"duration": 0.5,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out-back",
+					"intensity": 1,
+					"params": {}
+				},
+				"emphasis": {
+					"effect": "pulse",
+					"duration": 1,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-out",
+					"intensity": 0.8,
+					"params": {}
+				},
+				"out": {
+					"effect": "scale-down",
+					"duration": 0.3,
+					"delay": 0,
+					"stagger": 0.05,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

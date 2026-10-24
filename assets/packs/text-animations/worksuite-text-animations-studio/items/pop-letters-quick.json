@@ -1,0 +1,51 @@
+{
+	"schema": 1,
+	"id": "pop-letters-quick",
+	"kind": "animation",
+	"name": {
+		"en": "Quick letter pop",
+		"si": "වේගවත් පොප්",
+		"ta": "வேகமான பாப்"
+	},
+	"category": "pop-bounce",
+	"tags": {
+		"en": [
+			"quick",
+			"letter",
+			"pop",
+			"letters",
+			"pop bounce"
+		],
+		"si": [
+			"පොප්",
+			"අකුරු",
+			"වේගවත්"
+		],
+		"ta": [
+			"பாப்",
+			"எழுத்துகள்",
+			"வேகமான"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "grapheme",
+		"in": {
+			"effect": "pop",
+			"duration": 0.3,
+			"delay": 0,
+			"stagger": 0.025,
+			"staggerOrder": "forward",
+			"direction": "in",
+			"easing": "ease-out-back",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"style": {
+		"fontFamily": "Inter",
+		"fontWeight": 800,
+		"fill": "#FFFFFF"
+	},
+	"duration": 3
+}

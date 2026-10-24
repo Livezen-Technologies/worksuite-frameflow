@@ -1,0 +1,35 @@
+{
+	"id": "worksuite-text-animations-studio",
+	"type": "text-animations",
+	"version": "1.0.0",
+	"title": "Worksuite text animations: Studio",
+	"description": "250 text animations in 14 styles — reveals, slides, pop, elastic, typewriter, kinetic, glitch, blur, wipes, 3D flips, loops, exits, karaoke captions and counters. Works with Sinhala and Tamil.",
+	"tags": {
+		"en": [
+			"text",
+			"animation",
+			"titles",
+			"captions",
+			"kinetic"
+		],
+		"si": [
+			"අකුරු",
+			"සජීවිකරණ",
+			"උපසිරැසි"
+		],
+		"ta": [
+			"உரை",
+			"அசைவூட்டம்",
+			"வசனங்கள்"
+		]
+	},
+	"languages": [
+		"en",
+		"si",
+		"ta"
+	],
+	"licence": "MIT",
+	"minAppVersion": "1.0.0",
+	"plan": "free",
+	"builtin": true
+}

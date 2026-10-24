@@ -1,0 +1,201 @@
+{
+	"schema": 1,
+	"id": "fest-deepavali-sweets",
+	"kind": "template",
+	"name": {
+		"en": "Sweets and smiles",
+		"si": "විනෝදජනක සුබ පැතුම",
+		"ta": "விளையாட்டான வாழ்த்து"
+	},
+	"category": "festive",
+	"tags": {
+		"en": [
+			"sweets",
+			"and",
+			"smiles",
+			"festival",
+			"greeting",
+			"sri lanka",
+			"landscape",
+			"16:9",
+			"tracking expand",
+			"fade",
+			"rise",
+			"playful",
+			"deepavali",
+			"diwali",
+			"lights"
+		],
+		"si": [
+			"උත්සවය",
+			"සුබ පැතුම්",
+			"තිරස්",
+			"පරතරය",
+			"ක්‍රමයෙන් පෙනීම",
+			"නැගීම",
+			"විනෝදජනක",
+			"දීපාවලී",
+			"පහන්"
+		],
+		"ta": [
+			"பண்டிகை",
+			"வாழ்த்து",
+			"கிடைமட்ட",
+			"இடைவெளி",
+			"மெல்லத் தோன்றல்",
+			"எழுச்சி",
+			"விளையாட்டான",
+			"தீபாவளி",
+			"தீபம்"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"background": {
+		"packAsset": "rx-sparkles"
+	},
+	"slots": [
+		{
+			"id": "label",
+			"name": "Label",
+			"text": {
+				"en": "With best wishes",
+				"si": "සුබ පැතුම් සමඟ",
+				"ta": "நல்வாழ்த்துகளுடன்"
+			},
+			"x": 0.5,
+			"y": 0.31,
+			"size": 0.046,
+			"style": {
+				"fontFamily": "Noto Sans Tamil",
+				"fontWeight": 700,
+				"fill": "#FFFFFF",
+				"plate": {
+					"color": "#9D174D",
+					"padding": 0.35,
+					"radius": 0.3
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "grapheme",
+				"in": {
+					"effect": "tracking-expand",
+					"duration": 1,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "out",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "Happy Deepavali",
+				"si": "සුබ දීපාවලියක්",
+				"ta": "இனிய தீபாவளி"
+			},
+			"x": 0.5,
+			"y": 0.47,
+			"size": 0.119,
+			"style": {
+				"fontFamily": "Noto Serif Tamil",
+				"fontWeight": 700,
+				"fill": "#FDE68A",
+				"gradient": [
+					"#FDE68A",
+					"#F59E0B"
+				],
+				"glow": {
+					"color": "#F59E0B",
+					"size": 0.3
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "rise",
+					"duration": 0.7,
+					"delay": 0.3,
+					"stagger": 0.08,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "subtitle",
+			"name": "Subtitle",
+			"text": {
+				"en": "Sweets and smiles",
+				"si": "රසකැවිලි සහ සිනහ",
+				"ta": "இனிப்பும் புன்னகையும்"
+			},
+			"x": 0.5,
+			"y": 0.63,
+			"size": 0.05,
+			"style": {
+				"fontFamily": "Noto Sans Tamil",
+				"fontWeight": 400,
+				"fill": "#FBCFE8"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "fade",
+					"duration": 0.6,
+					"delay": 0.6,
+					"stagger": 0.04,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

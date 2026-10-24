@@ -1,0 +1,122 @@
+[
+	{
+		"id": "titles",
+		"name": {
+			"en": "Titles",
+			"si": "මාතෘකා",
+			"ta": "தலைப்புகள்"
+		}
+	},
+	{
+		"id": "subtitles",
+		"name": {
+			"en": "Subtitles",
+			"si": "උපසිරැසි",
+			"ta": "துணைத் தலைப்புகள்"
+		}
+	},
+	{
+		"id": "lower-thirds",
+		"name": {
+			"en": "Lower thirds",
+			"si": "පහළ පටි",
+			"ta": "கீழ் பட்டைகள்"
+		}
+	},
+	{
+		"id": "kinetic-posters",
+		"name": {
+			"en": "Kinetic posters",
+			"si": "චලන පෝස්ටර්",
+			"ta": "இயக்க சுவரொட்டிகள்"
+		}
+	},
+	{
+		"id": "quotes",
+		"name": {
+			"en": "Quotes",
+			"si": "උපුටා දැක්වීම්",
+			"ta": "மேற்கோள்கள்"
+		}
+	},
+	{
+		"id": "social",
+		"name": {
+			"en": "Social",
+			"si": "සමාජ මාධ්‍ය",
+			"ta": "சமூக ஊடகம்"
+		}
+	},
+	{
+		"id": "sales-promo",
+		"name": {
+			"en": "Sales & promo",
+			"si": "විකුණුම් සහ ප්‍රවර්ධන",
+			"ta": "விற்பனை & விளம்பரம்"
+		}
+	},
+	{
+		"id": "event",
+		"name": {
+			"en": "Event",
+			"si": "උත්සව සහ සිදුවීම්",
+			"ta": "நிகழ்வுகள்"
+		}
+	},
+	{
+		"id": "podcast",
+		"name": {
+			"en": "Podcast",
+			"si": "පොඩ්කාස්ට්",
+			"ta": "பாட்காஸ்ட்"
+		}
+	},
+	{
+		"id": "tutorial-steps",
+		"name": {
+			"en": "Tutorial & steps",
+			"si": "පාඩම් සහ පියවර",
+			"ta": "பயிற்சி & படிகள்"
+		}
+	},
+	{
+		"id": "end-screens",
+		"name": {
+			"en": "End screens",
+			"si": "අවසන් තිර",
+			"ta": "இறுதித் திரைகள்"
+		}
+	},
+	{
+		"id": "festive",
+		"name": {
+			"en": "Sinhala & Tamil festive",
+			"si": "සිංහල හා දෙමළ උත්සව",
+			"ta": "சிங்கள தமிழ் பண்டிகைகள்"
+		}
+	},
+	{
+		"id": "minimal",
+		"name": {
+			"en": "Minimal",
+			"si": "සරල",
+			"ta": "எளிமை"
+		}
+	},
+	{
+		"id": "neon-retro",
+		"name": {
+			"en": "Neon & retro",
+			"si": "නියොන් සහ රෙට්‍රෝ",
+			"ta": "நியான் & ரெட்ரோ"
+		}
+	},
+	{
+		"id": "corporate",
+		"name": {
+			"en": "Corporate",
+			"si": "ව්‍යාපාරික",
+			"ta": "நிறுவனம்"
+		}
+	}
+]

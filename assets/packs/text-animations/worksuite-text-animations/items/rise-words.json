@@ -1,0 +1,51 @@
+{
+	"schema": 1,
+	"id": "rise-words",
+	"kind": "animation",
+	"name": {
+		"en": "Rise words",
+		"si": "කෙලින් නැගීම",
+		"ta": "எழும் சொற்கள்"
+	},
+	"category": "basic",
+	"tags": {
+		"en": [
+			"rise",
+			"words",
+			"simple"
+		],
+		"si": [
+			"නැගීම"
+		],
+		"ta": [
+			"எழுச்சி"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "word",
+		"in": {
+			"effect": "rise",
+			"duration": 0.6,
+			"delay": 0,
+			"stagger": 0.08,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-out-cubic",
+			"intensity": 1,
+			"params": {}
+		},
+		"out": {
+			"effect": "fade",
+			"duration": 0.4,
+			"delay": 0,
+			"stagger": 0.03,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-in",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"duration": 3
+}

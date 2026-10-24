@@ -1,0 +1,58 @@
+{
+	"schema": 1,
+	"id": "neon-sign",
+	"kind": "animation",
+	"name": {
+		"en": "Neon sign",
+		"si": "නියොන්",
+		"ta": "நியான்"
+	},
+	"category": "titles",
+	"tags": {
+		"en": [
+			"neon",
+			"glow",
+			"flicker",
+			"night"
+		],
+		"si": [
+			"නියොන්",
+			"දීප්තිය"
+		],
+		"ta": [
+			"நியான்",
+			"ஒளி"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "grapheme",
+		"in": {
+			"effect": "neon-flicker",
+			"duration": 0.9,
+			"delay": 0,
+			"stagger": 0.06,
+			"staggerOrder": "random(3)",
+			"direction": "up",
+			"easing": "linear",
+			"intensity": 1,
+			"params": {
+				"color": "#2EC4FF"
+			}
+		},
+		"emphasis": {
+			"effect": "neon-flicker",
+			"duration": 2,
+			"delay": 0,
+			"stagger": 0,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "linear",
+			"intensity": 0.8,
+			"params": {
+				"color": "#2EC4FF"
+			}
+		}
+	},
+	"duration": 3
+}

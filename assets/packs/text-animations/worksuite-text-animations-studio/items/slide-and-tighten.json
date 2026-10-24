@@ -1,0 +1,68 @@
+{
+	"schema": 1,
+	"id": "slide-and-tighten",
+	"kind": "animation",
+	"name": {
+		"en": "Slide and tighten",
+		"si": "ළං ලිස්සීම",
+		"ta": "நெருக்கமான சறுக்கல்"
+	},
+	"category": "slides",
+	"tags": {
+		"en": [
+			"slide",
+			"and",
+			"tighten",
+			"letters",
+			"slides",
+			"tight"
+		],
+		"si": [
+			"ලිස්සීම",
+			"අකුරු",
+			"ළං"
+		],
+		"ta": [
+			"சறுக்கல்",
+			"எழுத்துகள்",
+			"நெருக்கமான"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "grapheme",
+		"in": {
+			"effect": "slide",
+			"duration": 0.6,
+			"delay": 0,
+			"stagger": 0.02,
+			"staggerOrder": "forward",
+			"direction": "left",
+			"easing": "ease-out-quart",
+			"intensity": 1,
+			"params": {}
+		},
+		"keyframes": {
+			"tracks": {
+				"tracking": [
+					{
+						"t": 0,
+						"v": 0.25,
+						"easing": "ease-out-cubic"
+					},
+					{
+						"t": 1.2,
+						"v": 0
+					}
+				]
+			}
+		}
+	},
+	"style": {
+		"fontFamily": "Bebas Neue",
+		"fontWeight": 400,
+		"fill": "#FFFFFF",
+		"tracking": 0.04
+	},
+	"duration": 3
+}

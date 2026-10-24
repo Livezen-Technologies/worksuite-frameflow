@@ -1,0 +1,131 @@
+{
+	"schema": 1,
+	"id": "corp-mission",
+	"kind": "template",
+	"name": {
+		"en": "Mission statement",
+		"si": "පිරිසිදු ව්‍යාපාරික මාතෘකාව",
+		"ta": "சுத்தமான நிறுவனத் தலைப்பு"
+	},
+	"category": "corporate",
+	"tags": {
+		"en": [
+			"mission",
+			"statement",
+			"corporate",
+			"business",
+			"presentation",
+			"landscape",
+			"16:9",
+			"split reveal",
+			"fade",
+			"clean"
+		],
+		"si": [
+			"ව්‍යාපාරික",
+			"ඉදිරිපත් කිරීම",
+			"තිරස්",
+			"බෙදී මතුවීම",
+			"ක්‍රමයෙන් පෙනීම",
+			"පිරිසිදු"
+		],
+		"ta": [
+			"நிறுவனம்",
+			"விளக்கக்காட்சி",
+			"கிடைமட்ட",
+			"பிளந்து தோன்றல்",
+			"மெல்லத் தோன்றல்",
+			"சுத்தமான"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "Our mission",
+				"si": "අපේ මෙහෙවර",
+				"ta": "எங்கள் நோக்கம்"
+			},
+			"x": 0.5,
+			"y": 0.44,
+			"size": 0.119,
+			"style": {
+				"fontFamily": "Raleway",
+				"fontWeight": 800,
+				"fill": "#F8FAFC"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "split-reveal",
+					"duration": 0.8,
+					"delay": 0,
+					"stagger": 0.08,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out-expo",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "split-reveal",
+					"duration": 0.5,
+					"delay": 0,
+					"stagger": 0.05,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-expo",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "subtitle",
+			"name": "Subtitle",
+			"text": {
+				"en": "Built for what's next",
+				"si": "අනාගතය සඳහා නිර්මිත",
+				"ta": "எதிர்காலத்திற்காக உருவாக்கப்பட்டது"
+			},
+			"x": 0.5,
+			"y": 0.6,
+			"size": 0.053,
+			"style": {
+				"fontFamily": "Raleway",
+				"fontWeight": 500,
+				"fill": "#CBD5E1"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "line",
+				"in": {
+					"effect": "split-reveal",
+					"duration": 0.7,
+					"delay": 0.25,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out-expo",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

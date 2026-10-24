@@ -1,0 +1,65 @@
+{
+	"schema": 1,
+	"id": "fade-out-words",
+	"kind": "animation",
+	"name": {
+		"en": "Fade out words",
+		"si": "මෘදු ක්‍රමයෙන් පෙනීම",
+		"ta": "மென்மையான மெல்லத் தோன்றல்"
+	},
+	"category": "exits",
+	"tags": {
+		"en": [
+			"fade",
+			"out",
+			"words",
+			"exits",
+			"soft",
+			"exit"
+		],
+		"si": [
+			"ක්‍රමයෙන් පෙනීම",
+			"වචන",
+			"මෘදු",
+			"ඉවත් වීම"
+		],
+		"ta": [
+			"மெல்லத் தோன்றல்",
+			"சொற்கள்",
+			"மென்மையான",
+			"வெளியேறல்"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "word",
+		"in": {
+			"effect": "fade",
+			"duration": 0.3,
+			"delay": 0,
+			"stagger": 0.02,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-out",
+			"intensity": 1,
+			"params": {}
+		},
+		"out": {
+			"effect": "fade",
+			"duration": 0.6,
+			"delay": 0,
+			"stagger": 0.08,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-in",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"style": {
+		"fontFamily": "Inter",
+		"fontWeight": 600,
+		"fill": "#F1F5F9"
+	},
+	"duration": 3
+}

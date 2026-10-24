@@ -1,0 +1,138 @@
+{
+	"schema": 1,
+	"id": "quote-sinhala-saying",
+	"kind": "template",
+	"name": {
+		"en": "Sinhala saying",
+		"si": "සම්භාව්‍ය උපුටනය",
+		"ta": "கிளாசிக் மேற்கோள்"
+	},
+	"category": "quotes",
+	"tags": {
+		"en": [
+			"sinhala",
+			"saying",
+			"quote",
+			"motivation",
+			"landscape",
+			"16:9",
+			"blur in",
+			"fade",
+			"classic"
+		],
+		"si": [
+			"උපුටනය",
+			"අභිප්‍රේරණය",
+			"තිරස්",
+			"බොඳ",
+			"ක්‍රමයෙන් පෙනීම",
+			"සම්භාව්‍ය"
+		],
+		"ta": [
+			"மேற்கோள்",
+			"ஊக்கம்",
+			"கிடைமட்ட",
+			"மங்கல்",
+			"மெல்லத் தோன்றல்",
+			"கிளாசிக்"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "quote",
+			"name": "Quote",
+			"text": {
+				"en": "Hard work pays off.",
+				"si": "මහන්සියේ ඵල ලැබේ.",
+				"ta": "உழைப்பு வீண்போகாது."
+			},
+			"x": 0.5,
+			"y": 0.45,
+			"size": 0.07,
+			"style": {
+				"fontFamily": "Noto Sans Sinhala",
+				"fontWeight": 700,
+				"fill": "#FFFFFF",
+				"stroke": {
+					"color": "#000000",
+					"width": 5
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "blur-in",
+					"duration": 0.9,
+					"delay": 0,
+					"stagger": 0.1,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "blur-in",
+					"duration": 0.5,
+					"delay": 0,
+					"stagger": 0.04,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "ease-in",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "author",
+			"name": "Author",
+			"text": {
+				"en": "— Sri Lankan saying",
+				"si": "— ශ්‍රී ලාංකේය කියමනක්",
+				"ta": "— இலங்கைப் பழமொழி"
+			},
+			"x": 0.5,
+			"y": 0.68,
+			"size": 0.044,
+			"style": {
+				"fontFamily": "Noto Sans Sinhala",
+				"fontWeight": 400,
+				"fill": "#FFE14D",
+				"stroke": {
+					"color": "#000000",
+					"width": 4
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "blur-in",
+					"duration": 0.8,
+					"delay": 0.35,
+					"stagger": 0.05,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

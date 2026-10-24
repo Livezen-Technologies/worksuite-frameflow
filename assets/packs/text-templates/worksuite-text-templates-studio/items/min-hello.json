@@ -1,0 +1,84 @@
+{
+	"schema": 1,
+	"id": "min-hello",
+	"kind": "template",
+	"name": {
+		"en": "Hello",
+		"si": "මිත්‍රශීලී සරල මාතෘකාව",
+		"ta": "நட்பான எளிய தலைப்பு"
+	},
+	"category": "minimal",
+	"tags": {
+		"en": [
+			"hello",
+			"minimal",
+			"clean",
+			"simple",
+			"landscape",
+			"16:9",
+			"blur in",
+			"friendly"
+		],
+		"si": [
+			"සරල",
+			"පිරිසිදු",
+			"තිරස්",
+			"බොඳ",
+			"මිත්‍රශීලී"
+		],
+		"ta": [
+			"எளிமை",
+			"சுத்தம்",
+			"கிடைமட்ட",
+			"மங்கல்",
+			"நட்பான"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "Hello",
+				"si": "ආයුබෝවන්",
+				"ta": "வணக்கம்"
+			},
+			"x": 0.5,
+			"y": 0.5,
+			"size": 0.13,
+			"style": {
+				"fontFamily": "DM Serif Display",
+				"fontWeight": 400,
+				"fill": "#F8FAFC"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "blur-in",
+					"duration": 0.9,
+					"delay": 0,
+					"stagger": 0.1,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "blur-in",
+					"duration": 0.5,
+					"delay": 0,
+					"stagger": 0.04,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "ease-in",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

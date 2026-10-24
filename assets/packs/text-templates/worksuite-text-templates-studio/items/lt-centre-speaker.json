@@ -1,0 +1,137 @@
+{
+	"schema": 1,
+	"id": "lt-centre-speaker",
+	"kind": "template",
+	"name": {
+		"en": "Centre speaker",
+		"si": "සන්සුන් පහළ පටිය",
+		"ta": "அமைதியான கீழ் பட்டை"
+	},
+	"category": "lower-thirds",
+	"tags": {
+		"en": [
+			"centre",
+			"speaker",
+			"lower third",
+			"name",
+			"interview",
+			"landscape",
+			"16:9",
+			"rise",
+			"fade",
+			"calm"
+		],
+		"si": [
+			"නම",
+			"සම්මුඛ සාකච්ඡාව",
+			"තිරස්",
+			"නැගීම",
+			"ක්‍රමයෙන් පෙනීම",
+			"සන්සුන්"
+		],
+		"ta": [
+			"பெயர்",
+			"நேர்காணல்",
+			"கிடைமட்ட",
+			"எழுச்சி",
+			"மெல்லத் தோன்றல்",
+			"அமைதியான"
+		]
+	},
+	"duration": 5,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "name",
+			"name": "Name",
+			"text": {
+				"en": "Nimal Perera",
+				"si": "නිමල් පෙරේරා",
+				"ta": "நிமல் பெரேரா"
+			},
+			"x": 0.5,
+			"y": 0.8,
+			"size": 0.054,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 800,
+				"fill": "#FFFFFF",
+				"shadow": {
+					"color": "#000000",
+					"blur": 18,
+					"x": 0,
+					"y": 4
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "rise",
+					"duration": 0.7,
+					"delay": 0,
+					"stagger": 0.08,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "role",
+			"name": "Role",
+			"text": {
+				"en": "NOW SPEAKING",
+				"si": "දැන් කතා කරන්නේ",
+				"ta": "இப்போது பேசுபவர்"
+			},
+			"x": 0.5,
+			"y": 0.88,
+			"size": 0.04,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 500,
+				"fill": "#CBD5E1"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "fade",
+					"duration": 0.6,
+					"delay": 0.3,
+					"stagger": 0.04,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

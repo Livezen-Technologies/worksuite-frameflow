@@ -1,0 +1,83 @@
+{
+	"schema": 1,
+	"id": "sub-meanwhile",
+	"kind": "template",
+	"name": {
+		"en": "Meanwhile card",
+		"si": "විනෝදජනක උපසිරැසිය",
+		"ta": "விளையாட்டான துணைத் தலைப்பு"
+	},
+	"category": "subtitles",
+	"tags": {
+		"en": [
+			"meanwhile",
+			"card",
+			"subtitle",
+			"caption",
+			"text",
+			"landscape",
+			"16:9",
+			"pop",
+			"playful"
+		],
+		"si": [
+			"උපසිරැසි",
+			"තිරස්",
+			"පොප්",
+			"විනෝදජනක"
+		],
+		"ta": [
+			"வசனம்",
+			"கிடைமட்ட",
+			"பாப்",
+			"விளையாட்டான"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "Meanwhile in Colombo",
+				"si": "මේ අතර කොළඹ",
+				"ta": "இதற்கிடையில் கொழும்பில்"
+			},
+			"x": 0.5,
+			"y": 0.5,
+			"size": 0.082,
+			"style": {
+				"fontFamily": "Archivo Black",
+				"fontWeight": 400,
+				"fill": "#FFFFFF"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "pop",
+					"duration": 0.45,
+					"delay": 0,
+					"stagger": 0.08,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "ease-out-back",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "pop",
+					"duration": 0.3,
+					"delay": 0,
+					"stagger": 0.04,
+					"staggerOrder": "reverse",
+					"direction": "in",
+					"easing": "ease-in-back",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

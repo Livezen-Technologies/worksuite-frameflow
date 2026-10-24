@@ -1,0 +1,138 @@
+{
+	"schema": 1,
+	"id": "sub-speaker-caption",
+	"kind": "template",
+	"name": {
+		"en": "Speaker caption",
+		"si": "පැහැදිලි උපසිරැසිය",
+		"ta": "தெளிவான துணைத் தலைப்பு"
+	},
+	"category": "subtitles",
+	"tags": {
+		"en": [
+			"speaker",
+			"caption",
+			"subtitle",
+			"text",
+			"landscape",
+			"16:9",
+			"fade",
+			"pop",
+			"crisp"
+		],
+		"si": [
+			"උපසිරැසි",
+			"තිරස්",
+			"ක්‍රමයෙන් පෙනීම",
+			"පොප්",
+			"පැහැදිලි"
+		],
+		"ta": [
+			"வசனம்",
+			"கிடைமட்ட",
+			"மெல்லத் தோன்றல்",
+			"பாப்",
+			"தெளிவான"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "label",
+			"name": "Speaker",
+			"text": {
+				"en": "Host",
+				"si": "සත්කාරක",
+				"ta": "தொகுப்பாளர்"
+			},
+			"x": 0.5,
+			"y": 0.74,
+			"size": 0.039,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 800,
+				"fill": "#000000",
+				"plate": {
+					"color": "#FFD400",
+					"padding": 0.25,
+					"radius": 0.15
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "block",
+				"in": {
+					"effect": "fade",
+					"duration": 0.3,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "caption",
+			"name": "Caption",
+			"text": {
+				"en": "Let's get started",
+				"si": "අපි පටන් ගමු",
+				"ta": "தொடங்கலாம்"
+			},
+			"x": 0.5,
+			"y": 0.85,
+			"size": 0.054,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 700,
+				"fill": "#FFFFFF",
+				"plate": {
+					"color": "#000000",
+					"padding": 0.25,
+					"radius": 0.15
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "pop",
+					"duration": 0.25,
+					"delay": 0.2,
+					"stagger": 0.3,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "ease-out-back",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

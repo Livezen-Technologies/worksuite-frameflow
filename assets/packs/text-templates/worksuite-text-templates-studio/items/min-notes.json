@@ -1,0 +1,134 @@
+{
+	"schema": 1,
+	"id": "min-notes",
+	"kind": "template",
+	"name": {
+		"en": "Notes",
+		"si": "සරල සරල මාතෘකාව",
+		"ta": "எளிய எளிய தலைப்பு"
+	},
+	"category": "minimal",
+	"tags": {
+		"en": [
+			"notes",
+			"minimal",
+			"clean",
+			"simple",
+			"landscape",
+			"16:9",
+			"box reveal",
+			"fade",
+			"mask wipe"
+		],
+		"si": [
+			"සරල",
+			"පිරිසිදු",
+			"තිරස්",
+			"කොටුව",
+			"ක්‍රමයෙන් පෙනීම",
+			"පිසදැමීම"
+		],
+		"ta": [
+			"எளிமை",
+			"சுத்தம்",
+			"கிடைமட்ட",
+			"பெட்டி",
+			"மெல்லத் தோன்றல்",
+			"துடைப்பு",
+			"எளிய"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "label",
+			"name": "Label",
+			"text": {
+				"en": "Vol. 01",
+				"si": "1 වෙළුම",
+				"ta": "தொகுதி 01"
+			},
+			"x": 0.5,
+			"y": 0.34,
+			"size": 0.052,
+			"style": {
+				"fontFamily": "Space Mono",
+				"fontWeight": 400,
+				"fill": "#F1F5F9",
+				"tracking": 0.06
+			},
+			"animation": {
+				"version": 1,
+				"unit": "block",
+				"in": {
+					"effect": "box-reveal",
+					"duration": 0.8,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-in-out-cubic",
+					"intensity": 1,
+					"params": {
+						"color": "#64748B"
+					}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "Notes",
+				"si": "සටහන්",
+				"ta": "குறிப்புகள்"
+			},
+			"x": 0.5,
+			"y": 0.5,
+			"size": 0.119,
+			"style": {
+				"fontFamily": "Space Mono",
+				"fontWeight": 400,
+				"fill": "#F1F5F9"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "line",
+				"in": {
+					"effect": "mask-wipe",
+					"duration": 0.7,
+					"delay": 0.25,
+					"stagger": 0.12,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-in-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "mask-wipe",
+					"duration": 0.5,
+					"delay": 0,
+					"stagger": 0.08,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

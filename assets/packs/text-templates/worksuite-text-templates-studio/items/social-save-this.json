@@ -1,0 +1,134 @@
+{
+	"schema": 1,
+	"id": "social-save-this",
+	"kind": "template",
+	"name": {
+		"en": "Save this post",
+		"si": "හතරැස් සමාජ මාධ්‍ය පෝස්ටුව",
+		"ta": "சதுர சமூக ஊடகப் பதிவு"
+	},
+	"category": "social",
+	"tags": {
+		"en": [
+			"save",
+			"this",
+			"post",
+			"social",
+			"reel",
+			"short",
+			"square",
+			"1:1",
+			"slide"
+		],
+		"si": [
+			"සමාජ මාධ්‍ය",
+			"පෝස්ටුව",
+			"හතරැස්",
+			"ලිස්සීම"
+		],
+		"ta": [
+			"சமூக ஊடகம்",
+			"பதிவு",
+			"சதுரம்",
+			"சறுக்கல்",
+			"சதுர"
+		]
+	},
+	"duration": 4,
+	"aspect": "1:1",
+	"slots": [
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "Save this for later",
+				"si": "පසුවට සුරකින්න",
+				"ta": "சேமித்து வையுங்கள்"
+			},
+			"x": 0.5,
+			"y": 0.44,
+			"size": 0.057,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 700,
+				"fill": "#FFFFFF",
+				"plate": {
+					"color": "#1F2937",
+					"padding": 0.4,
+					"radius": 0.35
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "slide",
+					"duration": 0.5,
+					"delay": 0,
+					"stagger": 0.06,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "slide",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.04,
+					"staggerOrder": "forward",
+					"direction": "left",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "subtitle",
+			"name": "Subtitle",
+			"text": {
+				"en": "QUICK TIP",
+				"si": "ඉක්මන් ඉඟිය",
+				"ta": "விரைவுக் குறிப்பு"
+			},
+			"x": 0.5,
+			"y": 0.6,
+			"size": 0.056,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 500,
+				"fill": "#D1D5DB"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "slide",
+					"duration": 0.5,
+					"delay": 0.2,
+					"stagger": 0.04,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {
+						"distance": 0.8
+					}
+				},
+				"out": {
+					"effect": "slide",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.03,
+					"staggerOrder": "forward",
+					"direction": "left",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

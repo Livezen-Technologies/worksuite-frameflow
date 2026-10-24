@@ -1,0 +1,63 @@
+{
+	"schema": 1,
+	"id": "karaoke-lime",
+	"kind": "animation",
+	"name": {
+		"en": "Karaoke lime",
+		"si": "නැවුම් කැරෝකේ",
+		"ta": "புத்தம் புதிய கரோக்கே"
+	},
+	"category": "karaoke-captions",
+	"tags": {
+		"en": [
+			"karaoke",
+			"lime",
+			"karaoke fill",
+			"words",
+			"karaoke captions",
+			"fresh"
+		],
+		"si": [
+			"කැරෝකේ",
+			"වචන",
+			"නැවුම්"
+		],
+		"ta": [
+			"கரோக்கே",
+			"சொற்கள்",
+			"புத்தம் புதிய"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "word",
+		"in": {
+			"effect": "karaoke-fill",
+			"duration": 0.4,
+			"delay": 0,
+			"stagger": 0.45,
+			"staggerOrder": "forward",
+			"direction": "right",
+			"easing": "linear",
+			"intensity": 1,
+			"params": {
+				"color": "#3DDC97"
+			}
+		}
+	},
+	"previewText": {
+		"en": "Every word lands on the beat",
+		"si": "හැම වචනයක්ම තාලයට එයි",
+		"ta": "ஒவ்வொரு சொல்லும் தாளத்தில் வரும்"
+	},
+	"style": {
+		"fontFamily": "Inter",
+		"fontWeight": 800,
+		"fill": "#FFFFFF",
+		"stroke": {
+			"color": "#000000",
+			"width": 3
+		}
+	},
+	"duration": 4
+}

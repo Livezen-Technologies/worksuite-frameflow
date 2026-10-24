@@ -1,0 +1,70 @@
+{
+	"schema": 1,
+	"id": "punchy-typing",
+	"kind": "animation",
+	"name": {
+		"en": "Punchy typing",
+		"si": "ප්‍රබල යතුරුලියනය",
+		"ta": "வலுவான தட்டச்சு"
+	},
+	"category": "typewriter-decode",
+	"tags": {
+		"en": [
+			"punchy",
+			"typing",
+			"typewriter",
+			"letters",
+			"typewriter decode",
+			"bold"
+		],
+		"si": [
+			"යතුරුලියනය",
+			"අකුරු",
+			"ප්‍රබල"
+		],
+		"ta": [
+			"தட்டச்சு",
+			"எழுத்துகள்",
+			"வலுவான"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "grapheme",
+		"in": {
+			"effect": "typewriter",
+			"duration": 0.06,
+			"delay": 0,
+			"stagger": 0.06,
+			"staggerOrder": "forward",
+			"direction": "right",
+			"easing": "linear",
+			"intensity": 1,
+			"params": {
+				"caret": false
+			}
+		},
+		"keyframes": {
+			"stagger": 0.06,
+			"tracks": {
+				"scale": [
+					{
+						"t": 0,
+						"v": 1.5,
+						"easing": "ease-out-cubic"
+					},
+					{
+						"t": 0.18,
+						"v": 1
+					}
+				]
+			}
+		}
+	},
+	"style": {
+		"fontFamily": "Anton",
+		"fontWeight": 400,
+		"fill": "#FFE14D"
+	},
+	"duration": 3
+}

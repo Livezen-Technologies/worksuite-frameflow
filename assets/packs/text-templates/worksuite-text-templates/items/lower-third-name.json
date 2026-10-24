@@ -1,0 +1,119 @@
+{
+	"schema": 1,
+	"id": "lower-third-name",
+	"kind": "template",
+	"name": {
+		"en": "Name lower third",
+		"si": "නම් පටිය",
+		"ta": "பெயர் பட்டை"
+	},
+	"category": "lower-thirds",
+	"tags": {
+		"en": [
+			"lower third",
+			"name",
+			"interview"
+		],
+		"si": [
+			"නම් පටිය"
+		],
+		"ta": [
+			"பெயர் பட்டை"
+		]
+	},
+	"duration": 5,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "name",
+			"name": "Name",
+			"text": {
+				"en": "Nimal Perera",
+				"si": "නිමල් පෙරේරා",
+				"ta": "நிமல் பெரேரா"
+			},
+			"x": 0.25,
+			"y": 0.78,
+			"size": 0.055,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 800,
+				"fill": "#FFFFFF",
+				"plate": {
+					"color": "#1E40AF",
+					"padding": 0.4,
+					"radius": 0.15
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "slide",
+					"duration": 0.5,
+					"delay": 0,
+					"stagger": 0.08,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "slide",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.05,
+					"staggerOrder": "forward",
+					"direction": "left",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "role",
+			"name": "Role",
+			"text": {
+				"en": "Head of Design",
+				"si": "නිර්මාණ ප්‍රධානී",
+				"ta": "வடிவமைப்புத் தலைவர்"
+			},
+			"x": 0.25,
+			"y": 0.86,
+			"size": 0.035,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 500,
+				"fill": "#E5E7EB"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "line",
+				"in": {
+					"effect": "fade",
+					"duration": 0.5,
+					"delay": 0.4,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.3,
+					"delay": 0,
+					"stagger": 0.05,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

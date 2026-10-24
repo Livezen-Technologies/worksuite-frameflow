@@ -1,0 +1,139 @@
+{
+	"schema": 1,
+	"id": "lt-sinhala-name",
+	"kind": "template",
+	"name": {
+		"en": "Sinhala name bar",
+		"si": "සරල පහළ පටිය",
+		"ta": "எளிய கீழ் பட்டை"
+	},
+	"category": "lower-thirds",
+	"tags": {
+		"en": [
+			"sinhala",
+			"name",
+			"bar",
+			"lower third",
+			"interview",
+			"landscape",
+			"16:9",
+			"rise",
+			"fade",
+			"simple"
+		],
+		"si": [
+			"නම",
+			"සම්මුඛ සාකච්ඡාව",
+			"තිරස්",
+			"නැගීම",
+			"ක්‍රමයෙන් පෙනීම",
+			"සරල"
+		],
+		"ta": [
+			"பெயர்",
+			"நேர்காணல்",
+			"கிடைமட்ட",
+			"எழுச்சி",
+			"மெல்லத் தோன்றல்",
+			"எளிய"
+		]
+	},
+	"duration": 5,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "name",
+			"name": "Name",
+			"text": {
+				"en": "Sahan Fernando",
+				"si": "සහන් ප්‍රනාන්දු",
+				"ta": "சஹான் பெர்னாண்டோ"
+			},
+			"x": 0.27,
+			"y": 0.79,
+			"size": 0.059,
+			"style": {
+				"fontFamily": "Noto Sans Sinhala",
+				"fontWeight": 700,
+				"fill": "#FFFFFF",
+				"stroke": {
+					"color": "#000000",
+					"width": 5
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "rise",
+					"duration": 0.7,
+					"delay": 0,
+					"stagger": 0.08,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "role",
+			"name": "Role",
+			"text": {
+				"en": "Chef",
+				"si": "සූපවේදී",
+				"ta": "சமையல் கலைஞர்"
+			},
+			"x": 0.27,
+			"y": 0.865,
+			"size": 0.043,
+			"style": {
+				"fontFamily": "Noto Sans Sinhala",
+				"fontWeight": 400,
+				"fill": "#FFE14D",
+				"stroke": {
+					"color": "#000000",
+					"width": 4
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "fade",
+					"duration": 0.6,
+					"delay": 0.3,
+					"stagger": 0.04,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

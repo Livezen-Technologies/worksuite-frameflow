@@ -1,0 +1,139 @@
+{
+	"schema": 1,
+	"id": "lt-tamil-name",
+	"kind": "template",
+	"name": {
+		"en": "Tamil name bar",
+		"si": "සරල පහළ පටිය",
+		"ta": "எளிய கீழ் பட்டை"
+	},
+	"category": "lower-thirds",
+	"tags": {
+		"en": [
+			"tamil",
+			"name",
+			"bar",
+			"lower third",
+			"interview",
+			"landscape",
+			"16:9",
+			"rise",
+			"fade",
+			"simple"
+		],
+		"si": [
+			"නම",
+			"සම්මුඛ සාකච්ඡාව",
+			"තිරස්",
+			"නැගීම",
+			"ක්‍රමයෙන් පෙනීම",
+			"සරල"
+		],
+		"ta": [
+			"பெயர்",
+			"நேர்காணல்",
+			"கிடைமட்ட",
+			"எழுச்சி",
+			"மெல்லத் தோன்றல்",
+			"எளிய"
+		]
+	},
+	"duration": 5,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "name",
+			"name": "Name",
+			"text": {
+				"en": "Arun Selvam",
+				"si": "අරුන් සෙල්වම්",
+				"ta": "அருண் செல்வம்"
+			},
+			"x": 0.27,
+			"y": 0.79,
+			"size": 0.059,
+			"style": {
+				"fontFamily": "Noto Sans Tamil",
+				"fontWeight": 700,
+				"fill": "#FFFFFF",
+				"stroke": {
+					"color": "#000000",
+					"width": 5
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "rise",
+					"duration": 0.7,
+					"delay": 0,
+					"stagger": 0.08,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "role",
+			"name": "Role",
+			"text": {
+				"en": "Teacher",
+				"si": "ගුරුවරිය",
+				"ta": "ஆசிரியர்"
+			},
+			"x": 0.27,
+			"y": 0.865,
+			"size": 0.043,
+			"style": {
+				"fontFamily": "Noto Sans Tamil",
+				"fontWeight": 400,
+				"fill": "#7DD3FC",
+				"stroke": {
+					"color": "#000000",
+					"width": 4
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "fade",
+					"duration": 0.6,
+					"delay": 0.3,
+					"stagger": 0.04,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

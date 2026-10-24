@@ -1,0 +1,182 @@
+{
+	"schema": 1,
+	"id": "quote-believe",
+	"kind": "template",
+	"name": {
+		"en": "Believe quote",
+		"si": "දීප්තිමත් උපුටනය",
+		"ta": "பிரகாசமான மேற்கோள்"
+	},
+	"category": "quotes",
+	"tags": {
+		"en": [
+			"believe",
+			"quote",
+			"saying",
+			"motivation",
+			"landscape",
+			"16:9",
+			"underline draw",
+			"fade",
+			"rise",
+			"bright"
+		],
+		"si": [
+			"උපුටනය",
+			"අභිප්‍රේරණය",
+			"තිරස්",
+			"යටි ඉර",
+			"ක්‍රමයෙන් පෙනීම",
+			"නැගීම",
+			"දීප්තිමත්"
+		],
+		"ta": [
+			"மேற்கோள்",
+			"ஊக்கம்",
+			"கிடைமட்ட",
+			"அடிக்கோடு",
+			"மெல்லத் தோன்றல்",
+			"எழுச்சி",
+			"பிரகாசமான"
+		]
+	},
+	"duration": 4.5,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "label",
+			"name": "Label",
+			"text": {
+				"en": "QUOTE OF THE DAY",
+				"si": "අද දවසේ කියමන",
+				"ta": "இன்றைய மேற்கோள்"
+			},
+			"x": 0.5,
+			"y": 0.26,
+			"size": 0.042,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 700,
+				"fill": "#F59E0B",
+				"tracking": 0.06
+			},
+			"animation": {
+				"version": 1,
+				"unit": "block",
+				"in": {
+					"effect": "underline-draw",
+					"duration": 0.6,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-in-out-cubic",
+					"intensity": 1,
+					"params": {
+						"color": "#F59E0B"
+					}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "quote",
+			"name": "Quote",
+			"text": {
+				"en": "Believe in yourself.",
+				"si": "ඔබ ගැන විශ්වාස කරන්න.",
+				"ta": "உங்களை நம்புங்கள்."
+			},
+			"x": 0.5,
+			"y": 0.48,
+			"size": 0.07,
+			"style": {
+				"fontFamily": "Playfair Display",
+				"fontWeight": 700,
+				"fontStyle": "italic",
+				"fill": "#FFF7ED"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "rise",
+					"duration": 0.6,
+					"delay": 0.4,
+					"stagger": 0.06,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "author",
+			"name": "Author",
+			"text": {
+				"en": "— Your name",
+				"si": "— ඔබේ නම",
+				"ta": "— உங்கள் பெயர்"
+			},
+			"x": 0.5,
+			"y": 0.7,
+			"size": 0.043,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 500,
+				"fill": "#FDBA74"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "underline-draw",
+					"duration": 0.7,
+					"delay": 0.8,
+					"stagger": 0.1,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-in-out-cubic",
+					"intensity": 1,
+					"params": {
+						"color": "#F59E0B"
+					}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

@@ -1,0 +1,170 @@
+{
+	"schema": 1,
+	"id": "fest-deepavali-vertical",
+	"kind": "template",
+	"name": {
+		"en": "Deepavali story",
+		"si": "සිරස් සුබ පැතුම",
+		"ta": "செங்குத்து வாழ்த்து"
+	},
+	"category": "festive",
+	"tags": {
+		"en": [
+			"deepavali",
+			"story",
+			"festival",
+			"greeting",
+			"sri lanka",
+			"vertical",
+			"9:16",
+			"rise",
+			"float",
+			"fade",
+			"diwali",
+			"lights"
+		],
+		"si": [
+			"උත්සවය",
+			"සුබ පැතුම්",
+			"සිරස්",
+			"නැගීම",
+			"පාවීම",
+			"ක්‍රමයෙන් පෙනීම",
+			"දීපාවලී",
+			"පහන්"
+		],
+		"ta": [
+			"பண்டிகை",
+			"வாழ்த்து",
+			"செங்குத்து",
+			"எழுச்சி",
+			"மிதத்தல்",
+			"மெல்லத் தோன்றல்",
+			"தீபாவளி",
+			"தீபம்"
+		]
+	},
+	"duration": 4,
+	"aspect": "9:16",
+	"background": {
+		"packAsset": "sl-deepavali-lamp"
+	},
+	"slots": [
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "Happy Deepavali",
+				"si": "සුබ දීපාවලියක්",
+				"ta": "இனிய தீபாவளி"
+			},
+			"x": 0.5,
+			"y": 0.42,
+			"size": 0.048,
+			"style": {
+				"fontFamily": "Noto Serif Tamil",
+				"fontWeight": 700,
+				"fill": "#FDE68A",
+				"gradient": [
+					"#FDE68A",
+					"#F59E0B"
+				],
+				"glow": {
+					"color": "#F59E0B",
+					"size": 0.3
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "rise",
+					"duration": 0.8,
+					"delay": 0,
+					"stagger": 0.1,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"emphasis": {
+					"effect": "float",
+					"duration": 3,
+					"delay": 0,
+					"stagger": 0.15,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "linear",
+					"intensity": 0.6,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "subtitle",
+			"name": "Subtitle",
+			"text": {
+				"en": "May light fill your home",
+				"si": "ඔබේ නිවස ආලෝකයෙන් පිරේවා",
+				"ta": "இல்லம் ஒளிரட்டும்"
+			},
+			"x": 0.5,
+			"y": 0.52,
+			"size": 0.03,
+			"style": {
+				"fontFamily": "Noto Sans Tamil",
+				"fontWeight": 400,
+				"fill": "#FBCFE8"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "fade",
+					"duration": 0.7,
+					"delay": 0.35,
+					"stagger": 0.05,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"emphasis": {
+					"effect": "float",
+					"duration": 3,
+					"delay": 0,
+					"stagger": 0.1,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "linear",
+					"intensity": 0.4,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

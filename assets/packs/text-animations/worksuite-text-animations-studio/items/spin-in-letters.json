@@ -1,0 +1,51 @@
+{
+	"schema": 1,
+	"id": "spin-in-letters",
+	"kind": "animation",
+	"name": {
+		"en": "Spin in letters",
+		"si": "විනෝදජනක කැරකීම",
+		"ta": "விளையாட்டான சுழல்"
+	},
+	"category": "kinetic",
+	"tags": {
+		"en": [
+			"spin",
+			"in",
+			"letters",
+			"kinetic",
+			"playful"
+		],
+		"si": [
+			"කැරකීම",
+			"අකුරු",
+			"විනෝදජනක"
+		],
+		"ta": [
+			"சுழல்",
+			"எழுத்துகள்",
+			"விளையாட்டான"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "grapheme",
+		"in": {
+			"effect": "spin",
+			"duration": 0.8,
+			"delay": 0,
+			"stagger": 0.05,
+			"staggerOrder": "forward",
+			"direction": "right",
+			"easing": "ease-out-cubic",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"style": {
+		"fontFamily": "Rubik",
+		"fontWeight": 800,
+		"fill": "#FFFFFF"
+	},
+	"duration": 3
+}

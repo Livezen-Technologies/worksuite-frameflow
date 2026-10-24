@@ -14,6 +14,8 @@ import { useMyTextTemplates } from "@/text/templates";
 import { useTimelineStore } from "@/timeline/timeline-store";
 import { useWorkspaceStore } from "@/workspaces/store";
 import { useInputMethod } from "@/input-method/store";
+import { usePresetStore } from "@/text-animation/preset-store";
+import { useTextLibraryStore } from "@/text-library/store";
 import { mergeSettings, pickFields } from "./settings-merge";
 
 /**
@@ -77,6 +79,16 @@ export const SYNCED_STORES: SyncedStore[] = [
 		key: "frameflow-text-templates",
 		label: "Title presets",
 		api: useMyTextTemplates,
+	}),
+	store({
+		key: "frameflow-text-animation-presets",
+		label: "Text animation presets",
+		api: usePresetStore,
+	}),
+	store({
+		key: "frameflow-text-library",
+		label: "Text library favourites",
+		api: useTextLibraryStore,
 	}),
 	store({ key: "frameflow-brand-kit", label: "Brand kit", api: useBrandKit }),
 	store({

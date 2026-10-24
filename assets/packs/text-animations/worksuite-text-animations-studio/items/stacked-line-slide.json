@@ -1,0 +1,75 @@
+{
+	"schema": 1,
+	"id": "stacked-line-slide",
+	"kind": "animation",
+	"name": {
+		"en": "Stacked line slide",
+		"si": "සිනමා ලිස්සීම",
+		"ta": "சினிமா சறுக்கல்"
+	},
+	"category": "slides",
+	"tags": {
+		"en": [
+			"stacked",
+			"line",
+			"slide",
+			"lines",
+			"slides",
+			"cinematic",
+			"exit"
+		],
+		"si": [
+			"ලිස්සීම",
+			"පේළි",
+			"සිනමා",
+			"ඉවත් වීම"
+		],
+		"ta": [
+			"சறுக்கல்",
+			"வரிகள்",
+			"சினிமா",
+			"வெளியேறல்"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "line",
+		"in": {
+			"effect": "slide",
+			"duration": 0.8,
+			"delay": 0,
+			"stagger": 0.2,
+			"staggerOrder": "forward",
+			"direction": "right",
+			"easing": "ease-out-expo",
+			"intensity": 1,
+			"params": {
+				"distance": 2
+			}
+		},
+		"out": {
+			"effect": "slide",
+			"duration": 0.5,
+			"delay": 0,
+			"stagger": 0.1,
+			"staggerOrder": "forward",
+			"direction": "left",
+			"easing": "ease-in-cubic",
+			"intensity": 1,
+			"params": {
+				"distance": 2
+			}
+		}
+	},
+	"previewText": {
+		"en": "First line here\nSecond line follows",
+		"si": "පළමු පේළිය\nදෙවන පේළිය",
+		"ta": "முதல் வரி\nஇரண்டாம் வரி"
+	},
+	"style": {
+		"fontFamily": "Inter",
+		"fontWeight": 800,
+		"fill": "#FFFFFF"
+	},
+	"duration": 3
+}

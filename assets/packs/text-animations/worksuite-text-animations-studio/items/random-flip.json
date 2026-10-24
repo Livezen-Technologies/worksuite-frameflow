@@ -1,0 +1,51 @@
+{
+	"schema": 1,
+	"id": "random-flip",
+	"kind": "animation",
+	"name": {
+		"en": "Random flip",
+		"si": "අහඹු හැරවීම",
+		"ta": "சீரற்ற திருப்பல்"
+	},
+	"category": "3d-flips",
+	"tags": {
+		"en": [
+			"random",
+			"flip",
+			"flip y",
+			"letters",
+			"3d flips"
+		],
+		"si": [
+			"හැරවීම",
+			"අකුරු",
+			"අහඹු"
+		],
+		"ta": [
+			"திருப்பல்",
+			"எழுத்துகள்",
+			"சீரற்ற"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "grapheme",
+		"in": {
+			"effect": "flip-y",
+			"duration": 0.6,
+			"delay": 0,
+			"stagger": 0.04,
+			"staggerOrder": "random(12)",
+			"direction": "left",
+			"easing": "ease-out-back",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"style": {
+		"fontFamily": "Rubik",
+		"fontWeight": 800,
+		"fill": "#FFFFFF"
+	},
+	"duration": 3
+}

@@ -1,0 +1,144 @@
+{
+	"schema": 1,
+	"id": "corp-chart-title",
+	"kind": "template",
+	"name": {
+		"en": "Chart title",
+		"si": "නවීන ව්‍යාපාරික මාතෘකාව",
+		"ta": "நவீன நிறுவனத் தலைப்பு"
+	},
+	"category": "corporate",
+	"tags": {
+		"en": [
+			"chart",
+			"title",
+			"corporate",
+			"business",
+			"presentation",
+			"landscape",
+			"16:9",
+			"box reveal",
+			"fade",
+			"mask wipe",
+			"modern"
+		],
+		"si": [
+			"ව්‍යාපාරික",
+			"ඉදිරිපත් කිරීම",
+			"තිරස්",
+			"කොටුව",
+			"ක්‍රමයෙන් පෙනීම",
+			"පිසදැමීම",
+			"නවීන"
+		],
+		"ta": [
+			"நிறுவனம்",
+			"விளக்கக்காட்சி",
+			"கிடைமட்ட",
+			"பெட்டி",
+			"மெல்லத் தோன்றல்",
+			"துடைப்பு",
+			"நவீன"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"background": {
+		"packAsset": "st-bar-chart"
+	},
+	"slots": [
+		{
+			"id": "label",
+			"name": "Label",
+			"text": {
+				"en": "Key numbers",
+				"si": "ප්‍රධාන සංඛ්‍යා",
+				"ta": "முக்கிய எண்கள்"
+			},
+			"x": 0.5,
+			"y": 0.34,
+			"size": 0.052,
+			"style": {
+				"fontFamily": "Poppins",
+				"fontWeight": 600,
+				"fill": "#0F172A",
+				"plate": {
+					"color": "#2DD4BF",
+					"padding": 0.35,
+					"radius": 0.2
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "block",
+				"in": {
+					"effect": "box-reveal",
+					"duration": 0.8,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-in-out-cubic",
+					"intensity": 1,
+					"params": {
+						"color": "#2DD4BF"
+					}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "Quarterly results",
+				"si": "කාර්තුමය ප්‍රතිඵල",
+				"ta": "காலாண்டு முடிவுகள்"
+			},
+			"x": 0.5,
+			"y": 0.5,
+			"size": 0.108,
+			"style": {
+				"fontFamily": "Poppins",
+				"fontWeight": 700,
+				"fill": "#FFFFFF"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "line",
+				"in": {
+					"effect": "mask-wipe",
+					"duration": 0.7,
+					"delay": 0.25,
+					"stagger": 0.12,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-in-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "mask-wipe",
+					"duration": 0.5,
+					"delay": 0,
+					"stagger": 0.08,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

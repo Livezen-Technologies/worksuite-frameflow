@@ -1,6 +1,7 @@
 /** Pack types in the download center (catalog.json → packs[].type). */
 export const PACK_TYPES = [
 	"motion",
+	"text-animations",
 	"text-templates",
 	"video-templates",
 	"sounds",
@@ -15,6 +16,7 @@ export type PackType = (typeof PACK_TYPES)[number];
 
 export const PACK_TYPE_LABELS: Record<PackType, string> = {
 	motion: "Motion graphics",
+	"text-animations": "Text animations",
 	"text-templates": "Text templates",
 	"video-templates": "Video templates",
 	sounds: "Sounds",

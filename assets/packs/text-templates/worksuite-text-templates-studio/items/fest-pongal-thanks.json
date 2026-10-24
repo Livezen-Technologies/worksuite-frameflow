@@ -1,0 +1,193 @@
+{
+	"schema": 1,
+	"id": "fest-pongal-thanks",
+	"kind": "template",
+	"name": {
+		"en": "Harvest gratitude",
+		"si": "උණුසුම් සුබ පැතුම",
+		"ta": "கதகதப்பான வாழ்த்து"
+	},
+	"category": "festive",
+	"tags": {
+		"en": [
+			"harvest",
+			"gratitude",
+			"festival",
+			"greeting",
+			"sri lanka",
+			"landscape",
+			"16:9",
+			"mask wipe",
+			"fade",
+			"split reveal",
+			"warm",
+			"thai pongal",
+			"pongal"
+		],
+		"si": [
+			"උත්සවය",
+			"සුබ පැතුම්",
+			"තිරස්",
+			"පිසදැමීම",
+			"ක්‍රමයෙන් පෙනීම",
+			"බෙදී මතුවීම",
+			"උණුසුම්",
+			"තෛපොංගල්",
+			"අස්වැන්න"
+		],
+		"ta": [
+			"பண்டிகை",
+			"வாழ்த்து",
+			"கிடைமட்ட",
+			"துடைப்பு",
+			"மெல்லத் தோன்றல்",
+			"பிளந்து தோன்றல்",
+			"கதகதப்பான",
+			"தைப்பொங்கல்",
+			"பொங்கல்",
+			"அறுவடை"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "label",
+			"name": "Label",
+			"text": {
+				"en": "With best wishes",
+				"si": "සුබ පැතුම් සමඟ",
+				"ta": "நல்வாழ்த்துகளுடன்"
+			},
+			"x": 0.5,
+			"y": 0.31,
+			"size": 0.046,
+			"style": {
+				"fontFamily": "Noto Sans Tamil",
+				"fontWeight": 700,
+				"fill": "#FFFFFF",
+				"plate": {
+					"color": "#15803D",
+					"padding": 0.35,
+					"radius": 0.3
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "block",
+				"in": {
+					"effect": "mask-wipe",
+					"duration": 0.5,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "Happy Thai Pongal",
+				"si": "සුබ තෛපොංගල්",
+				"ta": "இனிய பொங்கல்"
+			},
+			"x": 0.5,
+			"y": 0.47,
+			"size": 0.119,
+			"style": {
+				"fontFamily": "Noto Serif Tamil",
+				"fontWeight": 700,
+				"fill": "#FDE047",
+				"stroke": {
+					"color": "#7C2D12",
+					"width": 3
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "split-reveal",
+					"duration": 0.8,
+					"delay": 0.25,
+					"stagger": 0.08,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out-expo",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "split-reveal",
+					"duration": 0.5,
+					"delay": 0,
+					"stagger": 0.05,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-expo",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "subtitle",
+			"name": "Subtitle",
+			"text": {
+				"en": "Gratitude for the harvest",
+				"si": "අස්වැන්නට කෘතඥතාව",
+				"ta": "அறுவடைக்கு நன்றி"
+			},
+			"x": 0.5,
+			"y": 0.63,
+			"size": 0.05,
+			"style": {
+				"fontFamily": "Noto Sans Tamil",
+				"fontWeight": 500,
+				"fill": "#ECFCCB"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "line",
+				"in": {
+					"effect": "split-reveal",
+					"duration": 0.7,
+					"delay": 0.5,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out-expo",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

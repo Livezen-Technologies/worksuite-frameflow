@@ -1,0 +1,53 @@
+{
+	"schema": 1,
+	"id": "speed-skew-slide",
+	"kind": "animation",
+	"name": {
+		"en": "Speed skew slide",
+		"si": "වේගවත් ඇලවීම",
+		"ta": "வேகமான சாய்வு"
+	},
+	"category": "slides",
+	"tags": {
+		"en": [
+			"speed",
+			"skew",
+			"slide",
+			"skew in",
+			"words",
+			"slides",
+			"quick"
+		],
+		"si": [
+			"ඇලවීම",
+			"වචන",
+			"වේගවත්"
+		],
+		"ta": [
+			"சாய்வு",
+			"சொற்கள்",
+			"வேகமான"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "word",
+		"in": {
+			"effect": "skew-in",
+			"duration": 0.45,
+			"delay": 0,
+			"stagger": 0.06,
+			"staggerOrder": "forward",
+			"direction": "right",
+			"easing": "ease-out-expo",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"style": {
+		"fontFamily": "Anton",
+		"fontWeight": 400,
+		"fill": "#FFE14D"
+	},
+	"duration": 3
+}

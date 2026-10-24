@@ -1,0 +1,57 @@
+{
+	"schema": 1,
+	"id": "score-board",
+	"kind": "animation",
+	"name": {
+		"en": "Score board",
+		"si": "ක්‍රීඩා අංක ගණනය",
+		"ta": "விளையாட்டு எண் எண்ணிக்கை"
+	},
+	"category": "counters-numbers",
+	"tags": {
+		"en": [
+			"score",
+			"board",
+			"number counter",
+			"words",
+			"counters numbers",
+			"sporty"
+		],
+		"si": [
+			"අංක ගණනය",
+			"වචන",
+			"ක්‍රීඩා"
+		],
+		"ta": [
+			"எண் எண்ணிக்கை",
+			"சொற்கள்",
+			"விளையாட்டு"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "word",
+		"in": {
+			"effect": "number-counter",
+			"duration": 1.2,
+			"delay": 0,
+			"stagger": 0.3,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-out-cubic",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"previewText": {
+		"en": "3 : 2",
+		"si": "3 : 2",
+		"ta": "3 : 2"
+	},
+	"style": {
+		"fontFamily": "Oswald",
+		"fontWeight": 700,
+		"fill": "#FFFFFF"
+	},
+	"duration": 3
+}

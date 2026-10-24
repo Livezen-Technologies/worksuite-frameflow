@@ -1,0 +1,75 @@
+{
+	"schema": 1,
+	"id": "block-glide-in",
+	"kind": "animation",
+	"name": {
+		"en": "Block glide in",
+		"si": "පිරිසිදු ලිස්සීම",
+		"ta": "சுத்தமான சறுக்கல்"
+	},
+	"category": "slides",
+	"tags": {
+		"en": [
+			"block",
+			"glide",
+			"in",
+			"slide",
+			"blocks",
+			"slides",
+			"clean"
+		],
+		"si": [
+			"ලිස්සීම",
+			"සම්පූර්ණ",
+			"පිරිසිදු"
+		],
+		"ta": [
+			"சறுக்கல்",
+			"முழு",
+			"சுத்தமான"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "block",
+		"in": {
+			"effect": "slide",
+			"duration": 0.8,
+			"delay": 0,
+			"stagger": 0,
+			"staggerOrder": "forward",
+			"direction": "right",
+			"easing": "ease-out-expo",
+			"intensity": 1,
+			"params": {
+				"distance": 1.5
+			}
+		},
+		"keyframes": {
+			"tracks": {
+				"blur": [
+					{
+						"t": 0,
+						"v": 0.2,
+						"easing": "ease-out-cubic"
+					},
+					{
+						"t": 0.6,
+						"v": 0
+					}
+				]
+			}
+		}
+	},
+	"style": {
+		"fontFamily": "Inter",
+		"fontWeight": 800,
+		"fill": "#FFFFFF",
+		"plate": {
+			"color": "#111827",
+			"padding": 0.35,
+			"radius": 0.2
+		}
+	},
+	"duration": 3
+}

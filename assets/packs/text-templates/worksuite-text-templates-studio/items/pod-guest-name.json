@@ -1,0 +1,184 @@
+{
+	"schema": 1,
+	"id": "pod-guest-name",
+	"kind": "template",
+	"name": {
+		"en": "Guest name",
+		"si": "වෘත්තීය පොඩ්කාස්ට්",
+		"ta": "தொழில்முறை பாட்காஸ்ட்"
+	},
+	"category": "podcast",
+	"tags": {
+		"en": [
+			"guest",
+			"name",
+			"podcast",
+			"episode",
+			"audio",
+			"landscape",
+			"16:9",
+			"box reveal",
+			"fade",
+			"mask wipe",
+			"pro"
+		],
+		"si": [
+			"පොඩ්කාස්ට්",
+			"කථාංගය",
+			"තිරස්",
+			"කොටුව",
+			"ක්‍රමයෙන් පෙනීම",
+			"පිසදැමීම",
+			"වෘත්තීය"
+		],
+		"ta": [
+			"பாட்காஸ்ட்",
+			"அத்தியாயம்",
+			"கிடைமட்ட",
+			"பெட்டி",
+			"மெல்லத் தோன்றல்",
+			"துடைப்பு",
+			"தொழில்முறை"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "tag",
+			"name": "Tag",
+			"text": {
+				"en": "Guest",
+				"si": "ආරාධිත අමුත්තා",
+				"ta": "விருந்தினர்"
+			},
+			"x": 0.14,
+			"y": 0.715,
+			"size": 0.039,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 700,
+				"fill": "#111111",
+				"plate": {
+					"color": "#FB923C",
+					"padding": 0.35,
+					"radius": 0.4
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "block",
+				"in": {
+					"effect": "box-reveal",
+					"duration": 0.8,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-in-out-cubic",
+					"intensity": 1,
+					"params": {
+						"color": "#FB923C"
+					}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "name",
+			"name": "Name",
+			"text": {
+				"en": "Kavya Rajan",
+				"si": "කාව්‍යා රාජන්",
+				"ta": "காவ்யா ராஜன்"
+			},
+			"x": 0.27,
+			"y": 0.79,
+			"size": 0.059,
+			"style": {
+				"fontFamily": "Syne",
+				"fontWeight": 800,
+				"fill": "#FFEDD5"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "line",
+				"in": {
+					"effect": "mask-wipe",
+					"duration": 0.7,
+					"delay": 0.25,
+					"stagger": 0.12,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-in-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "mask-wipe",
+					"duration": 0.5,
+					"delay": 0,
+					"stagger": 0.08,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "role",
+			"name": "Role",
+			"text": {
+				"en": "Founder",
+				"si": "නිර්මාතෘ",
+				"ta": "நிறுவனர்"
+			},
+			"x": 0.27,
+			"y": 0.865,
+			"size": 0.043,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 500,
+				"fill": "#FDBA74"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "line",
+				"in": {
+					"effect": "mask-wipe",
+					"duration": 0.6,
+					"delay": 0.5,
+					"stagger": 0.1,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-in-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

@@ -1,0 +1,174 @@
+{
+	"schema": 1,
+	"id": "kp-skew-move",
+	"kind": "template",
+	"name": {
+		"en": "Skewed move",
+		"si": "වේගවත් චලන පෝස්ටරය",
+		"ta": "வேகமான இயக்க சுவரொட்டி"
+	},
+	"category": "kinetic-posters",
+	"tags": {
+		"en": [
+			"skewed",
+			"move",
+			"kinetic",
+			"poster",
+			"typography",
+			"landscape",
+			"16:9",
+			"skew in",
+			"fade",
+			"quick"
+		],
+		"si": [
+			"චලන",
+			"පෝස්ටරය",
+			"තිරස්",
+			"ඇලවීම",
+			"ක්‍රමයෙන් පෙනීම",
+			"වේගවත්"
+		],
+		"ta": [
+			"இயக்கம்",
+			"சுவரொட்டி",
+			"கிடைமட்ட",
+			"சாய்வு",
+			"மெல்லத் தோன்றல்",
+			"வேகமான"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "word1",
+			"name": "Word 1",
+			"text": {
+				"en": "MOVE",
+				"si": "යමු",
+				"ta": "நகருங்கள்"
+			},
+			"x": 0.5,
+			"y": 0.29,
+			"size": 0.151,
+			"style": {
+				"fontFamily": "Archivo Black",
+				"fontWeight": 400,
+				"fill": "#FF3B3B"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "skew-in",
+					"duration": 0.5,
+					"delay": 0,
+					"stagger": 0.06,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-out-expo",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "skew-in",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.04,
+					"staggerOrder": "forward",
+					"direction": "left",
+					"easing": "ease-in-expo",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "word2",
+			"name": "Word 2",
+			"text": {
+				"en": "FAST",
+				"si": "වේගයෙන්",
+				"ta": "வேகமாக"
+			},
+			"x": 0.5,
+			"y": 0.5,
+			"size": 0.175,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 700,
+				"fill": "#FFFFFF"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "skew-in",
+					"duration": 0.45,
+					"delay": 0.25,
+					"stagger": 0.04,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-out-expo",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "word3",
+			"name": "Word 3",
+			"text": {
+				"en": "NOW",
+				"si": "කරන්න",
+				"ta": "செய்யுங்கள்"
+			},
+			"x": 0.5,
+			"y": 0.71,
+			"size": 0.151,
+			"style": {
+				"fontFamily": "Archivo Black",
+				"fontWeight": 400,
+				"fill": "#FF3B3B"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "skew-in",
+					"duration": 0.5,
+					"delay": 0.5,
+					"stagger": 0.06,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-out-expo",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "skew-in",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.04,
+					"staggerOrder": "forward",
+					"direction": "left",
+					"easing": "ease-in-expo",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

@@ -1,0 +1,72 @@
+{
+	"schema": 1,
+	"id": "pop-away",
+	"kind": "animation",
+	"name": {
+		"en": "Pop away",
+		"si": "පනින පොප්",
+		"ta": "துள்ளும் பாப்"
+	},
+	"category": "exits",
+	"tags": {
+		"en": [
+			"pop",
+			"away",
+			"fade",
+			"words",
+			"exits",
+			"bouncy",
+			"exit"
+		],
+		"si": [
+			"ක්‍රමයෙන් පෙනීම",
+			"පොප්",
+			"වචන",
+			"පනින",
+			"ඉවත් වීම"
+		],
+		"ta": [
+			"மெல்லத் தோன்றல்",
+			"பாப்",
+			"சொற்கள்",
+			"துள்ளும்",
+			"வெளியேறல்"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "word",
+		"in": {
+			"effect": "fade",
+			"duration": 0.3,
+			"delay": 0,
+			"stagger": 0.02,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-out",
+			"intensity": 1,
+			"params": {}
+		},
+		"out": {
+			"effect": "pop",
+			"duration": 0.35,
+			"delay": 0,
+			"stagger": 0.06,
+			"staggerOrder": "reverse",
+			"direction": "in",
+			"easing": "ease-in-back",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"style": {
+		"fontFamily": "Poppins",
+		"fontWeight": 800,
+		"fill": "#FFFFFF",
+		"gradient": [
+			"#FF5C8A",
+			"#FFD166"
+		]
+	},
+	"duration": 3
+}

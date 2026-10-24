@@ -1,0 +1,152 @@
+{
+	"schema": 1,
+	"id": "social-trending-glitch",
+	"kind": "template",
+	"name": {
+		"en": "Trending glitch",
+		"si": "විදුලි සමාජ මාධ්‍ය පෝස්ටුව",
+		"ta": "மின் சமூக ஊடகப் பதிவு"
+	},
+	"category": "social",
+	"tags": {
+		"en": [
+			"trending",
+			"glitch",
+			"social",
+			"post",
+			"reel",
+			"short",
+			"vertical",
+			"9:16",
+			"story",
+			"rgb split",
+			"fade",
+			"electric"
+		],
+		"si": [
+			"සමාජ මාධ්‍ය",
+			"පෝස්ටුව",
+			"සිරස්",
+			"ග්ලිච්",
+			"වර්ණ බෙදීම",
+			"ක්‍රමයෙන් පෙනීම",
+			"විදුලි"
+		],
+		"ta": [
+			"சமூக ஊடகம்",
+			"பதிவு",
+			"செங்குத்து",
+			"கிளிட்ச்",
+			"வண்ணப் பிளவு",
+			"மெல்லத் தோன்றல்",
+			"மின்"
+		]
+	},
+	"duration": 4,
+	"aspect": "9:16",
+	"slots": [
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "TRENDING",
+				"si": "ජනප්‍රිය",
+				"ta": "பிரபலமானது"
+			},
+			"x": 0.5,
+			"y": 0.42,
+			"size": 0.051,
+			"style": {
+				"fontFamily": "Orbitron",
+				"fontWeight": 800,
+				"fill": "#2EC4FF",
+				"gradient": [
+					"#2EC4FF",
+					"#FF2E88"
+				]
+			},
+			"animation": {
+				"version": 1,
+				"unit": "grapheme",
+				"in": {
+					"effect": "glitch",
+					"duration": 0.6,
+					"delay": 0,
+					"stagger": 0.03,
+					"staggerOrder": "random(4)",
+					"direction": "right",
+					"easing": "linear",
+					"intensity": 1,
+					"params": {
+						"rate": 20
+					}
+				},
+				"emphasis": {
+					"effect": "glitch",
+					"duration": 2.2,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "linear",
+					"intensity": 0.5,
+					"params": {}
+				},
+				"out": {
+					"effect": "glitch",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "linear",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "subtitle",
+			"name": "Subtitle",
+			"text": {
+				"en": "Follow for more",
+				"si": "තවත් දේ සඳහා ෆලෝ කරන්න",
+				"ta": "மேலும் பின்தொடருங்கள்"
+			},
+			"x": 0.5,
+			"y": 0.52,
+			"size": 0.028,
+			"style": {
+				"fontFamily": "Orbitron",
+				"fontWeight": 500,
+				"fill": "#E0E7FF"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "rgb-split",
+					"duration": 0.5,
+					"delay": 0.3,
+					"stagger": 0.03,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

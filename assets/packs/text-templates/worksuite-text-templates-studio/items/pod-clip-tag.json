@@ -1,0 +1,141 @@
+{
+	"schema": 1,
+	"id": "pod-clip-tag",
+	"kind": "template",
+	"name": {
+		"en": "Clip tag",
+		"si": "කුඩා පොඩ්කාස්ට්",
+		"ta": "சிறிய பாட்காஸ்ட்"
+	},
+	"category": "podcast",
+	"tags": {
+		"en": [
+			"clip",
+			"tag",
+			"podcast",
+			"episode",
+			"audio",
+			"landscape",
+			"16:9",
+			"mask wipe",
+			"fade",
+			"slide",
+			"small"
+		],
+		"si": [
+			"පොඩ්කාස්ට්",
+			"කථාංගය",
+			"තිරස්",
+			"පිසදැමීම",
+			"ක්‍රමයෙන් පෙනීම",
+			"ලිස්සීම",
+			"කුඩා"
+		],
+		"ta": [
+			"பாட்காஸ்ட்",
+			"அத்தியாயம்",
+			"கிடைமட்ட",
+			"துடைப்பு",
+			"மெல்லத் தோன்றல்",
+			"சறுக்கல்",
+			"சிறிய"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "tag",
+			"name": "Tag",
+			"text": {
+				"en": "CLIP",
+				"si": "කොටසක්",
+				"ta": "பகுதி"
+			},
+			"x": 0.12,
+			"y": 0.1,
+			"size": 0.052,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 700,
+				"fill": "#FFFFFF",
+				"plate": {
+					"color": "#7C3AED",
+					"padding": 0.35,
+					"radius": 0.4
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "block",
+				"in": {
+					"effect": "mask-wipe",
+					"duration": 0.5,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "place",
+			"name": "Place",
+			"text": {
+				"en": "Ep. 12",
+				"si": "කථාංග 12",
+				"ta": "அத். 12"
+			},
+			"x": 0.24,
+			"y": 0.17,
+			"size": 0.044,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 500,
+				"fill": "#C4B5FD"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "slide",
+					"duration": 0.5,
+					"delay": 0.2,
+					"stagger": 0.04,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {
+						"distance": 0.8
+					}
+				},
+				"out": {
+					"effect": "slide",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.03,
+					"staggerOrder": "forward",
+					"direction": "left",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

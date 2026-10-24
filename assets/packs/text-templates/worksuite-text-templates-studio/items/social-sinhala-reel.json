@@ -1,0 +1,94 @@
+{
+	"schema": 1,
+	"id": "social-sinhala-reel",
+	"kind": "template",
+	"name": {
+		"en": "Sinhala reel caption",
+		"si": "සරල සමාජ මාධ්‍ය පෝස්ටුව",
+		"ta": "எளிய சமூக ஊடகப் பதிவு"
+	},
+	"category": "social",
+	"tags": {
+		"en": [
+			"sinhala",
+			"reel",
+			"caption",
+			"social",
+			"post",
+			"short",
+			"vertical",
+			"9:16",
+			"story",
+			"pop",
+			"fade",
+			"simple"
+		],
+		"si": [
+			"සමාජ මාධ්‍ය",
+			"පෝස්ටුව",
+			"සිරස්",
+			"පොප්",
+			"ක්‍රමයෙන් පෙනීම",
+			"සරල"
+		],
+		"ta": [
+			"சமூக ஊடகம்",
+			"பதிவு",
+			"செங்குத்து",
+			"பாப்",
+			"மெல்லத் தோன்றல்",
+			"எளிய"
+		]
+	},
+	"duration": 4,
+	"aspect": "9:16",
+	"slots": [
+		{
+			"id": "caption",
+			"name": "Caption",
+			"text": {
+				"en": "A day in my life",
+				"si": "මගේ එක් දවසක්",
+				"ta": "என் ஒரு நாள்"
+			},
+			"x": 0.5,
+			"y": 0.72,
+			"size": 0.041,
+			"style": {
+				"fontFamily": "Noto Sans Sinhala",
+				"fontWeight": 700,
+				"fill": "#FFFFFF",
+				"stroke": {
+					"color": "#000000",
+					"width": 5
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "pop",
+					"duration": 0.25,
+					"delay": 0,
+					"stagger": 0.3,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "ease-out-back",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

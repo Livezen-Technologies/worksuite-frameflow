@@ -1,0 +1,51 @@
+{
+	"schema": 1,
+	"id": "centre-decode",
+	"kind": "animation",
+	"name": {
+		"en": "Centre decode",
+		"si": "මැද සිට අකුරු මිශ්‍රණය",
+		"ta": "நடுவிலிருந்து எழுத்துக் குழப்பம்"
+	},
+	"category": "typewriter-decode",
+	"tags": {
+		"en": [
+			"centre",
+			"decode",
+			"scramble",
+			"letters",
+			"typewriter decode"
+		],
+		"si": [
+			"අකුරු මිශ්‍රණය",
+			"අකුරු",
+			"මැද සිට"
+		],
+		"ta": [
+			"எழுத்துக் குழப்பம்",
+			"எழுத்துகள்",
+			"நடுவிலிருந்து"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "grapheme",
+		"in": {
+			"effect": "scramble",
+			"duration": 0.8,
+			"delay": 0,
+			"stagger": 0.05,
+			"staggerOrder": "center-out",
+			"direction": "right",
+			"easing": "linear",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"style": {
+		"fontFamily": "Unbounded",
+		"fontWeight": 700,
+		"fill": "#FFFFFF"
+	},
+	"duration": 3
+}

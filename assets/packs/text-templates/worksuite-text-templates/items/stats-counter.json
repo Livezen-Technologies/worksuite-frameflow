@@ -1,0 +1,97 @@
+{
+	"schema": 1,
+	"id": "stats-counter",
+	"kind": "template",
+	"name": {
+		"en": "Stat counter",
+		"si": "සංඛ්‍යා ගණකය",
+		"ta": "புள்ளிவிவர எண்ணி"
+	},
+	"category": "social",
+	"tags": {
+		"en": [
+			"stats",
+			"number",
+			"counter",
+			"growth"
+		],
+		"si": [
+			"සංඛ්‍යා ගණකය"
+		],
+		"ta": [
+			"புள்ளிவிவர எண்ணி"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "number",
+			"name": "Number",
+			"text": {
+				"en": "10,000",
+				"si": "10,000",
+				"ta": "10,000"
+			},
+			"x": 0.5,
+			"y": 0.45,
+			"size": 0.16,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 800,
+				"fill": "#FFFFFF",
+				"gradient": [
+					"#22D3EE",
+					"#A78BFA"
+				]
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "number-counter",
+					"duration": 1.8,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "label",
+			"name": "Label",
+			"text": {
+				"en": "subscribers",
+				"si": "දායකයින්",
+				"ta": "சந்தாதாரர்கள்"
+			},
+			"x": 0.5,
+			"y": 0.62,
+			"size": 0.05,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 600,
+				"fill": "#E5E7EB"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "grapheme",
+				"in": {
+					"effect": "tracking-expand",
+					"duration": 1.2,
+					"delay": 0.4,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "out",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

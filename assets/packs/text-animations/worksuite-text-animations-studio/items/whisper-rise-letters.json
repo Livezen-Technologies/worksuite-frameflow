@@ -1,0 +1,51 @@
+{
+	"schema": 1,
+	"id": "whisper-rise-letters",
+	"kind": "animation",
+	"name": {
+		"en": "Whisper rise letters",
+		"si": "සියුම් නැගීම",
+		"ta": "இதமான எழுச்சி"
+	},
+	"category": "reveals",
+	"tags": {
+		"en": [
+			"whisper",
+			"rise",
+			"letters",
+			"reveals",
+			"gentle"
+		],
+		"si": [
+			"නැගීම",
+			"අකුරු",
+			"සියුම්"
+		],
+		"ta": [
+			"எழுச்சி",
+			"எழுத்துகள்",
+			"இதமான"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "grapheme",
+		"in": {
+			"effect": "rise",
+			"duration": 0.6,
+			"delay": 0,
+			"stagger": 0.03,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-out-quart",
+			"intensity": 0.6,
+			"params": {}
+		}
+	},
+	"style": {
+		"fontFamily": "Inter",
+		"fontWeight": 600,
+		"fill": "#F1F5F9"
+	},
+	"duration": 3
+}

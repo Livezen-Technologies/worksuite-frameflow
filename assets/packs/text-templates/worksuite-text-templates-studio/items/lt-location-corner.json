@@ -1,0 +1,146 @@
+{
+	"schema": 1,
+	"id": "lt-location-corner",
+	"kind": "template",
+	"name": {
+		"en": "Location corner",
+		"si": "කුඩා පහළ පටිය",
+		"ta": "சிறிய கீழ் பட்டை"
+	},
+	"category": "lower-thirds",
+	"tags": {
+		"en": [
+			"location",
+			"corner",
+			"lower third",
+			"name",
+			"interview",
+			"landscape",
+			"16:9",
+			"box reveal",
+			"fade",
+			"mask wipe",
+			"small"
+		],
+		"si": [
+			"නම",
+			"සම්මුඛ සාකච්ඡාව",
+			"තිරස්",
+			"කොටුව",
+			"ක්‍රමයෙන් පෙනීම",
+			"පිසදැමීම",
+			"කුඩා"
+		],
+		"ta": [
+			"பெயர்",
+			"நேர்காணல்",
+			"கிடைமட்ட",
+			"பெட்டி",
+			"மெல்லத் தோன்றல்",
+			"துடைப்பு",
+			"சிறிய"
+		]
+	},
+	"duration": 5,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "tag",
+			"name": "Tag",
+			"text": {
+				"en": "LIVE",
+				"si": "සජීවී",
+				"ta": "நேரலை"
+			},
+			"x": 0.12,
+			"y": 0.1,
+			"size": 0.052,
+			"style": {
+				"fontFamily": "Montserrat",
+				"fontWeight": 800,
+				"fill": "#B91C1C",
+				"plate": {
+					"color": "#FFFFFF",
+					"padding": 0.35,
+					"radius": 0.05
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "block",
+				"in": {
+					"effect": "box-reveal",
+					"duration": 0.8,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-in-out-cubic",
+					"intensity": 1,
+					"params": {
+						"color": "#FFFFFF"
+					}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "place",
+			"name": "Place",
+			"text": {
+				"en": "Colombo, Sri Lanka",
+				"si": "කොළඹ, ශ්‍රී ලංකාව",
+				"ta": "கொழும்பு, இலங்கை"
+			},
+			"x": 0.24,
+			"y": 0.17,
+			"size": 0.044,
+			"style": {
+				"fontFamily": "Montserrat",
+				"fontWeight": 600,
+				"fill": "#FFFFFF",
+				"plate": {
+					"color": "#111827",
+					"padding": 0.35,
+					"radius": 0.05
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "line",
+				"in": {
+					"effect": "mask-wipe",
+					"duration": 0.6,
+					"delay": 0.25,
+					"stagger": 0.1,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-in-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

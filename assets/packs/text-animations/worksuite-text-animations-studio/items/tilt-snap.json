@@ -1,0 +1,55 @@
+{
+	"schema": 1,
+	"id": "tilt-snap",
+	"kind": "animation",
+	"name": {
+		"en": "Tilt snap",
+		"si": "තියුණු භ්‍රමණය",
+		"ta": "கூர்மையான சுழற்சி"
+	},
+	"category": "kinetic",
+	"tags": {
+		"en": [
+			"tilt",
+			"snap",
+			"rotate in",
+			"words",
+			"kinetic",
+			"sharp"
+		],
+		"si": [
+			"භ්‍රමණය",
+			"වචන",
+			"තියුණු"
+		],
+		"ta": [
+			"சுழற்சி",
+			"சொற்கள்",
+			"கூர்மையான"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "word",
+		"in": {
+			"effect": "rotate-in",
+			"duration": 0.5,
+			"delay": 0,
+			"stagger": 0.1,
+			"staggerOrder": "forward",
+			"direction": "right",
+			"easing": "ease-out-back",
+			"intensity": 1,
+			"params": {
+				"angle": 20
+			}
+		}
+	},
+	"style": {
+		"fontFamily": "Bebas Neue",
+		"fontWeight": 400,
+		"fill": "#FFFFFF",
+		"tracking": 0.04
+	},
+	"duration": 3
+}

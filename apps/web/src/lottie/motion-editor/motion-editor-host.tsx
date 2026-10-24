@@ -8,7 +8,7 @@ import { packContent } from "@/asset-library/registry";
 import { useInputMethod } from "@/input-method/store";
 import type { GraphicElement } from "@/timeline";
 import { findPackAsset, type PackIndexAsset } from "../catalog";
-import { loadLottieJson } from "../player";
+import { loadLottieJson, userAsset } from "../player";
 import type { LottieElementData, LottieJson } from "../types";
 import { MotionEditor } from "./motion-editor";
 import { serializeMotion } from "./overrides";
@@ -43,7 +43,7 @@ export function MotionEditorHost() {
 		if (!committed) return;
 		let cancelled = false;
 		const source = committed.source;
-		Promise.all([loadLottieJson(source), source.kind === "pack" ? findPackAsset(source.assetId, source.pack) : Promise.resolve(null)])
+		Promise.all([loadLottieJson(source), source.kind === "pack" ? findPackAsset(source.assetId, source.pack) : userAsset(source.id)])
 			.then(([json, asset]) => !cancelled && setLoaded({ key, json, asset }))
 			.catch(() => !cancelled && close());
 		return () => {

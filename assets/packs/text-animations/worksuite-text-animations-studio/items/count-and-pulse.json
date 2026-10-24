@@ -1,0 +1,78 @@
+{
+	"schema": 1,
+	"id": "count-and-pulse",
+	"kind": "animation",
+	"name": {
+		"en": "Count and pulse",
+		"si": "ජවසම්පන්න අංක ගණනය",
+		"ta": "துடிப்பான எண் எண்ணிக்கை"
+	},
+	"category": "counters-numbers",
+	"tags": {
+		"en": [
+			"count",
+			"and",
+			"pulse",
+			"number counter",
+			"blocks",
+			"counters numbers",
+			"energetic"
+		],
+		"si": [
+			"අංක ගණනය",
+			"සම්පූර්ණ",
+			"ජවසම්පන්න"
+		],
+		"ta": [
+			"எண் எண்ணிக்கை",
+			"முழு",
+			"துடிப்பான"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "block",
+		"in": {
+			"effect": "number-counter",
+			"duration": 1.5,
+			"delay": 0,
+			"stagger": 0,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-out-cubic",
+			"intensity": 1,
+			"params": {}
+		},
+		"keyframes": {
+			"tracks": {
+				"scale": [
+					{
+						"t": 1.5,
+						"v": 1,
+						"easing": "ease-out-back"
+					},
+					{
+						"t": 1.7,
+						"v": 1.15,
+						"easing": "ease-in-out"
+					},
+					{
+						"t": 1.95,
+						"v": 1
+					}
+				]
+			}
+		}
+	},
+	"previewText": {
+		"en": "10,000 followers",
+		"si": "අනුගාමිකයන් 10,000",
+		"ta": "10,000 பின்தொடர்பவர்கள்"
+	},
+	"style": {
+		"fontFamily": "Oswald",
+		"fontWeight": 700,
+		"fill": "#FFFFFF"
+	},
+	"duration": 3
+}

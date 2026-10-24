@@ -1,0 +1,201 @@
+{
+	"schema": 1,
+	"id": "pod-quote-pull",
+	"kind": "template",
+	"name": {
+		"en": "Pull quote",
+		"si": "සන්සුන් පොඩ්කාස්ට්",
+		"ta": "அமைதியான பாட்காஸ்ட்"
+	},
+	"category": "podcast",
+	"tags": {
+		"en": [
+			"pull",
+			"quote",
+			"podcast",
+			"episode",
+			"audio",
+			"landscape",
+			"16:9",
+			"fade",
+			"calm"
+		],
+		"si": [
+			"පොඩ්කාස්ට්",
+			"කථාංගය",
+			"තිරස්",
+			"ක්‍රමයෙන් පෙනීම",
+			"සන්සුන්"
+		],
+		"ta": [
+			"பாட்காஸ்ட்",
+			"அத்தியாயம்",
+			"கிடைமட்ட",
+			"மெல்லத் தோன்றல்",
+			"அமைதியான"
+		]
+	},
+	"duration": 5,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "mark",
+			"name": "Quote mark",
+			"text": {
+				"en": "“",
+				"si": "“",
+				"ta": "“"
+			},
+			"x": 0.5,
+			"y": 0.25,
+			"size": 0.18,
+			"style": {
+				"fontFamily": "Syne",
+				"fontWeight": 800,
+				"fill": "#FFEDD5"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "fade",
+					"duration": 1,
+					"delay": 0,
+					"stagger": 0.12,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.8,
+					"delay": 0,
+					"stagger": 0.05,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in",
+					"intensity": 1,
+					"params": {}
+				},
+				"keyframes": {
+					"tracks": {
+						"scale": [
+							{
+								"t": 0,
+								"v": 1.08,
+								"easing": "ease-out-cubic"
+							},
+							{
+								"t": 4,
+								"v": 1
+							}
+						]
+					}
+				}
+			}
+		},
+		{
+			"id": "quote",
+			"name": "Quote",
+			"text": {
+				"en": "Together we go further.",
+				"si": "එක්ව අපි තවත් ඉදිරියට යමු.",
+				"ta": "ஒன்றாக நாம் மேலும் செல்வோம்."
+			},
+			"x": 0.5,
+			"y": 0.5,
+			"size": 0.07,
+			"style": {
+				"fontFamily": "Syne",
+				"fontWeight": 800,
+				"fill": "#FFEDD5"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "fade",
+					"duration": 1,
+					"delay": 0.4,
+					"stagger": 0.12,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.8,
+					"delay": 0,
+					"stagger": 0.05,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in",
+					"intensity": 1,
+					"params": {}
+				},
+				"keyframes": {
+					"tracks": {
+						"scale": [
+							{
+								"t": 0,
+								"v": 1.08,
+								"easing": "ease-out-cubic"
+							},
+							{
+								"t": 4,
+								"v": 1
+							}
+						]
+					}
+				}
+			}
+		},
+		{
+			"id": "author",
+			"name": "Author",
+			"text": {
+				"en": "— Arun Selvam",
+				"si": "— අරුන් සෙල්වම්",
+				"ta": "— அருண் செல்வம்"
+			},
+			"x": 0.5,
+			"y": 0.71,
+			"size": 0.043,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 500,
+				"fill": "#FDBA74"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "fade",
+					"duration": 1,
+					"delay": 0.8,
+					"stagger": 0.08,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

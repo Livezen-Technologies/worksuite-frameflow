@@ -1,0 +1,56 @@
+{
+	"schema": 1,
+	"id": "cinematic-count",
+	"kind": "animation",
+	"name": {
+		"en": "Cinematic count",
+		"si": "සිනමා අංක ගණනය",
+		"ta": "சினிமா எண் எண்ணிக்கை"
+	},
+	"category": "counters-numbers",
+	"tags": {
+		"en": [
+			"cinematic",
+			"count",
+			"number counter",
+			"blocks",
+			"counters numbers"
+		],
+		"si": [
+			"අංක ගණනය",
+			"සම්පූර්ණ",
+			"සිනමා"
+		],
+		"ta": [
+			"எண் எண்ணிக்கை",
+			"முழு",
+			"சினிமா"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "block",
+		"in": {
+			"effect": "number-counter",
+			"duration": 3,
+			"delay": 0,
+			"stagger": 0,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-in-out-cubic",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"previewText": {
+		"en": "1,250,000",
+		"si": "1,250,000",
+		"ta": "1,250,000"
+	},
+	"style": {
+		"fontFamily": "Playfair Display",
+		"fontWeight": 700,
+		"fill": "#FFF4E0"
+	},
+	"duration": 4.5
+}

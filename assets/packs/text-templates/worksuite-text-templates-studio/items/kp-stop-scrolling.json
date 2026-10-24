@@ -1,0 +1,223 @@
+{
+	"schema": 1,
+	"id": "kp-stop-scrolling",
+	"kind": "template",
+	"name": {
+		"en": "Stop scrolling",
+		"si": "හදිසි චලන පෝස්ටරය",
+		"ta": "அவசர இயக்க சுவரொட்டி"
+	},
+	"category": "kinetic-posters",
+	"tags": {
+		"en": [
+			"stop",
+			"scrolling",
+			"kinetic",
+			"poster",
+			"typography",
+			"vertical",
+			"9:16",
+			"story",
+			"scale down",
+			"pulse",
+			"fade",
+			"urgent"
+		],
+		"si": [
+			"චලන",
+			"පෝස්ටරය",
+			"සිරස්",
+			"කුඩා වීම",
+			"ස්පන්දනය",
+			"ක්‍රමයෙන් පෙනීම",
+			"හදිසි"
+		],
+		"ta": [
+			"இயக்கம்",
+			"சுவரொட்டி",
+			"செங்குத்து",
+			"சிறிதாதல்",
+			"துடிப்பு",
+			"மெல்லத் தோன்றல்",
+			"அவசர"
+		]
+	},
+	"duration": 4,
+	"aspect": "9:16",
+	"slots": [
+		{
+			"id": "word1",
+			"name": "Word 1",
+			"text": {
+				"en": "STOP",
+				"si": "නවතින්න",
+				"ta": "நில்லுங்கள்"
+			},
+			"x": 0.5,
+			"y": 0.38,
+			"size": 0.053,
+			"style": {
+				"fontFamily": "Archivo Black",
+				"fontWeight": 400,
+				"fill": "#D9F99D",
+				"stroke": {
+					"color": "#000000",
+					"width": 4
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "scale-down",
+					"duration": 0.35,
+					"delay": 0,
+					"stagger": 0.3,
+					"staggerOrder": "forward",
+					"direction": "out",
+					"easing": "ease-out-expo",
+					"intensity": 1,
+					"params": {}
+				},
+				"emphasis": {
+					"effect": "pulse",
+					"duration": 0.6,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "linear",
+					"intensity": 0.4,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "word2",
+			"name": "Word 2",
+			"text": {
+				"en": "SCROLLING",
+				"si": "පහළට යාම",
+				"ta": "உருட்டுவதை"
+			},
+			"x": 0.5,
+			"y": 0.47,
+			"size": 0.056,
+			"style": {
+				"fontFamily": "Archivo Black",
+				"fontWeight": 400,
+				"fill": "#FFFFFF",
+				"stroke": {
+					"color": "#000000",
+					"width": 4
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "scale-down",
+					"duration": 0.35,
+					"delay": 0.35,
+					"stagger": 0.3,
+					"staggerOrder": "forward",
+					"direction": "out",
+					"easing": "ease-out-expo",
+					"intensity": 1,
+					"params": {}
+				},
+				"emphasis": {
+					"effect": "pulse",
+					"duration": 0.6,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "linear",
+					"intensity": 0.4,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "word3",
+			"name": "Word 3",
+			"text": {
+				"en": "NOW",
+				"si": "කරන්න",
+				"ta": "செய்யுங்கள்"
+			},
+			"x": 0.5,
+			"y": 0.56,
+			"size": 0.053,
+			"style": {
+				"fontFamily": "Archivo Black",
+				"fontWeight": 400,
+				"fill": "#D9F99D",
+				"stroke": {
+					"color": "#000000",
+					"width": 4
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "scale-down",
+					"duration": 0.35,
+					"delay": 0.7,
+					"stagger": 0.3,
+					"staggerOrder": "forward",
+					"direction": "out",
+					"easing": "ease-out-expo",
+					"intensity": 1,
+					"params": {}
+				},
+				"emphasis": {
+					"effect": "pulse",
+					"duration": 0.6,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "linear",
+					"intensity": 0.4,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

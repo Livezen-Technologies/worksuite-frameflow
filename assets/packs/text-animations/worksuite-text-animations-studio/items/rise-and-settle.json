@@ -1,0 +1,75 @@
+{
+	"schema": 1,
+	"id": "rise-and-settle",
+	"kind": "animation",
+	"name": {
+		"en": "Rise and settle",
+		"si": "සුමට නැගීම",
+		"ta": "மிருதுவான எழுச்சி"
+	},
+	"category": "reveals",
+	"tags": {
+		"en": [
+			"rise",
+			"and",
+			"settle",
+			"fade",
+			"words",
+			"reveals",
+			"smooth",
+			"exit"
+		],
+		"si": [
+			"නැගීම",
+			"ක්‍රමයෙන් පෙනීම",
+			"වචන",
+			"සුමට",
+			"ඉවත් වීම"
+		],
+		"ta": [
+			"எழுச்சி",
+			"மெல்லத் தோன்றல்",
+			"சொற்கள்",
+			"மிருதுவான",
+			"வெளியேறல்"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "word",
+		"in": {
+			"effect": "rise",
+			"duration": 0.7,
+			"delay": 0,
+			"stagger": 0.08,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-out-back",
+			"intensity": 1,
+			"params": {}
+		},
+		"out": {
+			"effect": "fade",
+			"duration": 0.4,
+			"delay": 0,
+			"stagger": 0.02,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-in-cubic",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"style": {
+		"fontFamily": "Montserrat",
+		"fontWeight": 800,
+		"fill": "#FFFFFF",
+		"shadow": {
+			"color": "#000000",
+			"blur": 8,
+			"x": 0,
+			"y": 3
+		}
+	},
+	"duration": 3
+}

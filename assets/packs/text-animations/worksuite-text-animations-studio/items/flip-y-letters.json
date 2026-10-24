@@ -1,0 +1,52 @@
+{
+	"schema": 1,
+	"id": "flip-y-letters",
+	"kind": "animation",
+	"name": {
+		"en": "Flip Y letters",
+		"si": "සම්භාව්‍ය හැරවීම",
+		"ta": "கிளாசிக் திருப்பல்"
+	},
+	"category": "3d-flips",
+	"tags": {
+		"en": [
+			"flip",
+			"letters",
+			"flip y",
+			"3d flips",
+			"classic"
+		],
+		"si": [
+			"හැරවීම",
+			"අකුරු",
+			"සම්භාව්‍ය"
+		],
+		"ta": [
+			"திருப்பல்",
+			"எழுத்துகள்",
+			"கிளாசிக்"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "grapheme",
+		"in": {
+			"effect": "flip-y",
+			"duration": 0.6,
+			"delay": 0,
+			"stagger": 0.05,
+			"staggerOrder": "forward",
+			"direction": "left",
+			"easing": "ease-out-back",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"style": {
+		"fontFamily": "Bebas Neue",
+		"fontWeight": 400,
+		"fill": "#FFFFFF",
+		"tracking": 0.04
+	},
+	"duration": 3
+}

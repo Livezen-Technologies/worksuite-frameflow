@@ -1,0 +1,144 @@
+{
+	"schema": 1,
+	"id": "min-breathe",
+	"kind": "template",
+	"name": {
+		"en": "Breathe",
+		"si": "සන්සුන් සරල මාතෘකාව",
+		"ta": "அமைதியான எளிய தலைப்பு"
+	},
+	"category": "minimal",
+	"tags": {
+		"en": [
+			"breathe",
+			"minimal",
+			"clean",
+			"simple",
+			"landscape",
+			"16:9",
+			"fade",
+			"calm"
+		],
+		"si": [
+			"සරල",
+			"පිරිසිදු",
+			"තිරස්",
+			"ක්‍රමයෙන් පෙනීම",
+			"සන්සුන්"
+		],
+		"ta": [
+			"எளிமை",
+			"சுத்தம்",
+			"கிடைமட்ட",
+			"மெல்லத் தோன்றல்",
+			"அமைதியான"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "Breathe",
+				"si": "හුස්ම ගන්න",
+				"ta": "மூச்சு விடுங்கள்"
+			},
+			"x": 0.5,
+			"y": 0.44,
+			"size": 0.116,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 300,
+				"fill": "#FFFFFF",
+				"tracking": 0.06
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "fade",
+					"duration": 1,
+					"delay": 0,
+					"stagger": 0.12,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.8,
+					"delay": 0,
+					"stagger": 0.05,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in",
+					"intensity": 1,
+					"params": {}
+				},
+				"keyframes": {
+					"tracks": {
+						"scale": [
+							{
+								"t": 0,
+								"v": 1.08,
+								"easing": "ease-out-cubic"
+							},
+							{
+								"t": 4,
+								"v": 1
+							}
+						]
+					}
+				}
+			}
+		},
+		{
+			"id": "subtitle",
+			"name": "Subtitle",
+			"text": {
+				"en": "Slow living",
+				"si": "සෙමින් ජීවත් වීම",
+				"ta": "நிதான வாழ்க்கை"
+			},
+			"x": 0.5,
+			"y": 0.6,
+			"size": 0.056,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 400,
+				"fill": "#94A3B8",
+				"tracking": 0.06
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "fade",
+					"duration": 1,
+					"delay": 0.4,
+					"stagger": 0.08,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

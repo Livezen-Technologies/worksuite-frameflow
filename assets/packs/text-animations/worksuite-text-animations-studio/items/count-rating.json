@@ -1,0 +1,59 @@
+{
+	"schema": 1,
+	"id": "count-rating",
+	"kind": "animation",
+	"name": {
+		"en": "Count rating",
+		"si": "සියුම් අංක ගණනය",
+		"ta": "இதமான எண் எண்ணிக்கை"
+	},
+	"category": "counters-numbers",
+	"tags": {
+		"en": [
+			"count",
+			"rating",
+			"number counter",
+			"blocks",
+			"counters numbers",
+			"gentle"
+		],
+		"si": [
+			"අංක ගණනය",
+			"සම්පූර්ණ",
+			"සියුම්"
+		],
+		"ta": [
+			"எண் எண்ணிக்கை",
+			"முழு",
+			"இதமான"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "block",
+		"in": {
+			"effect": "number-counter",
+			"duration": 1.6,
+			"delay": 0,
+			"stagger": 0,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-out-quart",
+			"intensity": 1,
+			"params": {
+				"decimals": 1
+			}
+		}
+	},
+	"previewText": {
+		"en": "4.8 / 5",
+		"si": "4.8 / 5",
+		"ta": "4.8 / 5"
+	},
+	"style": {
+		"fontFamily": "Inter",
+		"fontWeight": 800,
+		"fill": "#FFD166"
+	},
+	"duration": 3
+}

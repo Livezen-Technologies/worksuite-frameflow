@@ -1,0 +1,261 @@
+{
+	"schema": 1,
+	"id": "end-join-pulse",
+	"kind": "template",
+	"name": {
+		"en": "Join pulse",
+		"si": "ජවසම්පන්න අවසන් තිරය",
+		"ta": "துடிப்பான இறுதித் திரை"
+	},
+	"category": "end-screens",
+	"tags": {
+		"en": [
+			"join",
+			"pulse",
+			"end screen",
+			"outro",
+			"thanks",
+			"landscape",
+			"16:9",
+			"pop",
+			"blink",
+			"fade",
+			"energetic"
+		],
+		"si": [
+			"අවසානය",
+			"ස්තූතියි",
+			"තිරස්",
+			"පොප්",
+			"ඇසිපිය",
+			"ක්‍රමයෙන් පෙනීම",
+			"ස්පන්දනය",
+			"ජවසම්පන්න"
+		],
+		"ta": [
+			"முடிவு",
+			"நன்றி",
+			"கிடைமட்ட",
+			"பாப்",
+			"சிமிட்டல்",
+			"மெல்லத் தோன்றல்",
+			"துடிப்பு",
+			"துடிப்பான"
+		]
+	},
+	"duration": 5,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "label",
+			"name": "Label",
+			"text": {
+				"en": "NEW EPISODE",
+				"si": "නව කථාංගය",
+				"ta": "புதிய பகுதி"
+			},
+			"x": 0.5,
+			"y": 0.2,
+			"size": 0.042,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 700,
+				"fill": "#F97316",
+				"tracking": 0.06
+			},
+			"animation": {
+				"version": 1,
+				"unit": "block",
+				"in": {
+					"effect": "pop",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "ease-out-back",
+					"intensity": 1,
+					"params": {}
+				},
+				"emphasis": {
+					"effect": "blink",
+					"duration": 1,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "step",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "Thanks for watching",
+				"si": "නැරඹුවාට ස්තූතියි",
+				"ta": "பார்த்ததற்கு நன்றி"
+			},
+			"x": 0.5,
+			"y": 0.38,
+			"size": 0.102,
+			"style": {
+				"fontFamily": "Poppins",
+				"fontWeight": 800,
+				"fill": "#FFFFFF"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "block",
+				"in": {
+					"effect": "pop",
+					"duration": 0.5,
+					"delay": 0.3,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "ease-out-back",
+					"intensity": 1,
+					"params": {}
+				},
+				"emphasis": {
+					"effect": "pulse",
+					"duration": 1.2,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "linear",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "subtitle",
+			"name": "Subtitle",
+			"text": {
+				"en": "More videos every week",
+				"si": "සෑම සතියකම තවත් වීඩියෝ",
+				"ta": "வாரந்தோறும் வீடியோக்கள்"
+			},
+			"x": 0.5,
+			"y": 0.54,
+			"size": 0.05,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 500,
+				"fill": "#CBD5E1"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "fade",
+					"duration": 0.5,
+					"delay": 0.6,
+					"stagger": 0.05,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "button",
+			"name": "Button",
+			"text": {
+				"en": "JOIN NOW",
+				"si": "දැන් එක්වන්න",
+				"ta": "இப்போதே இணையுங்கள்"
+			},
+			"x": 0.5,
+			"y": 0.72,
+			"size": 0.048,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 800,
+				"fill": "#FFFFFF",
+				"plate": {
+					"color": "#F97316",
+					"padding": 0.45,
+					"radius": 0.5
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "block",
+				"in": {
+					"effect": "pop",
+					"duration": 0.5,
+					"delay": 0.9,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "ease-out-back",
+					"intensity": 1,
+					"params": {}
+				},
+				"emphasis": {
+					"effect": "pulse",
+					"duration": 1.2,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "linear",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

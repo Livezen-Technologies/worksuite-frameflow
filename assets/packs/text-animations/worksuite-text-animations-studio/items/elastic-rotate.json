@@ -1,0 +1,53 @@
+{
+	"schema": 1,
+	"id": "elastic-rotate",
+	"kind": "animation",
+	"name": {
+		"en": "Elastic rotate",
+		"si": "විනෝදජනක භ්‍රමණය",
+		"ta": "விளையாட்டான சுழற்சி"
+	},
+	"category": "elastic",
+	"tags": {
+		"en": [
+			"elastic",
+			"rotate",
+			"rotate in",
+			"letters",
+			"playful"
+		],
+		"si": [
+			"භ්‍රමණය",
+			"අකුරු",
+			"විනෝදජනක"
+		],
+		"ta": [
+			"சுழற்சி",
+			"எழுத்துகள்",
+			"விளையாட்டான"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "grapheme",
+		"in": {
+			"effect": "rotate-in",
+			"duration": 0.9,
+			"delay": 0,
+			"stagger": 0.05,
+			"staggerOrder": "forward",
+			"direction": "right",
+			"easing": "ease-out-elastic",
+			"intensity": 1,
+			"params": {
+				"angle": 45
+			}
+		}
+	},
+	"style": {
+		"fontFamily": "Rubik",
+		"fontWeight": 800,
+		"fill": "#FFFFFF"
+	},
+	"duration": 3
+}

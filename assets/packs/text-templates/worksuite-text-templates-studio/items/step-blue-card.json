@@ -1,0 +1,184 @@
+{
+	"schema": 1,
+	"id": "step-blue-card",
+	"kind": "template",
+	"name": {
+		"en": "Blue step card",
+		"si": "මිත්‍රශීලී පියවර",
+		"ta": "நட்பான படி"
+	},
+	"category": "tutorial-steps",
+	"tags": {
+		"en": [
+			"blue",
+			"step",
+			"card",
+			"tutorial",
+			"how to",
+			"landscape",
+			"16:9",
+			"mask wipe",
+			"fade",
+			"slide",
+			"friendly"
+		],
+		"si": [
+			"පාඩම",
+			"පියවර",
+			"තිරස්",
+			"පිසදැමීම",
+			"ක්‍රමයෙන් පෙනීම",
+			"ලිස්සීම",
+			"මිත්‍රශීලී"
+		],
+		"ta": [
+			"பயிற்சி",
+			"படி",
+			"கிடைமட்ட",
+			"துடைப்பு",
+			"மெல்லத் தோன்றல்",
+			"சறுக்கல்",
+			"நட்பான"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "step",
+			"name": "Step",
+			"text": {
+				"en": "STEP 2",
+				"si": "පියවර 2",
+				"ta": "படி 2"
+			},
+			"x": 0.5,
+			"y": 0.33,
+			"size": 0.052,
+			"style": {
+				"fontFamily": "Poppins",
+				"fontWeight": 700,
+				"fill": "#FFFFFF",
+				"plate": {
+					"color": "#3B82F6",
+					"padding": 0.35,
+					"radius": 0.3
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "block",
+				"in": {
+					"effect": "mask-wipe",
+					"duration": 0.5,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "Choose a colour",
+				"si": "වර්ණයක් තෝරන්න",
+				"ta": "வண்ணம் தேர்வு"
+			},
+			"x": 0.5,
+			"y": 0.5,
+			"size": 0.097,
+			"style": {
+				"fontFamily": "Poppins",
+				"fontWeight": 700,
+				"fill": "#FFFFFF"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "slide",
+					"duration": 0.5,
+					"delay": 0.2,
+					"stagger": 0.06,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "slide",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.04,
+					"staggerOrder": "forward",
+					"direction": "left",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "detail",
+			"name": "Detail",
+			"text": {
+				"en": "Takes about 2 minutes",
+				"si": "මිනිත්තු 2ක් පමණ ගතවේ",
+				"ta": "சுமார் 2 நிமிடங்கள் ஆகும்"
+			},
+			"x": 0.5,
+			"y": 0.65,
+			"size": 0.05,
+			"style": {
+				"fontFamily": "Poppins",
+				"fontWeight": 400,
+				"fill": "#BFDBFE"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "slide",
+					"duration": 0.5,
+					"delay": 0.4,
+					"stagger": 0.04,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {
+						"distance": 0.8
+					}
+				},
+				"out": {
+					"effect": "slide",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.03,
+					"staggerOrder": "forward",
+					"direction": "left",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

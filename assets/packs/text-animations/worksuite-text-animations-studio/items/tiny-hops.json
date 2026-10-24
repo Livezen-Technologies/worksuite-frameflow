@@ -1,0 +1,68 @@
+{
+	"schema": 1,
+	"id": "tiny-hops",
+	"kind": "animation",
+	"name": {
+		"en": "Tiny hops",
+		"si": "පුංචි ක්‍රමයෙන් පෙනීම",
+		"ta": "குட்டி மெல்லத் தோன்றல்"
+	},
+	"category": "pop-bounce",
+	"tags": {
+		"en": [
+			"tiny",
+			"hops",
+			"fade",
+			"bounce",
+			"words",
+			"pop bounce",
+			"loop"
+		],
+		"si": [
+			"ක්‍රමයෙන් පෙනීම",
+			"පැනීම",
+			"වචන",
+			"පුංචි",
+			"ලූප"
+		],
+		"ta": [
+			"மெல்லத் தோன்றல்",
+			"துள்ளல்",
+			"சொற்கள்",
+			"குட்டி",
+			"சுழற்சி"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "word",
+		"in": {
+			"effect": "fade",
+			"duration": 0.3,
+			"delay": 0,
+			"stagger": 0.02,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-out",
+			"intensity": 1,
+			"params": {}
+		},
+		"emphasis": {
+			"effect": "bounce",
+			"duration": 0.7,
+			"delay": 0,
+			"stagger": 0.12,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "linear",
+			"intensity": 0.5,
+			"params": {}
+		}
+	},
+	"style": {
+		"fontFamily": "Inter",
+		"fontWeight": 600,
+		"fill": "#F1F5F9"
+	},
+	"duration": 3
+}

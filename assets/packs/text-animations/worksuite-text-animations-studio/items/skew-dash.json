@@ -1,0 +1,66 @@
+{
+	"schema": 1,
+	"id": "skew-dash",
+	"kind": "animation",
+	"name": {
+		"en": "Skew dash",
+		"si": "වේගවත් ඇලවීම",
+		"ta": "வேகமான சாய்வு"
+	},
+	"category": "kinetic",
+	"tags": {
+		"en": [
+			"skew",
+			"dash",
+			"skew in",
+			"words",
+			"kinetic",
+			"quick",
+			"exit"
+		],
+		"si": [
+			"ඇලවීම",
+			"වචන",
+			"වේගවත්",
+			"ඉවත් වීම"
+		],
+		"ta": [
+			"சாய்வு",
+			"சொற்கள்",
+			"வேகமான",
+			"வெளியேறல்"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "word",
+		"in": {
+			"effect": "skew-in",
+			"duration": 0.4,
+			"delay": 0,
+			"stagger": 0.06,
+			"staggerOrder": "forward",
+			"direction": "left",
+			"easing": "ease-out-expo",
+			"intensity": 1,
+			"params": {}
+		},
+		"out": {
+			"effect": "skew-in",
+			"duration": 0.35,
+			"delay": 0,
+			"stagger": 0.04,
+			"staggerOrder": "forward",
+			"direction": "right",
+			"easing": "ease-in-expo",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"style": {
+		"fontFamily": "Anton",
+		"fontWeight": 400,
+		"fill": "#FFE14D"
+	},
+	"duration": 3
+}

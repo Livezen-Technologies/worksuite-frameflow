@@ -1,0 +1,183 @@
+{
+	"schema": 1,
+	"id": "lt-interview-tag",
+	"kind": "template",
+	"name": {
+		"en": "Interview tag",
+		"si": "වෘත්තීය පහළ පටිය",
+		"ta": "தொழில்முறை கீழ் பட்டை"
+	},
+	"category": "lower-thirds",
+	"tags": {
+		"en": [
+			"interview",
+			"tag",
+			"lower third",
+			"name",
+			"landscape",
+			"16:9",
+			"box reveal",
+			"fade",
+			"mask wipe",
+			"pro"
+		],
+		"si": [
+			"නම",
+			"සම්මුඛ සාකච්ඡාව",
+			"තිරස්",
+			"කොටුව",
+			"ක්‍රමයෙන් පෙනීම",
+			"පිසදැමීම",
+			"වෘත්තීය"
+		],
+		"ta": [
+			"பெயர்",
+			"நேர்காணல்",
+			"கிடைமட்ட",
+			"பெட்டி",
+			"மெல்லத் தோன்றல்",
+			"துடைப்பு",
+			"தொழில்முறை"
+		]
+	},
+	"duration": 5,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "tag",
+			"name": "Tag",
+			"text": {
+				"en": "INTERVIEW",
+				"si": "සම්මුඛ සාකච්ඡාව",
+				"ta": "நேர்காணல்"
+			},
+			"x": 0.14,
+			"y": 0.715,
+			"size": 0.039,
+			"style": {
+				"fontFamily": "Montserrat",
+				"fontWeight": 700,
+				"fill": "#FFFFFF",
+				"plate": {
+					"color": "#2563EB",
+					"padding": 0.35,
+					"radius": 0.1
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "block",
+				"in": {
+					"effect": "box-reveal",
+					"duration": 0.8,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-in-out-cubic",
+					"intensity": 1,
+					"params": {
+						"color": "#2563EB"
+					}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "name",
+			"name": "Name",
+			"text": {
+				"en": "Dilini Jayasuriya",
+				"si": "දිලිනි ජයසූරිය",
+				"ta": "திலினி ஜயசூரிய"
+			},
+			"x": 0.27,
+			"y": 0.79,
+			"size": 0.059,
+			"style": {
+				"fontFamily": "Montserrat",
+				"fontWeight": 800,
+				"fill": "#FFFFFF"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "line",
+				"in": {
+					"effect": "mask-wipe",
+					"duration": 0.7,
+					"delay": 0.25,
+					"stagger": 0.12,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-in-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "mask-wipe",
+					"duration": 0.5,
+					"delay": 0,
+					"stagger": 0.08,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "role",
+			"name": "Role",
+			"text": {
+				"en": "Host",
+				"si": "සත්කාරක",
+				"ta": "தொகுப்பாளர்"
+			},
+			"x": 0.27,
+			"y": 0.865,
+			"size": 0.043,
+			"style": {
+				"fontFamily": "Montserrat",
+				"fontWeight": 500,
+				"fill": "#93C5FD"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "line",
+				"in": {
+					"effect": "mask-wipe",
+					"duration": 0.6,
+					"delay": 0.5,
+					"stagger": 0.1,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-in-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

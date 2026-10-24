@@ -1,0 +1,144 @@
+{
+	"schema": 1,
+	"id": "title-breaking-bar",
+	"kind": "template",
+	"name": {
+		"en": "Breaking bar",
+		"si": "හදිසි මාතෘකාව",
+		"ta": "அவசர தலைப்பு"
+	},
+	"category": "titles",
+	"tags": {
+		"en": [
+			"breaking",
+			"bar",
+			"title",
+			"heading",
+			"intro",
+			"landscape",
+			"16:9",
+			"mask wipe",
+			"fade",
+			"slide",
+			"urgent"
+		],
+		"si": [
+			"මාතෘකාව",
+			"හැඳින්වීම",
+			"තිරස්",
+			"පිසදැමීම",
+			"ක්‍රමයෙන් පෙනීම",
+			"ලිස්සීම",
+			"හදිසි"
+		],
+		"ta": [
+			"தலைப்பு",
+			"அறிமுகம்",
+			"கிடைமட்ட",
+			"துடைப்பு",
+			"மெல்லத் தோன்றல்",
+			"சறுக்கல்",
+			"அவசர"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "label",
+			"name": "Label",
+			"text": {
+				"en": "LIVE",
+				"si": "සජීවී",
+				"ta": "நேரலை"
+			},
+			"x": 0.5,
+			"y": 0.34,
+			"size": 0.052,
+			"style": {
+				"fontFamily": "Montserrat",
+				"fontWeight": 800,
+				"fill": "#B91C1C",
+				"plate": {
+					"color": "#FFFFFF",
+					"padding": 0.35,
+					"radius": 0.05
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "block",
+				"in": {
+					"effect": "mask-wipe",
+					"duration": 0.5,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "BREAKING NEWS",
+				"si": "නවතම පුවත",
+				"ta": "உடனடி செய்தி"
+			},
+			"x": 0.5,
+			"y": 0.5,
+			"size": 0.119,
+			"style": {
+				"fontFamily": "Montserrat",
+				"fontWeight": 800,
+				"fill": "#FFFFFF",
+				"plate": {
+					"color": "#B91C1C",
+					"padding": 0.35,
+					"radius": 0.05
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "slide",
+					"duration": 0.5,
+					"delay": 0.2,
+					"stagger": 0.06,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "slide",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.04,
+					"staggerOrder": "forward",
+					"direction": "left",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

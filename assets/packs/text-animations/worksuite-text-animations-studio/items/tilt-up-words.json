@@ -1,0 +1,52 @@
+{
+	"schema": 1,
+	"id": "tilt-up-words",
+	"kind": "animation",
+	"name": {
+		"en": "Tilt up words",
+		"si": "නවීන ත්‍රිමාණ ඇලවීම",
+		"ta": "நவீன முப்பரிமாண சாய்வு"
+	},
+	"category": "3d-flips",
+	"tags": {
+		"en": [
+			"tilt",
+			"up",
+			"words",
+			"3d tilt",
+			"3d flips",
+			"modern"
+		],
+		"si": [
+			"ත්‍රිමාණ ඇලවීම",
+			"වචන",
+			"නවීන"
+		],
+		"ta": [
+			"முப்பரிமாண சாய்வு",
+			"சொற்கள்",
+			"நவீன"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "word",
+		"in": {
+			"effect": "3d-tilt",
+			"duration": 0.8,
+			"delay": 0,
+			"stagger": 0.08,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-out-cubic",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"style": {
+		"fontFamily": "Unbounded",
+		"fontWeight": 700,
+		"fill": "#FFFFFF"
+	},
+	"duration": 3
+}

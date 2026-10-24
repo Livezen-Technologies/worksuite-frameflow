@@ -1,0 +1,264 @@
+{
+	"schema": 1,
+	"id": "sale-shop-now",
+	"kind": "template",
+	"name": {
+		"en": "Shop now button",
+		"si": "ප්‍රබල දැන්වීම",
+		"ta": "வலுவான விளம்பரம்"
+	},
+	"category": "sales-promo",
+	"tags": {
+		"en": [
+			"shop",
+			"now",
+			"button",
+			"sale",
+			"promo",
+			"discount",
+			"offer",
+			"landscape",
+			"16:9",
+			"pop",
+			"blink",
+			"fade",
+			"pulse",
+			"bold"
+		],
+		"si": [
+			"වට්ටම්",
+			"දීමනාව",
+			"තිරස්",
+			"පොප්",
+			"ඇසිපිය",
+			"ක්‍රමයෙන් පෙනීම",
+			"ස්පන්දනය",
+			"ප්‍රබල"
+		],
+		"ta": [
+			"தள்ளுபடி",
+			"சலுகை",
+			"கிடைமட்ட",
+			"பாப்",
+			"சிமிட்டல்",
+			"மெல்லத் தோன்றல்",
+			"துடிப்பு",
+			"வலுவான"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "label",
+			"name": "Label",
+			"text": {
+				"en": "NEW",
+				"si": "අලුත්",
+				"ta": "புதியது"
+			},
+			"x": 0.5,
+			"y": 0.2,
+			"size": 0.042,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 700,
+				"fill": "#F97316",
+				"tracking": 0.06
+			},
+			"animation": {
+				"version": 1,
+				"unit": "block",
+				"in": {
+					"effect": "pop",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "ease-out-back",
+					"intensity": 1,
+					"params": {}
+				},
+				"emphasis": {
+					"effect": "blink",
+					"duration": 1,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "step",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "NEW ARRIVALS",
+				"si": "නව තොග",
+				"ta": "புதிய வரவுகள்"
+			},
+			"x": 0.5,
+			"y": 0.38,
+			"size": 0.108,
+			"style": {
+				"fontFamily": "Poppins",
+				"fontWeight": 800,
+				"fill": "#FFFFFF"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "block",
+				"in": {
+					"effect": "pop",
+					"duration": 0.5,
+					"delay": 0.3,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "ease-out-back",
+					"intensity": 1,
+					"params": {}
+				},
+				"emphasis": {
+					"effect": "pulse",
+					"duration": 1.2,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "linear",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "subtitle",
+			"name": "Subtitle",
+			"text": {
+				"en": "Limited time only",
+				"si": "සීමිත කාලයකට පමණයි",
+				"ta": "குறுகிய காலம் மட்டும்"
+			},
+			"x": 0.5,
+			"y": 0.54,
+			"size": 0.05,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 500,
+				"fill": "#CBD5E1"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "fade",
+					"duration": 0.5,
+					"delay": 0.6,
+					"stagger": 0.05,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "button",
+			"name": "Button",
+			"text": {
+				"en": "SHOP NOW",
+				"si": "දැන්ම මිලදී ගන්න",
+				"ta": "இப்போதே வாங்குங்கள்"
+			},
+			"x": 0.5,
+			"y": 0.72,
+			"size": 0.048,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 800,
+				"fill": "#FFFFFF",
+				"plate": {
+					"color": "#F97316",
+					"padding": 0.45,
+					"radius": 0.5
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "block",
+				"in": {
+					"effect": "pop",
+					"duration": 0.5,
+					"delay": 0.9,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "ease-out-back",
+					"intensity": 1,
+					"params": {}
+				},
+				"emphasis": {
+					"effect": "pulse",
+					"duration": 1.2,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "linear",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

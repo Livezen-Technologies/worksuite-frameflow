@@ -12,6 +12,8 @@ import type { Mask } from "@/masks/types";
 import type { ParamValues } from "@/params";
 import type { MediaTime } from "@/wasm";
 import type { LottieElementData } from "@/lottie/types";
+import type { TextAnimation } from "@/text-animation/types";
+import type { TextStyleOverrides } from "@/text-animation/element-style";
 
 export type ElementRef = {
 	trackId: string;
@@ -183,6 +185,10 @@ export interface TextElement extends BaseTimelineElement {
 	captionAnchor?: CaptionAnchor;
 	/** Word timings in seconds from the caption's start (AI-46). */
 	words?: TimedWord[];
+	/** Per-letter/word/line animation (text-animation engine). */
+	textAnimation?: TextAnimation;
+	/** Looks beyond the params (gradient fill) used by animated text. */
+	textStyle?: TextStyleOverrides;
 }
 
 export interface StickerElement extends BaseTimelineElement {

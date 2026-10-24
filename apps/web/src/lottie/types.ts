@@ -72,6 +72,8 @@ export interface TextSlotOverride {
 	case?: "as-typed" | "upper" | "lower" | "title";
 	/** #RRGGBB; otherwise the slot's colour slot (after colour overrides). */
 	color?: string;
+	/** Animates the slot's words (text-animation engine); time is the clip's. */
+	textAnimation?: import("@/text-animation/types").TextAnimation;
 }
 
 /** A user's picture in an image slot. */

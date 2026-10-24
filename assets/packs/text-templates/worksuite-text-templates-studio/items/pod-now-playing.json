@@ -1,0 +1,139 @@
+{
+	"schema": 1,
+	"id": "pod-now-playing",
+	"kind": "template",
+	"name": {
+		"en": "Now playing",
+		"si": "සුමට පොඩ්කාස්ට්",
+		"ta": "மிருதுவான பாட்காஸ்ட்"
+	},
+	"category": "podcast",
+	"tags": {
+		"en": [
+			"now",
+			"playing",
+			"podcast",
+			"episode",
+			"audio",
+			"landscape",
+			"16:9",
+			"mask wipe",
+			"fade",
+			"slide",
+			"smooth"
+		],
+		"si": [
+			"පොඩ්කාස්ට්",
+			"කථාංගය",
+			"තිරස්",
+			"පිසදැමීම",
+			"ක්‍රමයෙන් පෙනීම",
+			"ලිස්සීම",
+			"සුමට"
+		],
+		"ta": [
+			"பாட்காஸ்ட்",
+			"அத்தியாயம்",
+			"கிடைமட்ட",
+			"துடைப்பு",
+			"மெல்லத் தோன்றல்",
+			"சறுக்கல்",
+			"மிருதுவான"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "label",
+			"name": "Label",
+			"text": {
+				"en": "NOW PLAYING",
+				"si": "දැන් වාදනය වේ",
+				"ta": "இப்போது ஒலிக்கிறது"
+			},
+			"x": 0.5,
+			"y": 0.34,
+			"size": 0.052,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 700,
+				"fill": "#FFFFFF",
+				"plate": {
+					"color": "#7C3AED",
+					"padding": 0.35,
+					"radius": 0.4
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "block",
+				"in": {
+					"effect": "mask-wipe",
+					"duration": 0.5,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "The Weekly Talk",
+				"si": "සතියේ කතාබහ",
+				"ta": "வார உரையாடல்"
+			},
+			"x": 0.5,
+			"y": 0.5,
+			"size": 0.119,
+			"style": {
+				"fontFamily": "Unbounded",
+				"fontWeight": 700,
+				"fill": "#EDE9FE"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "slide",
+					"duration": 0.5,
+					"delay": 0.2,
+					"stagger": 0.06,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "slide",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.04,
+					"staggerOrder": "forward",
+					"direction": "left",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

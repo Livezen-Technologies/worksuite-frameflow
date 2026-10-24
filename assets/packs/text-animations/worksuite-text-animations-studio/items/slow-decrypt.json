@@ -1,0 +1,58 @@
+{
+	"schema": 1,
+	"id": "slow-decrypt",
+	"kind": "animation",
+	"name": {
+		"en": "Slow decrypt",
+		"si": "සෙමින් අකුරු මිශ්‍රණය",
+		"ta": "மெதுவான எழுத்துக் குழப்பம்"
+	},
+	"category": "typewriter-decode",
+	"tags": {
+		"en": [
+			"slow",
+			"decrypt",
+			"scramble",
+			"lines",
+			"typewriter decode"
+		],
+		"si": [
+			"අකුරු මිශ්‍රණය",
+			"පේළි",
+			"සෙමින්"
+		],
+		"ta": [
+			"எழுத்துக் குழப்பம்",
+			"வரிகள்",
+			"மெதுவான"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "line",
+		"in": {
+			"effect": "scramble",
+			"duration": 1.6,
+			"delay": 0,
+			"stagger": 0.3,
+			"staggerOrder": "forward",
+			"direction": "right",
+			"easing": "linear",
+			"intensity": 1,
+			"params": {
+				"rate": 10
+			}
+		}
+	},
+	"previewText": {
+		"en": "First line here\nSecond line follows",
+		"si": "පළමු පේළිය\nදෙවන පේළිය",
+		"ta": "முதல் வரி\nஇரண்டாம் வரி"
+	},
+	"style": {
+		"fontFamily": "Roboto Mono",
+		"fontWeight": 700,
+		"fill": "#E2E8F0"
+	},
+	"duration": 3.5
+}

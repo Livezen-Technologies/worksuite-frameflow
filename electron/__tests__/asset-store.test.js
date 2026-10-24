@@ -231,11 +231,17 @@ test("built catalog from the repo packs verifies", async () => {
 	const text = fs.readFileSync(path.join(dest, "catalog.json"), "utf8");
 	assert.equal(io.verifyCatalog(text, fs.readFileSync(path.join(dest, "catalog.json.sig"), "utf8"), PUB), true);
 	const ids = catalog.packs.map((p) => p.id).sort();
-	assert.deepEqual(ids, ["subscribe-buttons", "worksuite-essentials", "worksuite-sfx"]);
+	assert.deepEqual(ids, ["subscribe-buttons", "worksuite-essentials", "worksuite-sfx", "worksuite-text-animations", "worksuite-text-animations-studio", "worksuite-text-templates", "worksuite-text-templates-studio"]);
 	const sub = catalog.packs.find((p) => p.id === "subscribe-buttons");
 	const zip = fs.readFileSync(path.join(dest, sub.files));
 	assert.equal(io.sha256(zip), sub.sha256);
 	const names = io.readZip(zip).map((e) => e.name);
 	assert.ok(names.includes("pack.json") && names.includes("index.json"));
 	assert.ok(names.includes("subscribe-buttons/sub-avatar-bar/asset.json"));
+	// Text packs: index.json is generated from categories.json + items/, and counted in the catalog.
+	const textPack = catalog.packs.find((p) => p.id === "worksuite-text-animations");
+	assert.equal(textPack.type, "text-animations");
+	assert.ok(textPack.assetCount >= 12 && textPack.assetIds.includes("typewriter-caret"));
+	const textNames = io.readZip(fs.readFileSync(path.join(dest, textPack.files))).map((e) => e.name);
+	assert.ok(textNames.includes("index.json") && textNames.includes("items/typewriter-caret.json"));
 });

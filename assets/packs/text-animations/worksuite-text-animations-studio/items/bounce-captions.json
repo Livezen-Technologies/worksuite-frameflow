@@ -1,0 +1,60 @@
+{
+	"schema": 1,
+	"id": "bounce-captions",
+	"kind": "animation",
+	"name": {
+		"en": "Bounce captions",
+		"si": "පනින පැනීම",
+		"ta": "துள்ளும் துள்ளல்"
+	},
+	"category": "karaoke-captions",
+	"tags": {
+		"en": [
+			"bounce",
+			"captions",
+			"words",
+			"karaoke captions",
+			"bouncy"
+		],
+		"si": [
+			"පැනීම",
+			"වචන",
+			"පනින"
+		],
+		"ta": [
+			"துள்ளல்",
+			"சொற்கள்",
+			"துள்ளும்"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "word",
+		"in": {
+			"effect": "bounce",
+			"duration": 0.4,
+			"delay": 0,
+			"stagger": 0.35,
+			"staggerOrder": "forward",
+			"direction": "down",
+			"easing": "ease-out-bounce",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"previewText": {
+		"en": "Say it loud and clear",
+		"si": "හයියෙන් පැහැදිලිව කියන්න",
+		"ta": "உரக்கத் தெளிவாகச் சொல்லுங்கள்"
+	},
+	"style": {
+		"fontFamily": "Inter",
+		"fontWeight": 800,
+		"fill": "#FFFFFF",
+		"stroke": {
+			"color": "#000000",
+			"width": 3
+		}
+	},
+	"duration": 3
+}

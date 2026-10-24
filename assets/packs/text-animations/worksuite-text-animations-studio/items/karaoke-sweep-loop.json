@@ -1,0 +1,80 @@
+{
+	"schema": 1,
+	"id": "karaoke-sweep-loop",
+	"kind": "animation",
+	"name": {
+		"en": "Karaoke sweep loop",
+		"si": "නොනවතින ක්‍රමයෙන් පෙනීම",
+		"ta": "தொடர் மெல்லத் தோன்றல்"
+	},
+	"category": "karaoke-captions",
+	"tags": {
+		"en": [
+			"karaoke",
+			"sweep",
+			"loop",
+			"fade",
+			"karaoke fill",
+			"blocks",
+			"karaoke captions",
+			"looping"
+		],
+		"si": [
+			"ක්‍රමයෙන් පෙනීම",
+			"කැරෝකේ",
+			"සම්පූර්ණ",
+			"නොනවතින",
+			"ලූප"
+		],
+		"ta": [
+			"மெல்லத் தோன்றல்",
+			"கரோக்கே",
+			"முழு",
+			"தொடர்",
+			"சுழற்சி"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "block",
+		"in": {
+			"effect": "fade",
+			"duration": 0.3,
+			"delay": 0,
+			"stagger": 0.02,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-out",
+			"intensity": 1,
+			"params": {}
+		},
+		"emphasis": {
+			"effect": "karaoke-fill",
+			"duration": 2.4,
+			"delay": 0,
+			"stagger": 0,
+			"staggerOrder": "forward",
+			"direction": "right",
+			"easing": "linear",
+			"intensity": 1,
+			"params": {
+				"color": "#FFD400"
+			}
+		}
+	},
+	"previewText": {
+		"en": "Say it loud and clear",
+		"si": "හයියෙන් පැහැදිලිව කියන්න",
+		"ta": "உரக்கத் தெளிவாகச் சொல்லுங்கள்"
+	},
+	"style": {
+		"fontFamily": "Inter",
+		"fontWeight": 800,
+		"fill": "#FFFFFF",
+		"stroke": {
+			"color": "#000000",
+			"width": 3
+		}
+	},
+	"duration": 4
+}

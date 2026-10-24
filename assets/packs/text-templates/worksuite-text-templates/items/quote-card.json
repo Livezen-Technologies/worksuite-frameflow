@@ -1,0 +1,116 @@
+{
+	"schema": 1,
+	"id": "quote-card",
+	"kind": "template",
+	"name": {
+		"en": "Quote",
+		"si": "උපුටා දැක්වීම",
+		"ta": "மேற்கோள்"
+	},
+	"category": "quotes",
+	"tags": {
+		"en": [
+			"quote",
+			"inspiration"
+		],
+		"si": [
+			"උපුටා දැක්වීම"
+		],
+		"ta": [
+			"மேற்கோள்"
+		]
+	},
+	"duration": 6,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "quote",
+			"name": "Quote",
+			"text": {
+				"en": "Small steps every day.",
+				"si": "සෑම දිනකම කුඩා පියවර.",
+				"ta": "ஒவ்வொரு நாளும் சிறிய அடிகள்."
+			},
+			"x": 0.5,
+			"y": 0.45,
+			"size": 0.07,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 700,
+				"fill": "#FFFFFF"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "blur-in",
+					"duration": 0.8,
+					"delay": 0,
+					"stagger": 0.15,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"emphasis": {
+					"effect": "float",
+					"duration": 3,
+					"delay": 0,
+					"stagger": 0.2,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-out",
+					"intensity": 0.5,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.5,
+					"delay": 0,
+					"stagger": 0.05,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "author",
+			"name": "Author",
+			"text": {
+				"en": "— Worksuite",
+				"si": "— වර්ක්සුයිට්",
+				"ta": "— வொர்க்சூட்"
+			},
+			"x": 0.5,
+			"y": 0.62,
+			"size": 0.035,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 500,
+				"fill": "#9CA3AF"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "block",
+				"in": {
+					"effect": "fade",
+					"duration": 0.6,
+					"delay": 1.2,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	],
+	"background": {
+		"packAsset": "co-underline"
+	}
+}

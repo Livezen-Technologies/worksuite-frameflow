@@ -1,0 +1,68 @@
+{
+	"schema": 1,
+	"id": "reverse-shrink-letters",
+	"kind": "animation",
+	"name": {
+		"en": "Reverse shrink letters",
+		"si": "ආපසු විශාල වීම",
+		"ta": "தலைகீழ் பெரிதாதல்"
+	},
+	"category": "exits",
+	"tags": {
+		"en": [
+			"reverse",
+			"shrink",
+			"letters",
+			"fade",
+			"scale up",
+			"exits",
+			"exit"
+		],
+		"si": [
+			"ක්‍රමයෙන් පෙනීම",
+			"විශාල වීම",
+			"අකුරු",
+			"ආපසු",
+			"ඉවත් වීම"
+		],
+		"ta": [
+			"மெல்லத் தோன்றல்",
+			"பெரிதாதல்",
+			"எழுத்துகள்",
+			"தலைகீழ்",
+			"வெளியேறல்"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "grapheme",
+		"in": {
+			"effect": "fade",
+			"duration": 0.3,
+			"delay": 0,
+			"stagger": 0.02,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-out",
+			"intensity": 1,
+			"params": {}
+		},
+		"out": {
+			"effect": "scale-up",
+			"duration": 0.4,
+			"delay": 0,
+			"stagger": 0.03,
+			"staggerOrder": "reverse",
+			"direction": "in",
+			"easing": "ease-in-back",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"style": {
+		"fontFamily": "Inter",
+		"fontWeight": 800,
+		"fill": "#FFFFFF"
+	},
+	"duration": 3
+}

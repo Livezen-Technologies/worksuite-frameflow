@@ -1,0 +1,107 @@
+{
+	"schema": 1,
+	"id": "neon-open-sign",
+	"kind": "template",
+	"name": {
+		"en": "Open sign",
+		"si": "දිලෙන නියොන් මාතෘකාව",
+		"ta": "ஒளிரும் நியான் தலைப்பு"
+	},
+	"category": "neon-retro",
+	"tags": {
+		"en": [
+			"open",
+			"sign",
+			"neon",
+			"retro",
+			"80s",
+			"landscape",
+			"16:9",
+			"neon flicker",
+			"fade",
+			"glowing"
+		],
+		"si": [
+			"නියොන්",
+			"රෙට්‍රෝ",
+			"තිරස්",
+			"නියොන් දැල්වීම",
+			"ක්‍රමයෙන් පෙනීම",
+			"දිලෙන"
+		],
+		"ta": [
+			"நியான்",
+			"ரெட்ரோ",
+			"கிடைமட்ட",
+			"நியான் மின்னல்",
+			"மெல்லத் தோன்றல்",
+			"ஒளிரும்"
+		]
+	},
+	"duration": 4.5,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "OPEN 24/7",
+				"si": "පැය 24 පුරා විවෘතයි",
+				"ta": "24/7 திறந்திருக்கும்"
+			},
+			"x": 0.5,
+			"y": 0.5,
+			"size": 0.095,
+			"style": {
+				"fontFamily": "Bungee",
+				"fontWeight": 400,
+				"fill": "#EFFFD6",
+				"glow": {
+					"color": "#8CFF2E",
+					"size": 0.4
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "grapheme",
+				"in": {
+					"effect": "neon-flicker",
+					"duration": 0.9,
+					"delay": 0,
+					"stagger": 0.05,
+					"staggerOrder": "random(5)",
+					"direction": "in",
+					"easing": "linear",
+					"intensity": 1,
+					"params": {
+						"color": "#8CFF2E"
+					}
+				},
+				"emphasis": {
+					"effect": "neon-flicker",
+					"duration": 2,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "linear",
+					"intensity": 0.7,
+					"params": {
+						"color": "#8CFF2E"
+					}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

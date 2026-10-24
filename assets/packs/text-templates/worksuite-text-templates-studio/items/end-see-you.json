@@ -1,0 +1,158 @@
+{
+	"schema": 1,
+	"id": "end-see-you",
+	"kind": "template",
+	"name": {
+		"en": "See you next time",
+		"si": "උණුසුම් අවසන් තිරය",
+		"ta": "கதகதப்பான இறுதித் திரை"
+	},
+	"category": "end-screens",
+	"tags": {
+		"en": [
+			"see",
+			"you",
+			"next",
+			"time",
+			"end screen",
+			"outro",
+			"thanks",
+			"landscape",
+			"16:9",
+			"rise",
+			"float",
+			"fade",
+			"warm"
+		],
+		"si": [
+			"අවසානය",
+			"ස්තූතියි",
+			"තිරස්",
+			"නැගීම",
+			"පාවීම",
+			"ක්‍රමයෙන් පෙනීම",
+			"උණුසුම්"
+		],
+		"ta": [
+			"முடிவு",
+			"நன்றி",
+			"கிடைமட்ட",
+			"எழுச்சி",
+			"மிதத்தல்",
+			"மெல்லத் தோன்றல்",
+			"கதகதப்பான"
+		]
+	},
+	"duration": 5,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "See you next time",
+				"si": "ඊළඟ වතාවේ හමුවෙමු",
+				"ta": "மீண்டும் சந்திப்போம்"
+			},
+			"x": 0.5,
+			"y": 0.42,
+			"size": 0.097,
+			"style": {
+				"fontFamily": "Caveat",
+				"fontWeight": 700,
+				"fill": "#FFFFFF"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "rise",
+					"duration": 0.8,
+					"delay": 0,
+					"stagger": 0.1,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"emphasis": {
+					"effect": "float",
+					"duration": 3,
+					"delay": 0,
+					"stagger": 0.15,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "linear",
+					"intensity": 0.6,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "subtitle",
+			"name": "Subtitle",
+			"text": {
+				"en": "Bye for now!",
+				"si": "එහෙනම් ආයෙත් හමුවෙමු!",
+				"ta": "மீண்டும் சந்திப்போம்!"
+			},
+			"x": 0.5,
+			"y": 0.58,
+			"size": 0.05,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 500,
+				"fill": "#E9D5FF"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "fade",
+					"duration": 0.7,
+					"delay": 0.35,
+					"stagger": 0.05,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"emphasis": {
+					"effect": "float",
+					"duration": 3,
+					"delay": 0,
+					"stagger": 0.1,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "linear",
+					"intensity": 0.4,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

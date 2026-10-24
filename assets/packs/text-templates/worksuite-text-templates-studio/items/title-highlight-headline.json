@@ -1,0 +1,142 @@
+{
+	"schema": 1,
+	"id": "title-highlight-headline",
+	"kind": "template",
+	"name": {
+		"en": "Highlight headline",
+		"si": "දීප්තිමත් මාතෘකාව",
+		"ta": "பிரகாசமான தலைப்பு"
+	},
+	"category": "titles",
+	"tags": {
+		"en": [
+			"highlight",
+			"headline",
+			"title",
+			"heading",
+			"intro",
+			"landscape",
+			"16:9",
+			"highlight sweep",
+			"fade",
+			"bright"
+		],
+		"si": [
+			"මාතෘකාව",
+			"හැඳින්වීම",
+			"තිරස්",
+			"ඉස්මතු කිරීම",
+			"ක්‍රමයෙන් පෙනීම",
+			"දීප්තිමත්"
+		],
+		"ta": [
+			"தலைப்பு",
+			"அறிமுகம்",
+			"கிடைமட்ட",
+			"சிறப்பித்தல்",
+			"மெல்லத் தோன்றல்",
+			"பிரகாசமான"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"background": {
+		"packAsset": "co-highlight-swipe"
+	},
+	"slots": [
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "This changes everything",
+				"si": "මෙය සියල්ල වෙනස් කරයි",
+				"ta": "இது எல்லாவற்றையும் மாற்றும்"
+			},
+			"x": 0.5,
+			"y": 0.44,
+			"size": 0.071,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 800,
+				"fill": "#FFFFFF",
+				"shadow": {
+					"color": "#000000",
+					"blur": 18,
+					"x": 0,
+					"y": 4
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "highlight-sweep",
+					"duration": 0.5,
+					"delay": 0,
+					"stagger": 0.2,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-in-out",
+					"intensity": 1,
+					"params": {
+						"color": "#FFD166"
+					}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "subtitle",
+			"name": "Subtitle",
+			"text": {
+				"en": "Listen closely",
+				"si": "හොඳින් සවන් දෙන්න",
+				"ta": "கவனமாகக் கேளுங்கள்"
+			},
+			"x": 0.5,
+			"y": 0.6,
+			"size": 0.056,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 500,
+				"fill": "#CBD5E1"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "fade",
+					"duration": 0.5,
+					"delay": 0.3,
+					"stagger": 0.05,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

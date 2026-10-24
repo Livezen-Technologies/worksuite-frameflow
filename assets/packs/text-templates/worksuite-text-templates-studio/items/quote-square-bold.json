@@ -1,0 +1,174 @@
+{
+	"schema": 1,
+	"id": "quote-square-bold",
+	"kind": "template",
+	"name": {
+		"en": "Square bold quote",
+		"si": "හතරැස් උපුටනය",
+		"ta": "சதுர மேற்கோள்"
+	},
+	"category": "quotes",
+	"tags": {
+		"en": [
+			"square",
+			"bold",
+			"quote",
+			"saying",
+			"motivation",
+			"1:1",
+			"pop",
+			"rise",
+			"fade"
+		],
+		"si": [
+			"උපුටනය",
+			"අභිප්‍රේරණය",
+			"හතරැස්",
+			"පොප්",
+			"නැගීම",
+			"ක්‍රමයෙන් පෙනීම"
+		],
+		"ta": [
+			"மேற்கோள்",
+			"ஊக்கம்",
+			"சதுரம்",
+			"பாப்",
+			"எழுச்சி",
+			"மெல்லத் தோன்றல்",
+			"சதுர"
+		]
+	},
+	"duration": 4,
+	"aspect": "1:1",
+	"slots": [
+		{
+			"id": "mark",
+			"name": "Quote mark",
+			"text": {
+				"en": "“",
+				"si": "“",
+				"ta": "“"
+			},
+			"x": 0.5,
+			"y": 0.24,
+			"size": 0.16,
+			"style": {
+				"fontFamily": "Archivo Black",
+				"fontWeight": 400,
+				"fill": "#FDE047"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "pop",
+					"duration": 0.45,
+					"delay": 0,
+					"stagger": 0.08,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "ease-out-back",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "pop",
+					"duration": 0.3,
+					"delay": 0,
+					"stagger": 0.04,
+					"staggerOrder": "reverse",
+					"direction": "in",
+					"easing": "ease-in-back",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "quote",
+			"name": "Quote",
+			"text": {
+				"en": "Keep going.",
+				"si": "දිගටම ඉදිරියට යන්න.",
+				"ta": "தொடர்ந்து முன்னேறுங்கள்."
+			},
+			"x": 0.5,
+			"y": 0.48,
+			"size": 0.045,
+			"style": {
+				"fontFamily": "Archivo Black",
+				"fontWeight": 400,
+				"fill": "#FFFFFF"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "pop",
+					"duration": 0.45,
+					"delay": 0.3,
+					"stagger": 0.08,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "ease-out-back",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "pop",
+					"duration": 0.3,
+					"delay": 0,
+					"stagger": 0.04,
+					"staggerOrder": "reverse",
+					"direction": "in",
+					"easing": "ease-in-back",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "author",
+			"name": "Author",
+			"text": {
+				"en": "— Sri Lankan saying",
+				"si": "— ශ්‍රී ලාංකේය කියමනක්",
+				"ta": "— இலங்கைப் பழமொழி"
+			},
+			"x": 0.5,
+			"y": 0.7,
+			"size": 0.044,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 600,
+				"fill": "#FDE047"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "rise",
+					"duration": 0.5,
+					"delay": 0.6,
+					"stagger": 0.05,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

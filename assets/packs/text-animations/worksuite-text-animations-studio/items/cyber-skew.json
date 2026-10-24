@@ -1,0 +1,68 @@
+{
+	"schema": 1,
+	"id": "cyber-skew",
+	"kind": "animation",
+	"name": {
+		"en": "Cyber skew",
+		"si": "විදුලි ඇලවීම",
+		"ta": "மின் சாய்வு"
+	},
+	"category": "glitch",
+	"tags": {
+		"en": [
+			"cyber",
+			"skew",
+			"skew in",
+			"glitch",
+			"words",
+			"electric",
+			"loop"
+		],
+		"si": [
+			"ඇලවීම",
+			"ග්ලිච්",
+			"වචන",
+			"විදුලි",
+			"ලූප"
+		],
+		"ta": [
+			"சாய்வு",
+			"கிளிட்ச்",
+			"சொற்கள்",
+			"மின்",
+			"சுழற்சி"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "word",
+		"in": {
+			"effect": "skew-in",
+			"duration": 0.4,
+			"delay": 0,
+			"stagger": 0.05,
+			"staggerOrder": "forward",
+			"direction": "right",
+			"easing": "ease-out-expo",
+			"intensity": 1,
+			"params": {}
+		},
+		"emphasis": {
+			"effect": "glitch",
+			"duration": 2.4,
+			"delay": 0,
+			"stagger": 0,
+			"staggerOrder": "forward",
+			"direction": "right",
+			"easing": "linear",
+			"intensity": 0.4,
+			"params": {}
+		}
+	},
+	"style": {
+		"fontFamily": "Space Grotesk",
+		"fontWeight": 700,
+		"fill": "#FFFFFF"
+	},
+	"duration": 4.5
+}

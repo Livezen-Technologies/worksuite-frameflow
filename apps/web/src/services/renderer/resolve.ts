@@ -874,6 +874,14 @@ function resolveTextNode({
 		})(),
 		measuredText,
 		styleEffects,
+		...(node.params.textAnimation
+			? {
+					textAnimationTime: {
+						time: localTime / TICKS_PER_SECOND,
+						duration: node.params.duration / TICKS_PER_SECOND,
+					},
+				}
+			: {}),
 	};
 }
 

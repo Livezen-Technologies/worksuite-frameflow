@@ -1,0 +1,66 @@
+{
+	"schema": 1,
+	"id": "caption-karaoke",
+	"kind": "template",
+	"name": {
+		"en": "Karaoke caption",
+		"si": "කැරෝකේ උපසිරැසි",
+		"ta": "கரோக்கே வசனம்"
+	},
+	"category": "captions",
+	"tags": {
+		"en": [
+			"captions",
+			"karaoke",
+			"subtitle"
+		],
+		"si": [
+			"කැරෝකේ උපසිරැසි"
+		],
+		"ta": [
+			"கரோக்கே வசனம்"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "caption",
+			"name": "Caption",
+			"text": {
+				"en": "Sing along with every word",
+				"si": "හැම වචනයක් සමඟම ගායනා කරන්න",
+				"ta": "ஒவ்வொரு சொல்லுடனும் பாடுங்கள்"
+			},
+			"x": 0.5,
+			"y": 0.85,
+			"size": 0.055,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 700,
+				"fill": "#FFFFFF",
+				"stroke": {
+					"color": "#000000",
+					"width": 4
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "karaoke-fill",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.4,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "linear",
+					"intensity": 1,
+					"params": {
+						"color": "#FFD400"
+					}
+				}
+			}
+		}
+	]
+}
