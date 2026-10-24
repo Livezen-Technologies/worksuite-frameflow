@@ -8,7 +8,7 @@ on:
     inputs:
       base:
         description: Feed base URL
-        default: https://frameflow.worksuitecloud.com/library
+        default: https://frameflow.worksuitecloud.com/library/feed
       channel:
         description: Channel
         default: stable
@@ -26,5 +26,5 @@ jobs:
           BASE: ${{ inputs.base }}
           CHANNEL: ${{ inputs.channel }}
         run: |
-          node scripts/assets/probe-library.mjs || true
+          node scripts/assets/probe-library-signing.mjs "$BASE" || true
           node scripts/assets/check-library-feed.mjs "$BASE" "$CHANNEL"

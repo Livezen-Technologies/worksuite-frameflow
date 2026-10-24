@@ -6,7 +6,7 @@ import { createPublicKey, verify } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
-const base = (process.argv[2] || "https://frameflow.worksuitecloud.com/library").replace(/\/$/, "");
+const base = (process.argv[2] || "https://frameflow.worksuitecloud.com/library/feed").replace(/\/$/, "");
 const channel = process.argv[3] || "stable";
 const store = readFileSync(join(import.meta.dirname, "..", "..", "electron", "asset-store.js"), "utf8");
 const pem = /"(-----BEGIN PUBLIC KEY-----\\n[^"]+-----END PUBLIC KEY-----\\n)"/.exec(store)?.[1]?.replace(/\\n/g, "\n");

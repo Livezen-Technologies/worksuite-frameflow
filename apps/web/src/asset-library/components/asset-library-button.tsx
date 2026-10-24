@@ -130,7 +130,7 @@ function AssetLibraryHost() {
 						state={state ?? OFFLINE_STATE}
 						desktop={!!bridge}
 						initialType={(focusType as PackType | null) ?? null}
-						catalogBase={state ? `${process.env.NEXT_PUBLIC_WSC_ASSET_URL ?? "https://frameflow.worksuitecloud.com/library"}/${state.settings.channel}/` : undefined}
+						catalogBase={state ? `${process.env.NEXT_PUBLIC_WSC_ASSET_URL ?? "https://frameflow.worksuitecloud.com/library/feed"}/${state.settings.channel}/` : undefined}
 						onClose={() => setOpen(false)}
 						actions={{
 							install: (id) => void install(id),

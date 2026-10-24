@@ -219,6 +219,6 @@ The Asset Library (editor header → **Assets**, or the links in Animations and 
 
 **Signing key.** Generate a pair with `node -e 'const c=require("crypto");const k=c.generateKeyPairSync("ed25519");console.log(k.privateKey.export({type:"pkcs8",format:"pem"}));console.log(k.publicKey.export({type:"spki",format:"pem"}))'`, store the private key as the `ASSET_SIGNING_KEY` secret and put the public key in `CATALOG_PUBLIC_KEY` in `electron/asset-store.js`.
 
-**Environment overrides.** `WSC_ASSET_URL` (default `https://frameflow.worksuitecloud.com/library`, the FrameFlow library) points the app at another download center; `WSC_ASSET_PUBLIC_KEY` replaces the embedded public key (for a dev catalog signed with your own key).
+**Environment overrides.** `WSC_ASSET_URL` (default `https://frameflow.worksuitecloud.com/library/feed`, the FrameFlow library) points the app at another download center; `WSC_ASSET_PUBLIC_KEY` replaces the embedded public key (for a dev catalog signed with your own key).
 
 **Motion Editor.** Pack animations can declare `textSlots` and `imageSlots` in `asset.json` (layers named `slot:text:<id>` / `slot:image:<id>`). Changing a slot's words draws live text (Canvas 2D, bundled Noto Sinhala/Tamil fonts) that follows the layer and fits its box, with the authored outlines as the fallback; a picture in an image slot (such as a channel photo in `sub-avatar-bar`'s avatar) is clipped to the slot's shape and follows its animation. The validator checks every slot names a real layer.
