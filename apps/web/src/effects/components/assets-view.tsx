@@ -16,8 +16,12 @@ import type { EffectCategory, EffectDefinition } from "@/effects/types";
 import { cn } from "@/utils/ui";
 import { useEffectLibrary, type EffectStackPreset } from "../presets";
 import { PrivacyButtons } from "@/privacy/components/privacy-buttons";
+import { effectStackParser, usePackItems } from "@/asset-library/pack-items";
 
-const CATEGORIES: (EffectCategory | "All" | "Favourites" | "My presets")[] = [
+/** Downloaded effect stacks, keeping only effects this build has. */
+const parsePackStack = effectStackParser({ knownType: (type) => effectsRegistry.getAll().some((e) => e.type === type) });
+
+const CATEGORIES: (EffectCategory | "All" | "Favourites" | "My presets" | "Downloaded")[] = [
 	"All",
 	"Blur",
 	"Stylise",
@@ -27,6 +31,7 @@ const CATEGORIES: (EffectCategory | "All" | "Favourites" | "My presets")[] = [
 	"Color",
 	"Favourites",
 	"My presets",
+	"Downloaded",
 ];
 
 /** Adds effects to every selected visual clip; returns how many got them. */
@@ -69,6 +74,7 @@ export function EffectsView() {
 	const [category, setCategory] = useState<(typeof CATEGORIES)[number]>("All");
 	const favourites = useEffectLibrary((s) => s.favourites);
 	const presets = useEffectLibrary((s) => s.presets);
+	const downloaded = usePackItems({ types: ["effects"], parse: parsePackStack }).map((d) => d.value);
 
 	const visible = useMemo(() => {
 		const q = query.trim().toLowerCase();
@@ -107,7 +113,7 @@ export function EffectsView() {
 					role="group"
 					aria-label="Category"
 				>
-					{CATEGORIES.map((name) => (
+					{CATEGORIES.filter((name) => name !== "Downloaded" || downloaded.length > 0).map((name) => (
 						<button
 							key={name}
 							type="button"
@@ -124,8 +130,8 @@ export function EffectsView() {
 						</button>
 					))}
 				</div>
-				{category === "My presets" ? (
-					<PresetList presets={presets} />
+				{category === "My presets" || category === "Downloaded" ? (
+					<PresetList presets={category === "Downloaded" ? downloaded : presets} removable={category === "My presets"} />
 				) : (
 					<>
 						<div
@@ -161,7 +167,7 @@ export function EffectsView() {
 	);
 }
 
-function PresetList({ presets }: { presets: EffectStackPreset[] }) {
+function PresetList({ presets, removable = true }: { presets: EffectStackPreset[]; removable?: boolean }) {
 	const addToSelection = useAddToSelection();
 	const removePreset = useEffectLibrary((s) => s.removePreset);
 	if (presets.length === 0) {
@@ -202,14 +208,16 @@ function PresetList({ presets }: { presets: EffectStackPreset[] }) {
 					>
 						Apply
 					</button>
-					<button
-						type="button"
-						aria-label={`Delete preset ${preset.name}`}
-						className="text-muted-foreground hover:text-destructive px-1 text-sm"
-						onClick={() => removePreset(preset.id)}
-					>
-						×
-					</button>
+					{removable && (
+						<button
+							type="button"
+							aria-label={`Delete preset ${preset.name}`}
+							className="text-muted-foreground hover:text-destructive px-1 text-sm"
+							onClick={() => removePreset(preset.id)}
+						>
+							×
+						</button>
+					)}
 				</li>
 			))}
 		</ul>

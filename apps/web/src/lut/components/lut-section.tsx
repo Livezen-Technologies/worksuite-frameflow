@@ -31,6 +31,7 @@ import {
 } from "../cameras";
 import { useFootageCameras } from "../detect";
 import { importLutFiles, removeLut, useLutLibrary } from "../library";
+import { asFile, packItemFile, usePackItems } from "@/asset-library/pack-items";
 
 const BRANDS: CameraBrand[] = ["DJI", "GoPro", "Insta360"];
 
@@ -214,7 +215,7 @@ export function LutSection() {
 		});
 	};
 
-	const onFiles = async (files: FileList | null) => {
+	const onFiles = async (files: FileList | File[] | null) => {
 		const list = Array.from(files ?? []);
 		if (list.length === 0) return;
 		const { added, failed } = await importLutFiles(list);
@@ -256,6 +257,17 @@ export function LutSection() {
 		);
 
 	const creative = library.luts.filter((l) => l.kind === "creative");
+	const downloaded = usePackItems({ types: ["luts"], parse: asFile })
+		.map((d) => d.value)
+		.filter((item) => /\.cube$/i.test(item.url));
+	const fileNameOf = (url: string) => url.split("/").pop() ?? url;
+	const addDownloaded = async (item: (typeof downloaded)[number]) => {
+		try {
+			await onFiles([await packItemFile({ item })]);
+		} catch (error) {
+			toast.error(error instanceof Error ? error.message : `Couldn't add ${item.name}`);
+		}
+	};
 	const intensity = dragIntensity ?? cameraLut?.intensity ?? 100;
 
 	return (
@@ -285,6 +297,30 @@ export function LutSection() {
 					</Button>
 				</div>
 			</div>
+			{downloaded.length > 0 && (
+				<div className="flex flex-col gap-1" data-lut-downloads>
+					<span className="text-muted-foreground text-xs">Downloaded from the Asset Library</span>
+					<div className="flex flex-wrap gap-1">
+						{downloaded.map((item) => {
+							const have = library.luts.some((l) => l.fileName === fileNameOf(item.url));
+							return (
+								<button
+									key={item.id}
+									type="button"
+									disabled={have}
+									title={have ? "Already in your LUTs" : "Add to your LUTs"}
+									onClick={() => void addDownloaded(item)}
+									className="bg-card flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs disabled:opacity-60"
+									data-lut-download={item.id}
+								>
+									{have && <Check className="size-3" />}
+									{item.name}
+								</button>
+							);
+						})}
+					</div>
+				</div>
+			)}
 			<input
 				ref={fileRef}
 				type="file"

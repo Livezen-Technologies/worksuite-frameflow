@@ -11,6 +11,7 @@ import type { ImageElement, TimelineTrack, VideoElement } from "@/timeline";
 import { TICKS_PER_SECOND } from "@/wasm";
 import { cn } from "@/utils/ui";
 import { useTransitionPresets } from "../presets";
+import { parseTransition, usePackItems } from "@/asset-library/pack-items";
 import {
 	TRANSITION_CATEGORIES,
 	TRANSITIONS,
@@ -102,6 +103,7 @@ export function TransitionsView() {
 	const presets = useTransitionPresets((s) => s.presets);
 	const savePreset = useTransitionPresets((s) => s.save);
 	const removePreset = useTransitionPresets((s) => s.remove);
+	const downloaded = usePackItems({ types: ["transitions"], parse: parseTransition });
 	const [presetName, setPresetName] = useState<string | null>(null);
 
 	const selection = editor.timeline.getElementsWithTracks({
@@ -228,6 +230,37 @@ export function TransitionsView() {
 						</button>
 					))}
 				</div>
+
+				{downloaded.length > 0 && (
+					<div className="flex flex-col gap-1" data-transition-downloads>
+						<span className="text-muted-foreground text-xs">Downloaded</span>
+						<div className="flex flex-wrap gap-1">
+							{downloaded.map(({ value: preset }) => (
+								<button
+									key={preset.id}
+									type="button"
+									className="bg-card rounded-full border px-2.5 py-1 text-xs"
+									title="Click to load, double-click to apply to the selected cut"
+									onClick={() => {
+										const { type: presetType, ...rest } = preset.value;
+										setType(presetType);
+										setSettings(rest);
+									}}
+									onDoubleClick={() => {
+										if (!cut) return;
+										editor.timeline.updateElements({
+											updates: [applyToCut({ target: cut, value: preset.value })],
+										});
+										toast.success(`${preset.name} added to the cut before “${cut.to.name}”`);
+									}}
+									data-transition-download={preset.id}
+								>
+									{preset.name}
+								</button>
+							))}
+						</div>
+					</div>
+				)}
 
 				{presets.length > 0 && (
 					<div className="flex flex-col gap-1" data-transition-presets>
