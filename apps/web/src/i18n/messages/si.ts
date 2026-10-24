@@ -57,4 +57,8 @@ export const si: Record<string, string> = {
 	"Click an element on the timeline to edit its properties":
 		"ගුණාංග සංස්කරණයට කාලරේඛාවේ අංගයක් ක්ලික් කරන්න",
 	"Aspect ratio": "දර්ශන අනුපාතය",
+	// Docked panel titles
+	Player: "ධාවකය",
+	Properties: "ගුණාංග",
+	Timeline: "කාලරේඛාව",
 };

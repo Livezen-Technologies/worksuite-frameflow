@@ -183,7 +183,7 @@ export function WorkspaceBar() {
 									onCheckedChange={(on) => (on ? dock.reopen(id) : dock.close(id))}
 									data-panel-toggle={id}
 								>
-									{PANEL_TITLES[id]}
+									{t(PANEL_TITLES[id])}
 								</DropdownMenuCheckboxItem>
 							);
 						})}

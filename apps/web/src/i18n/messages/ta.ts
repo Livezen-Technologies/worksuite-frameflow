@@ -57,4 +57,8 @@ export const ta: Record<string, string> = {
 	"Click an element on the timeline to edit its properties":
 		"பண்புகளைத் திருத்த காலவரிசையில் ஒரு கூறைக் கிளிக் செய்யவும்",
 	"Aspect ratio": "விகிதம்",
+	// Docked panel titles
+	Player: "இயக்கி",
+	Properties: "பண்புகள்",
+	Timeline: "காலவரிசை",
 };

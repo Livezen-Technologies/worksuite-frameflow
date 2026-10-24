@@ -5,6 +5,7 @@ import { Maximize2, Minimize2, X } from "lucide-react";
 import { cn } from "@/utils/ui";
 import { isDockPanelId, zoneAt, type DockPanelId, type DockRow, type DockSlot, type DockZone } from "../layout";
 import { useDockStore } from "../store";
+import { useT } from "@/i18n";
 
 export const PANEL_TITLES: Record<DockPanelId, string> = {
 	media: "Media",
@@ -42,6 +43,7 @@ export function DockSlotFrame({
 }) {
 	const { dock, close, show, toggleMaximized, maximized } = useDockStore();
 	const [zone, setZone] = useState<DockZone | null>(null);
+	const t = useT();
 
 	const zoneFor = (e: React.DragEvent<HTMLElement>) => {
 		const box = e.currentTarget.getBoundingClientRect();
@@ -70,7 +72,7 @@ export function DockSlotFrame({
 						)}
 						data-dock-title={id}
 					>
-						{PANEL_TITLES[id]}
+						{t(PANEL_TITLES[id])}
 					</button>
 				))}
 				<span className="flex-1" />

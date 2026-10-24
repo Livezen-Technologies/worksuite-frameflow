@@ -1,6 +1,30 @@
 import type { LocaleCode } from "./locales";
 import { si } from "./messages/si";
 import { ta } from "./messages/ta";
+import { ar } from "./messages/ar";
+import { bn } from "./messages/bn";
+import { de } from "./messages/de";
+import { es } from "./messages/es";
+import { fa } from "./messages/fa";
+import { fr } from "./messages/fr";
+import { he } from "./messages/he";
+import { hi } from "./messages/hi";
+import { id } from "./messages/id";
+import { it } from "./messages/it";
+import { ja } from "./messages/ja";
+import { ko } from "./messages/ko";
+import { ms } from "./messages/ms";
+import { nl } from "./messages/nl";
+import { pl } from "./messages/pl";
+import { pt } from "./messages/pt";
+import { ru } from "./messages/ru";
+import { sv } from "./messages/sv";
+import { th } from "./messages/th";
+import { tr } from "./messages/tr";
+import { uk } from "./messages/uk";
+import { ur } from "./messages/ur";
+import { vi } from "./messages/vi";
+import { zh } from "./messages/zh";
 
 /**
  * Interface text is written in English in the code and looked up here by
@@ -10,7 +34,34 @@ import { ta } from "./messages/ta";
 export const CATALOGS: Record<
 	Exclude<LocaleCode, "en">,
 	Record<string, string>
-> = { si, ta };
+> = {
+	si,
+	ta,
+	ar,
+	bn,
+	de,
+	es,
+	fa,
+	fr,
+	he,
+	hi,
+	id,
+	it,
+	ja,
+	ko,
+	ms,
+	nl,
+	pl,
+	pt,
+	ru,
+	sv,
+	th,
+	tr,
+	uk,
+	ur,
+	vi,
+	zh,
+};
 
 export function translate({
 	text,

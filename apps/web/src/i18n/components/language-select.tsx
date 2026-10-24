@@ -23,6 +23,7 @@ export function LanguageSelect({ className }: { className?: string }) {
 				<option key={l.code} value={l.code}>
 					{l.native}
 					{l.native !== l.name ? ` (${l.name})` : ""}
+					{l.reviewed ? "" : " · machine translation"}
 				</option>
 			))}
 		</select>

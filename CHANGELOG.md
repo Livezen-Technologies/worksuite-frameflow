@@ -9,6 +9,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
+- 24 more interface languages: Arabic, Bengali, Chinese (Simplified), Dutch, French, German, Hebrew, Hindi, Indonesian, Italian, Japanese, Korean, Malay, Persian, Polish, Portuguese, Russian, Spanish, Swedish, Thai, Turkish, Ukrainian, Urdu and Vietnamese. Arabic, Hebrew, Persian and Urdu lay the interface out right to left. These are machine translations awaiting review by native speakers, and the language list says so.
 - Dockable panels: drag a panel's title onto another panel to dock it beside it, above or below, or as a tab; close panels and reopen them from Workspace options → Panels; press ` to maximise the panel under the pointer and again to restore. Switching workspace or Reset panel docking puts panels back.
 - Drag a project tab out of the window to open that project in its own window where you drop it, and drag it onto the main window's project switcher to bring it back.
 - Claude and OpenAI as AI providers: pick one in Settings → AI and add your own key for translation, clean-up and clip suggestions. Cloud transcription still uses Gemini.
