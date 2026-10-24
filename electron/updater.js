@@ -8,7 +8,7 @@
 // restart. Ad-hoc-signed macOS builds can't self-install (Squirrel.Mac
 // needs a Developer ID signature), so they show the update and open the
 // download center instead; .deb installs are updated the same way.
-const { app, shell, BrowserWindow } = require("electron");
+const { app, shell, BrowserWindow, Notification } = require("electron");
 const fs = require("node:fs");
 const path = require("node:path");
 
@@ -16,15 +16,18 @@ const FEED_BASE = process.env.WSC_UPDATE_URL || "https://download.worksuitecloud
 const DOWNLOAD_PAGE = process.env.WSC_DOWNLOAD_PAGE || "https://worksuitecloud.com/download/frameflow";
 const CHECK_EVERY_MS = 6 * 60 * 60 * 1000;
 const CHANNELS = ["stable", "beta"];
+/** Fallback feed: the repository's GitHub Releases, which carry the same latest*.yml files. */
+const GITHUB = { owner: "Livezen-Technologies", repo: "worksuite-frameflow" };
+const DEFAULT_CHANNEL = "beta";
 
 const settingsFile = () => path.join(app.getPath("userData"), "updates.json");
 
 function readSettings() {
 	try {
 		const saved = JSON.parse(fs.readFileSync(settingsFile(), "utf8"));
-		return { channel: CHANNELS.includes(saved.channel) ? saved.channel : "stable", auto: saved.auto !== false };
+		return { channel: CHANNELS.includes(saved.channel) ? saved.channel : DEFAULT_CHANNEL, auto: saved.auto !== false };
 	} catch {
-		return { channel: "stable", auto: true };
+		return { channel: DEFAULT_CHANNEL, auto: true };
 	}
 }
 
@@ -51,9 +54,31 @@ let state = {
 	checkedAt: null,
 };
 
+let notified = null;
+
 function setState(next) {
 	state = { ...state, ...next };
 	for (const win of BrowserWindow.getAllWindows()) win.webContents.send("updates:changed", state);
+	notify();
+}
+
+/** A system notification once per new version: when it's found, and when it's ready to install. */
+function notify() {
+	const key = `${state.status}:${state.version}`;
+	if (!state.version || notified === key || !Notification.isSupported()) return;
+	const ready = state.status === "ready";
+	const found = state.status === "available" && !state.selfInstall;
+	if (!ready && !found) return;
+	notified = key;
+	const n = new Notification({
+		title: ready ? `FrameFlow ${state.version} is ready` : `FrameFlow ${state.version} is available`,
+		body: ready ? "Restart FrameFlow to finish updating." : `You have ${state.currentVersion}. Click to get the new version.`,
+	});
+	n.on("click", () => {
+		if (ready) install();
+		else void download();
+	});
+	n.show();
 }
 
 function feedUrl() {
@@ -115,16 +140,55 @@ function feedFileName() {
 }
 
 /** For builds that can't self-install: read the feed and just report. */
+/** The version the download center's feed offers, or null when it has no feed. */
+async function downloadCenterVersion() {
+	try {
+		const res = await fetch(`${feedUrl()}/${feedFileName()}`, { cache: "no-store" });
+		if (!res.ok) return null;
+		const text = await res.text();
+		return /^version:\s*['"]?([^'"\s]+)/m.exec(text)?.[1] ?? null;
+	} catch {
+		return null;
+	}
+}
+
+/** The newest GitHub release for the channel that carries this platform's feed file. */
+async function githubRelease() {
+	const res = await fetch(`https://api.github.com/repos/${GITHUB.owner}/${GITHUB.repo}/releases?per_page=20`, {
+		headers: { Accept: "application/vnd.github+json" },
+		cache: "no-store",
+	});
+	if (!res.ok) throw new Error(`GitHub returned ${res.status}`);
+	const releases = await res.json();
+	const release = releases.find(
+		(r) =>
+			!r.draft &&
+			/^v\d/.test(r.tag_name) &&
+			(state.channel === "beta" || !r.prerelease) &&
+			r.assets?.some((a) => a.name === feedFileName()),
+	);
+	return release ? { version: release.tag_name.replace(/^v/, ""), page: release.html_url } : null;
+}
+
+let source = "download-center"; // or "github"
+
 async function checkFeedOnly() {
 	setState({ status: "checking", error: null });
-	const res = await fetch(`${feedUrl()}/${feedFileName()}`, { cache: "no-store" });
-	if (!res.ok) throw new Error(`The download center returned ${res.status}`);
-	const text = await res.text();
-	const version = /^version:\s*['"]?([^'"\s]+)/m.exec(text)?.[1];
-	if (!version) throw new Error("The update feed has no version");
+	let version = await downloadCenterVersion();
+	let page = DOWNLOAD_PAGE;
+	source = "download-center";
+	if (!version) {
+		const release = await githubRelease();
+		if (!release) {
+			setState({ status: "up-to-date", checkedAt: Date.now() });
+			return;
+		}
+		({ version, page } = release);
+		source = "github";
+	}
 	setState(
 		isNewer(version, app.getVersion())
-			? { status: "available", version, checkedAt: Date.now() }
+			? { status: "available", version, downloadPage: page, checkedAt: Date.now() }
 			: { status: "up-to-date", checkedAt: Date.now() },
 	);
 }
@@ -145,7 +209,9 @@ async function check() {
 	try {
 		const u = getUpdater();
 		u.allowPrerelease = state.channel === "beta";
-		u.setFeedURL({ provider: "generic", url: feedUrl(), channel: "latest" });
+		// The download center when it has a feed, otherwise GitHub Releases.
+		if (await downloadCenterVersion()) u.setFeedURL({ provider: "generic", url: feedUrl(), channel: "latest" });
+		else u.setFeedURL({ provider: "github", owner: GITHUB.owner, repo: GITHUB.repo });
 		await u.checkForUpdates();
 	} catch (error) {
 		setState({ status: "error", error: String(error?.message ?? error).split("\n")[0] });
@@ -156,7 +222,7 @@ async function check() {
 async function download() {
 	if (!state.selfInstall) {
 		// macOS ad-hoc builds and .deb: get the new installer from the download center.
-		await shell.openExternal(`${DOWNLOAD_PAGE}?channel=${state.channel}`);
+		await shell.openExternal(source === "github" ? state.downloadPage : `${DOWNLOAD_PAGE}?channel=${state.channel}`);
 		return state;
 	}
 	try {

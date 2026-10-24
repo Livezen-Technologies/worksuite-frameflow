@@ -7,6 +7,14 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+### Changed
+
+- Updates: the Beta channel is now the default, a system notification tells you when a new version is available or ready to install, and update checks fall back to the GitHub release when the download center has no update feed.
+
+### Fixed
+
+- "Couldn't check for updates: The update feed has no version" no longer appears when the download center has no update files.
+
 ## [1.4.0] - 2026-10-24
 
 ### Added
