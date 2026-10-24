@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, Mic, MicOff, Monitor, Pause, Play, Square, Trash2, Video, VideoOff, Volume2, VolumeX } from "lucide-react";
+import { AppWindow, ChevronDown, Crop, Mic, MicOff, Monitor, Pause, Play, Square, Trash2, Video, VideoOff, Volume2, VolumeX } from "lucide-react";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,7 @@ import { type Take, thumbnailOf, useRecorderLibrary, useRecorderPrefs } from "..
 import { RecorderSettings, RecordingsLibrary } from "./recorder-panels";
 
 type Phase = "setup" | "countdown" | "recording" | "stopping" | "done";
+type TargetMode = "screen" | "window" | "area";
 type AccessKind = "screen" | "microphone" | "camera";
 const ACCESS_LABEL: Record<AccessKind, { title: string; why: string }> = {
 	screen: { title: "Screen Recording", why: "to record your screen. After you turn it on, macOS asks you to quit and reopen FrameFlow." },
@@ -75,6 +76,26 @@ function RecorderWindow() {
 	const desktop = !!window.worksuite?.capture;
 
 	const source = sources.find((s) => s.id === settings.sourceId) ?? sources.find((s) => s.kind === "screen") ?? null;
+	const screens = sources.filter((s) => s.kind === "screen");
+	const windows = sources.filter((s) => s.kind === "window");
+	const savedMode: TargetMode = source?.kind === "window" ? "window" : settings.area ? "area" : "screen";
+	const [modeChoice, setModeChoice] = useState<TargetMode | null>(null);
+	const targetMode = modeChoice ?? savedMode;
+	const refreshSources = () => void window.worksuite?.capture?.sources().then(setSources).catch(() => {});
+	const openTarget = () => {
+		setModeChoice(null);
+		refreshSources();
+		setRegionOpen(true);
+	};
+	const pickMode = (mode: TargetMode) => {
+		setModeChoice(mode);
+		if (mode === "window") {
+			if (source?.kind !== "window" && windows[0]) settings.set({ sourceId: windows[0].id, area: null });
+		} else {
+			const screen = source?.kind === "screen" ? source : screens[0];
+			settings.set({ sourceId: screen?.id ?? null, area: mode === "area" ? (settings.area ?? { x: 0.25, y: 0.25, width: 0.5, height: 0.5 }) : null });
+		}
+	};
 	const cameras = devices.filter((d) => d.kind === "videoinput");
 	const mics = devices.filter((d) => d.kind === "audioinput");
 
@@ -211,6 +232,7 @@ function RecorderWindow() {
 
 	useEffect(() => {
 		if (phase === "recording") void window.worksuite?.capture?.framePaused?.(paused);
+		void window.worksuite?.capture?.indicator?.(phase === "recording" ? (paused ? "paused" : "recording") : "off");
 	}, [phase, paused]);
 
 	const begin = async () => {
@@ -222,7 +244,7 @@ function RecorderWindow() {
 		setPhase("countdown");
 		const capture = window.worksuite?.capture;
 		try {
-			if (screenOn) await capture?.frameShow?.({ sourceId: source?.id ?? null, area: settings.area ?? null }).catch(() => null);
+			if (screenOn && source?.kind !== "window") await capture?.frameShow?.({ sourceId: source?.id ?? null, area: settings.area ?? null }).catch(() => null);
 			const opened = await Recorder.open({
 				mode: modeFor({ screen: screenOn, camera: cameraOn }),
 				projectId: "recorder",
@@ -455,7 +477,7 @@ function RecorderWindow() {
 					on={screenOn}
 					onToggle={setScreenOn}
 					disabled={busy}
-					label={settings.area ? "Region" : "Full screen"}
+					label={savedMode === "window" ? "Window" : savedMode === "area" ? "Custom area" : "Full screen"}
 					testId="screen"
 					menu={
 						<select
@@ -477,9 +499,9 @@ function RecorderWindow() {
 					<button
 						type="button"
 						className="relative size-full overflow-hidden rounded bg-[#1d6f8a]"
-						onClick={() => setRegionOpen(true)}
+						onClick={openTarget}
 						disabled={busy || !screenOn}
-						title="Choose the whole screen or drag an area"
+						title="Choose a screen, a window or an area"
 						data-recorder-region
 					>
 						{source?.thumbnail && (
@@ -498,8 +520,14 @@ function RecorderWindow() {
 							/>
 						)}
 						<span className="absolute inset-x-2 bottom-2 flex justify-between gap-2 font-mono text-[11px]">
-							<span className="rounded bg-black/60 px-1.5 py-0.5">↔ {areaPx?.w ?? "Full"}</span>
-							<span className="rounded bg-black/60 px-1.5 py-0.5">↕ {areaPx?.h ?? "screen"}</span>
+							{savedMode === "window" ? (
+								<span className="truncate rounded bg-black/60 px-1.5 py-0.5">{source?.name}</span>
+							) : (
+								<>
+									<span className="rounded bg-black/60 px-1.5 py-0.5">↔ {areaPx?.w ?? "Full"}</span>
+									<span className="rounded bg-black/60 px-1.5 py-0.5">↕ {areaPx?.h ?? "screen"}</span>
+								</>
+							)}
 						</span>
 						{!screenOn && <Monitor className="text-muted-foreground absolute inset-0 m-auto size-8" />}
 					</button>
@@ -656,21 +684,60 @@ function RecorderWindow() {
 			</Dialog>
 
 			<Dialog open={regionOpen} onOpenChange={setRegionOpen}>
-				<DialogContent className="max-w-xl">
+				<DialogContent className="max-w-2xl" data-recorder-target>
 					<DialogHeader>
-						<DialogTitle>Recording area</DialogTitle>
-						<DialogDescription>Drag on the picture to record part of the screen, or keep the whole screen.</DialogDescription>
+						<DialogTitle>What to record</DialogTitle>
+						<DialogDescription>Record a whole screen, one window, or an area you drag.</DialogDescription>
 					</DialogHeader>
-					<AreaPicker
-						thumbnail={source?.thumbnail ?? null}
-						area={settings.area}
-						onChange={(area: CaptureArea | null) => settings.set({ area })}
-					/>
-					<DialogFooter>
-						<Button variant="outline" onClick={() => settings.set({ area: null })}>
-							Full screen
+					<div className="bg-muted/40 grid grid-cols-3 gap-1 p-1">
+						{(
+							[
+								["screen", "Full screen", Monitor],
+								["window", "Window", AppWindow],
+								["area", "Custom area", Crop],
+							] as const
+						).map(([id, label, Icon]) => (
+							<button
+								key={id}
+								type="button"
+								data-target-mode={id}
+								onClick={() => pickMode(id)}
+								className={cn(
+									"flex items-center justify-center gap-2 py-2 text-sm",
+									targetMode === id ? "bg-background font-semibold shadow-sm" : "text-muted-foreground hover:text-foreground",
+								)}
+							>
+								<Icon className="size-4" />
+								{label}
+							</button>
+						))}
+					</div>
+					{targetMode === "area" ? (
+						<div className="flex flex-col gap-2">
+							{screens.length > 1 && (
+								<SourceGrid sources={screens} selected={source?.id ?? null} onPick={(id) => settings.set({ sourceId: id })} compact />
+							)}
+							<AreaPicker
+								thumbnail={source?.thumbnail ?? null}
+								area={settings.area}
+								onChange={(area: CaptureArea | null) => settings.set({ area })}
+							/>
+						</div>
+					) : (
+						<SourceGrid
+							sources={targetMode === "window" ? windows : screens}
+							selected={source?.id ?? null}
+							onPick={(id) => settings.set({ sourceId: id, area: null })}
+							empty={targetMode === "window" ? "No windows to record. Open the app you want to record, then press Refresh." : "No screens found."}
+						/>
+					)}
+					<DialogFooter className="gap-2 sm:justify-between">
+						<Button variant="ghost" onClick={refreshSources}>
+							Refresh
 						</Button>
-						<Button onClick={() => setRegionOpen(false)}>Done</Button>
+						<Button onClick={() => setRegionOpen(false)} disabled={targetMode === "area" && !settings.area}>
+							Done
+						</Button>
 					</DialogFooter>
 				</DialogContent>
 			</Dialog>
@@ -776,5 +843,48 @@ function DeviceSelect({
 				</option>
 			))}
 		</select>
+	);
+}
+
+/** Screen or window cards with live thumbnails. */
+function SourceGrid({
+	sources,
+	selected,
+	onPick,
+	compact = false,
+	empty,
+}: {
+	sources: CaptureSource[];
+	selected: string | null;
+	onPick: (id: string) => void;
+	compact?: boolean;
+	empty?: string;
+}) {
+	if (!sources.length) return <p className="text-muted-foreground py-10 text-center text-sm">{empty}</p>;
+	return (
+		<div className={cn("grid max-h-[50vh] gap-3 overflow-y-auto p-0.5", compact ? "grid-cols-4" : "grid-cols-3")}>
+			{sources.map((s) => (
+				<button
+					key={s.id}
+					type="button"
+					data-source-card={s.id}
+					onClick={() => onPick(s.id)}
+					className={cn(
+						"flex flex-col gap-1.5 border p-1.5 text-left transition-colors",
+						selected === s.id ? "border-primary ring-primary bg-primary/10 ring-1" : "hover:bg-muted/50",
+					)}
+				>
+					<div className="relative aspect-video overflow-hidden bg-black">
+						{s.thumbnail ? (
+							// eslint-disable-next-line @next/next/no-img-element -- local data URL
+							<img src={s.thumbnail} alt="" className="size-full object-contain" />
+						) : (
+							<Monitor className="text-muted-foreground absolute inset-0 m-auto size-6" />
+						)}
+					</div>
+					<span className="truncate text-xs">{s.name}</span>
+				</button>
+			))}
+		</div>
 	);
 }

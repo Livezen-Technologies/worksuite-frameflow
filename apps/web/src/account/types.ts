@@ -486,6 +486,8 @@ export interface WorksuiteCaptureBridge {
 	frameCount?: (n: number) => Promise<void>;
 	framePaused?: (on: boolean) => Promise<void>;
 	frameHide?: () => Promise<void>;
+	/** Red dot in the menu bar / tray, Dock badge and taskbar overlay while recording. */
+	indicator?: (state: "recording" | "paused" | "off") => Promise<void>;
 	cursorStart?: (args: {
 		sourceId: string | null;
 	}) => Promise<{ cursor: boolean; clicks: boolean; keys: boolean }>;

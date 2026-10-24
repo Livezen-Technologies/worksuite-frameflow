@@ -64,6 +64,7 @@
       "overlay/**",
       "frame/**",
       "recording-frame.js",
+      "recording-tray.js",
       "input-hook.js",
       "recording-overlay.js",
       "project-windows.js",

@@ -100,6 +100,7 @@ function registerShortcuts() {
 
 module.exports = {
 	DEFAULT_SHORTCUTS,
+	send,
 
 	init({ window }) {
 		editor = window;

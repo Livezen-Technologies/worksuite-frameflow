@@ -7,6 +7,13 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+### Added
+- Recorder: choose what to record from cards: Full screen, a Window (with live previews of each open window) or a Custom area you drag.
+- While recording, a red dot with the elapsed time sits in the menu bar / system tray (click it to stop, pause or add a marker), the Dock shows a REC badge on macOS, and the taskbar icon gets a red dot on Windows.
+
+### Fixed
+- macOS: FrameFlow no longer quits unexpectedly when recording with keys or clicks shown. It now asks for Accessibility access first and records without the keys overlay until you allow it.
+
 ## [1.7.0] - 2026-10-24
 
 ### Added

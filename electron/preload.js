@@ -21,6 +21,7 @@ contextBridge.exposeInMainWorld("worksuite", {
 		frameCount: (n) => ipcRenderer.invoke("capture:frame-count", n),
 		framePaused: (on) => ipcRenderer.invoke("capture:frame-paused", !!on),
 		frameHide: () => ipcRenderer.invoke("capture:frame-hide"),
+		indicator: (state) => ipcRenderer.invoke("capture:indicator", state),
 		cursorPause: () => ipcRenderer.invoke("capture:cursor-pause"),
 		cursorResume: () => ipcRenderer.invoke("capture:cursor-resume"),
 		cursorStop: () => ipcRenderer.invoke("capture:cursor-stop"),

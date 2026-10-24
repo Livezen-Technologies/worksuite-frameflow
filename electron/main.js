@@ -6,6 +6,7 @@ const capture = require("./capture");
 const cursorLog = require("./cursor-log");
 const recordingOverlay = require("./recording-overlay");
 const recordingFrame = require("./recording-frame");
+const recordingTray = require("./recording-tray");
 const captureControls = require("./capture-controls");
 const privacy = require("./privacy");
 const network = require("./network");
@@ -453,6 +454,12 @@ function registerAccountIpc() {
 	handle("capture:frame-count", (n) => recordingFrame.count(n));
 	handle("capture:frame-paused", (on) => recordingFrame.paused(on));
 	handle("capture:frame-hide", () => recordingFrame.hide());
+	handle("capture:indicator", (state) => {
+		if (state === "recording" || state === "paused") {
+			if (!recordingTray.active()) recordingTray.show();
+			recordingTray.paused(state === "paused");
+		} else recordingTray.hide();
+	});
 	handle("capture:cursor-start", (args) => cursorLog.start(args ?? {}));
 	handle("capture:cursor-pause", () => cursorLog.pause());
 	handle("capture:cursor-resume", () => cursorLog.resume());

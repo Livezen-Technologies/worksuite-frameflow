@@ -10,8 +10,22 @@ try {
 
 let users = 0;
 
+/**
+ * macOS aborts the whole app if the hook starts without Accessibility access,
+ * so there we ask once and only start it after the user allows it.
+ */
+function allowed() {
+	if (process.platform !== "darwin") return true;
+	try {
+		const { systemPreferences } = require("electron");
+		return systemPreferences.isTrustedAccessibilityClient(true);
+	} catch {
+		return false;
+	}
+}
+
 function acquire(handlers) {
-	if (!hook) return false;
+	if (!hook || !allowed()) return false;
 	for (const [event, fn] of Object.entries(handlers)) hook.uIOhook.on(event, fn);
 	if (users++ === 0) {
 		try {
