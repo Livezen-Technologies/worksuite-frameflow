@@ -90,6 +90,8 @@ export interface MotionProject {
 	/** Bottom to top. */
 	layers: Layer[];
 	groups: LayerGroup[];
+	/** Absent in older projects: loop forwards at normal speed. */
+	playback?: PlaybackSettings;
 	createdAt: number;
 	updatedAt: number;
 }
@@ -359,4 +361,158 @@ export function keyframeTimes(layer: Layer): number[] {
 	const times = new Set<number>();
 	for (const prop of ANIMATABLE) for (const k of layer.keyframes[prop] ?? []) times.add(k.t);
 	return [...times].sort((a, b) => a - b);
+}
+
+export type PlaybackMode = "loop" | "once" | "bounce";
+
+export interface PlaybackSettings {
+	mode: PlaybackMode;
+	reverse: boolean;
+	speed: number;
+}
+
+export const DEFAULT_PLAYBACK: PlaybackSettings = { mode: "loop", reverse: false, speed: 1 };
+
+/**
+ * The animation time shown `elapsed` seconds after playback starts, for a
+ * loop, a single play (holds the last frame) or a bounce (forwards then
+ * backwards), optionally reversed and sped up.
+ */
+export function playbackTime({
+	elapsed,
+	duration,
+	settings,
+}: {
+	elapsed: number;
+	duration: number;
+	settings: PlaybackSettings;
+}): { t: number; done: boolean } {
+	if (duration <= 0) return { t: 0, done: true };
+	const run = Math.max(0, elapsed * settings.speed);
+	let t: number;
+	let done = false;
+	if (settings.mode === "once") {
+		t = Math.min(run, duration);
+		done = run >= duration;
+	} else if (settings.mode === "bounce") {
+		const phase = run % (duration * 2);
+		t = phase <= duration ? phase : duration * 2 - phase;
+	} else t = run % duration;
+	return { t: settings.reverse ? duration - t : t, done };
+}
+
+export interface KeyRef {
+	layerId: string;
+	prop: AnimProp;
+	t: number;
+}
+
+export const sameKey = ({ a, b }: { a: KeyRef; b: KeyRef }) =>
+	a.layerId === b.layerId && a.prop === b.prop && Math.abs(a.t - b.t) < 1e-6;
+
+/**
+ * Moves keyframes by `dt` seconds (kept inside 0…duration). A moved
+ * keyframe replaces one already at its new time. Returns the new layers and
+ * the moved keyframes' new references.
+ */
+export function moveKeyframes({
+	layers,
+	keys,
+	dt,
+	duration,
+}: {
+	layers: Layer[];
+	keys: KeyRef[];
+	dt: number;
+	duration: number;
+}): { layers: Layer[]; keys: KeyRef[] } {
+	if (!keys.length) return { layers, keys };
+	const lo = Math.min(...keys.map((k) => k.t));
+	const hi = Math.max(...keys.map((k) => k.t));
+	const shift = Math.max(-lo, Math.min(duration - hi, dt));
+	const moved: KeyRef[] = [];
+	const next = layers.map((layer) => {
+		const mine = keys.filter((k) => k.layerId === layer.id);
+		if (!mine.length) return layer;
+		const keyframes = { ...layer.keyframes };
+		for (const prop of ANIMATABLE) {
+			const sel = mine.filter((k) => k.prop === prop);
+			const list = keyframes[prop];
+			if (!sel.length || !list) continue;
+			const isSel = (k: Keyframe) => sel.some((s) => Math.abs(s.t - k.t) < 1e-6);
+			const shifted = list.filter(isSel).map((k) => ({ ...k, t: Math.round((k.t + shift) * 1e6) / 1e6 }));
+			const kept = list.filter((k) => !isSel(k) && !shifted.some((s) => Math.abs(s.t - k.t) < 1e-6));
+			keyframes[prop] = [...kept, ...shifted].sort((a, b) => a.t - b.t);
+			for (const k of shifted) moved.push({ layerId: layer.id, prop, t: k.t });
+		}
+		return { ...layer, keyframes };
+	});
+	return { layers: next, keys: moved };
+}
+
+export interface CopiedKey {
+	layerId: string;
+	prop: AnimProp;
+	/** Seconds after the earliest copied keyframe. */
+	offset: number;
+	v: number;
+	ease: Ease;
+}
+
+export function copyKeyframes({ layers, keys }: { layers: Layer[]; keys: KeyRef[] }): CopiedKey[] {
+	if (!keys.length) return [];
+	const start = Math.min(...keys.map((k) => k.t));
+	return keys.flatMap((ref) => {
+		const layer = layers.find((l) => l.id === ref.layerId);
+		const key = layer?.keyframes[ref.prop]?.find((k) => Math.abs(k.t - ref.t) < 1e-6);
+		return key ? [{ layerId: ref.layerId, prop: ref.prop, offset: key.t - start, v: key.v, ease: key.ease }] : [];
+	});
+}
+
+/**
+ * Pastes copied keyframes starting at `t`. With `target`, they all go to that
+ * layer; otherwise each returns to the layer it came from.
+ */
+export function pasteKeyframes({
+	layers,
+	copied,
+	t,
+	duration,
+	target,
+}: {
+	layers: Layer[];
+	copied: CopiedKey[];
+	t: number;
+	duration: number;
+	target?: string;
+}): { layers: Layer[]; keys: KeyRef[] } {
+	const keys: KeyRef[] = [];
+	const next = layers.map((layer) => {
+		let out = layer;
+		for (const c of copied) {
+			if ((target ?? c.layerId) !== layer.id) continue;
+			const at = Math.min(duration, Math.round((t + c.offset) * 1e6) / 1e6);
+			out = setKeyframe({ layer: out, prop: c.prop, t: at, v: c.v, ease: c.ease });
+			const list = out.keyframes[c.prop] ?? [];
+			out = { ...out, keyframes: { ...out.keyframes, [c.prop]: list.map((k) => (Math.abs(k.t - at) < 1e-6 ? { ...k, ease: c.ease } : k)) } };
+			keys.push({ layerId: layer.id, prop: c.prop, t: at });
+		}
+		return out;
+	});
+	return { layers: next, keys };
+}
+
+/** Sets the easing of keyframes (the curve towards each one's next keyframe). */
+export function setKeyEase({ layers, keys, ease }: { layers: Layer[]; keys: KeyRef[]; ease: Ease }): Layer[] {
+	return layers.map((layer) => {
+		const mine = keys.filter((k) => k.layerId === layer.id);
+		if (!mine.length) return layer;
+		const keyframes = { ...layer.keyframes };
+		for (const prop of ANIMATABLE) {
+			const list = keyframes[prop];
+			if (!list) continue;
+			keyframes[prop] = list.map((k) => (mine.some((m) => m.prop === prop && Math.abs(m.t - k.t) < 1e-6) ? { ...k, ease } : k));
+		}
+		return { ...layer, keyframes };
+	});
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { create } from "zustand";
-import type { Layer, MotionProject } from "./model";
+import type { CopiedKey, KeyRef, Layer, MotionProject } from "./model";
 
 const HISTORY_LIMIT = 200;
 
@@ -14,6 +14,11 @@ interface StudioState {
 	playing: boolean;
 	/** Path layer whose points are being edited. */
 	editingPath: string | null;
+	/** Selected keyframes in the timeline. */
+	keySelection: KeyRef[];
+	keyClipboard: CopiedKey[];
+	setKeySelection: (keys: KeyRef[]) => void;
+	setKeyClipboard: (keys: CopiedKey[]) => void;
 	load: (project: MotionProject) => void;
 	/** A change that can be undone. */
 	commit: (update: (project: MotionProject) => MotionProject) => void;
@@ -40,7 +45,12 @@ export const useStudio = create<StudioState>()((set, get) => ({
 	time: 0,
 	playing: false,
 	editingPath: null,
-	load: (project) => set({ project, past: [], future: [], selection: [], time: 0, playing: false, editingPath: null }),
+	keySelection: [],
+	keyClipboard: [],
+	setKeySelection: (keySelection) => set({ keySelection }),
+	setKeyClipboard: (keyClipboard) => set({ keyClipboard }),
+	load: (project) =>
+		set({ project, past: [], future: [], selection: [], time: 0, playing: false, editingPath: null, keySelection: [] }),
 	commit: (update) => {
 		const { project, past } = get();
 		if (!project) return;

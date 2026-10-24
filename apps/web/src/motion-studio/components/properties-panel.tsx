@@ -122,9 +122,9 @@ function LayerProps({ layer }: { layer: Layer }) {
 						</div>
 					);
 				})}
-				<div className="flex gap-1 pl-4">
+				<div className="flex flex-col gap-1.5 pl-4">
 					<NumberField label="Anchor X" value={Math.round(layer.anchorX * 100)} suffix="%" onChange={(n) => update((l) => ({ ...l, anchorX: n / 100 }))} />
-					<NumberField label="Y" value={Math.round(layer.anchorY * 100)} suffix="%" onChange={(n) => update((l) => ({ ...l, anchorY: n / 100 }))} />
+					<NumberField label="Anchor Y" value={Math.round(layer.anchorY * 100)} suffix="%" onChange={(n) => update((l) => ({ ...l, anchorY: n / 100 }))} />
 				</div>
 			</section>
 			<section className="flex flex-col gap-1.5">

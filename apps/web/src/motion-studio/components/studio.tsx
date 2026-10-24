@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { BrandLoader } from "@/components/brand-loader";
 import { cn } from "@/utils/ui";
-import { createLayer, newId, type Layer } from "../model";
+import { copyKeyframes, createLayer, newId, pasteKeyframes, removeKeyframe, type Layer } from "../model";
 import { loadMotionProject, saveMotionProject } from "../storage";
 import { useStudio } from "../store";
 import { MotionCanvas, type Tool } from "./canvas";
@@ -110,6 +110,24 @@ export function MotionStudio({ projectId }: { projectId: string }) {
 			} else if (mod && key === "y") {
 				e.preventDefault();
 				s.redo();
+			} else if (mod && key === "c" && s.keySelection.length && s.project) {
+				e.preventDefault();
+				s.setKeyClipboard(copyKeyframes({ layers: s.project.layers, keys: s.keySelection }));
+				toast.success(`Copied ${s.keySelection.length} keyframe${s.keySelection.length === 1 ? "" : "s"}`);
+			} else if (mod && key === "v" && s.keyClipboard.length && s.project) {
+				e.preventDefault();
+				const target = s.selection.length === 1 ? s.selection[0] : undefined;
+				const result = pasteKeyframes({ layers: s.project.layers, copied: s.keyClipboard, t: s.time, duration: s.project.duration, target });
+				s.commit((p) => ({ ...p, layers: result.layers }));
+				s.setKeySelection(result.keys);
+			} else if ((e.key === "Delete" || e.key === "Backspace") && s.keySelection.length) {
+				e.preventDefault();
+				const keys = s.keySelection;
+				s.commit((p) => ({
+					...p,
+					layers: p.layers.map((l) => keys.filter((k) => k.layerId === l.id).reduce((acc, k) => removeKeyframe({ layer: acc, prop: k.prop, t: k.t }), l)),
+				}));
+				s.setKeySelection([]);
 			} else if (mod && key === "d" && s.selection.length) {
 				e.preventDefault();
 				const copies = s.project?.layers.filter((l) => s.selection.includes(l.id)).map((l) => ({ ...l, id: newId(), name: `${l.name} copy`, x: l.x + 20, y: l.y + 20 })) ?? [];
@@ -123,7 +141,8 @@ export function MotionStudio({ projectId }: { projectId: string }) {
 				s.commit((p) => ({ ...p, layers: p.layers.filter((l) => !s.selection.includes(l.id)) }));
 				s.select([]);
 			} else if (e.key === "Escape") {
-				if (s.editingPath) s.setEditingPath(null);
+				if (s.keySelection.length) s.setKeySelection([]);
+				else if (s.editingPath) s.setEditingPath(null);
 				else s.select([]);
 				setTool("select");
 			} else if (e.key === "Enter" && s.editingPath) {
@@ -278,7 +297,7 @@ export function MotionStudio({ projectId }: { projectId: string }) {
 					<PropertiesPanel />
 				</aside>
 			</div>
-			<footer className="h-48 shrink-0 border-t">
+			<footer className="h-60 shrink-0 border-t">
 				<MotionTimeline />
 			</footer>
 		</div>
