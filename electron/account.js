@@ -44,7 +44,12 @@ function onChange(listener) {
 
 async function getDiscovery() {
 	if (discovery) return discovery;
-	const res = await fetch(`${CONFIG.issuer}/.well-known/openid-configuration`);
+	let res;
+	try {
+		res = await fetch(`${CONFIG.issuer}/.well-known/openid-configuration`);
+	} catch {
+		throw new Error("Can't reach the Worksuite sign-in service. Check your connection and try again later.");
+	}
 	if (!res.ok) throw new Error(`Worksuite Cloud is unreachable (${res.status})`);
 	discovery = await res.json();
 	return discovery;

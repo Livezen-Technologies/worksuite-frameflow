@@ -463,6 +463,11 @@ function registerAccountIpc() {
 			return { ok: false, error: "Offline mode is on. Turn it off to sign in." };
 		}
 		const result = await account.signIn({ signup });
+		// Sign-up still works on the web when the sign-in service is down.
+		if (!result.ok && signup && /reach|unreachable/i.test(result.error ?? "")) {
+			shell.openExternal("https://worksuitecloud.com/signup");
+			return { ok: false, error: "Opened Worksuite sign-up in your browser. Sign in here once your account is ready." };
+		}
 		if (result.ok) {
 			const [win] = BrowserWindow.getAllWindows();
 			if (win) {

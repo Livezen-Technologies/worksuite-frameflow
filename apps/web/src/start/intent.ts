@@ -3,6 +3,7 @@
 import { create } from "zustand";
 import type { SessionManifest } from "@/recording/storage";
 import type { RecordedFile } from "@/recording/storage";
+import type { ProjectTemplate } from "@/templates/project-templates";
 
 /**
  * What the startup screen asked the editor to do once the new project is
@@ -14,6 +15,8 @@ export type StartIntent =
 	| { kind: "record" }
 	| { kind: "motion" }
 	| { kind: "templates" }
+	/** A video template picked in the template gallery, built at the start. */
+	| { kind: "template"; template: ProjectTemplate }
 	| { kind: "import"; files: File[] }
 	/** A take from the standalone recorder window, opened for editing. */
 	| { kind: "recording"; session: SessionManifest; files: RecordedFile[] };

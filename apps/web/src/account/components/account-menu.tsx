@@ -67,10 +67,10 @@ export function AccountMenu() {
 						Sync settings and projects with Worksuite Cloud
 					</DropdownMenuLabel>
 					<DropdownMenuSeparator />
-					<DropdownMenuItem onClick={() => bridge.signIn()}>
+					<DropdownMenuItem onClick={() => void bridge.signIn().then((r) => !r.ok && r.error && toast.error(r.error))}>
 						Sign in
 					</DropdownMenuItem>
-					<DropdownMenuItem onClick={() => bridge.signUp()}>
+					<DropdownMenuItem onClick={() => void bridge.signUp().then((r) => !r.ok && r.error && toast.info(r.error))}>
 						Create Worksuite account
 					</DropdownMenuItem>
 				</DropdownMenuContent>

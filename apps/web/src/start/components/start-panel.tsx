@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { useEditor } from "@/editor/use-editor";
 import { foldersBridge } from "@/project-folder/bridge";
 import { openProjectFolder } from "@/project-folder/sync";
-import { BUILT_IN_TEMPLATES, type SettingsTemplate } from "@/project-settings/store";
+import type { SettingsTemplate } from "@/project-settings/store";
 import { cn } from "@/utils/ui";
 import { mediaFilesOnly, useStartIntent, type StartIntent } from "../intent";
 
@@ -116,7 +116,6 @@ export function StartPanel() {
 	const art = "relative flex h-44 shrink-0 items-center justify-center overflow-hidden bg-[#0f1a33]";
 	const kbd = "text-muted-foreground border px-1.5 py-0.5 font-mono text-[11px]";
 	const small = "border-border bg-card hover:border-primary flex items-start gap-4 border p-5 text-left transition-colors";
-	const sizeTemplate = (id: string) => BUILT_IN_TEMPLATES.find((t) => t.id === id);
 
 	return (
 		<section className="flex flex-col gap-5" aria-label="Start" data-start-panel>
@@ -208,7 +207,7 @@ export function StartPanel() {
 							type="button"
 							className="hover:text-primary text-left font-semibold"
 							disabled={busy}
-							onClick={() => void start({ intent: { kind: "templates" }, name: "New project" })}
+							onClick={() => router.push("/templates")}
 							data-start="templates"
 						>
 							Templates
@@ -225,7 +224,7 @@ export function StartPanel() {
 									type="button"
 									disabled={busy}
 									className="hover:border-primary border px-2.5 py-1 font-mono text-xs"
-									onClick={() => void start({ intent: { kind: "templates" }, template: sizeTemplate(id), name: "New project" })}
+									onClick={() => router.push(`/templates?aspect=${id}`)}
 									data-start-size={id}
 								>
 									{label}

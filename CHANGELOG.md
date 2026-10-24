@@ -8,6 +8,12 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 ## [Unreleased]
 
 ### Added
+- The Templates card on the start screen opens a template gallery: filter by size and category, browse templates from the online library, and open the one you pick in the editor.
+
+### Fixed
+- Sign in now shows why it failed instead of doing nothing, and Create Worksuite account opens sign-up in your browser when the sign-in service can't be reached.
+
+### Added
 
 - A **Library feed check** workflow (Actions) that shows what the Asset Library feed returns and whether its signature verifies with the app's key.
 

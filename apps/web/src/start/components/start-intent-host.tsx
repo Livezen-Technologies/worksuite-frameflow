@@ -1,5 +1,8 @@
 "use client";
 
+import { loadFonts } from "@/fonts/google-fonts";
+import { applyTemplate } from "@/templates/apply-template";
+import { PROJECT_TEMPLATE_FONTS, templateSlots } from "@/templates/project-templates";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import { useAssetsPanelStore } from "@/components/editor/panels/assets/assets-panel-store";
@@ -38,6 +41,17 @@ export function StartIntentHost() {
 						description: error instanceof Error ? error.message : String(error),
 					}),
 				);
+			return;
+		}
+		if (intent.kind === "template") {
+			void (async () => {
+				await loadFonts({ families: PROJECT_TEMPLATE_FONTS }).catch(() => {});
+				applyTemplate({ editor, template: intent.template, media: [], at: ZERO_MEDIA_TIME });
+				useAssetsPanelStore.getState().setActiveTab("media");
+				toast.success(`“${intent.template.name}” is ready`, {
+					description: templateSlots(intent.template) > 0 ? "Import photos or videos, then use the template again from Templates to fill the coloured slots." : undefined,
+				});
+			})();
 			return;
 		}
 		if (intent.kind === "motion" || intent.kind === "templates") {

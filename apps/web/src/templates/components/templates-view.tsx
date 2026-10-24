@@ -24,12 +24,12 @@ import { parseProjectTemplate, usePackItems } from "@/asset-library/pack-items";
 type Filter = "All" | TemplateCategory;
 
 /** Looping card preview: slides cross-fade and the title floats in. */
-const PREVIEW_CSS = `
+export const PREVIEW_CSS = `
 @keyframes ff-tpl-slide { 0%, 30% { opacity: 1; transform: scale(1); } 33%, 97% { opacity: 0; transform: scale(1.08); } 100% { opacity: 1; } }
 @keyframes ff-tpl-title { 0%, 8% { opacity: 0; transform: translateY(30%); } 18%, 85% { opacity: 1; transform: none; } 100% { opacity: 0; } }
 `;
 
-function TemplateCard({
+export function TemplateCard({
 	template,
 	selected,
 	onSelect,
