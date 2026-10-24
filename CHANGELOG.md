@@ -7,6 +7,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-10-24
+
 ### Added
 
 - **Music & Audio Editor**: a studio for music and sound, opened from **Music & Audio Editor** in the home sidebar or the new **Video | Audio** switch in the editor's header. It edits the same project, so every change is on the video timeline at once and you can switch back and forth freely. It has audio tracks with mute, solo and remove, import at the playhead, a live **beat visualizer** and **output meter** (level and peak), the multi-track timeline with waveforms (trim, split, move, duplicate, delete, undo and redo), one-click Fade and **Normalize**, and an inspector with **Process** (AI voice clean-up, remove silences, set loudness to about −16 LUFS, normalize peaks), a **3-band EQ with low cut** and presets (Podcast voice, Warm, Bright, Bass boost, Radio, Telephone, Soft highs), Volume and fades, the voice changer and Speed. The EQ is heard in the preview and the export. A transport bar has play, stop, start and end.
