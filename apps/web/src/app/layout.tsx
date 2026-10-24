@@ -1,6 +1,7 @@
 import { BrandKitHost } from "@/brand/components/brand-kit-host";
 import { ThemeProvider } from "next-themes";
 import { NativeThemeSync } from "@/components/native-theme-sync";
+import { UserFontsLoader } from "@/fonts/components/user-fonts-loader";
 import Script from "next/script";
 import "./globals.css";
 import { Toaster } from "../components/ui/sonner";
@@ -66,6 +67,7 @@ export default function RootLayout({
 						<InputMethodHost />
 						<LocaleSync />
 						<NativeThemeSync />
+						<UserFontsLoader />
 						<ProjectFolderHost />
 						<AutomationHost />
 						<BrandKitHost />

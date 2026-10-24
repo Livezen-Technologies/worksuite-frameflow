@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { loadFullFont } from "@/fonts/google-fonts";
 import { installedLegacyFonts, SINHALA_UNICODE_FONTS } from "@/fonts/sinhala-fonts";
+import { useUserFonts } from "@/fonts/user-fonts";
 import { isLegacyFont, legacyToUnicode, looksLikeLegacy, unicodeToLegacy } from "../legacy";
 import { convertSinglishText } from "../sinhala";
 
@@ -46,7 +47,8 @@ export function SinhalaConverter({
 		};
 	}, []);
 
-	const fonts = [...SINHALA_UNICODE_FONTS.map((f) => f.family), ...installed];
+	const imported = useUserFonts((st) => st.fonts).map((f) => f.family).filter((f) => isLegacyFont({ fontFamily: f }));
+	const fonts = [...new Set([...SINHALA_UNICODE_FONTS.map((f) => f.family), ...imported, ...installed])];
 	if (!fonts.includes(font)) fonts.unshift(font);
 	const legacyFont = isLegacyFont({ fontFamily: font });
 

@@ -9,6 +9,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
+- Import your own fonts (Settings → Fonts, or + Import font files in the font list): TTF, OTF and WOFF files you own, such as FM and DL Sinhala fonts, are kept on this computer and load every time FrameFlow starts. They appear under My fonts and, for Sinhala legacy fonts, under සිංහල. Type in Singlish or Unicode as usual; legacy fonts get the text converted automatically, in the preview and in exports.
 - Motion Studio groups can nest: select whole groups (with other layers if you like) and group them again. Grouping inside a group keeps the new group there, and ungrouping moves the contents up one level. Showing, hiding and locking a group covers everything inside it.
 - Importing a Lottie that FrameFlow exported now brings animated GIF layers back as animated GIFs, not just their first frame.
 - Motion Studio Lottie import: text that changes over time (like a countdown) comes in as one text layer per version, each shown at its time; animated GIFs exported from FrameFlow come back as pictures. GIFs up to 900 frames now stay animated in Lottie exports (long ones use smaller frames).
