@@ -2,6 +2,7 @@
 
 import { ChevronDown, Lock as LockIcon, Settings as SettingsIcon } from "lucide-react";
 import { PROJECT_TEMPLATES } from "@/templates/project-templates";
+import { useExportHistory } from "@/export/history";
 import {
 	BUILT_IN_TEMPLATES,
 	useProjectSettings,
@@ -206,6 +207,7 @@ function ProjectsSidebar() {
 		};
 	}, []);
 	const recordings = projects.filter((p) => /^screen recording/i.test(p.name)).length;
+	const exportCount = useExportHistory((s) => s.entries.length);
 	const newWithTemplates = async () => {
 		const projectId = await editor.project.createNewProject({ name: "New project" });
 		const { useStartIntent } = await import("@/start/intent");
@@ -251,6 +253,12 @@ function ProjectsSidebar() {
 			>
 				<span className={dot} /> Screen recordings {count(recordings)}
 			</button>
+			<Link href="/media" className={item}>
+				<span className={dot} /> Media library
+			</Link>
+			<Link href="/exports" className={item}>
+				<span className={dot} /> Exports {count(exportCount)}
+			</Link>
 			<div className="flex-1" />
 			<StorageCard />
 			<div className="bg-card mt-2 flex flex-col gap-1 border p-3 text-xs">
