@@ -7,6 +7,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-10-24
+
 ### Added
 
 - Import your own fonts (Settings → Fonts, or + Import font files in the font list): TTF, OTF and WOFF files you own, such as FM and DL Sinhala fonts, are kept on this computer and load every time FrameFlow starts. They appear under My fonts and, for Sinhala legacy fonts, under සිංහල. Type in Singlish or Unicode as usual; legacy fonts get the text converted automatically, in the preview and in exports.
