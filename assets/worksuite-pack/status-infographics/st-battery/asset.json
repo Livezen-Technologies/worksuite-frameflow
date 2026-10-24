@@ -1,0 +1,41 @@
+{
+	"schema": 1,
+	"id": "st-battery",
+	"name": "Battery charging",
+	"category": "status-infographics",
+	"type": "lottie",
+	"file": "st-battery.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "A battery charges cell by cell with a lightning mark, then resets.",
+	"tags": [
+		"battery",
+		"charging",
+		"power",
+		"energy",
+		"level"
+	],
+	"durationSec": 3,
+	"loop": true,
+	"aspect": "1:1",
+	"width": 1080,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "case",
+			"name": "Case",
+			"default": "#FFFFFF"
+		},
+		{
+			"id": "cells",
+			"name": "Cells",
+			"default": "#2EC4B6"
+		},
+		{
+			"id": "bolt",
+			"name": "Bolt",
+			"default": "#F5A524"
+		}
+	]
+}

@@ -1,0 +1,48 @@
+{
+	"schema": 1,
+	"id": "sl-poson-lights",
+	"name": "Poson lights",
+	"category": "sri-lanka-seasonal",
+	"type": "lottie",
+	"file": "sl-poson-lights.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "Strings of small lamps swing between two points and twinkle in a chasing pattern.",
+	"tags": [
+		"poson",
+		"lights",
+		"bulbs",
+		"string lights",
+		"decoration",
+		"poya",
+		"sri lanka"
+	],
+	"durationSec": 4,
+	"loop": true,
+	"aspect": "1:1",
+	"width": 1080,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "wire",
+			"name": "Wire",
+			"default": "#FFFFFF"
+		},
+		{
+			"id": "a",
+			"name": "Lights 1",
+			"default": "#F5A524"
+		},
+		{
+			"id": "b",
+			"name": "Lights 2",
+			"default": "#2EC4B6"
+		},
+		{
+			"id": "c",
+			"name": "Lights 3",
+			"default": "#4C8DFF"
+		}
+	]
+}

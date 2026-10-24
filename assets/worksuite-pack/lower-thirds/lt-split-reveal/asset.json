@@ -1,0 +1,41 @@
+{
+	"schema": 1,
+	"id": "lt-split-reveal",
+	"name": "Split reveal",
+	"category": "lower-thirds",
+	"type": "lottie",
+	"file": "lt-split-reveal.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "Two bars rush in from opposite sides and meet to form a title strip.",
+	"tags": [
+		"lower third",
+		"split",
+		"reveal",
+		"meet",
+		"strip"
+	],
+	"durationSec": 4,
+	"loop": false,
+	"aspect": "16:9",
+	"width": 1920,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "left",
+			"name": "Left bar",
+			"default": "#4C8DFF"
+		},
+		{
+			"id": "right",
+			"name": "Right bar",
+			"default": "#2EC4B6"
+		},
+		{
+			"id": "seam",
+			"name": "Seam",
+			"default": "#FFFFFF"
+		}
+	]
+}

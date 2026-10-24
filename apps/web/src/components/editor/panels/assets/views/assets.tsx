@@ -38,6 +38,8 @@ import { useEditor } from "@/editor/use-editor";
 import { useFileUpload } from "@/media/use-file-upload";
 import { invokeAction } from "@/actions";
 import { processMediaAssets } from "@/media/processing";
+import { importLottieFiles } from "@/lottie/actions";
+import { isLottieFile } from "@/lottie/user-library";
 import { showMediaUploadToast } from "@/media/upload-toast";
 import {
 	SelectableItem,
@@ -86,12 +88,31 @@ export function MediaView() {
 	const [source, setSource] = useState<"project" | "library">("project");
 	const [progress, setProgress] = useState(0);
 
-	const processFiles = async ({ files }: { files: File[] }) => {
-		if (!files || files.length === 0) return;
+	const processFiles = async ({ files: picked }: { files: File[] }) => {
+		if (!picked || picked.length === 0) return;
 		if (!activeProject) {
 			toast.error("No active project");
 			return;
 		}
+
+		// Lottie .json files become animations at the playhead (see Elements → Animations).
+		const lottieFiles = picked.filter(isLottieFile);
+		const files = picked.filter((file) => !isLottieFile(file));
+		if (lottieFiles.length > 0) {
+			const { imported, failed } = await importLottieFiles({ editor, files: lottieFiles });
+			if (imported.length > 0) {
+				toast.success(
+					imported.length === 1
+						? `Added animation ${imported[0].name}`
+						: `Added ${imported.length} animations`,
+					{ description: "Find them again under Elements → Animations → My imports." },
+				);
+			}
+			for (const { name, reason } of failed) {
+				toast.error(`Couldn't import ${name}`, { description: reason });
+			}
+		}
+		if (files.length === 0) return;
 
 		setIsProcessing(true);
 		setProgress(0);
@@ -126,7 +147,7 @@ export function MediaView() {
 
 	const { isDragOver, dragProps, openFilePicker, fileInputProps } =
 		useFileUpload({
-			accept: `image/*,video/*,audio/*,${HEIF_ACCEPT},.insv,.360`,
+			accept: `image/*,video/*,audio/*,${HEIF_ACCEPT},.insv,.360,.json,application/json`,
 			multiple: true,
 			onFilesSelected: (files) => processFiles({ files }),
 		});

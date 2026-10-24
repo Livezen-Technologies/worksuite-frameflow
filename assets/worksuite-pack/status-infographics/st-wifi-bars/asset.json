@@ -1,0 +1,36 @@
+{
+	"schema": 1,
+	"id": "st-wifi-bars",
+	"name": "Signal arcs",
+	"category": "status-infographics",
+	"type": "lottie",
+	"file": "st-wifi-bars.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "Signal arcs light up from the dot outward, like a connection being found.",
+	"tags": [
+		"wifi",
+		"signal",
+		"connection",
+		"network",
+		"online"
+	],
+	"durationSec": 3,
+	"loop": true,
+	"aspect": "1:1",
+	"width": 1080,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "on",
+			"name": "Lit",
+			"default": "#4C8DFF"
+		},
+		{
+			"id": "off",
+			"name": "Unlit",
+			"default": "#FFFFFF"
+		}
+	]
+}

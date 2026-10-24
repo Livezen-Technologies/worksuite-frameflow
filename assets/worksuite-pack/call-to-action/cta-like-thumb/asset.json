@@ -1,0 +1,41 @@
+{
+	"schema": 1,
+	"id": "cta-like-thumb",
+	"name": "Like thumb",
+	"category": "call-to-action",
+	"type": "lottie",
+	"file": "cta-like-thumb.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "A thumbs-up pops with a burst of short lines.",
+	"tags": [
+		"like",
+		"thumbs up",
+		"approve",
+		"pop",
+		"burst"
+	],
+	"durationSec": 3,
+	"loop": true,
+	"aspect": "1:1",
+	"width": 1080,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "hand",
+			"name": "Hand",
+			"default": "#4C8DFF"
+		},
+		{
+			"id": "cuff",
+			"name": "Cuff",
+			"default": "#0F1115"
+		},
+		{
+			"id": "burst",
+			"name": "Burst",
+			"default": "#F5A524"
+		}
+	]
+}

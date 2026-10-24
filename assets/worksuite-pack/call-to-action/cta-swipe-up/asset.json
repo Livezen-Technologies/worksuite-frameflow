@@ -1,0 +1,36 @@
+{
+	"schema": 1,
+	"id": "cta-swipe-up",
+	"name": "Swipe up",
+	"category": "call-to-action",
+	"type": "lottie",
+	"file": "cta-swipe-up.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "Three chevrons light up in a rising cascade.",
+	"tags": [
+		"swipe up",
+		"chevron",
+		"arrow",
+		"up",
+		"more"
+	],
+	"durationSec": 3,
+	"loop": true,
+	"aspect": "1:1",
+	"width": 1080,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "chevron",
+			"name": "Chevrons",
+			"default": "#FFFFFF"
+		},
+		{
+			"id": "glow",
+			"name": "Glow",
+			"default": "#2EC4B6"
+		}
+	]
+}

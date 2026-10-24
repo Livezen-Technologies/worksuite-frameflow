@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { useEditor } from "@/editor/use-editor";
 import { buildGraphicPreviewUrl } from "@/graphics";
 import { StickersView } from "@/stickers/components/assets-view";
+import { AnimationsView } from "@/lottie/components/animations-view";
 import {
 	buildGraphicElement,
 	buildTextElement,
@@ -18,7 +19,7 @@ import {
 	type ElementPreset,
 } from "../library";
 
-type Filter = "All" | ElementCategory;
+type Filter = "All" | "Animations" | ElementCategory;
 
 /** Transform scale for a graphic drawn from a square source contained in the frame. */
 function graphicScale({
@@ -122,7 +123,7 @@ export function ElementsView() {
 		});
 	};
 
-	const filters: Filter[] = ["All", ...ELEMENT_CATEGORIES];
+	const filters: Filter[] = ["All", "Animations", ...ELEMENT_CATEGORIES];
 
 	return (
 		<PanelView title="Elements">
@@ -144,7 +145,11 @@ export function ElementsView() {
 						</button>
 					))}
 				</div>
-				{filter === "Stickers" ? (
+				{filter === "Animations" ? (
+					<div className="min-h-0 flex-1">
+						<AnimationsView />
+					</div>
+				) : filter === "Stickers" ? (
 					<div className="-mx-2 min-h-0 flex-1">
 						<StickersView />
 					</div>

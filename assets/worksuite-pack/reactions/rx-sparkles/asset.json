@@ -1,0 +1,36 @@
+{
+	"schema": 1,
+	"id": "rx-sparkles",
+	"name": "Sparkles",
+	"category": "reactions",
+	"type": "lottie",
+	"file": "rx-sparkles.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "Four-point sparkles twinkle in and out at different moments.",
+	"tags": [
+		"sparkle",
+		"shine",
+		"magic",
+		"twinkle",
+		"new"
+	],
+	"durationSec": 3,
+	"loop": true,
+	"aspect": "1:1",
+	"width": 1080,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "main",
+			"name": "Sparkles",
+			"default": "#F5A524"
+		},
+		{
+			"id": "alt",
+			"name": "Small sparkles",
+			"default": "#FFFFFF"
+		}
+	]
+}

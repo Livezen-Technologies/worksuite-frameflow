@@ -1,0 +1,2665 @@
+{
+	"schema": 1,
+	"name": "Worksuite Assets",
+	"license": "MIT",
+	"categories": [
+		{
+			"id": "lower-thirds",
+			"name": "Lower thirds",
+			"count": 10
+		},
+		{
+			"id": "call-to-action",
+			"name": "Call to action",
+			"count": 10
+		},
+		{
+			"id": "callouts",
+			"name": "Callouts",
+			"count": 10
+		},
+		{
+			"id": "reactions",
+			"name": "Reactions",
+			"count": 8
+		},
+		{
+			"id": "sri-lanka-seasonal",
+			"name": "Sri Lankan seasons",
+			"count": 6
+		},
+		{
+			"id": "transitions",
+			"name": "Transitions",
+			"count": 8
+		},
+		{
+			"id": "status-infographics",
+			"name": "Status & infographics",
+			"count": 8
+		}
+	],
+	"assets": [
+		{
+			"id": "lt-bar-slide",
+			"name": "Bar slide",
+			"category": "lower-thirds",
+			"path": "lower-thirds/lt-bar-slide",
+			"tags": [
+				"lower third",
+				"name",
+				"title",
+				"bar",
+				"slide",
+				"news"
+			],
+			"durationSec": 4,
+			"loop": false,
+			"width": 1920,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "main",
+					"name": "Title bar",
+					"default": "#4C8DFF"
+				},
+				{
+					"id": "sub",
+					"name": "Subtitle bar",
+					"default": "#0F1115"
+				},
+				{
+					"id": "accent",
+					"name": "Accent",
+					"default": "#F5A524"
+				}
+			],
+			"files": {
+				"lt-bar-slide.json": {
+					"sha256": "7942e348ad08cb0c0a87af6ab4cfdbd6ee4fc62beac60a63ab29fea44596f185"
+				},
+				"thumbnail.png": {
+					"sha256": "edf71d3824750a905711b8f72c67c6149d013aa62e44131f58dff9f3bbb6a548"
+				},
+				"asset.json": {
+					"sha256": "8abb7c2a843b1f94d35052b1f4f4241804aab093afaf4c079351319f235c7370"
+				}
+			}
+		},
+		{
+			"id": "lt-pill-pop",
+			"name": "Pill pop",
+			"category": "lower-thirds",
+			"path": "lower-thirds/lt-pill-pop",
+			"tags": [
+				"lower third",
+				"pill",
+				"rounded",
+				"pop",
+				"label"
+			],
+			"durationSec": 4,
+			"loop": false,
+			"width": 1920,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "pill",
+					"name": "Pill",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "dot",
+					"name": "Dot",
+					"default": "#2EC4B6"
+				},
+				{
+					"id": "ring",
+					"name": "Ring",
+					"default": "#4C8DFF"
+				}
+			],
+			"files": {
+				"lt-pill-pop.json": {
+					"sha256": "7bcf4b980660cdb6e485c82270cebb38960e979e47d8749c7c182acda0fa7921"
+				},
+				"thumbnail.png": {
+					"sha256": "542c2af152e538b0f077b3f1f535d503e2d62ab4a6952555ce25ea5aa3fd54fd"
+				},
+				"asset.json": {
+					"sha256": "d505c87420671fb8aff2a8fbcb55414241b128fa675c5dc504608c938d438a56"
+				}
+			}
+		},
+		{
+			"id": "lt-double-stack",
+			"name": "Double stack",
+			"category": "lower-thirds",
+			"path": "lower-thirds/lt-double-stack",
+			"tags": [
+				"lower third",
+				"stack",
+				"two lines",
+				"name",
+				"role"
+			],
+			"durationSec": 4,
+			"loop": false,
+			"width": 1920,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "top",
+					"name": "Top bar",
+					"default": "#2EC4B6"
+				},
+				{
+					"id": "bottom",
+					"name": "Bottom bar",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "edge",
+					"name": "Edge",
+					"default": "#0F1115"
+				}
+			],
+			"files": {
+				"lt-double-stack.json": {
+					"sha256": "10637464d54b8858e5668ddc7b8d4b0e1784f02ef05bf86399e1d4b8c5267c63"
+				},
+				"thumbnail.png": {
+					"sha256": "5b13578b97e9fbf01d345b0fbffa87091af4540e463be93e73890a0bec5b5755"
+				},
+				"asset.json": {
+					"sha256": "826ee8fcf22c04ad06894b4f5859c821d8397f048c10b47decd4eed3c90e00b8"
+				}
+			}
+		},
+		{
+			"id": "lt-corner-brackets",
+			"name": "Corner brackets",
+			"category": "lower-thirds",
+			"path": "lower-thirds/lt-corner-brackets",
+			"tags": [
+				"lower third",
+				"brackets",
+				"frame",
+				"minimal",
+				"outline"
+			],
+			"durationSec": 4,
+			"loop": false,
+			"width": 1920,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "bracket",
+					"name": "Brackets",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "accent",
+					"name": "Accent line",
+					"default": "#F5A524"
+				}
+			],
+			"files": {
+				"lt-corner-brackets.json": {
+					"sha256": "a64cd832c5b53ffa25f4a2c912b50976b95817df8269883c51ebf5660ad7a585"
+				},
+				"thumbnail.png": {
+					"sha256": "9f741e28ecbde1f1e1d62eea49b39fd7fd48c3c3dbea92dfcd272435167818d7"
+				},
+				"asset.json": {
+					"sha256": "36fab33e1a346db4c1bb4c7bc4e95f6b2bcd6697d8f8e21f315d3a98e6e3c0e6"
+				}
+			}
+		},
+		{
+			"id": "lt-underline-sweep",
+			"name": "Underline sweep",
+			"category": "lower-thirds",
+			"path": "lower-thirds/lt-underline-sweep",
+			"tags": [
+				"lower third",
+				"underline",
+				"line",
+				"minimal",
+				"sweep"
+			],
+			"durationSec": 4,
+			"loop": false,
+			"width": 1920,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "line",
+					"name": "Line",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "dot",
+					"name": "Dot",
+					"default": "#2EC4B6"
+				},
+				{
+					"id": "short",
+					"name": "Short line",
+					"default": "#4C8DFF"
+				}
+			],
+			"files": {
+				"lt-underline-sweep.json": {
+					"sha256": "d2853f0cd165623d458d705bef9d86c516ad5521135b3dc948b4bf81cb099463"
+				},
+				"thumbnail.png": {
+					"sha256": "96692d1725236a08d7cd41324c75f3ae666e0d8e62400e0079490f214e030046"
+				},
+				"asset.json": {
+					"sha256": "904a5229df696e7c0eb6763010f2e4c3a84804664526b979b0ee6965d24be254"
+				}
+			}
+		},
+		{
+			"id": "lt-glass-card",
+			"name": "Glass card",
+			"category": "lower-thirds",
+			"path": "lower-thirds/lt-glass-card",
+			"tags": [
+				"lower third",
+				"card",
+				"glass",
+				"modern",
+				"panel"
+			],
+			"durationSec": 4,
+			"loop": false,
+			"width": 1920,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "card",
+					"name": "Card",
+					"default": "#0F1115"
+				},
+				{
+					"id": "edge",
+					"name": "Edge",
+					"default": "#2EC4B6"
+				},
+				{
+					"id": "shine",
+					"name": "Highlight",
+					"default": "#FFFFFF"
+				}
+			],
+			"files": {
+				"lt-glass-card.json": {
+					"sha256": "dee22df0993085473578521bfa4926201923e01c37bae32120e27e84ed9042c3"
+				},
+				"thumbnail.png": {
+					"sha256": "0e5410be702f7dcce9cfda9cf6f378a6bcbbd0feee21b1ddd10713e834f3c8b6"
+				},
+				"asset.json": {
+					"sha256": "58760cff6996e07ec04da881970810e418bd6867fe3a25d2aac0e65c0a8909bc"
+				}
+			}
+		},
+		{
+			"id": "lt-angled",
+			"name": "Angled slab",
+			"category": "lower-thirds",
+			"path": "lower-thirds/lt-angled",
+			"tags": [
+				"lower third",
+				"angled",
+				"sport",
+				"dynamic",
+				"slant"
+			],
+			"durationSec": 4,
+			"loop": false,
+			"width": 1920,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "slab",
+					"name": "Slab",
+					"default": "#F5A524"
+				},
+				{
+					"id": "stripe",
+					"name": "Stripe",
+					"default": "#0F1115"
+				}
+			],
+			"files": {
+				"lt-angled.json": {
+					"sha256": "1135635e1fc2a8779eb11eddc666867380bb45401b865f5fa34ea4f6ea427546"
+				},
+				"thumbnail.png": {
+					"sha256": "22b71c412022f915df0bc50f3980aa554e8d0989d2aec7238e78d67d72f202b3"
+				},
+				"asset.json": {
+					"sha256": "916e7261322fe08134a8360660cc19113e6f0afeb5c66a85d08d58dea3700221"
+				}
+			}
+		},
+		{
+			"id": "lt-dots-line",
+			"name": "Dots and line",
+			"category": "lower-thirds",
+			"path": "lower-thirds/lt-dots-line",
+			"tags": [
+				"lower third",
+				"dots",
+				"line",
+				"playful",
+				"bar"
+			],
+			"durationSec": 4,
+			"loop": false,
+			"width": 1920,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "dot1",
+					"name": "Dot 1",
+					"default": "#4C8DFF"
+				},
+				{
+					"id": "dot2",
+					"name": "Dot 2",
+					"default": "#2EC4B6"
+				},
+				{
+					"id": "dot3",
+					"name": "Dot 3",
+					"default": "#F5A524"
+				},
+				{
+					"id": "bar",
+					"name": "Bar",
+					"default": "#FFFFFF"
+				}
+			],
+			"files": {
+				"lt-dots-line.json": {
+					"sha256": "2d7a1084a2dc4684c203a895d898d8a33e6b407da8374c4b6ee32403e9dc7900"
+				},
+				"thumbnail.png": {
+					"sha256": "48241383e0cdcabb7c72cd2501c863dc0031ff81389c2ed0aa985a30bfb4c088"
+				},
+				"asset.json": {
+					"sha256": "eb70c4aa0bf6e9f118dda71924e6b32834d84aa7fb8e3b061d757757113581a2"
+				}
+			}
+		},
+		{
+			"id": "lt-split-reveal",
+			"name": "Split reveal",
+			"category": "lower-thirds",
+			"path": "lower-thirds/lt-split-reveal",
+			"tags": [
+				"lower third",
+				"split",
+				"reveal",
+				"meet",
+				"strip"
+			],
+			"durationSec": 4,
+			"loop": false,
+			"width": 1920,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "left",
+					"name": "Left bar",
+					"default": "#4C8DFF"
+				},
+				{
+					"id": "right",
+					"name": "Right bar",
+					"default": "#2EC4B6"
+				},
+				{
+					"id": "seam",
+					"name": "Seam",
+					"default": "#FFFFFF"
+				}
+			],
+			"files": {
+				"lt-split-reveal.json": {
+					"sha256": "0c3ea98741142134d5b4e9c0ca15a50c2805de0903caf36f5c95b794281c1fc6"
+				},
+				"thumbnail.png": {
+					"sha256": "a1c03f2a40c31aafdbc17009d286cb83f961202c2dec6de0c99d76fd1856c1ac"
+				},
+				"asset.json": {
+					"sha256": "2c1ea901bd09b2d9b9e5925de2f5de296640a98695c9378aeee9aeab40513231"
+				}
+			}
+		},
+		{
+			"id": "lt-corner-tag",
+			"name": "Corner tag",
+			"category": "lower-thirds",
+			"path": "lower-thirds/lt-corner-tag",
+			"tags": [
+				"lower third",
+				"tag",
+				"right",
+				"badge",
+				"handle"
+			],
+			"durationSec": 4,
+			"loop": false,
+			"width": 1920,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "tag",
+					"name": "Tag",
+					"default": "#0F1115"
+				},
+				{
+					"id": "badge",
+					"name": "Badge",
+					"default": "#F5A524"
+				},
+				{
+					"id": "icon",
+					"name": "Badge mark",
+					"default": "#FFFFFF"
+				}
+			],
+			"files": {
+				"lt-corner-tag.json": {
+					"sha256": "0122e6a096ffa6db8c50010cc9092d80888aa04e78b97b6c3797748c99069727"
+				},
+				"thumbnail.png": {
+					"sha256": "5a13f252697e79d6c5a619605aee6ed73fcafab9e27d6bb2a9d8d21b9e35918b"
+				},
+				"asset.json": {
+					"sha256": "22ee2dc0fec5ec5b8837914a185fc060626a08805ad4988c50880f63db775758"
+				}
+			}
+		},
+		{
+			"id": "cta-subscribe-click",
+			"name": "Subscribe click",
+			"category": "call-to-action",
+			"path": "call-to-action/cta-subscribe-click",
+			"tags": [
+				"subscribe",
+				"button",
+				"click",
+				"cursor",
+				"pill",
+				"play"
+			],
+			"durationSec": 3,
+			"loop": true,
+			"width": 1080,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "pill",
+					"name": "Pill",
+					"default": "#4C8DFF"
+				},
+				{
+					"id": "pressed",
+					"name": "Pressed pill",
+					"default": "#0F1115"
+				},
+				{
+					"id": "icon",
+					"name": "Icon",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "cursor",
+					"name": "Cursor",
+					"default": "#F4F6FA"
+				},
+				{
+					"id": "outline",
+					"name": "Cursor outline",
+					"default": "#F5A524"
+				}
+			],
+			"files": {
+				"cta-subscribe-click.json": {
+					"sha256": "8876641929aedd4d91b758ed7704e2861dd03e610b51a72e2c971ffcb79ca5a2"
+				},
+				"thumbnail.png": {
+					"sha256": "eea127ccd28cd06cf5d80dd0be255c8508f54f8998f5f877110a67c89071f480"
+				},
+				"asset.json": {
+					"sha256": "6b87d1a70f740c17b07678b59247baca95de70f117f5a2ea07120c09422f16ce"
+				}
+			}
+		},
+		{
+			"id": "cta-bell-ring",
+			"name": "Bell ring",
+			"category": "call-to-action",
+			"path": "call-to-action/cta-bell-ring",
+			"tags": [
+				"bell",
+				"notification",
+				"ring",
+				"alert",
+				"subscribe"
+			],
+			"durationSec": 3,
+			"loop": true,
+			"width": 1080,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "bell",
+					"name": "Bell",
+					"default": "#F5A524"
+				},
+				{
+					"id": "clapper",
+					"name": "Clapper",
+					"default": "#0F1115"
+				},
+				{
+					"id": "waves",
+					"name": "Sound arcs",
+					"default": "#FFFFFF"
+				}
+			],
+			"files": {
+				"cta-bell-ring.json": {
+					"sha256": "74525ab1b83eed4abcc432750349b259366502d0fdfbf11f44301e58cd2c9009"
+				},
+				"thumbnail.png": {
+					"sha256": "4bc1bc16f9e12d2483f5825ecc20e98c1e7dbffc347b50e5a4fb72d1464897c6"
+				},
+				"asset.json": {
+					"sha256": "7c69caa8196c357becccbeafcb5319f98aa55379ea7e857e9d1b38327a512442"
+				}
+			}
+		},
+		{
+			"id": "cta-like-thumb",
+			"name": "Like thumb",
+			"category": "call-to-action",
+			"path": "call-to-action/cta-like-thumb",
+			"tags": [
+				"like",
+				"thumbs up",
+				"approve",
+				"pop",
+				"burst"
+			],
+			"durationSec": 3,
+			"loop": true,
+			"width": 1080,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "hand",
+					"name": "Hand",
+					"default": "#4C8DFF"
+				},
+				{
+					"id": "cuff",
+					"name": "Cuff",
+					"default": "#0F1115"
+				},
+				{
+					"id": "burst",
+					"name": "Burst",
+					"default": "#F5A524"
+				}
+			],
+			"files": {
+				"cta-like-thumb.json": {
+					"sha256": "c4366f39d914acd472423d7eeadff19b8326fc529668859a77d0970b82799781"
+				},
+				"thumbnail.png": {
+					"sha256": "093da4ebb7889c1c71c5ab59ab940f041e36841642bda7f4e5d65a69f9c6fdda"
+				},
+				"asset.json": {
+					"sha256": "b008ece14d955b15b87dec863be78d43c2482ca91fd0c632fa0d05827430491b"
+				}
+			}
+		},
+		{
+			"id": "cta-comment-bubble",
+			"name": "Comment bubble",
+			"category": "call-to-action",
+			"path": "call-to-action/cta-comment-bubble",
+			"tags": [
+				"comment",
+				"chat",
+				"speech bubble",
+				"typing",
+				"reply"
+			],
+			"durationSec": 3,
+			"loop": true,
+			"width": 1080,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "bubble",
+					"name": "Bubble",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "dots",
+					"name": "Dots",
+					"default": "#4C8DFF"
+				}
+			],
+			"files": {
+				"cta-comment-bubble.json": {
+					"sha256": "df6f65973a3abda1187824682975db9e2fa14a26ce3e665381cec053390c7817"
+				},
+				"thumbnail.png": {
+					"sha256": "b34a011d0ee6d1e10d4ca6c64d6749a0a6256d4445904e669c00deb781860d06"
+				},
+				"asset.json": {
+					"sha256": "ac49185a4378f38544a5fd37af6bf1f6c3997dad3d46b88fd3af706581511048"
+				}
+			}
+		},
+		{
+			"id": "cta-share-arrow",
+			"name": "Share arrow",
+			"category": "call-to-action",
+			"path": "call-to-action/cta-share-arrow",
+			"tags": [
+				"share",
+				"arrow",
+				"forward",
+				"send",
+				"repost"
+			],
+			"durationSec": 3,
+			"loop": true,
+			"width": 1080,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "button",
+					"name": "Button",
+					"default": "#2EC4B6"
+				},
+				{
+					"id": "arrow",
+					"name": "Arrow",
+					"default": "#FFFFFF"
+				}
+			],
+			"files": {
+				"cta-share-arrow.json": {
+					"sha256": "ab659d957bd985796fd94c35f6cada6cbba6c70ea96ed0ce19985b9a677067ed"
+				},
+				"thumbnail.png": {
+					"sha256": "0549b0cd8eeb7aa3162750ec2b147a5b68b0557a59785093aaa0d4753b64be65"
+				},
+				"asset.json": {
+					"sha256": "4dab579bb639c9b76108650b918a65cc7051855d321fe1e37679d44c6e735723"
+				}
+			}
+		},
+		{
+			"id": "cta-follow-plus",
+			"name": "Follow plus",
+			"category": "call-to-action",
+			"path": "call-to-action/cta-follow-plus",
+			"tags": [
+				"follow",
+				"plus",
+				"add",
+				"join",
+				"button"
+			],
+			"durationSec": 3,
+			"loop": true,
+			"width": 1080,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "button",
+					"name": "Button",
+					"default": "#4C8DFF"
+				},
+				{
+					"id": "mark",
+					"name": "Mark",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "ring",
+					"name": "Ring",
+					"default": "#2EC4B6"
+				}
+			],
+			"files": {
+				"cta-follow-plus.json": {
+					"sha256": "223ab1c132d91f9d27f6dff5274ffdcac308701c552f0b43ea0ae54f43dd4ec8"
+				},
+				"thumbnail.png": {
+					"sha256": "cf6357cf875a82b9cb5068dde63a6fdb7ac9ac684770c2d98100b8a6e8cdbab7"
+				},
+				"asset.json": {
+					"sha256": "554adcf76bdca51c2bcbe5170215f9bdfb3bea827a37ff48807e52aa4a99acc1"
+				}
+			}
+		},
+		{
+			"id": "cta-link-pointer",
+			"name": "Link pointer",
+			"category": "call-to-action",
+			"path": "call-to-action/cta-link-pointer",
+			"tags": [
+				"link in bio",
+				"link",
+				"pointer",
+				"arrow",
+				"down"
+			],
+			"durationSec": 3,
+			"loop": true,
+			"width": 1080,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "badge",
+					"name": "Badge",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "link",
+					"name": "Link",
+					"default": "#0F1115"
+				},
+				{
+					"id": "arrow",
+					"name": "Arrow",
+					"default": "#F5A524"
+				}
+			],
+			"files": {
+				"cta-link-pointer.json": {
+					"sha256": "dd7756e8168d2857ae99ed1faae4c0bb6b4cb6a2a6fbab5a4bba7ce3d01929ce"
+				},
+				"thumbnail.png": {
+					"sha256": "90f03e4c7df8b7fb99126e90d25e78d8a8e8dc20cbb1982d298ee25c08826d43"
+				},
+				"asset.json": {
+					"sha256": "c2c7d368ce1d37c22cf992c10e33a7bc7cbb42da4d3bac1fa09674f4c6d488f3"
+				}
+			}
+		},
+		{
+			"id": "cta-swipe-up",
+			"name": "Swipe up",
+			"category": "call-to-action",
+			"path": "call-to-action/cta-swipe-up",
+			"tags": [
+				"swipe up",
+				"chevron",
+				"arrow",
+				"up",
+				"more"
+			],
+			"durationSec": 3,
+			"loop": true,
+			"width": 1080,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "chevron",
+					"name": "Chevrons",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "glow",
+					"name": "Glow",
+					"default": "#2EC4B6"
+				}
+			],
+			"files": {
+				"cta-swipe-up.json": {
+					"sha256": "1ed594a288c4ef391791a685afb9bce7eda32f47694f024ad6d27c3d8cdcccb9"
+				},
+				"thumbnail.png": {
+					"sha256": "bf67b333b4e806a5d949acbdeb792aae8fd9dba0a4f8f4ad4570022747abc932"
+				},
+				"asset.json": {
+					"sha256": "021673756f601eeb4a87b9e23b4382acabcda79222b406d1fc11f64b619fdaf8"
+				}
+			}
+		},
+		{
+			"id": "cta-five-star",
+			"name": "Five-star rating",
+			"category": "call-to-action",
+			"path": "call-to-action/cta-five-star",
+			"tags": [
+				"rate",
+				"rating",
+				"stars",
+				"review",
+				"five stars"
+			],
+			"durationSec": 3,
+			"loop": true,
+			"width": 1080,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "star",
+					"name": "Stars",
+					"default": "#F5A524"
+				},
+				{
+					"id": "empty",
+					"name": "Empty stars",
+					"default": "#FFFFFF"
+				}
+			],
+			"files": {
+				"cta-five-star.json": {
+					"sha256": "5eeb9c8a8ab88d5b1483a0f03971e728c7ab3aed54ad70cd91affa8ca3679831"
+				},
+				"thumbnail.png": {
+					"sha256": "820f935c3da8e6c29a3efef1ff9ec5c3e698697caec2fad8b2fe483fc77664cb"
+				},
+				"asset.json": {
+					"sha256": "fbe4e292a6429ac1b557987788ba47b9f4c45cebdc4b3027d880459ef0804068"
+				}
+			}
+		},
+		{
+			"id": "cta-tap-here",
+			"name": "Tap here",
+			"category": "call-to-action",
+			"path": "call-to-action/cta-tap-here",
+			"tags": [
+				"tap",
+				"click",
+				"finger",
+				"press",
+				"touch",
+				"here"
+			],
+			"durationSec": 3,
+			"loop": true,
+			"width": 1080,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "hand",
+					"name": "Hand",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "outline",
+					"name": "Outline",
+					"default": "#0F1115"
+				},
+				{
+					"id": "ripple",
+					"name": "Ripple",
+					"default": "#2EC4B6"
+				}
+			],
+			"files": {
+				"cta-tap-here.json": {
+					"sha256": "a38f1df813a4e4c4453cbcc0ae5ebb1ee3c30cd71f84919f41127d8964707fe2"
+				},
+				"thumbnail.png": {
+					"sha256": "8614855c6e417d3a5f018804b2a6a63605b5455b2fadaeab1c696d3ef9b3f823"
+				},
+				"asset.json": {
+					"sha256": "457aa87e2822f8223dfabbe2470563829d075bc35fb1565d0a9278f2a07ea3d0"
+				}
+			}
+		},
+		{
+			"id": "co-arrow-curved",
+			"name": "Curved arrow",
+			"category": "callouts",
+			"path": "callouts/co-arrow-curved",
+			"tags": [
+				"arrow",
+				"curved",
+				"point",
+				"look here",
+				"sketch"
+			],
+			"durationSec": 3,
+			"loop": false,
+			"width": 1080,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "arrow",
+					"name": "Arrow",
+					"default": "#F5A524"
+				}
+			],
+			"files": {
+				"co-arrow-curved.json": {
+					"sha256": "4b506560fe6a1dab698c640f00a8eb7a4133f86025af4284b788b4acc2e6c97c"
+				},
+				"thumbnail.png": {
+					"sha256": "e0918e90ad3c6b5bdb235a4f9bcc126991ad1d5fba645f08b8b079f37d8db04f"
+				},
+				"asset.json": {
+					"sha256": "bae3fe059cfeaa390a80c6f147cc48e867264d5a84e13b066ec6b44dc4afce3e"
+				}
+			}
+		},
+		{
+			"id": "co-arrow-straight",
+			"name": "Nudging arrow",
+			"category": "callouts",
+			"path": "callouts/co-arrow-straight",
+			"tags": [
+				"arrow",
+				"straight",
+				"point",
+				"nudge",
+				"right"
+			],
+			"durationSec": 3,
+			"loop": true,
+			"width": 1080,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "arrow",
+					"name": "Arrow",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "shadow",
+					"name": "Shadow",
+					"default": "#0F1115"
+				}
+			],
+			"files": {
+				"co-arrow-straight.json": {
+					"sha256": "1c8fcc89e69f8d535265e781882bde1e1b3ba878596c65f3fdf6c7d1ca1dce02"
+				},
+				"thumbnail.png": {
+					"sha256": "df0d5bb8a650439d9ffcff25622d210e775936dab629e3bc144e692fdbb654a3"
+				},
+				"asset.json": {
+					"sha256": "65c4f5e72abefb7232dd3067144486d3ba7492761f0d0065d15438359a25c6fa"
+				}
+			}
+		},
+		{
+			"id": "co-circle-scribble",
+			"name": "Circle scribble",
+			"category": "callouts",
+			"path": "callouts/co-circle-scribble",
+			"tags": [
+				"circle",
+				"scribble",
+				"highlight",
+				"marker",
+				"hand drawn"
+			],
+			"durationSec": 3,
+			"loop": false,
+			"width": 1080,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "ink",
+					"name": "Marker",
+					"default": "#F5A524"
+				}
+			],
+			"files": {
+				"co-circle-scribble.json": {
+					"sha256": "9b9cf6af791f188272c9d349bad21ff7e2841e840f83a41afd21aef57abb3315"
+				},
+				"thumbnail.png": {
+					"sha256": "91776d13c0f0f485d9b584864f0170811df213407b5eafa42a0c24242682f58a"
+				},
+				"asset.json": {
+					"sha256": "aed446389ade13b53f488e2e716c4c25ee217aa56d7c1704485e6ca0e1e44758"
+				}
+			}
+		},
+		{
+			"id": "co-underline",
+			"name": "Swoosh underline",
+			"category": "callouts",
+			"path": "callouts/co-underline",
+			"tags": [
+				"underline",
+				"swoosh",
+				"emphasis",
+				"stroke",
+				"mark"
+			],
+			"durationSec": 3,
+			"loop": false,
+			"width": 1080,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "main",
+					"name": "Main stroke",
+					"default": "#2EC4B6"
+				},
+				{
+					"id": "second",
+					"name": "Second stroke",
+					"default": "#4C8DFF"
+				}
+			],
+			"files": {
+				"co-underline.json": {
+					"sha256": "7f3fd08fc13fa92614f5834b4f15f3fa904bd593bd6830b0ef1115e63c5319b7"
+				},
+				"thumbnail.png": {
+					"sha256": "1cdf225dcca7ba2ad3312af29ebed96b4d81ef5786aaad122f67dc32b83d8c7a"
+				},
+				"asset.json": {
+					"sha256": "84d60a0a3aa31290c9993da2e922e9364d8b83e66e2dff49900f3952dca7c43b"
+				}
+			}
+		},
+		{
+			"id": "co-highlight-swipe",
+			"name": "Highlight swipe",
+			"category": "callouts",
+			"path": "callouts/co-highlight-swipe",
+			"tags": [
+				"highlight",
+				"highlighter",
+				"marker",
+				"swipe",
+				"emphasis"
+			],
+			"durationSec": 3,
+			"loop": false,
+			"width": 1080,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "band",
+					"name": "Band",
+					"default": "#F5A524"
+				}
+			],
+			"files": {
+				"co-highlight-swipe.json": {
+					"sha256": "41b44fcc8b4a4040b0fb4a30282eefecdca941ec26cf7566b77c2882138dc61a"
+				},
+				"thumbnail.png": {
+					"sha256": "e38c7df4079baee1aa3e713b212784e0499b24c49fe896921dd41db0d641b7d3"
+				},
+				"asset.json": {
+					"sha256": "14e305713c54e575ce8e95118e47f5b5f05c49082478327d5d4d7104e3b721b7"
+				}
+			}
+		},
+		{
+			"id": "co-brackets",
+			"name": "Focus brackets",
+			"category": "callouts",
+			"path": "callouts/co-brackets",
+			"tags": [
+				"brackets",
+				"focus",
+				"frame",
+				"target",
+				"select"
+			],
+			"durationSec": 3,
+			"loop": true,
+			"width": 1080,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "bracket",
+					"name": "Brackets",
+					"default": "#FFFFFF"
+				}
+			],
+			"files": {
+				"co-brackets.json": {
+					"sha256": "60cf1a2367d4e8f5aeb5ed39f971510173e39e4ad42057115f7d7e0fdc10cba6"
+				},
+				"thumbnail.png": {
+					"sha256": "8e777ad2b459c6b09ec508e7ea093be6924cc46d73976c7da8ae369ab6edbb38"
+				},
+				"asset.json": {
+					"sha256": "32faa80e7ef78968f358cf07dab536a41aab7d38fe7dcd960b1e245a01690f2d"
+				}
+			}
+		},
+		{
+			"id": "co-spotlight",
+			"name": "Spotlight",
+			"category": "callouts",
+			"path": "callouts/co-spotlight",
+			"tags": [
+				"spotlight",
+				"focus",
+				"vignette",
+				"dim",
+				"reveal"
+			],
+			"durationSec": 3,
+			"loop": false,
+			"width": 1080,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "dim",
+					"name": "Dim",
+					"default": "#0F1115"
+				},
+				{
+					"id": "rim",
+					"name": "Rim",
+					"default": "#FFFFFF"
+				}
+			],
+			"files": {
+				"co-spotlight.json": {
+					"sha256": "e463f0aaf1460477b9b87793be76495f6ba8e4b258a9d0aa65ff91ccb36200a8"
+				},
+				"thumbnail.png": {
+					"sha256": "0c08f81766aa82d2306fd08a9fb5f5fa11fedce3b26af75e6da4e311c7625557"
+				},
+				"asset.json": {
+					"sha256": "bb09fba83df0c2290955b8e49a78939930b52ca42b5f54d3b8a10156fe8913a0"
+				}
+			}
+		},
+		{
+			"id": "co-exclamation",
+			"name": "Exclamation badge",
+			"category": "callouts",
+			"path": "callouts/co-exclamation",
+			"tags": [
+				"exclamation",
+				"warning",
+				"attention",
+				"alert",
+				"important"
+			],
+			"durationSec": 3,
+			"loop": true,
+			"width": 1080,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "badge",
+					"name": "Badge",
+					"default": "#F5A524"
+				},
+				{
+					"id": "mark",
+					"name": "Mark",
+					"default": "#0F1115"
+				}
+			],
+			"files": {
+				"co-exclamation.json": {
+					"sha256": "e491bc9a72c2cb7589879c4f941558f52bb2099942096ed3c0e116acebb9af9b"
+				},
+				"thumbnail.png": {
+					"sha256": "6084135a9a120051e0c10e82598e9a2a99f88bc05b6031d29e8b1053de425e48"
+				},
+				"asset.json": {
+					"sha256": "cddac13bdef7e0066fcba57197048f31dab7d082cb88e8944863eb962c43f92a"
+				}
+			}
+		},
+		{
+			"id": "co-check-stamp",
+			"name": "Check stamp",
+			"category": "callouts",
+			"path": "callouts/co-check-stamp",
+			"tags": [
+				"check",
+				"tick",
+				"done",
+				"correct",
+				"yes",
+				"stamp"
+			],
+			"durationSec": 3,
+			"loop": false,
+			"width": 1080,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "circle",
+					"name": "Circle",
+					"default": "#2EC4B6"
+				},
+				{
+					"id": "mark",
+					"name": "Tick",
+					"default": "#FFFFFF"
+				}
+			],
+			"files": {
+				"co-check-stamp.json": {
+					"sha256": "4138bd7c1708b9121ee3cbddc25537ca03a0abac1f99d01b94cf7e9ecdf96487"
+				},
+				"thumbnail.png": {
+					"sha256": "eaed386e618d4a8620c35d1de53469a835bfa402580562e1f420d6f56e5cb2f9"
+				},
+				"asset.json": {
+					"sha256": "942a43d51e2e53b24c577b6065ae1f737e37d0194eedf8185aca604ba12d3bd9"
+				}
+			}
+		},
+		{
+			"id": "co-cross-stamp",
+			"name": "Cross stamp",
+			"category": "callouts",
+			"path": "callouts/co-cross-stamp",
+			"tags": [
+				"cross",
+				"x",
+				"wrong",
+				"no",
+				"stamp",
+				"mistake"
+			],
+			"durationSec": 3,
+			"loop": false,
+			"width": 1080,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "circle",
+					"name": "Circle",
+					"default": "#0F1115"
+				},
+				{
+					"id": "mark",
+					"name": "Cross",
+					"default": "#F5A524"
+				}
+			],
+			"files": {
+				"co-cross-stamp.json": {
+					"sha256": "f36f9d401d5b6c126422950eb714b2df5fb1f8a97faedc53e9cf908a1786ad18"
+				},
+				"thumbnail.png": {
+					"sha256": "dbd0771da68eecf1600d9919007544c40c261404a2b25ffd11d8ae3b9fd9cd3b"
+				},
+				"asset.json": {
+					"sha256": "d72b7aa7e1aa815f0133765406813e85bcb50d47c768679ce2cff0df53ad7c58"
+				}
+			}
+		},
+		{
+			"id": "rx-confetti",
+			"name": "Confetti burst",
+			"category": "reactions",
+			"path": "reactions/rx-confetti",
+			"tags": [
+				"confetti",
+				"celebrate",
+				"party",
+				"burst",
+				"win"
+			],
+			"durationSec": 3,
+			"loop": true,
+			"width": 1080,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "a",
+					"name": "Confetti 1",
+					"default": "#4C8DFF"
+				},
+				{
+					"id": "b",
+					"name": "Confetti 2",
+					"default": "#2EC4B6"
+				},
+				{
+					"id": "c",
+					"name": "Confetti 3",
+					"default": "#F5A524"
+				},
+				{
+					"id": "d",
+					"name": "Confetti 4",
+					"default": "#FFFFFF"
+				}
+			],
+			"files": {
+				"rx-confetti.json": {
+					"sha256": "8c4518b78a81ff35d97ad864320239fba7b98805b14e90eef0d93b08c008cdbd"
+				},
+				"thumbnail.png": {
+					"sha256": "8e343a53c68a6d40c11a40675bb27a9541b1a72b122a6e62af23cbd7bbf9c2ef"
+				},
+				"asset.json": {
+					"sha256": "b89ef04e13b22ee55d945e10cf7cf943365209a972af4b172049bb7866ce7ac8"
+				}
+			}
+		},
+		{
+			"id": "rx-hearts",
+			"name": "Floating hearts",
+			"category": "reactions",
+			"path": "reactions/rx-hearts",
+			"tags": [
+				"hearts",
+				"love",
+				"like",
+				"float",
+				"romance"
+			],
+			"durationSec": 3,
+			"loop": true,
+			"width": 1080,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "heart",
+					"name": "Hearts",
+					"default": "#FF4D6D"
+				},
+				{
+					"id": "soft",
+					"name": "Soft hearts",
+					"default": "#FFFFFF"
+				}
+			],
+			"files": {
+				"rx-hearts.json": {
+					"sha256": "bfc17f19700a1e43866034327c963c782f8ee17f737abcf4cd2ea74992024353"
+				},
+				"thumbnail.png": {
+					"sha256": "0df897332ccd656af4bb89b753d4a7248874fe9cddd308d99d9300b6bd035caf"
+				},
+				"asset.json": {
+					"sha256": "735fe460daa266e5d9f52c64b62be3e233cc08d26eac5b07a6832539cbe014f7"
+				}
+			}
+		},
+		{
+			"id": "rx-sparkles",
+			"name": "Sparkles",
+			"category": "reactions",
+			"path": "reactions/rx-sparkles",
+			"tags": [
+				"sparkle",
+				"shine",
+				"magic",
+				"twinkle",
+				"new"
+			],
+			"durationSec": 3,
+			"loop": true,
+			"width": 1080,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "main",
+					"name": "Sparkles",
+					"default": "#F5A524"
+				},
+				{
+					"id": "alt",
+					"name": "Small sparkles",
+					"default": "#FFFFFF"
+				}
+			],
+			"files": {
+				"rx-sparkles.json": {
+					"sha256": "dedf9700a0166ed67f1fd72070ee6431597ddea060273be8676440163e0b44db"
+				},
+				"thumbnail.png": {
+					"sha256": "0cf1e3a74d0127c813b4b7fa0d78b5391eb78382e7aacb75167af70543106fda"
+				},
+				"asset.json": {
+					"sha256": "b6d861a6658c3d77ddef620afef4d5f8e9664f97dc5bd5f956e8caabc0b87c1a"
+				}
+			}
+		},
+		{
+			"id": "rx-fireworks",
+			"name": "Fireworks",
+			"category": "reactions",
+			"path": "reactions/rx-fireworks",
+			"tags": [
+				"fireworks",
+				"celebrate",
+				"new year",
+				"burst",
+				"party"
+			],
+			"durationSec": 3,
+			"loop": true,
+			"width": 1080,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "a",
+					"name": "Burst 1",
+					"default": "#F5A524"
+				},
+				{
+					"id": "b",
+					"name": "Burst 2",
+					"default": "#2EC4B6"
+				},
+				{
+					"id": "c",
+					"name": "Burst 3",
+					"default": "#4C8DFF"
+				}
+			],
+			"files": {
+				"rx-fireworks.json": {
+					"sha256": "b46421478cd34ddf2a07732a948d7bf2b24db59931bbd31bcd597a6b28ca82a1"
+				},
+				"thumbnail.png": {
+					"sha256": "e2628943c90043048d3b4be24110a6210c67dceac9cf361b0e49209ffdf7cf0b"
+				},
+				"asset.json": {
+					"sha256": "bda12c5d3c55012e80dc7677ce7597391da150cf576a4ca0eb5bf33f1b404293"
+				}
+			}
+		},
+		{
+			"id": "rx-clap-lines",
+			"name": "Impact lines",
+			"category": "reactions",
+			"path": "reactions/rx-clap-lines",
+			"tags": [
+				"clap",
+				"impact",
+				"hit",
+				"applause",
+				"pop",
+				"comic"
+			],
+			"durationSec": 3,
+			"loop": true,
+			"width": 1080,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "lines",
+					"name": "Lines",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "accent",
+					"name": "Accent",
+					"default": "#F5A524"
+				}
+			],
+			"files": {
+				"rx-clap-lines.json": {
+					"sha256": "2250e925b9d1b253b35ae2fdbdd4b13c5bf227d4f09779b792e291fd6b97e905"
+				},
+				"thumbnail.png": {
+					"sha256": "c53bc1249f82d4c9f708a2f27d5a8a2d81e948c067313823f5c7e624c60f4db3"
+				},
+				"asset.json": {
+					"sha256": "2ffc03651a9e719f6cdb1a7f5da1d2419c8566b30174617f5cecaa512838e7ac"
+				}
+			}
+		},
+		{
+			"id": "rx-fire",
+			"name": "Fire",
+			"category": "reactions",
+			"path": "reactions/rx-fire",
+			"tags": [
+				"fire",
+				"flame",
+				"hot",
+				"lit",
+				"trending"
+			],
+			"durationSec": 3,
+			"loop": true,
+			"width": 1080,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "outer",
+					"name": "Outer flame",
+					"default": "#FF6B3D"
+				},
+				{
+					"id": "middle",
+					"name": "Middle flame",
+					"default": "#F5A524"
+				},
+				{
+					"id": "core",
+					"name": "Core",
+					"default": "#FFFFFF"
+				}
+			],
+			"files": {
+				"rx-fire.json": {
+					"sha256": "cedd3e98b929f79a2f0b64055df84387365d7bf58b1ae37d3fd2b7f69f967cd8"
+				},
+				"thumbnail.png": {
+					"sha256": "324662b50b72bf2527337721435c9462e84c855ed02c5f61eb7046bce5b7c3dc"
+				},
+				"asset.json": {
+					"sha256": "2cb256fcce768fb03c64e2702bab1a258f4cfb2783d205a2bcab2ce69f6fbf25"
+				}
+			}
+		},
+		{
+			"id": "rx-tears",
+			"name": "Tears",
+			"category": "reactions",
+			"path": "reactions/rx-tears",
+			"tags": [
+				"tears",
+				"cry",
+				"sad",
+				"emotional",
+				"drops"
+			],
+			"durationSec": 3,
+			"loop": true,
+			"width": 1080,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "drop",
+					"name": "Drops",
+					"default": "#4C8DFF"
+				},
+				{
+					"id": "shine",
+					"name": "Shine",
+					"default": "#FFFFFF"
+				}
+			],
+			"files": {
+				"rx-tears.json": {
+					"sha256": "f9766bbd3cd65c78e6e9b39c92f58b94786ce554c33e64ef52ba7d4413fd591d"
+				},
+				"thumbnail.png": {
+					"sha256": "4a60d38393ab7901285f66381fedf6f46b49aca114e5f1a99e3c69b60c1eda86"
+				},
+				"asset.json": {
+					"sha256": "ea1e0842746ff6ef6ed0f12bec5e19d8501f4daae1f785f71718fb5cd1a22695"
+				}
+			}
+		},
+		{
+			"id": "rx-shock-lines",
+			"name": "Shock lines",
+			"category": "reactions",
+			"path": "reactions/rx-shock-lines",
+			"tags": [
+				"shock",
+				"surprise",
+				"wow",
+				"omg",
+				"jolt"
+			],
+			"durationSec": 3,
+			"loop": true,
+			"width": 1080,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "lines",
+					"name": "Lines",
+					"default": "#F5A524"
+				},
+				{
+					"id": "inner",
+					"name": "Inner lines",
+					"default": "#FFFFFF"
+				}
+			],
+			"files": {
+				"rx-shock-lines.json": {
+					"sha256": "0d4a81173aafb23675f69bffadc2d081c65474ec4b0b3ad6ef83daa2f453821a"
+				},
+				"thumbnail.png": {
+					"sha256": "38544834607c50025fd5155a05b7b29fc13f53ecd58035aea7f0b928b12f59c3"
+				},
+				"asset.json": {
+					"sha256": "7a59a4391f7dd84fae9cf3a8d5e2f6b2062674dd48eceb52a6ae09a838606bb1"
+				}
+			}
+		},
+		{
+			"id": "sl-avurudu-sun",
+			"name": "New Year sun and lamp",
+			"category": "sri-lanka-seasonal",
+			"path": "sri-lanka-seasonal/sl-avurudu-sun",
+			"tags": [
+				"avurudu",
+				"aluth avurudu",
+				"puthandu",
+				"new year",
+				"april",
+				"sun",
+				"oil lamp",
+				"sri lanka"
+			],
+			"durationSec": 4,
+			"loop": true,
+			"width": 1080,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "sun",
+					"name": "Sun",
+					"default": "#F5A524"
+				},
+				{
+					"id": "rays",
+					"name": "Rays",
+					"default": "#FFD166"
+				},
+				{
+					"id": "lamp",
+					"name": "Lamp",
+					"default": "#C9822B"
+				},
+				{
+					"id": "flame",
+					"name": "Flame",
+					"default": "#FF6B3D"
+				},
+				{
+					"id": "core",
+					"name": "Flame core",
+					"default": "#FFFFFF"
+				}
+			],
+			"files": {
+				"sl-avurudu-sun.json": {
+					"sha256": "145d19024cd6d1a112685d82ba48fb828fab36bf8eb1e0429524cf2cf28697b1"
+				},
+				"thumbnail.png": {
+					"sha256": "2715e19c46069c653c61a5cd18bf717d17f89794d654cb2e39bb9fb0d797b6e4"
+				},
+				"asset.json": {
+					"sha256": "efd87953c90a30e7f39d72c733d303755891199e5a09c17b5e1bf30fd47fa377"
+				}
+			}
+		},
+		{
+			"id": "sl-vesak-lantern",
+			"name": "Vesak lantern",
+			"category": "sri-lanka-seasonal",
+			"path": "sri-lanka-seasonal/sl-vesak-lantern",
+			"tags": [
+				"vesak",
+				"lantern",
+				"kuudu",
+				"wesak",
+				"buddhist",
+				"poya",
+				"sri lanka"
+			],
+			"durationSec": 4,
+			"loop": true,
+			"width": 1080,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "frame",
+					"name": "Frame",
+					"default": "#F5A524"
+				},
+				{
+					"id": "panel",
+					"name": "Panels",
+					"default": "#2EC4B6"
+				},
+				{
+					"id": "glow",
+					"name": "Glow",
+					"default": "#FFE7A3"
+				},
+				{
+					"id": "tassel",
+					"name": "Tassels",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "accent",
+					"name": "Accent",
+					"default": "#4C8DFF"
+				}
+			],
+			"files": {
+				"sl-vesak-lantern.json": {
+					"sha256": "c04d28a24ce7cda54c8425e5fe721681da6a0eed916d546381630b8e17129e0f"
+				},
+				"thumbnail.png": {
+					"sha256": "37ed2a44919d21dd3a31a25c59ca8c387d4da72026276ab5d9df488e12bdcfdc"
+				},
+				"asset.json": {
+					"sha256": "764b97b670cf0329290ec14960a8903d231c5f5a38ed549472ae43e149ecef92"
+				}
+			}
+		},
+		{
+			"id": "sl-poson-lights",
+			"name": "Poson lights",
+			"category": "sri-lanka-seasonal",
+			"path": "sri-lanka-seasonal/sl-poson-lights",
+			"tags": [
+				"poson",
+				"lights",
+				"bulbs",
+				"string lights",
+				"decoration",
+				"poya",
+				"sri lanka"
+			],
+			"durationSec": 4,
+			"loop": true,
+			"width": 1080,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "wire",
+					"name": "Wire",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "a",
+					"name": "Lights 1",
+					"default": "#F5A524"
+				},
+				{
+					"id": "b",
+					"name": "Lights 2",
+					"default": "#2EC4B6"
+				},
+				{
+					"id": "c",
+					"name": "Lights 3",
+					"default": "#4C8DFF"
+				}
+			],
+			"files": {
+				"sl-poson-lights.json": {
+					"sha256": "598daf5ecc35b1a443c193a020efcf6f594fbf5359833325680dd247c35194ed"
+				},
+				"thumbnail.png": {
+					"sha256": "b9f4c2402bb4c48a39c633e48563fc6491ff8820723f88eda193af56473ca576"
+				},
+				"asset.json": {
+					"sha256": "1fc57873ccaf6ca159d1eea37c40859dd80a8f8eafedf7a4f1eae8f2b9281062"
+				}
+			}
+		},
+		{
+			"id": "sl-christmas-star",
+			"name": "Christmas star",
+			"category": "sri-lanka-seasonal",
+			"path": "sri-lanka-seasonal/sl-christmas-star",
+			"tags": [
+				"christmas",
+				"star",
+				"nattal",
+				"december",
+				"festive",
+				"sri lanka"
+			],
+			"durationSec": 4,
+			"loop": true,
+			"width": 1080,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "star",
+					"name": "Star",
+					"default": "#F5A524"
+				},
+				{
+					"id": "rays",
+					"name": "Rays",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "twinkle",
+					"name": "Twinkles",
+					"default": "#2EC4B6"
+				}
+			],
+			"files": {
+				"sl-christmas-star.json": {
+					"sha256": "3bc65b55f8f6cead91ef9c57dcf834d47dd3d906a09b27a68b8547acff9b2c2a"
+				},
+				"thumbnail.png": {
+					"sha256": "3c1438a4c925caa0a537db95e431c35e91d34e678547f43d8a786e3d2e16f49b"
+				},
+				"asset.json": {
+					"sha256": "837eddb74cf26db10482a959827b99c910a74b297a71e9d147415d6719e91551"
+				}
+			}
+		},
+		{
+			"id": "sl-deepavali-lamp",
+			"name": "Deepavali lamp",
+			"category": "sri-lanka-seasonal",
+			"path": "sri-lanka-seasonal/sl-deepavali-lamp",
+			"tags": [
+				"deepavali",
+				"diwali",
+				"diya",
+				"lamp",
+				"festival of lights",
+				"sri lanka"
+			],
+			"durationSec": 4,
+			"loop": true,
+			"width": 1080,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "lamp",
+					"name": "Lamp",
+					"default": "#C2552B"
+				},
+				{
+					"id": "pattern",
+					"name": "Pattern",
+					"default": "#F5A524"
+				},
+				{
+					"id": "flame",
+					"name": "Flame",
+					"default": "#FF6B3D"
+				},
+				{
+					"id": "core",
+					"name": "Flame core",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "glow",
+					"name": "Glow",
+					"default": "#FFD166"
+				}
+			],
+			"files": {
+				"sl-deepavali-lamp.json": {
+					"sha256": "c19853b2aae0c6d3c3e525c60f092bc07558092b9bbe97155bf950a27e6327f9"
+				},
+				"thumbnail.png": {
+					"sha256": "258914effe72e2c1232b69d61380c16d93d093641f39c11c4f310e91ad9ac6b6"
+				},
+				"asset.json": {
+					"sha256": "f86c63b01a0c02b17c8136dd86ade2aa473cb9405ae5df45830a972437bdcf4f"
+				}
+			}
+		},
+		{
+			"id": "sl-crescent-stars",
+			"name": "Crescent and stars",
+			"category": "sri-lanka-seasonal",
+			"path": "sri-lanka-seasonal/sl-crescent-stars",
+			"tags": [
+				"ramazan",
+				"ramadan",
+				"eid",
+				"hajj",
+				"crescent",
+				"moon",
+				"stars",
+				"sri lanka"
+			],
+			"durationSec": 4,
+			"loop": true,
+			"width": 1080,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "moon",
+					"name": "Moon",
+					"default": "#F5A524"
+				},
+				{
+					"id": "stars",
+					"name": "Stars",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "halo",
+					"name": "Halo",
+					"default": "#2EC4B6"
+				}
+			],
+			"files": {
+				"sl-crescent-stars.json": {
+					"sha256": "cf8f3455627f7e1046be9d513c109d593d69ef1a6ab39e27ba975fd801b78553"
+				},
+				"thumbnail.png": {
+					"sha256": "a9bd1c561312b1528d0d9d021e020b60578aeee759906002dec89bf6c112ff42"
+				},
+				"asset.json": {
+					"sha256": "5652956ca3971f99159e5e5f73b97fc881539bcf2c7618bd2a8f60f1b2a05eb9"
+				}
+			}
+		},
+		{
+			"id": "tr-circle-burst",
+			"name": "Circle burst",
+			"category": "transitions",
+			"path": "transitions/tr-circle-burst",
+			"tags": [
+				"transition",
+				"circle",
+				"burst",
+				"iris",
+				"wipe"
+			],
+			"durationSec": 2,
+			"loop": false,
+			"width": 1920,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "fill",
+					"name": "Fill",
+					"default": "#4C8DFF"
+				},
+				{
+					"id": "edge",
+					"name": "Edge",
+					"default": "#2EC4B6"
+				}
+			],
+			"files": {
+				"tr-circle-burst.json": {
+					"sha256": "ebd20ed4a2a2bbaaa996e2ce2462dcc931fa74605179dbeb8e39285d213d212c"
+				},
+				"thumbnail.png": {
+					"sha256": "5da4a267e00f6725553e61663619ee9e30a51679b9c55fa99271f1c7c3351c74"
+				},
+				"asset.json": {
+					"sha256": "0ffb7ed68fc96068c0632210b9ca81d564551a012ff289f5a0f8cc21949a1382"
+				}
+			}
+		},
+		{
+			"id": "tr-slide-panels",
+			"name": "Slide panels",
+			"category": "transitions",
+			"path": "transitions/tr-slide-panels",
+			"tags": [
+				"transition",
+				"slide",
+				"panels",
+				"swipe",
+				"layers"
+			],
+			"durationSec": 2,
+			"loop": false,
+			"width": 1920,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "a",
+					"name": "Panel 1",
+					"default": "#F5A524"
+				},
+				{
+					"id": "b",
+					"name": "Panel 2",
+					"default": "#2EC4B6"
+				},
+				{
+					"id": "c",
+					"name": "Panel 3",
+					"default": "#4C8DFF"
+				}
+			],
+			"files": {
+				"tr-slide-panels.json": {
+					"sha256": "1dfe850c8864fff094ea497711f29bf294e19e171b5f6ac1ed4bbe3b1521ad75"
+				},
+				"thumbnail.png": {
+					"sha256": "dcdd1b40cb6d80584e3268ccf49dcec6da0b28e8e4a78bf86e20b58a0e7f0271"
+				},
+				"asset.json": {
+					"sha256": "87eaae0c9ad0ef0739262adcd111b138f74588e48936967621f793e2483cdc0f"
+				}
+			}
+		},
+		{
+			"id": "tr-diagonal-wipe",
+			"name": "Diagonal wipe",
+			"category": "transitions",
+			"path": "transitions/tr-diagonal-wipe",
+			"tags": [
+				"transition",
+				"diagonal",
+				"wipe",
+				"slant",
+				"sweep"
+			],
+			"durationSec": 2,
+			"loop": false,
+			"width": 1920,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "band",
+					"name": "Band",
+					"default": "#0F1115"
+				},
+				{
+					"id": "edge",
+					"name": "Edge",
+					"default": "#F5A524"
+				}
+			],
+			"files": {
+				"tr-diagonal-wipe.json": {
+					"sha256": "43790e73de7bb38df851dc89f53a8a9a756d37128fdb8dd64fc1be5ed6f5b014"
+				},
+				"thumbnail.png": {
+					"sha256": "e5d505e9faa5e7981fb4a3bb65fe5601a2390ac06e6a6a37136e5d5ef4465c25"
+				},
+				"asset.json": {
+					"sha256": "a08cede4ea6584cf55528b67d910e4787390928381fc78c3f2bb4b87ea740afd"
+				}
+			}
+		},
+		{
+			"id": "tr-vertical-bars",
+			"name": "Vertical bars",
+			"category": "transitions",
+			"path": "transitions/tr-vertical-bars",
+			"tags": [
+				"transition",
+				"bars",
+				"stripes",
+				"ripple",
+				"columns"
+			],
+			"durationSec": 2,
+			"loop": false,
+			"width": 1920,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "a",
+					"name": "Bars 1",
+					"default": "#4C8DFF"
+				},
+				{
+					"id": "b",
+					"name": "Bars 2",
+					"default": "#FFFFFF"
+				}
+			],
+			"files": {
+				"tr-vertical-bars.json": {
+					"sha256": "4b25547644eb8e55d805dab3f17d2d44e390b00bffb53fb93ee07f04448045c0"
+				},
+				"thumbnail.png": {
+					"sha256": "f802e3fd60d6053daac224f15817c8c35af7965e89e9cbc132a185908c8b313c"
+				},
+				"asset.json": {
+					"sha256": "298acacf60e0aea2d8443d155b93a5517c8ad5a32390575ee3e2105629f4e559"
+				}
+			}
+		},
+		{
+			"id": "tr-diamond-zoom",
+			"name": "Diamond zoom",
+			"category": "transitions",
+			"path": "transitions/tr-diamond-zoom",
+			"tags": [
+				"transition",
+				"diamond",
+				"zoom",
+				"rotate",
+				"iris"
+			],
+			"durationSec": 2,
+			"loop": false,
+			"width": 1920,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "fill",
+					"name": "Fill",
+					"default": "#2EC4B6"
+				},
+				{
+					"id": "line",
+					"name": "Outline",
+					"default": "#FFFFFF"
+				}
+			],
+			"files": {
+				"tr-diamond-zoom.json": {
+					"sha256": "288a5e9741dad617ab673b48bd127eef9f01514849ba88f8fc59d4ae194d1977"
+				},
+				"thumbnail.png": {
+					"sha256": "9299dc1c2f17e7fb74a4fc3fed622bd2e7cd24a2e59f85afa7b94f9ed64c5d4f"
+				},
+				"asset.json": {
+					"sha256": "cb804b9439dd9cef0caa2528e1306597164efb9dc4aa27f77b1267a8fdc65a07"
+				}
+			}
+		},
+		{
+			"id": "tr-split-doors",
+			"name": "Split doors",
+			"category": "transitions",
+			"path": "transitions/tr-split-doors",
+			"tags": [
+				"transition",
+				"doors",
+				"split",
+				"close",
+				"open"
+			],
+			"durationSec": 2,
+			"loop": false,
+			"width": 1920,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "left",
+					"name": "Left door",
+					"default": "#0F1115"
+				},
+				{
+					"id": "right",
+					"name": "Right door",
+					"default": "#1B2030"
+				},
+				{
+					"id": "seam",
+					"name": "Seam",
+					"default": "#F5A524"
+				}
+			],
+			"files": {
+				"tr-split-doors.json": {
+					"sha256": "2ed8174d428e8463f8a016fd1fed374b33fb9a880554c14f3ad0605245ea15dd"
+				},
+				"thumbnail.png": {
+					"sha256": "c16cf41b29283c0839fda88c5735c2a8184d7eb6e4819595cca9b5682c911f88"
+				},
+				"asset.json": {
+					"sha256": "226f6d5f2e10e0e71b9e77c7d9f70bf9e9d8a1d744d5e4b4ebaddc9acc97528d"
+				}
+			}
+		},
+		{
+			"id": "tr-diagonal-stripes",
+			"name": "Diagonal stripes",
+			"category": "transitions",
+			"path": "transitions/tr-diagonal-stripes",
+			"tags": [
+				"transition",
+				"stripes",
+				"diagonal",
+				"interleave",
+				"dynamic"
+			],
+			"durationSec": 2,
+			"loop": false,
+			"width": 1920,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "a",
+					"name": "Stripes 1",
+					"default": "#F5A524"
+				},
+				{
+					"id": "b",
+					"name": "Stripes 2",
+					"default": "#4C8DFF"
+				}
+			],
+			"files": {
+				"tr-diagonal-stripes.json": {
+					"sha256": "90b1b45f9468d756f7faa119c5b597a2856bc4da6c21047c51d4116e8050dc00"
+				},
+				"thumbnail.png": {
+					"sha256": "79da38f8ca54e86f2e32c43fae7f97ab97a190cc70590bd7b5eae6faaf6ffbd8"
+				},
+				"asset.json": {
+					"sha256": "0bdacaff6e7cddc380133569ea9b206a534bb9da511d4f33a14ee82e521e4f7a"
+				}
+			}
+		},
+		{
+			"id": "tr-blinds",
+			"name": "Blinds",
+			"category": "transitions",
+			"path": "transitions/tr-blinds",
+			"tags": [
+				"transition",
+				"blinds",
+				"slats",
+				"horizontal",
+				"shutter"
+			],
+			"durationSec": 2,
+			"loop": false,
+			"width": 1920,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "slat",
+					"name": "Slats",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "shade",
+					"name": "Shade",
+					"default": "#2EC4B6"
+				}
+			],
+			"files": {
+				"tr-blinds.json": {
+					"sha256": "56bb69dd6bb5cb157a4b8de7cd580c50dc58d2db2ff114373394d9feaa0fded0"
+				},
+				"thumbnail.png": {
+					"sha256": "e3dea23941afeeae70e20bebbafb3846f4bde8df117a33efd010c4c6db6faac8"
+				},
+				"asset.json": {
+					"sha256": "881929a376b4a6af3399052bcf23c386b05686dbf6b74293584dfc6d4c1f138c"
+				}
+			}
+		},
+		{
+			"id": "st-progress-ring",
+			"name": "Progress ring",
+			"category": "status-infographics",
+			"path": "status-infographics/st-progress-ring",
+			"tags": [
+				"progress",
+				"ring",
+				"loading",
+				"percent",
+				"circle"
+			],
+			"durationSec": 3,
+			"loop": true,
+			"width": 1080,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "track",
+					"name": "Track",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "bar",
+					"name": "Progress",
+					"default": "#2EC4B6"
+				},
+				{
+					"id": "dot",
+					"name": "Dot",
+					"default": "#E8FFFC"
+				}
+			],
+			"files": {
+				"st-progress-ring.json": {
+					"sha256": "cf35badde790d1c756383e3a7ebcdc230b0242724954c2f5bb271b17c92f5586"
+				},
+				"thumbnail.png": {
+					"sha256": "aa544c0a2052101b3455a3a67ca4f62895be87efb2069d7356570214ba4b4d69"
+				},
+				"asset.json": {
+					"sha256": "deaabfa41c85665326edfe2e65ea281b0bac252e9a11d27221e0e8f47e34f159"
+				}
+			}
+		},
+		{
+			"id": "st-loading-dots",
+			"name": "Loading dots",
+			"category": "status-infographics",
+			"path": "status-infographics/st-loading-dots",
+			"tags": [
+				"loading",
+				"dots",
+				"wait",
+				"typing",
+				"busy"
+			],
+			"durationSec": 3,
+			"loop": true,
+			"width": 1080,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "a",
+					"name": "Dot 1",
+					"default": "#4C8DFF"
+				},
+				{
+					"id": "b",
+					"name": "Dot 2",
+					"default": "#2EC4B6"
+				},
+				{
+					"id": "c",
+					"name": "Dot 3",
+					"default": "#F5A524"
+				}
+			],
+			"files": {
+				"st-loading-dots.json": {
+					"sha256": "b1fc425226b52f51de763489e9bccf385301335dcfa26cd495a2ec3df4287b86"
+				},
+				"thumbnail.png": {
+					"sha256": "69258999a72243495acb14118f6e656a5c03924f8fa0945f044f5c2ef6fb3718"
+				},
+				"asset.json": {
+					"sha256": "22dcdd0cf2cdea1f0a78d8b023960546d7d36ffa3f5dfb319f00a71d993cc1a0"
+				}
+			}
+		},
+		{
+			"id": "st-battery",
+			"name": "Battery charging",
+			"category": "status-infographics",
+			"path": "status-infographics/st-battery",
+			"tags": [
+				"battery",
+				"charging",
+				"power",
+				"energy",
+				"level"
+			],
+			"durationSec": 3,
+			"loop": true,
+			"width": 1080,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "case",
+					"name": "Case",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "cells",
+					"name": "Cells",
+					"default": "#2EC4B6"
+				},
+				{
+					"id": "bolt",
+					"name": "Bolt",
+					"default": "#F5A524"
+				}
+			],
+			"files": {
+				"st-battery.json": {
+					"sha256": "260051dc42bf69613805de7dad8a60b9a703769991e67dd1a40b6460bed30074"
+				},
+				"thumbnail.png": {
+					"sha256": "33ac8e9bd3cfb7954bdc6339b21bb7750480228e7bac40334fed8a7b72aacbeb"
+				},
+				"asset.json": {
+					"sha256": "cab41ebbc0d2f697c50afdeb57b7db9db478888c280cf6a1bc5655a99004868f"
+				}
+			}
+		},
+		{
+			"id": "st-wifi-bars",
+			"name": "Signal arcs",
+			"category": "status-infographics",
+			"path": "status-infographics/st-wifi-bars",
+			"tags": [
+				"wifi",
+				"signal",
+				"connection",
+				"network",
+				"online"
+			],
+			"durationSec": 3,
+			"loop": true,
+			"width": 1080,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "on",
+					"name": "Lit",
+					"default": "#4C8DFF"
+				},
+				{
+					"id": "off",
+					"name": "Unlit",
+					"default": "#FFFFFF"
+				}
+			],
+			"files": {
+				"st-wifi-bars.json": {
+					"sha256": "ea45c7e0692e1024d00ee478a050a4448240bc4820215b682e4d8a3cf572a8f2"
+				},
+				"thumbnail.png": {
+					"sha256": "4c3c59b0c2f72942e71202904f6ec700c6820011fdd2c1e8912e877ad39039c6"
+				},
+				"asset.json": {
+					"sha256": "26fbd2596c2511325c6d09076eb514b28f032feedefe549433dfc54e71b2d12c"
+				}
+			}
+		},
+		{
+			"id": "st-counter-dial",
+			"name": "Gauge dial",
+			"category": "status-infographics",
+			"path": "status-infographics/st-counter-dial",
+			"tags": [
+				"gauge",
+				"dial",
+				"speed",
+				"meter",
+				"score",
+				"counter"
+			],
+			"durationSec": 3,
+			"loop": true,
+			"width": 1080,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "dial",
+					"name": "Dial",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "fill",
+					"name": "Fill",
+					"default": "#F5A524"
+				},
+				{
+					"id": "needle",
+					"name": "Needle",
+					"default": "#4C8DFF"
+				}
+			],
+			"files": {
+				"st-counter-dial.json": {
+					"sha256": "7b5c5a700d0103c4ebdd0a608b104b5eaa78eaf8e8006ffc67ed0028f68e113c"
+				},
+				"thumbnail.png": {
+					"sha256": "84bfa1a42205a726eb43bafd7d5952ad5c57f05df2d17c16bffb0c20df165b94"
+				},
+				"asset.json": {
+					"sha256": "2bae6675fc2b5d6134cac2a5be4eea83191bab6339ab902a5ffe66a85f03f91f"
+				}
+			}
+		},
+		{
+			"id": "st-bar-chart",
+			"name": "Growing bar chart",
+			"category": "status-infographics",
+			"path": "status-infographics/st-bar-chart",
+			"tags": [
+				"chart",
+				"bar chart",
+				"growth",
+				"stats",
+				"data",
+				"graph"
+			],
+			"durationSec": 3,
+			"loop": true,
+			"width": 1080,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "bars",
+					"name": "Bars",
+					"default": "#4C8DFF"
+				},
+				{
+					"id": "top",
+					"name": "Top bar",
+					"default": "#2EC4B6"
+				},
+				{
+					"id": "base",
+					"name": "Baseline",
+					"default": "#FFFFFF"
+				}
+			],
+			"files": {
+				"st-bar-chart.json": {
+					"sha256": "4e6082f0c10c31d59fc41c45246887ffd9d302b1e9b9fc7cdfbf1fc18078d8e3"
+				},
+				"thumbnail.png": {
+					"sha256": "7e4b5e79ed072403f07ff4af7a5813e2cbfe65189ea00d3228889d6b336daa7d"
+				},
+				"asset.json": {
+					"sha256": "9b5a5ef982bb8a6de146185636026dbcf4cda91a62b2f0196648cf89b76bffc2"
+				}
+			}
+		},
+		{
+			"id": "st-pie-fill",
+			"name": "Pie fill",
+			"category": "status-infographics",
+			"path": "status-infographics/st-pie-fill",
+			"tags": [
+				"pie chart",
+				"donut",
+				"share",
+				"percent",
+				"stats",
+				"data"
+			],
+			"durationSec": 3,
+			"loop": true,
+			"width": 1080,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "a",
+					"name": "Slice 1",
+					"default": "#4C8DFF"
+				},
+				{
+					"id": "b",
+					"name": "Slice 2",
+					"default": "#2EC4B6"
+				},
+				{
+					"id": "c",
+					"name": "Slice 3",
+					"default": "#F5A524"
+				},
+				{
+					"id": "bg",
+					"name": "Background",
+					"default": "#FFFFFF"
+				}
+			],
+			"files": {
+				"st-pie-fill.json": {
+					"sha256": "84030c597bd3058944bd66a134984c0565e5e4f599c2a9ee7a26a1cb624c3144"
+				},
+				"thumbnail.png": {
+					"sha256": "f86de73801f7692f86da8c865e4e9303185c3c7b4baa228b538c1deb823489ab"
+				},
+				"asset.json": {
+					"sha256": "4afa19fd315facfb1573f9e14e8a8ad2b4ccf957d6db5474bfa5b40899b775f7"
+				}
+			}
+		},
+		{
+			"id": "st-timeline-dots",
+			"name": "Timeline steps",
+			"category": "status-infographics",
+			"path": "status-infographics/st-timeline-dots",
+			"tags": [
+				"timeline",
+				"steps",
+				"milestones",
+				"process",
+				"roadmap"
+			],
+			"durationSec": 3,
+			"loop": true,
+			"width": 1080,
+			"height": 1080,
+			"colors": [
+				{
+					"id": "line",
+					"name": "Line",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "dot",
+					"name": "Dots",
+					"default": "#F5A524"
+				},
+				{
+					"id": "ring",
+					"name": "Rings",
+					"default": "#4C8DFF"
+				}
+			],
+			"files": {
+				"st-timeline-dots.json": {
+					"sha256": "578cbcfeab1fba61cabba807f6ecf26ece7f8a86456b82ce4e79a1638297da01"
+				},
+				"thumbnail.png": {
+					"sha256": "6edca5730d7840e46fd97e3aad661c634450b9abfd6dd1d1c4acdaeebb9bdf75"
+				},
+				"asset.json": {
+					"sha256": "479d9acf9258dd077ddae3b2f06abb494d066226f910cc3b19a0cad1b3f42299"
+				}
+			}
+		}
+	]
+}

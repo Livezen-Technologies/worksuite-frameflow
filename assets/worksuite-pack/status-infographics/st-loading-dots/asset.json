@@ -1,0 +1,41 @@
+{
+	"schema": 1,
+	"id": "st-loading-dots",
+	"name": "Loading dots",
+	"category": "status-infographics",
+	"type": "lottie",
+	"file": "st-loading-dots.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "Three dots bounce and brighten in a wave.",
+	"tags": [
+		"loading",
+		"dots",
+		"wait",
+		"typing",
+		"busy"
+	],
+	"durationSec": 3,
+	"loop": true,
+	"aspect": "1:1",
+	"width": 1080,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "a",
+			"name": "Dot 1",
+			"default": "#4C8DFF"
+		},
+		{
+			"id": "b",
+			"name": "Dot 2",
+			"default": "#2EC4B6"
+		},
+		{
+			"id": "c",
+			"name": "Dot 3",
+			"default": "#F5A524"
+		}
+	]
+}

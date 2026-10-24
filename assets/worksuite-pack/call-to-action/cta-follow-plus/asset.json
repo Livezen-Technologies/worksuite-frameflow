@@ -1,0 +1,41 @@
+{
+	"schema": 1,
+	"id": "cta-follow-plus",
+	"name": "Follow plus",
+	"category": "call-to-action",
+	"type": "lottie",
+	"file": "cta-follow-plus.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "A round plus button spins in, turns to a tick and back, with a pulse ring.",
+	"tags": [
+		"follow",
+		"plus",
+		"add",
+		"join",
+		"button"
+	],
+	"durationSec": 3,
+	"loop": true,
+	"aspect": "1:1",
+	"width": 1080,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "button",
+			"name": "Button",
+			"default": "#4C8DFF"
+		},
+		{
+			"id": "mark",
+			"name": "Mark",
+			"default": "#FFFFFF"
+		},
+		{
+			"id": "ring",
+			"name": "Ring",
+			"default": "#2EC4B6"
+		}
+	]
+}

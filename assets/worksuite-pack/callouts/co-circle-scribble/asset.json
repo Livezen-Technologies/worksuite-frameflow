@@ -1,0 +1,31 @@
+{
+	"schema": 1,
+	"id": "co-circle-scribble",
+	"name": "Circle scribble",
+	"category": "callouts",
+	"type": "lottie",
+	"file": "co-circle-scribble.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "A loose pen circle scribbles around a subject, overlapping at the end like a real marker.",
+	"tags": [
+		"circle",
+		"scribble",
+		"highlight",
+		"marker",
+		"hand drawn"
+	],
+	"durationSec": 3,
+	"loop": false,
+	"aspect": "1:1",
+	"width": 1080,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "ink",
+			"name": "Marker",
+			"default": "#F5A524"
+		}
+	]
+}

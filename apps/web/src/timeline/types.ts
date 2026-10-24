@@ -11,6 +11,7 @@ import type { Effect } from "@/effects/types";
 import type { Mask } from "@/masks/types";
 import type { ParamValues } from "@/params";
 import type { MediaTime } from "@/wasm";
+import type { LottieElementData } from "@/lottie/types";
 
 export type ElementRef = {
 	trackId: string;
@@ -197,6 +198,8 @@ export interface StickerElement extends BaseTimelineElement {
 export interface GraphicElement extends BaseTimelineElement {
 	type: "graphic";
 	definitionId: string;
+	/** Set when this graphic is an animation (definitionId "lottie"). */
+	lottie?: LottieElementData;
 	hidden?: boolean;
 	effects?: Effect[];
 	masks?: Mask[];

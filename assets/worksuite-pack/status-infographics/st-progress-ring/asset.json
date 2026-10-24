@@ -1,0 +1,41 @@
+{
+	"schema": 1,
+	"id": "st-progress-ring",
+	"name": "Progress ring",
+	"category": "status-infographics",
+	"type": "lottie",
+	"file": "st-progress-ring.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "A ring fills from empty to full with a dot riding its leading edge.",
+	"tags": [
+		"progress",
+		"ring",
+		"loading",
+		"percent",
+		"circle"
+	],
+	"durationSec": 3,
+	"loop": true,
+	"aspect": "1:1",
+	"width": 1080,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "track",
+			"name": "Track",
+			"default": "#FFFFFF"
+		},
+		{
+			"id": "bar",
+			"name": "Progress",
+			"default": "#2EC4B6"
+		},
+		{
+			"id": "dot",
+			"name": "Dot",
+			"default": "#E8FFFC"
+		}
+	]
+}

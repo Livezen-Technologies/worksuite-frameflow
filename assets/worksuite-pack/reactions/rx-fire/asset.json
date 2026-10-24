@@ -1,0 +1,41 @@
+{
+	"schema": 1,
+	"id": "rx-fire",
+	"name": "Fire",
+	"category": "reactions",
+	"type": "lottie",
+	"file": "rx-fire.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "A flickering flame with layered tongues of colour.",
+	"tags": [
+		"fire",
+		"flame",
+		"hot",
+		"lit",
+		"trending"
+	],
+	"durationSec": 3,
+	"loop": true,
+	"aspect": "1:1",
+	"width": 1080,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "outer",
+			"name": "Outer flame",
+			"default": "#FF6B3D"
+		},
+		{
+			"id": "middle",
+			"name": "Middle flame",
+			"default": "#F5A524"
+		},
+		{
+			"id": "core",
+			"name": "Core",
+			"default": "#FFFFFF"
+		}
+	]
+}

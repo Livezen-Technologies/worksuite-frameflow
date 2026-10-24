@@ -64,3 +64,39 @@ of providing it.
   Font License 1.1 (https://openfontlicense.org). Brand kit fonts the user
   picks come from Google Fonts the same way.
 - The fonts may be used in exported videos; the licence covers that use.
+
+## Other components
+
+### lottie-web (animations)
+
+- Package: lottie-web 5.12.2 (https://github.com/airbnb/lottie-web), the
+  canvas player; it draws the Animations library and imported Lottie files
+- Licence: MIT
+
+```
+The MIT License (MIT)
+
+Copyright (c) 2015 Bodymovin
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+The Worksuite Assets animations themselves are original to Worksuite
+FrameFlow, generated from code in `scripts/assets/`, and MIT licensed like
+the rest of the repository.

@@ -1,0 +1,41 @@
+{
+	"schema": 1,
+	"id": "cta-bell-ring",
+	"name": "Bell ring",
+	"category": "call-to-action",
+	"type": "lottie",
+	"file": "cta-bell-ring.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "A notification bell swings back and forth while sound arcs pulse out.",
+	"tags": [
+		"bell",
+		"notification",
+		"ring",
+		"alert",
+		"subscribe"
+	],
+	"durationSec": 3,
+	"loop": true,
+	"aspect": "1:1",
+	"width": 1080,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "bell",
+			"name": "Bell",
+			"default": "#F5A524"
+		},
+		{
+			"id": "clapper",
+			"name": "Clapper",
+			"default": "#0F1115"
+		},
+		{
+			"id": "waves",
+			"name": "Sound arcs",
+			"default": "#FFFFFF"
+		}
+	]
+}

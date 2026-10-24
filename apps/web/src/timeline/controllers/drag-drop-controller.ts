@@ -118,6 +118,7 @@ function getDurationForDrag({
 	dragData: TimelineDragData;
 	mediaAssets: MediaAsset[];
 }): MediaTime {
+	if (dragData.type === "graphic" && dragData.duration) return dragData.duration;
 	if (dragData.type !== "media") return DEFAULT_NEW_ELEMENT_DURATION;
 	const media = mediaAssets.find((asset) => asset.id === dragData.id);
 	return toElementDurationTicks({ seconds: media?.duration });
@@ -421,6 +422,8 @@ export class DragDropController {
 			name: dragData.name,
 			startTime: target.xPosition,
 			params: dragData.params,
+			lottie: dragData.lottie,
+			duration: dragData.duration,
 		});
 		this.insertAtTarget({ element, target, trackType: "graphic" });
 	}

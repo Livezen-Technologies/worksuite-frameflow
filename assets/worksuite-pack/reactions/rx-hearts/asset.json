@@ -1,0 +1,36 @@
+{
+	"schema": 1,
+	"id": "rx-hearts",
+	"name": "Floating hearts",
+	"category": "reactions",
+	"type": "lottie",
+	"file": "rx-hearts.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "Hearts float up and sway, fading as they rise, in a steady stream.",
+	"tags": [
+		"hearts",
+		"love",
+		"like",
+		"float",
+		"romance"
+	],
+	"durationSec": 3,
+	"loop": true,
+	"aspect": "1:1",
+	"width": 1080,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "heart",
+			"name": "Hearts",
+			"default": "#FF4D6D"
+		},
+		{
+			"id": "soft",
+			"name": "Soft hearts",
+			"default": "#FFFFFF"
+		}
+	]
+}

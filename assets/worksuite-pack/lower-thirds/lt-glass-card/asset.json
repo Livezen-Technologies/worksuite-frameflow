@@ -1,0 +1,41 @@
+{
+	"schema": 1,
+	"id": "lt-glass-card",
+	"name": "Glass card",
+	"category": "lower-thirds",
+	"type": "lottie",
+	"file": "lt-glass-card.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "A translucent dark card rises with a coloured edge and a soft highlight.",
+	"tags": [
+		"lower third",
+		"card",
+		"glass",
+		"modern",
+		"panel"
+	],
+	"durationSec": 4,
+	"loop": false,
+	"aspect": "16:9",
+	"width": 1920,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "card",
+			"name": "Card",
+			"default": "#0F1115"
+		},
+		{
+			"id": "edge",
+			"name": "Edge",
+			"default": "#2EC4B6"
+		},
+		{
+			"id": "shine",
+			"name": "Highlight",
+			"default": "#FFFFFF"
+		}
+	]
+}

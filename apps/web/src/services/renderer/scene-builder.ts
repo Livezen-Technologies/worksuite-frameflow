@@ -11,6 +11,7 @@ import { ImageNode } from "./nodes/image-node";
 import { TextNode } from "./nodes/text-node";
 import { StickerNode } from "./nodes/sticker-node";
 import { GraphicNode } from "./nodes/graphic-node";
+import { LottieNode } from "./nodes/lottie-node";
 import { ColorNode } from "./nodes/color-node";
 import { BlurBackgroundNode } from "./nodes/blur-background-node";
 import { EffectLayerNode } from "./nodes/effect-layer-node";
@@ -178,7 +179,24 @@ function buildTrackNodes({
 				);
 			}
 
-			if (element.type === "graphic") {
+			if (element.type === "graphic" && element.lottie) {
+				nodes.push(
+					new LottieNode({
+						lottie: element.lottie,
+						duration: element.duration,
+						timeOffset: element.startTime,
+						trimStart: element.trimStart,
+						trimEnd: element.trimEnd,
+						transform: buildTransformFromParams({ params: element.params }),
+						animations: element.animations,
+						clipAnimation: animationParams(element.params),
+						opacity: readOpacityFromParams({ params: element.params }),
+						blendMode: readBlendModeFromParams({ params: element.params }),
+						effects: element.effects ?? [],
+						masks: element.masks ?? [],
+					}),
+				);
+			} else if (element.type === "graphic") {
 				nodes.push(
 					new GraphicNode({
 						definitionId: element.definitionId,

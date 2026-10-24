@@ -72,6 +72,8 @@ import {
 	renderLottieFrame,
 	type DriftAsset,
 } from "@/stickers";
+import { LottieNode, lottieResolutionFor } from "./nodes/lottie-node";
+import { lottieFrameAtClipTime } from "@/lottie/timing";
 import { TextNode, type ResolvedTextNodeState } from "./nodes/text-node";
 import { VideoNode } from "./nodes/video-node";
 import type {
@@ -118,6 +120,8 @@ async function resolveNode({
 		node.resolved = await resolveStickerNode({ node, context });
 	} else if (node instanceof GraphicNode) {
 		node.resolved = resolveGraphicNode({ node, context });
+	} else if (node instanceof LottieNode) {
+		node.resolved = await resolveLottieNode({ node, context });
 	} else if (node instanceof TextNode) {
 		node.resolved = resolveTextNode({ node, context });
 	} else if (node instanceof BlurBackgroundNode) {
@@ -667,6 +671,63 @@ function resolveGraphicNode({
 			element: node.params,
 			localTime: visualState.localTime,
 		}),
+	};
+}
+
+async function resolveLottieNode({
+	node,
+	context,
+}: {
+	node: LottieNode;
+	context: ResolveContext;
+}): Promise<ResolvedVisualSourceNodeState | null> {
+	const { lottie } = node.params;
+	const visualState = resolveVisualState({
+		params: node.params,
+		context,
+		sourceWidth: lottie.width,
+		sourceHeight: lottie.height,
+	});
+	if (!visualState) {
+		return null;
+	}
+
+	const frame = lottieFrameAtClipTime({
+		clipTime: visualState.localTime,
+		trimStart: node.params.trimStart,
+		speed: lottie.speed,
+		fps: lottie.fps,
+		frames: lottie.frames,
+		loop: lottie.loop,
+		ticksPerSecond: TICKS_PER_SECOND,
+	});
+	// Draw at about the size it is shown (vector art stays sharp when scaled up).
+	const contain = Math.min(
+		context.renderer.width / lottie.width,
+		context.renderer.height / lottie.height,
+	);
+	const shown =
+		contain *
+		Math.max(
+			Math.abs(visualState.transform.scaleX),
+			Math.abs(visualState.transform.scaleY),
+		);
+	let source: OffscreenCanvas;
+	try {
+		source = await node.renderFrame({
+			frame,
+			resolution: lottieResolutionFor(shown),
+		});
+	} catch (error) {
+		console.warn("Couldn't draw animation", error);
+		return null;
+	}
+
+	return {
+		...visualState,
+		source,
+		sourceWidth: source.width,
+		sourceHeight: source.height,
 	};
 }
 

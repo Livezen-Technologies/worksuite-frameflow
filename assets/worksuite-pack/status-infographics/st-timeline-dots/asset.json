@@ -1,0 +1,41 @@
+{
+	"schema": 1,
+	"id": "st-timeline-dots",
+	"name": "Timeline steps",
+	"category": "status-infographics",
+	"type": "lottie",
+	"file": "st-timeline-dots.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "A line draws across and four milestone dots pop on in sequence.",
+	"tags": [
+		"timeline",
+		"steps",
+		"milestones",
+		"process",
+		"roadmap"
+	],
+	"durationSec": 3,
+	"loop": true,
+	"aspect": "1:1",
+	"width": 1080,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "line",
+			"name": "Line",
+			"default": "#FFFFFF"
+		},
+		{
+			"id": "dot",
+			"name": "Dots",
+			"default": "#F5A524"
+		},
+		{
+			"id": "ring",
+			"name": "Rings",
+			"default": "#4C8DFF"
+		}
+	]
+}

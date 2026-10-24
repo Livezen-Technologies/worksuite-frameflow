@@ -1,0 +1,42 @@
+{
+	"schema": 1,
+	"id": "st-bar-chart",
+	"name": "Growing bar chart",
+	"category": "status-infographics",
+	"type": "lottie",
+	"file": "st-bar-chart.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "Five bars grow in turn on a baseline, with a little bounce, and reset.",
+	"tags": [
+		"chart",
+		"bar chart",
+		"growth",
+		"stats",
+		"data",
+		"graph"
+	],
+	"durationSec": 3,
+	"loop": true,
+	"aspect": "1:1",
+	"width": 1080,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "bars",
+			"name": "Bars",
+			"default": "#4C8DFF"
+		},
+		{
+			"id": "top",
+			"name": "Top bar",
+			"default": "#2EC4B6"
+		},
+		{
+			"id": "base",
+			"name": "Baseline",
+			"default": "#FFFFFF"
+		}
+	]
+}

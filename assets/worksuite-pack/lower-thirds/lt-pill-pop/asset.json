@@ -1,0 +1,41 @@
+{
+	"schema": 1,
+	"id": "lt-pill-pop",
+	"name": "Pill pop",
+	"category": "lower-thirds",
+	"type": "lottie",
+	"file": "lt-pill-pop.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "A rounded pill pops in with a pulsing dot on its left edge.",
+	"tags": [
+		"lower third",
+		"pill",
+		"rounded",
+		"pop",
+		"label"
+	],
+	"durationSec": 4,
+	"loop": false,
+	"aspect": "16:9",
+	"width": 1920,
+	"height": 1080,
+	"thumbnailAt": 0.6,
+	"colors": [
+		{
+			"id": "pill",
+			"name": "Pill",
+			"default": "#FFFFFF"
+		},
+		{
+			"id": "dot",
+			"name": "Dot",
+			"default": "#2EC4B6"
+		},
+		{
+			"id": "ring",
+			"name": "Ring",
+			"default": "#4C8DFF"
+		}
+	]
+}

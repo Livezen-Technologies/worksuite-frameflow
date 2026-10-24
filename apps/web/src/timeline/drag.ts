@@ -1,5 +1,7 @@
 import type { MaskableElement, VisualElement } from "./types";
 import type { ParamValues } from "@/params";
+import type { LottieElementData } from "@/lottie/types";
+import type { MediaTime } from "@/wasm";
 
 interface BaseDragData {
 	id: string;
@@ -26,6 +28,9 @@ export interface GraphicDragData extends BaseDragData {
 	type: "graphic";
 	definitionId: string;
 	params: Partial<ParamValues>;
+	/** Set when dragging an animation from the library. */
+	lottie?: LottieElementData;
+	duration?: MediaTime;
 }
 
 export interface EffectDragData extends BaseDragData {
