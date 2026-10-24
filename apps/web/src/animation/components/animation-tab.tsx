@@ -75,8 +75,12 @@ function PresetTile({
 			});
 			el.style.opacity = String(s.opacity);
 			el.style.transform = `translate(${s.offsetX * 60}%, ${s.offsetY * 60}%) scale(${s.scale}) rotate(${s.rotate}deg)`;
-			el.style.clipPath =
-				s.reveal < 1 ? `inset(0 ${(1 - s.reveal) * 100}% 0 0)` : "";
+			el.style.filter = s.blur > 0 ? `blur(${(s.blur / 100) * 8}px)` : "";
+			el.style.clipPath = s.mask
+				? maskToClipPath(s.mask)
+				: s.reveal < 1
+					? `inset(0 ${(1 - s.reveal) * 100}% 0 0)`
+					: "";
 		};
 		if (!hover) {
 			draw(mode === "in" ? 0.45 : mode === "out" ? loop - 0.45 : 0.6);
@@ -207,7 +211,7 @@ export function AnimationTab({
 			</div>
 			<div className="grid grid-cols-3 gap-x-2.5 gap-y-3">
 				{current.presets
-					.filter((preset) => isText || !preset.textOnly)
+					.filter((preset) => (isText ? !preset.clipOnly : !preset.textOnly))
 					.map((preset) => (
 						<PresetTile
 							key={preset.value}
@@ -270,4 +274,18 @@ export function AnimationTab({
 			)}
 		</div>
 	);
+}
+
+/** The renderer's reveal mask as CSS, for the preview tiles. */
+function maskToClipPath(mask: NonNullable<ReturnType<typeof animationState>["mask"]>): string {
+	const pct = (v: number) => `${(v * 100).toFixed(1)}%`;
+	if (mask.shape === "rectangle") {
+		const left = 0.5 + mask.centerX - mask.width / 2;
+		const top = 0.5 + mask.centerY - mask.height / 2;
+		return `inset(${pct(Math.max(0, top))} ${pct(Math.max(0, 1 - left - mask.width))} ${pct(Math.max(0, 1 - top - mask.height))} ${pct(Math.max(0, left))})`;
+	}
+	if (mask.shape === "ellipse") return `ellipse(${pct(mask.width / 2)} ${pct(mask.height / 2)} at 50% 50%)`;
+	const w = mask.width / 2;
+	const h = mask.height / 2;
+	return `polygon(50% ${pct(0.5 - h)}, ${pct(0.5 + w)} 50%, 50% ${pct(0.5 + h)}, ${pct(0.5 - w)} 50%)`;
 }

@@ -1,4 +1,5 @@
 import type { ParamDefinition, ParamValues } from "@/params";
+import type { TransitionMask } from "@/transitions/frame";
 
 /**
  * In, Out and Combo animations for clips and text (the Animation panel).
@@ -11,6 +12,8 @@ export interface AnimationPreset {
 	label: string;
 	/** Only for text (typewriter needs letters). */
 	textOnly?: boolean;
+	/** Only for video and picture clips (masks and blur aren't drawn on text). */
+	clipOnly?: boolean;
 }
 
 export const IN_ANIMATIONS: AnimationPreset[] = [
@@ -26,6 +29,20 @@ export const IN_ANIMATIONS: AnimationPreset[] = [
 	{ value: "spin", label: "Spin In" },
 	{ value: "drop", label: "Drop" },
 	{ value: "typewriter", label: "Typewriter", textOnly: true },
+	{ value: "blur", label: "Blur In", clipOnly: true },
+	{ value: "zoom-blur", label: "Zoom Blur", clipOnly: true },
+	{ value: "iris", label: "Crystal Ball", clipOnly: true },
+	{ value: "diamond", label: "Diamond", clipOnly: true },
+	{ value: "wipe-right", label: "Wipe Right", clipOnly: true },
+	{ value: "wipe-left", label: "Wipe Left", clipOnly: true },
+	{ value: "wipe-down", label: "Wipe Down", clipOnly: true },
+	{ value: "wipe-up", label: "Wipe Up", clipOnly: true },
+	{ value: "shutter", label: "Shutter Open", clipOnly: true },
+	{ value: "curtain", label: "Curtain", clipOnly: true },
+	{ value: "flip", label: "Flip" },
+	{ value: "twist", label: "Twist" },
+	{ value: "flash", label: "Flash Cuts" },
+	{ value: "swing-in", label: "Swing In" },
 ];
 
 export const OUT_ANIMATIONS: AnimationPreset[] = [
@@ -38,6 +55,20 @@ export const OUT_ANIMATIONS: AnimationPreset[] = [
 	{ value: "zoom-out", label: "Zoom Out" },
 	{ value: "pop", label: "Shrink" },
 	{ value: "spin", label: "Spin Out" },
+	{ value: "blur", label: "Blur Out", clipOnly: true },
+	{ value: "zoom-blur", label: "Zoom Blur", clipOnly: true },
+	{ value: "iris", label: "Closing", clipOnly: true },
+	{ value: "diamond", label: "Diamond", clipOnly: true },
+	{ value: "wipe-right", label: "Wipe Right", clipOnly: true },
+	{ value: "wipe-left", label: "Wipe Left", clipOnly: true },
+	{ value: "wipe-down", label: "Wipe Down", clipOnly: true },
+	{ value: "wipe-up", label: "Wipe Up", clipOnly: true },
+	{ value: "shutter", label: "Shutter Close", clipOnly: true },
+	{ value: "curtain", label: "Curtain", clipOnly: true },
+	{ value: "flip", label: "Flip" },
+	{ value: "twist", label: "Twist" },
+	{ value: "flash", label: "Flash Cuts" },
+	{ value: "drop", label: "Fall" },
 ];
 
 export const COMBO_ANIMATIONS: AnimationPreset[] = [
@@ -52,6 +83,12 @@ export const COMBO_ANIMATIONS: AnimationPreset[] = [
 	{ value: "breathe", label: "Breathe" },
 	{ value: "blink", label: "Blink" },
 	{ value: "flicker", label: "Flicker" },
+	{ value: "rock", label: "Rock" },
+	{ value: "spin-loop", label: "Spin" },
+	{ value: "bounce-loop", label: "Bounce" },
+	{ value: "drift", label: "Drift" },
+	{ value: "dream", label: "Dream Blur", clipOnly: true },
+	{ value: "spotlight", label: "Spotlight", clipOnly: true },
 ];
 
 /** Caption animations: the text appears word by word or line by line. */
@@ -156,6 +193,10 @@ export interface AnimationState {
 	reveal: number;
 	/** Round the reveal to whole words or lines (caption animations). */
 	revealUnit?: "word" | "line";
+	/** Gaussian blur, 0–100 (clips only). */
+	blur: number;
+	/** A reveal mask in the clip's own space (clips only). */
+	mask: TransitionMask | null;
 }
 
 const clamp01 = (value: number) => Math.min(1, Math.max(0, value));
@@ -254,8 +295,82 @@ function applyEdge({
 			break;
 		case "drop":
 			state.opacity *= clamp01(t * 3);
-			state.offsetY -= (1 - easeOutBounce(t)) * 0.9;
-			state.scale *= 1 + 0.15 * (1 - easeInCubic(t));
+			if (entering) {
+				state.offsetY -= (1 - easeOutBounce(t)) * 0.9;
+				state.scale *= 1 + 0.15 * (1 - easeInCubic(t));
+			} else state.offsetY += away * 1.1;
+			break;
+		case "blur":
+			state.opacity *= clamp01(t * 1.5);
+			state.blur = Math.max(state.blur, away * 60);
+			break;
+		case "zoom-blur":
+			state.opacity *= eased;
+			state.scale *= entering ? 1 + 0.35 * away : 1 + 0.5 * away;
+			state.blur = Math.max(state.blur, away * 45);
+			break;
+		case "iris": {
+			const size = 1.5 * eased;
+			state.mask = { shape: "ellipse", width: size, height: size };
+			break;
+		}
+		case "diamond": {
+			const size = 2.05 * eased;
+			state.mask = { shape: "diamond", width: size, height: size };
+			break;
+		}
+		case "wipe-right":
+		case "wipe-left": {
+			// In: the picture appears from the named side's opposite edge, moving that way.
+			const toRight = (type === "wipe-right") === entering;
+			const size = eased * 1.02;
+			state.mask = {
+				shape: "rectangle",
+				centerX: toRight ? -0.51 + size / 2 : 0.51 - size / 2,
+				centerY: 0,
+				width: size,
+				height: 1.02,
+			};
+			break;
+		}
+		case "wipe-down":
+		case "wipe-up": {
+			const toDown = (type === "wipe-down") === entering;
+			const size = eased * 1.02;
+			state.mask = {
+				shape: "rectangle",
+				centerX: 0,
+				centerY: toDown ? -0.51 + size / 2 : 0.51 - size / 2,
+				width: 1.02,
+				height: size,
+			};
+			break;
+		}
+		case "shutter":
+			state.mask = { shape: "rectangle", centerX: 0, centerY: 0, width: 1.02, height: eased * 1.02 };
+			break;
+		case "curtain":
+			state.mask = { shape: "rectangle", centerX: 0, centerY: 0, width: eased * 1.02, height: 1.02 };
+			break;
+		case "flip":
+			state.opacity *= clamp01(t * 2);
+			state.scale *= Math.max(0.02, Math.abs(Math.cos((away * Math.PI) / 2)));
+			break;
+		case "twist":
+			state.opacity *= eased;
+			state.scale *= 0.3 + 0.7 * eased;
+			state.rotate += (entering ? 1 : -1) * away * 360;
+			break;
+		case "flash": {
+			// Hard on/off cuts that settle: dark frames flicker in before it holds.
+			const step = Math.floor(t * 8);
+			state.opacity *= t >= 0.85 || step % 2 === 1 ? 1 : 0.15;
+			break;
+		}
+		case "swing-in":
+			state.opacity *= eased;
+			state.rotate += away * -25;
+			state.offsetX -= away * 0.3;
 			break;
 	}
 }
@@ -307,6 +422,29 @@ function applyCombo({
 			state.opacity *= 0.55 + 0.45 * (n - Math.floor(n));
 			break;
 		}
+		case "rock":
+			state.rotate += 6 * Math.sin(phase);
+			state.offsetY += 0.015 * Math.abs(Math.sin(phase));
+			break;
+		case "spin-loop":
+			state.rotate += ((seconds * speed * 90) % 360);
+			break;
+		case "bounce-loop":
+			state.offsetY -= 0.06 * Math.abs(Math.sin(phase * 0.75));
+			break;
+		case "drift":
+			state.offsetX += 0.04 * Math.sin(phase * 0.25);
+			state.scale *= 1.08;
+			break;
+		case "dream":
+			state.blur = Math.max(state.blur, 12 + 10 * (0.5 + 0.5 * Math.sin(phase * 0.5)));
+			state.opacity *= 0.9;
+			break;
+		case "spotlight": {
+			const size = 0.95 + 0.12 * Math.sin(phase * 0.5);
+			state.mask = { shape: "ellipse", width: size, height: size };
+			break;
+		}
 		case "heartbeat": {
 			const beat = (seconds * speed) % 1;
 			const kick = beat < 0.15 ? Math.sin((beat / 0.15) * Math.PI) : 0;
@@ -337,6 +475,8 @@ export function animationState({
 		scale: 1,
 		rotate: 0,
 		reveal: 1,
+		blur: 0,
+		mask: null,
 	};
 	// Keep in and out from overlapping on short clips.
 	const half = durationSeconds / 2;

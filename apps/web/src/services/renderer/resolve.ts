@@ -332,16 +332,17 @@ function resolveVisualState({
 		// A 360° clip kept as a sphere: its left and right edges meet (VR-18).
 		projection?.equirectangular ? group.map((pass) => ({ ...pass, wrap: true })) : group,
 	);
-	if (transition.blur > 0) {
+	const blur = Math.max(transition.blur, animated?.blur ?? 0);
+	if (blur > 0) {
 		effectPasses.push(
 			buildGaussianBlurPasses({
 				sigmaX: intensityToSigma({
-					intensity: transition.blur,
+					intensity: blur,
 					resolution: effectWidth,
 					reference: 1920,
 				}),
 				sigmaY: intensityToSigma({
-					intensity: transition.blur,
+					intensity: blur,
 					resolution: effectHeight,
 					reference: 1080,
 				}),
@@ -355,7 +356,11 @@ function resolveVisualState({
 		opacity,
 		effectPasses,
 		...(placed ? { projection: placed } : {}),
-		...(transition.mask ? { maskOverride: transition.mask } : {}),
+		...(transition.mask
+			? { maskOverride: transition.mask }
+			: animated?.mask
+				? { maskOverride: transitionMaskToMask(animated.mask) }
+				: {}),
 	};
 }
 

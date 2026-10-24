@@ -9,6 +9,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
+- **26 more clip animations** in Animation › In, Out and Combo, with live previews on the tiles: Blur In/Out, Zoom Blur, Crystal Ball and Closing (round reveal), Diamond, Wipe Right/Left/Down/Up, Shutter, Curtain, Flip, Twist, Flash Cuts, Swing In and Fall, plus Combo loops Rock, Spin, Bounce, Drift, Dream Blur and Spotlight. They play in the preview and in exports.
 - **Video and image clip panels, CapCut-style**: a **Background** tab (colour, blur or pattern behind the clip), Animation and Speed right after Basic, and a **Voice changer** tab for clips with sound. **Speed** gets a slider (0.1x–5x) next to the number, and its switch is now called **Pitch** (on: the sound gets higher when sped up).
 - **Transcript**: a "Transcript-based editing" card to start: pick the **spoken language** and the **track to transcribe** (all audio, or one voice or video track), then Transcribe.
 - **Audio clip panels, CapCut-style**: **Basic** has volume (dB, with keyframes), **fade in and out** sliders (heard in preview and export, and shown on the waveform), a **Noise reduction** switch, **Beats detection** (marks the music's beats on the timeline so cuts land on them; switch off to remove the marks) and **Enhance voice** (clean up, trim silence, duck music). The new **Voice changer** tab has presets (Chipmunk, Child, Higher, Lower, Deep, Giant, Monster) and a pitch slider (±12 semitones) that change the voice without changing its speed.
