@@ -7,6 +7,10 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+### Added
+
+- A **Library feed check** workflow (Actions) that shows what the Asset Library feed returns and whether its signature verifies with the app's key.
+
 ## [1.6.0] - 2026-10-24
 
 ### Added

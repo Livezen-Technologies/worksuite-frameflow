@@ -1,0 +1,28 @@
+# Checks the Asset Library feed the app reads: that catalog.json and its
+# signature are served, and that the signature verifies with the public key
+# built into the app. Run it from Actions → Library feed check.
+name: Library feed check
+
+on:
+  workflow_dispatch:
+    inputs:
+      base:
+        description: Feed base URL
+        default: https://frameflow.worksuitecloud.com/library
+      channel:
+        description: Channel
+        default: stable
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Fetch and verify
+        env:
+          BASE: ${{ inputs.base }}
+          CHANNEL: ${{ inputs.channel }}
+        run: node scripts/assets/check-library-feed.mjs "$BASE" "$CHANNEL"
