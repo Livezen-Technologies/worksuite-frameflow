@@ -47,6 +47,7 @@ import { MulticamTab } from "@/multicam/components/multicam-tab";
 import { ZoomTab } from "@/screen-zoom/components/zoom-tab";
 import { TextBasicTab, TextPresetsTab } from "@/text/components/text-panel";
 import { TrackingTab } from "@/text/components/tracking-tab";
+import { TextAnimationTab } from "@/text-animation/components/text-animation-tab";
 import { BasicTab } from "@/clip-actions/components/basic-tab";
 import { AnimationTab } from "@/animation/components/animation-tab";
 import { SpherePinTab, SphereTab } from "@/vr/components/sphere-tab";
@@ -334,6 +335,14 @@ function getTextConfig({
 				),
 			},
 			buildAnimationTab({ element }),
+			{
+				id: "text-animate",
+				label: "Animate text",
+				icon: <Sparkles size={16} />,
+				content: ({ trackId }) => (
+					<TextAnimationTab element={element} trackId={trackId} />
+				),
+			},
 			...buildSpherePinTabs({ element }),
 			{
 				id: "tracking",
