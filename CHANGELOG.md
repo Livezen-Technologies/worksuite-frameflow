@@ -9,6 +9,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
+- **Motion tracking for pictures, stickers and graphics**, not just text: a new Motion tracking tab makes them follow an object in the video below. The panel has a clearer how-to picture and steps.
 - **26 more clip animations** in Animation › In, Out and Combo, with live previews on the tiles: Blur In/Out, Zoom Blur, Crystal Ball and Closing (round reveal), Diamond, Wipe Right/Left/Down/Up, Shutter, Curtain, Flip, Twist, Flash Cuts, Swing In and Fall, plus Combo loops Rock, Spin, Bounce, Drift, Dream Blur and Spotlight. They play in the preview and in exports.
 - **Video and image clip panels, CapCut-style**: a **Background** tab (colour, blur or pattern behind the clip), Animation and Speed right after Basic, and a **Voice changer** tab for clips with sound. **Speed** gets a slider (0.1x–5x) next to the number, and its switch is now called **Pitch** (on: the sound gets higher when sped up).
 - **Transcript**: a "Transcript-based editing" card to start: pick the **spoken language** and the **track to transcribe** (all audio, or one voice or video track), then Transcribe.

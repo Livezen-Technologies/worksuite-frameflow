@@ -440,6 +440,15 @@ function buildZoomTab({
 	};
 }
 
+function buildTrackingTab({ element }: { element: TimelineElement }): PropertiesTabDef {
+	return {
+		id: "tracking",
+		label: "Motion tracking",
+		icon: <Crosshair size={16} />,
+		content: ({ trackId }) => <TrackingTab element={element} trackId={trackId} />,
+	};
+}
+
 function getImageConfig({
 	element,
 	thumbnail,
@@ -453,6 +462,7 @@ function getImageConfig({
 			buildBasicTab({ element }),
 			buildBackgroundTab(),
 			buildAnimationTab({ element, thumbnail }),
+			buildTrackingTab({ element }),
 			buildTransformTab({ element }),
 			...buildSpherePinTabs({ element }),
 			buildBlendingTab({ element }),
@@ -489,6 +499,7 @@ function getGraphicConfig({
 			buildGraphicTab({ element }),
 			buildTransformTab({ element }),
 			buildAnimationTab({ element }),
+			buildTrackingTab({ element }),
 			buildBlendingTab({ element }),
 			buildMasksTab({ element }),
 			buildClipEffectsTab({ element }),
