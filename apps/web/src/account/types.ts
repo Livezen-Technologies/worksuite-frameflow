@@ -78,7 +78,8 @@ declare global {
 					fileName: string;
 					data: ArrayBuffer;
 				}) => Promise<{ saved: boolean; path?: string }>;
-				show: (filePath: string) => Promise<void>;
+				/** Reveals an exported file; false when it was moved or deleted. */
+				show: (filePath: string) => Promise<boolean | void>;
 			};
 			cloud?: WorksuiteCloudBridge;
 			master?: MasterExportBridge;

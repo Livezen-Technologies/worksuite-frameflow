@@ -1,0 +1,31 @@
+"use client";
+
+import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
+import type { ReactNode } from "react";
+
+/** Header and width for the library pages opened from the home sidebar. */
+export function LibraryPageShell({ title, subtitle, actions, children }: { title: string; subtitle: string; actions?: ReactNode; children: ReactNode }) {
+	return (
+		<div className="bg-background text-foreground min-h-screen">
+			<header className="flex items-center gap-3 border-b px-5 py-3">
+				<Link href="/projects" className="text-muted-foreground hover:text-foreground" aria-label="Back to home">
+					<ArrowLeft className="size-4" />
+				</Link>
+				<div className="min-w-0 flex-1">
+					<h1 className="text-lg font-semibold">{title}</h1>
+					<p className="text-muted-foreground text-xs">{subtitle}</p>
+				</div>
+				{actions}
+			</header>
+			<main className="mx-auto max-w-7xl p-5">{children}</main>
+		</div>
+	);
+}
+
+export function formatBytes(bytes: number): string {
+	if (bytes < 1024) return `${bytes} B`;
+	if (bytes < 1024 ** 2) return `${(bytes / 1024).toFixed(0)} KB`;
+	if (bytes < 1024 ** 3) return `${(bytes / 1024 ** 2).toFixed(1)} MB`;
+	return `${(bytes / 1024 ** 3).toFixed(2)} GB`;
+}
