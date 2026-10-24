@@ -38,6 +38,7 @@
     },
     "files": [
       "main.js",
+      "library-account.js",
       "account.js",
       "cloud-upload.js",
       "cloud-sync.js",

@@ -334,14 +334,40 @@ function registerAccountIpc() {
 		return source;
 	});
 	handle("recorder:open", () => openRecorder());
-	handleFrom("tools:convert", async (event, args = {}) => {
-		const output = await converter.convert({
-			...args,
-			folder: path.join(app.getPath("videos"), "Worksuite"),
-			onProgress: (progress) => event.sender.send("tools:convert-progress", { jobId: args.jobId, progress }),
-		});
-		rememberExport(output);
-		return { path: output };
+	// Converter (SRS 37.3). Results go next to the original unless a folder is chosen.
+	const convertFolder = (saveTo) =>
+		saveTo === "converted" ? path.join(app.getPath("videos"), "Worksuite", "Converted") : typeof saveTo === "string" && path.isAbsolute(saveTo) ? saveTo : undefined;
+	const withProgress = (event, jobId) => (progress) => event.sender.send("tools:convert-progress", { jobId, progress });
+	const remember = (result) => {
+		rememberExport(result.path);
+		return result;
+	};
+	handle("tools:caps", () => converter.capabilities());
+	handle("tools:probe", (input) => converter.probe(String(input)));
+	handleFrom("tools:convert", async (event, args = {}) =>
+		remember(
+			await converter.convert({
+				jobId: args.jobId,
+				input: args.input,
+				options: args.options ?? args,
+				folder: convertFolder(args.saveTo),
+				onProgress: withProgress(event, args.jobId),
+			}),
+		),
+	);
+	handleFrom("tools:trim", async (event, args = {}) =>
+		remember(await converter.trim({ ...args, folder: convertFolder(args.saveTo), onProgress: withProgress(event, args.jobId) })),
+	);
+	handleFrom("tools:merge", async (event, args = {}) =>
+		remember(await converter.merge({ ...args, folder: convertFolder(args.saveTo), onProgress: withProgress(event, args.jobId) })),
+	);
+	handleFrom("tools:repair", async (event, args = {}) =>
+		remember(await converter.repair({ ...args, folder: convertFolder(args.saveTo), onProgress: withProgress(event, args.jobId) })),
+	);
+	handleFrom("tools:choose-folder", async (event) => {
+		const win = BrowserWindow.fromWebContents(event.sender);
+		const result = await dialog.showOpenDialog(win, { properties: ["openDirectory", "createDirectory"] });
+		return result.canceled ? null : result.filePaths[0] ?? null;
 	});
 	handle("tools:cancel-convert", (jobId) => converter.cancel(jobId));
 	handleFrom("tools:download", async (event, args = {}) => {

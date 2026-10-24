@@ -99,11 +99,15 @@ declare global {
 				convert: (args: {
 					jobId: string;
 					input: string;
-					format: string;
-					height?: number;
-					quality?: string;
-					durationSeconds?: number;
-				}) => Promise<{ path: string }>;
+					options: ConvertOptions;
+					saveTo?: string;
+				}) => Promise<ConvertResult>;
+				caps: () => Promise<{ available: boolean; gpus: string[]; cpu: boolean }>;
+				probe: (input: string) => Promise<MediaProbe>;
+				trim: (args: { jobId: string; input: string; start: number; end: number; saveTo?: string }) => Promise<ConvertResult>;
+				merge: (args: { jobId: string; inputs: string[]; saveTo?: string }) => Promise<ConvertResult & { reencoded: boolean }>;
+				repair: (args: { jobId: string; input: string; saveTo?: string }) => Promise<ConvertResult & { duration: number }>;
+				chooseFolder: () => Promise<string | null>;
 				cancelConvert: (jobId: string) => Promise<void>;
 				onConvertProgress: (listener: (p: { jobId: string; progress: number }) => void) => () => void;
 				download: (args: { jobId: string; url: string }) => Promise<{ path: string; name: string; bytes: number }>;
@@ -370,6 +374,54 @@ export type MediaAccess =
 	| "restricted"
 	| "not-determined"
 	| "unknown";
+
+/** What the converter learns about a file before converting it (CV-01). */
+export interface MediaProbe {
+	ok: boolean;
+	problem?: string;
+	bytes: number;
+	duration?: number;
+	hasVideo?: boolean;
+	hasAudio?: boolean;
+	videoCodec?: string;
+	audioCodec?: string;
+	width?: number;
+	height?: number;
+	fps?: number;
+	hdr?: "HLG" | "PQ" | null;
+	tenBit?: boolean;
+	sampleRate?: number;
+	channels?: number;
+	camera?: string | null;
+}
+
+export interface ConvertOptions {
+	format: string;
+	height?: number;
+	fps?: number;
+	quality?: number;
+	encoder?: "auto" | "sw";
+	toneMap?: boolean;
+	lut?: string | null;
+	burnSubtitles?: boolean;
+	loudnorm?: boolean;
+	denoise?: boolean;
+	removeAudio?: boolean;
+	audioKbps?: number;
+	targetBytes?: number;
+	start?: number;
+	end?: number;
+	rotate?: 0 | 90 | 180 | 270;
+	flip?: "h" | "v" | null;
+	crop?: string | null;
+	suffix?: string;
+}
+
+export interface ConvertResult {
+	path: string;
+	bytes: number;
+	sourceBytes?: number;
+}
 
 export interface WorksuiteCaptureBridge {
 	sources: () => Promise<CaptureSource[]>;

@@ -134,6 +134,12 @@ contextBridge.exposeInMainWorld("worksuite", {
 		/** The file's place on disk (dropped or chosen files only). */
 		pathForFile: (file) => webUtils.getPathForFile(file),
 		convert: (args) => ipcRenderer.invoke("tools:convert", args),
+		caps: () => ipcRenderer.invoke("tools:caps"),
+		probe: (input) => ipcRenderer.invoke("tools:probe", input),
+		trim: (args) => ipcRenderer.invoke("tools:trim", args),
+		merge: (args) => ipcRenderer.invoke("tools:merge", args),
+		repair: (args) => ipcRenderer.invoke("tools:repair", args),
+		chooseFolder: () => ipcRenderer.invoke("tools:choose-folder"),
 		cancelConvert: (jobId) => ipcRenderer.invoke("tools:cancel-convert", jobId),
 		download: (args) => ipcRenderer.invoke("tools:download", args),
 		cancelDownload: (jobId) => ipcRenderer.invoke("tools:cancel-download", jobId),

@@ -9,11 +9,18 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
+- **Video converter redesign**: each file shows its codec, resolution, HDR and size before you convert, with a size estimate and time left while it runs. Drop whole folders, pick presets (WhatsApp, email, YouTube), and choose resolution, frame rate, encoder, quality, HDR tone mapping, burned-in subtitles, loudness levelling, noise removal and audio bitrate. Choose where files are saved, see a summary when the batch finishes, and repair damaged files that won't open.
+- **Quick tools** in the converter: Trim, Merge, Extract audio, Make GIF, Rotate & crop and Compress to size, each with a preview and range picker.
+- **Conversion history**: search everything you've converted, open it in the editor or show it in its folder.
 - **Drag packs from the Asset Library onto the timeline**, even before they're downloaded: a placeholder clip with a progress ring appears where you drop it (LUTs, filters and effects show the ring on the clip you dropped them on, transitions on the cut), the pack downloads with anything it needs, and the real clip, effect, LUT or transition takes its place. Undo removes the whole thing in one step; × on the ring cancels the download and removes the placeholder.
 - **Download & Add** in a pack's details installs it and adds it straight away: graphics, stickers, animations, sounds and text templates at the playhead, LUTs, filters and effects on the selected clips, and transitions on the nearest cut.
 - Asset Library account features when you're signed in: this computer is registered as one of your devices (if your plan's device limit is reached, the library says so and how to fix it), **favourites** with a ♥ on every pack (favourites you made while signed out are kept and added to your account the first time you sign in), a **Download history** of everything you've downloaded on all your devices, and your installed packs are remembered by your account.
 - New and changed packs appear in the Asset Library as soon as they're published while you're signed in and online, instead of at the next 15-minute check.
 - The Asset Library and the panels' Downloaded sections are now in Sinhala and Tamil when you choose either language.
+
+### Fixed
+
+- The desktop app no longer fails to start with "Cannot find module './library-account'".
 
 ## [1.3.0] - 2026-10-24
 
