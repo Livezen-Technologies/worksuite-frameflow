@@ -1,3 +1,4 @@
+import { WHISPER_HOSTS } from "@/models/portal";
 import type {
 	TranscriptionLanguage,
 	TranscriptionResult,
@@ -80,6 +81,17 @@ class TranscriptionService {
 		});
 	}
 
+	/** Downloads a model ahead of time (Settings → Local models). */
+	async preload({
+		modelId,
+		onProgress,
+	}: {
+		modelId: TranscriptionModelId;
+		onProgress?: ProgressCallback;
+	}): Promise<void> {
+		await this.ensureWorker({ modelId, onProgress });
+	}
+
 	cancel() {
 		this.worker?.postMessage({ type: "cancel" } satisfies WorkerMessage);
 	}
@@ -155,6 +167,7 @@ class TranscriptionService {
 			this.worker.postMessage({
 				type: "init",
 				modelId: model.huggingFaceId,
+				remoteHosts: WHISPER_HOSTS,
 			} satisfies WorkerMessage);
 		});
 	}

@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { portalModelUrl } from "@/models/portal";
 
 /**
  * On-device AI models for export (SRS EX-20, EX-21). Nothing ships in the
@@ -12,7 +13,7 @@ export interface AiModelInfo {
 	kind: AiModelKind;
 	name: string;
 	licence: string;
-	/** Where "Download" fetches it from; any compatible .onnx can be imported instead. */
+	/** Public source, tried when the download center doesn't have it; any compatible .onnx can be imported instead. */
 	url: string;
 	approxBytes: number;
 	about: string;
@@ -93,9 +94,7 @@ export async function downloadModel(id: string): Promise<void> {
 		errors: { ...state.errors, [id]: "" },
 	});
 	try {
-		const response = await fetch(model.url);
-		if (!response.ok || !response.body)
-			throw new Error(`Download failed (${response.status})`);
+		const response = await fetchFirst([portalModelUrl(model.id), model.url]);
 		const total = Number(response.headers.get("content-length") ?? model.approxBytes);
 		const reader = response.body.getReader();
 		const parts: Uint8Array[] = [];
@@ -154,4 +153,20 @@ export function modelFor(kind: AiModelKind): AiModelInfo {
 	const model = AI_MODELS.find((m) => m.kind === kind);
 	if (!model) throw new Error(`No ${kind} model`);
 	return model;
+}
+
+/** The first source that answers; the error names every source's status. */
+async function fetchFirst(urls: string[]): Promise<Response & { body: ReadableStream<Uint8Array> }> {
+	const failures: string[] = [];
+	for (const url of urls) {
+		try {
+			const response = await fetch(url);
+			if (response.ok && response.body)
+				return Object.assign(response, { body: response.body });
+			failures.push(String(response.status));
+		} catch {
+			failures.push("offline");
+		}
+	}
+	throw new Error(`Download failed (${failures.join(", ")})`);
 }

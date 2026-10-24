@@ -7,6 +7,14 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+### Added
+
+- **Whisper speech models in Settings → Local models**: download, check the size of, or remove the Tiny, Small, Medium and Large v3 Turbo models used by Captions, the transcript and Sync with voice, next to the AI export models.
+
+### Fixed
+
+- Local models now download from the Worksuite download center first and fall back to the public source, so a moved or private public link no longer stops the download (the "Download failed (404)" and "(401)" errors). The new "Local models" workflow mirrors every model to the download center.
+
 ## [1.2.0] - 2026-10-24
 
 ### Added

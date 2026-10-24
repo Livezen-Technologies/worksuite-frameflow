@@ -1,0 +1,23 @@
+{
+	"$comment": "On-device models mirrored to the download center (models/). `sources` are tried in order; `search` finds an .onnx on Hugging Face when none answers. Whisper repos are copied with their q4 files in Hugging Face's layout (models/hf/<repo>/resolve/main/...).",
+	"onnx": [
+		{
+			"id": "realesrgan-x4",
+			"sources": ["https://huggingface.co/qualcomm/Real-ESRGAN-x4plus/resolve/main/Real-ESRGAN-x4plus.onnx"],
+			"search": "Real-ESRGAN x4plus onnx",
+			"match": "esrgan.*x4"
+		},
+		{
+			"id": "rife",
+			"sources": ["https://huggingface.co/onnx-community/rife-v4.6/resolve/main/onnx/model.onnx"],
+			"search": "rife onnx",
+			"match": "rife"
+		}
+	],
+	"whisper": [
+		"onnx-community/whisper-tiny",
+		"onnx-community/whisper-small",
+		"onnx-community/whisper-medium",
+		"onnx-community/whisper-large-v3-turbo"
+	]
+}

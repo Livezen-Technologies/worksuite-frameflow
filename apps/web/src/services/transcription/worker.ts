@@ -1,4 +1,5 @@
 import {
+	env,
 	pipeline,
 	type AutomaticSpeechRecognitionPipeline,
 	type AutomaticSpeechRecognitionOutput,
@@ -11,7 +12,7 @@ import {
 } from "@/transcription/audio";
 
 export type WorkerMessage =
-	| { type: "init"; modelId: string }
+	| { type: "init"; modelId: string; remoteHosts: string[] }
 	| { type: "transcribe"; audio: Float32Array; language: string }
 	| { type: "cancel" };
 
@@ -38,7 +39,7 @@ self.onmessage = async (event: MessageEvent<WorkerMessage>) => {
 
 	switch (message.type) {
 		case "init":
-			await handleInit({ modelId: message.modelId });
+			await handleInit({ modelId: message.modelId, remoteHosts: message.remoteHosts });
 			break;
 		case "transcribe":
 			await handleTranscribe({
@@ -53,7 +54,28 @@ self.onmessage = async (event: MessageEvent<WorkerMessage>) => {
 	}
 };
 
-async function handleInit({ modelId }: { modelId: string }) {
+async function handleInit({
+	modelId,
+	remoteHosts,
+}: {
+	modelId: string;
+	remoteHosts: string[];
+}) {
+	// The download center first, then Hugging Face.
+	let lastError: unknown = null;
+	for (const host of remoteHosts) {
+		env.remoteHost = host;
+		lastError = await loadPipeline({ modelId });
+		if (!lastError) return;
+	}
+	self.postMessage({
+		type: "init-error",
+		error: lastError instanceof Error ? lastError.message : String(lastError),
+	} satisfies WorkerResponse);
+}
+
+/** Loads the model; returns the error instead of reporting it. */
+async function loadPipeline({ modelId }: { modelId: string }): Promise<unknown> {
 	lastReportedProgress = -1;
 	fileBytes.clear();
 
@@ -109,11 +131,9 @@ async function handleInit({ modelId }: { modelId: string }) {
 		})) as unknown as AutomaticSpeechRecognitionPipeline;
 
 		self.postMessage({ type: "init-complete" } satisfies WorkerResponse);
+		return null;
 	} catch (error) {
-		self.postMessage({
-			type: "init-error",
-			error: error instanceof Error ? error.message : "Failed to load model",
-		} satisfies WorkerResponse);
+		return error ?? new Error("Failed to load model");
 	}
 }
 
