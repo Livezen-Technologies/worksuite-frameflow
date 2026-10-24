@@ -81,10 +81,10 @@ export function tick(color: string, size: number, width: number, draw: Key[], at
 }
 
 /** "SUBSCRIBED" with a tick before it, centred; fades in from `at`. */
-function subscribedLabel(ctx: AssetContext, { at, cap, maxW, color, offset = [0, 0] }: { at: number; cap: number; maxW: number; color: string; offset?: number[] }): Shape[] {
+function subscribedLabel(ctx: AssetContext, { at, cap, maxW, color, offset = [0, 0], fade = true }: { at: number; cap: number; maxW: number; color: string; offset?: number[]; fade?: boolean }): Shape[] {
 	const tickW = cap * 0.95;
 	const gap = cap * 0.4;
-	const text = label(`${lang(ctx)}.subscribed`, { cap, maxW: maxW - tickW - gap, color, opacity: [[at, 0, EASE.out], [at + 8, 100]] });
+	const text = label(`${lang(ctx)}.subscribed`, { cap, maxW: maxW - tickW - gap, color, opacity: fade ? [[at, 0, EASE.out], [at + 8, 100]] : 100 });
 	const total = tickW + gap + text.w;
 	const textShape = text.shape as { it: Shape[] };
 	const transform = textShape.it[textShape.it.length - 1] as { p: unknown };
@@ -187,15 +187,29 @@ function subscribeButton(
 	const maxW = w - h * 0.75;
 	const layers: LayerInput[] = [];
 	const swap = press !== undefined ? press + 3 : undefined;
+	const box = { x: at[0] - maxW / 2, y: at[1] - cap * 0.9, w: maxW, h: cap * 1.8 };
+	const words = (key: string) => ({ en: WORDS[`en.${key}`].text, si: WORDS[`si.${key}`].text, ta: WORDS[`ta.${key}`].text });
+	const textSlot = (id: string, name: string) =>
+		ctx.textSlot?.({ id, name, layer: `slot:text:${id}`, defaults: words(id), fontFamily: "Inter, Noto Sans Sinhala, Noto Sans Tamil", fontWeight: 700, fontSize: cap * 1.35, box, origin: [at[0], at[1]], align: "center", color: "text", uppercase: true });
+	// Each word is its own slot layer (fades are on the layer, so live text follows them).
+	textSlot("subscribe", "Button text");
 	layers.push({
-		name: "Label",
+		name: "slot:text:subscribe",
 		position: at,
 		scale: s,
-		shapes: [
-			label(`${lang(ctx)}.subscribe`, { cap, maxW, color: c("text"), opacity: swap !== undefined ? fadeOut(swap, 5) : 100 }).shape,
-			...(swap !== undefined ? subscribedLabel(ctx, { at: swap + 3, cap: cap * 0.92, maxW, color: c("text") }) : []),
-		],
+		...(swap !== undefined ? { opacity: fadeOut(swap, 5) } : {}),
+		shapes: [label(`${lang(ctx)}.subscribe`, { cap, maxW, color: c("text") }).shape],
 	});
+	if (swap !== undefined) {
+		textSlot("subscribed", "Subscribed text");
+		layers.push({
+			name: "slot:text:subscribed",
+			position: at,
+			scale: s,
+			opacity: [[swap + 3, 0, EASE.out], [swap + 11, 100]],
+			shapes: subscribedLabel(ctx, { at: swap + 3, cap: cap * 0.92, maxW, color: c("text"), fade: false }),
+		});
+	}
 	if (swap !== undefined) layers.push({ name: "Pressed", position: at, scale: s, opacity: fadeIn(swap, 6), shapes: [pill(w, h, c("pressed"))] });
 	layers.push({ name: "Button", position: at, scale: s, shapes: [pill(w, h, c("button"))] });
 	if (shadow) layers.push({ name: "Shadow", position: [at[0], at[1] + h * 0.09], scale: s, shapes: [pill(w, h, c("shadow"), 35)] });
@@ -411,11 +425,16 @@ export const subscribeButtons: AssetDef[] = [
 		build: (ctx) => {
 			const { c } = ctx;
 			const grow = (t: number): Key[] => [[t, [0, 100], EASE.out], [t + 12, [100, 100]]];
+			const font = "Inter, Noto Sans Sinhala, Noto Sans Tamil";
+			ctx.textSlot?.({ id: "channel", name: "Channel name", layer: "slot:text:channel", defaults: { en: "Your channel", si: "ඔබේ නාලිකාව", ta: "உங்கள் சேனல்" }, fontFamily: font, fontWeight: 700, fontSize: 40, box: { x: 250, y: 102, w: 360, h: 48 }, origin: [250, 126], align: "left", color: "text" });
+			ctx.textSlot?.({ id: "subscribers", name: "Subscribers line", layer: "slot:text:subscribers", defaults: { en: "1.2K subscribers", si: "සබ්ස්ක්‍රයිබර්ස් 1.2K", ta: "1.2K சப்ஸ்கிரைபர்கள்" }, fontFamily: font, fontWeight: 400, fontSize: 26, box: { x: 250, y: 160, w: 300, h: 32 }, origin: [250, 176], align: "left", color: "text" });
+			ctx.imageSlot?.({ id: "avatar", name: "Channel picture", layer: "slot:image:avatar", mask: { shape: "ellipse", w: 150, h: 150 }, origin: [140, 150], box: { x: 65, y: 75, w: 150, h: 150 }, placeholder: "placeholder", aspect: "1:1" });
 			return [
 				...subscribeButton(ctx, { at: [880, 150], w: 340, h: 120, cap: 38, pop: 18, press: 58, shadow: false }),
-				{ name: "Name", position: [250, 150], shapes: [group([rect([330, 36], [165, 0], 18), fill(c("placeholder"))], { position: [0, -24], scale: grow(14) }), group([rect([210, 24], [105, 0], 12), fill(c("placeholder"), 55)], { position: [0, 26], scale: grow(18) })] },
+				{ name: "slot:text:channel", position: [250, 126], shapes: [group([rect([330, 36], [165, 0], 18), fill(c("placeholder"))], { scale: grow(14) })] },
+				{ name: "slot:text:subscribers", position: [250, 176], shapes: [group([rect([210, 24], [105, 0], 12), fill(c("placeholder"), 55)], { scale: grow(18) })] },
 				{ name: "Avatar ring", position: [140, 150], shapes: [group([ellipse([176, 176]), trim(0, [[10, 0, EASE.inOut], [32, 100]]), stroke(c("accent"), 8)], { rotation: -90 })] },
-				{ name: "Avatar", position: [140, 150], scale: popPress(8), shapes: [group([ellipse([150, 150]), fill(c("placeholder"))])] },
+				{ name: "slot:image:avatar", position: [140, 150], scale: popPress(8), shapes: [group([ellipse([150, 150]), fill(c("placeholder"))])] },
 				{ name: "Panel", position: [[0, [550, 190], EASE.out], [14, [550, 150]]], opacity: fadeIn(0, 10), shapes: [group([rect([1070, 220], [0, 0], 110), fill(c("panel"), 92)])] },
 			];
 		},

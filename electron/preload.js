@@ -145,6 +145,25 @@ contextBridge.exposeInMainWorld("worksuite", {
 			return () => ipcRenderer.removeListener("cloud:progress", handler);
 		},
 	},
+	// Asset Library (download center packs). Only pack ids and settings cross.
+	assets: {
+		getState: () => ipcRenderer.invoke("assets:get-state"),
+		refresh: () => ipcRenderer.invoke("assets:refresh"),
+		install: (packId) => ipcRenderer.invoke("assets:install", String(packId)),
+		pause: (packId) => ipcRenderer.invoke("assets:pause", String(packId)),
+		resume: (packId) => ipcRenderer.invoke("assets:resume", String(packId)),
+		cancel: (packId) => ipcRenderer.invoke("assets:cancel", String(packId)),
+		uninstall: (packId) => ipcRenderer.invoke("assets:uninstall", String(packId)),
+		clearUnused: () => ipcRenderer.invoke("assets:clear-unused"),
+		diskUsage: () => ipcRenderer.invoke("assets:disk-usage"),
+		configure: (settings) => ipcRenderer.invoke("assets:configure", settings),
+		updateAll: () => ipcRenderer.invoke("assets:update-all"),
+		onChange: (listener) => {
+			const handler = (_event, state) => listener(state);
+			ipcRenderer.on("assets:changed", handler);
+			return () => ipcRenderer.removeListener("assets:changed", handler);
+		},
+	},
 	updates: {
 		getState: () => ipcRenderer.invoke("updates:get-state"),
 		check: () => ipcRenderer.invoke("updates:check"),

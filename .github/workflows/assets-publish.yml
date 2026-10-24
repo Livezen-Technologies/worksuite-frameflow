@@ -1,0 +1,90 @@
+name: Asset packs
+
+# Validates asset packs on pull requests; on an `assets-v*` tag builds the
+# signed catalog and publishes it to the download center:
+#   s3://$DOWNLOAD_CENTER_BUCKET/assets/<channel>/catalog.json (+ .sig, packs/)
+# Tags containing "-beta" publish to the beta channel.
+on:
+  pull_request:
+    paths:
+      - "assets/**"
+      - "scripts/assets/**"
+      - "electron/asset-*.js"
+      - ".github/workflows/assets-publish.yml"
+  push:
+    tags:
+      - "assets-v*"
+
+permissions:
+  contents: read
+
+jobs:
+  packs:
+    runs-on: ubuntu-latest
+    env:
+      DOWNLOAD_CENTER_BUCKET: ${{ secrets.DOWNLOAD_CENTER_BUCKET }}
+      HAS_SIGNING_KEY: ${{ secrets.ASSET_SIGNING_KEY != '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76
+        with:
+          bun-version: 1.2.18
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate the Worksuite pack (animations, slots, hashes)
+        run: bun scripts/assets/validate-worksuite-pack.ts
+
+      - name: Validate pack manifests
+        run: node scripts/assets/build-catalog.mjs --validate
+
+      - name: Asset store tests
+        run: node --test electron/__tests__/asset-store.test.js
+
+      - name: Build the catalog (unsigned check on pull requests)
+        if: github.event_name == 'pull_request'
+        run: node scripts/assets/build-catalog.mjs --unsigned --out dist/assets
+
+      - name: Build and sign the catalog
+        if: startsWith(github.ref, 'refs/tags/assets-v')
+        env:
+          ASSET_SIGNING_KEY: ${{ secrets.ASSET_SIGNING_KEY }}
+        shell: bash
+        run: |
+          channel=stable
+          [[ "$GITHUB_REF_NAME" == *-beta* ]] && channel=beta
+          echo "CHANNEL=$channel" >> "$GITHUB_ENV"
+          if [[ "$HAS_SIGNING_KEY" != "true" ]]; then
+            echo "::warning::ASSET_SIGNING_KEY isn't set; building unsigned and skipping publish."
+            node scripts/assets/build-catalog.mjs --channel "$channel" --unsigned --out dist/assets
+          else
+            node scripts/assets/build-catalog.mjs --channel "$channel" --out dist/assets
+          fi
+
+      - uses: actions/upload-artifact@v4
+        if: startsWith(github.ref, 'refs/tags/assets-v')
+        with:
+          name: asset-catalog
+          path: dist/assets
+
+      - name: Publish to the download center
+        if: startsWith(github.ref, 'refs/tags/assets-v') && env.DOWNLOAD_CENTER_BUCKET != '' && env.HAS_SIGNING_KEY == 'true'
+        env:
+          DOWNLOAD_CENTER_ENDPOINT: ${{ secrets.DOWNLOAD_CENTER_ENDPOINT }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.DOWNLOAD_CENTER_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.DOWNLOAD_CENTER_SECRET }}
+          AWS_DEFAULT_REGION: auto
+        shell: bash
+        run: |
+          # Pack files first (immutable names), catalog last, so the catalog never points at a missing zip.
+          aws s3 cp "dist/assets/$CHANNEL/packs/" "s3://$DOWNLOAD_CENTER_BUCKET/assets/$CHANNEL/packs/" --recursive \
+            --cache-control "public, max-age=31536000, immutable" --endpoint-url "$DOWNLOAD_CENTER_ENDPOINT"
+          aws s3 cp "dist/assets/$CHANNEL/catalog.json.sig" "s3://$DOWNLOAD_CENTER_BUCKET/assets/$CHANNEL/catalog.json.sig" \
+            --cache-control "no-cache" --endpoint-url "$DOWNLOAD_CENTER_ENDPOINT"
+          aws s3 cp "dist/assets/$CHANNEL/catalog.json" "s3://$DOWNLOAD_CENTER_BUCKET/assets/$CHANNEL/catalog.json" \
+            --cache-control "no-cache" --content-type application/json --endpoint-url "$DOWNLOAD_CENTER_ENDPOINT"
+
+      - name: Skip publishing
+        if: startsWith(github.ref, 'refs/tags/assets-v') && (env.DOWNLOAD_CENTER_BUCKET == '' || env.HAS_SIGNING_KEY != 'true')
+        run: echo "Download center secrets or ASSET_SIGNING_KEY not set; the catalog is attached as a build artifact only."

@@ -414,6 +414,50 @@ const CAPTION_HANDLERS: Record<string, Handler> = {
 };
 Object.assign(HANDLERS, CAPTION_HANDLERS);
 
+/** Asset Library over automation / MCP: search, install, apply. */
+const ASSET_HANDLERS: Record<string, Handler> = {
+	"assets.search": async ({ params }) => {
+		const { useAssetLibrary } = await import("@/asset-library/store");
+		const { libraryPacks, searchPacks, packStatus } = await import("@/asset-library/catalog");
+		const { PACK_TYPES } = await import("@/asset-library/types");
+		const state = useAssetLibrary.getState().state;
+		const query = typeof params.query === "string" ? params.query : "";
+		const type = typeof params.type === "string" && (PACK_TYPES as readonly string[]).includes(params.type) ? (params.type as (typeof PACK_TYPES)[number]) : null;
+		const empty = { installed: {}, builtin: [], downloads: {}, catalog: null };
+		const packs = searchPacks({ packs: libraryPacks(state ?? empty), query, type });
+		return packs.map((p) => ({ id: p.id, type: p.type, title: p.title, version: p.version, plan: p.plan, status: packStatus(p, state ?? empty), assets: p.assetIds ?? [] }));
+	},
+	"assets.install": async ({ params }) => {
+		const packId = str({ params, key: "packId", required: true }) ?? "";
+		const { assetsBridge } = await import("@/asset-library/store");
+		const bridge = assetsBridge();
+		if (!bridge) throw new AutomationError({ message: "Installing packs needs the desktop app.", code: -32010 });
+		const state = await bridge.install(packId);
+		return { packId, installed: state.installed[packId]?.version ?? null };
+	},
+	"assets.apply": async ({ ctx: { editor }, params }) => {
+		activeProject(editor);
+		const assetId = str({ params, key: "assetId", required: true }) ?? "";
+		const packId = typeof params.packId === "string" ? params.packId : null;
+		if (packId) {
+			const { useAssetLibrary } = await import("@/asset-library/store");
+			const { addCatalogAsset } = await import("@/asset-library/actions");
+			const pack = useAssetLibrary.getState().state?.catalog?.packs.find((p) => p.id === packId);
+			const installed = useAssetLibrary.getState().state?.installed[packId];
+			const version = installed?.version ?? pack?.version;
+			if (!version) throw new AutomationError({ message: `Pack ${packId} isn't in the catalog`, code: -32004 });
+			return addCatalogAsset({ editor, packId, version, assetId });
+		}
+		const { findPackAsset } = await import("@/lottie/catalog");
+		const { addPackAnimation } = await import("@/lottie/actions");
+		const asset = await findPackAsset(assetId);
+		if (!asset) throw new AutomationError({ message: `No asset ${assetId}`, code: -32004 });
+		addPackAnimation({ editor, asset });
+		return { assetId: asset.id, placeholder: false };
+	},
+};
+Object.assign(HANDLERS, ASSET_HANDLERS);
+
 export async function handleAutomationCall({
 	ctx,
 	method,

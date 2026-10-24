@@ -31,6 +31,50 @@ export const LANGUAGES: VariantDef[] = [
 	{ id: "ta", name: "தமிழ்", lang: "ta" },
 ];
 
+/** Languages that text slots carry defaults for. */
+export type SlotLanguage = "en" | "si" | "ta";
+
+/**
+ * A word or line the Motion Editor can replace with live text. The layer it
+ * names (`slot:text:<id>`) keeps the shaped outlines as the fallback; when
+ * the user changes the text, that layer's paint is hidden and the editor
+ * draws the text itself, following the layer's transform and opacity.
+ */
+export interface TextSlotDef {
+	id: string;
+	name: string;
+	/** Layer name, always `slot:text:<id>`. */
+	layer: string;
+	defaults: Record<SlotLanguage, string>;
+	fontFamily: string;
+	fontWeight: number;
+	/** Font size in composition pixels; the text shrinks to fit `box`. */
+	fontSize: number;
+	/** The area the text fits in, in composition coordinates at rest. */
+	box: { x: number; y: number; w: number; h: number };
+	/** The slot layer's position at rest (box is relative to it when drawing). */
+	origin: [number, number];
+	align: "left" | "center" | "right";
+	/** Colour slot id the text is drawn in. */
+	color: string;
+	/** Upper-case the text (as the outlines are). */
+	uppercase?: boolean;
+}
+
+/** A picture the user can put in (e.g. a channel profile photo in an avatar circle). */
+export interface ImageSlotDef {
+	id: string;
+	name: string;
+	/** Layer name, always `slot:image:<id>`: its shape is the mask. */
+	layer: string;
+	mask: { shape: "ellipse" | "rect"; w: number; h: number; radius?: number };
+	origin: [number, number];
+	box: { x: number; y: number; w: number; h: number };
+	/** Colour slot of the placeholder the picture covers. */
+	placeholder: string;
+	aspect: string;
+}
+
 export interface AssetContext {
 	/** The colour of a slot, by id. */
 	c: (slot: string) => string;
@@ -40,6 +84,10 @@ export interface AssetContext {
 	h: number;
 	frames: number;
 	fps: number;
+	/** Declares a text slot (collected from the default variant's build). */
+	textSlot?: (slot: TextSlotDef) => void;
+	/** Declares an image slot. */
+	imageSlot?: (slot: ImageSlotDef) => void;
 }
 
 export interface AssetDef {

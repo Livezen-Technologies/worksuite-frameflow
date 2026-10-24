@@ -175,6 +175,9 @@ const PAGE_METHODS = [
 	"transcript.translate",
 	"transcript.cleanUp",
 	"captions.add",
+	"assets.search",
+	"assets.install",
+	"assets.apply",
 ];
 
 /** Topics a client can subscribe to (AU-03); "*" means all of them. */

@@ -21,6 +21,7 @@
     "publish:wasm": "bun run build:wasm && npm publish rust/wasm/pkg --access public",
     "start:tools": "turbo run start --filter=@opencut/tools",
     "test": "bun test",
+    "test:electron": "node --test electron/__tests__/asset-store.test.js",
     "build:assets": "bun scripts/assets/build-worksuite-pack.ts",
     "check:assets": "bun scripts/assets/validate-worksuite-pack.ts"
   },

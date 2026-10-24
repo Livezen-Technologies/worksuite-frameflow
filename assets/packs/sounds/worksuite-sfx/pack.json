@@ -1,0 +1,14 @@
+{
+	"id": "worksuite-sfx",
+	"type": "sounds",
+	"version": "1.0.0",
+	"title": "Worksuite sound effects",
+	"description": "Click, pop, ding, whoosh and confetti, synthesised for the Worksuite animations.",
+	"tags": { "en": ["click", "pop", "ding", "whoosh", "confetti", "sfx"], "si": ["ශබ්ද"], "ta": ["ஒலி"] },
+	"languages": [],
+	"licence": "MIT",
+	"minAppVersion": "1.0.0",
+	"plan": "free",
+	"builtin": true,
+	"source": { "pack": "worksuite-pack", "sounds": true }
+}

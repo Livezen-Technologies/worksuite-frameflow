@@ -12,7 +12,7 @@ import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 import { buildAnimation } from "./lottie-dsl";
-import { type AssetDef, SOUNDS } from "./pack/common";
+import { type AssetDef, type ImageSlotDef, SOUNDS, type TextSlotDef } from "./pack/common";
 import { lowerThirds } from "./pack/lower-thirds";
 import { callToAction } from "./pack/call-to-action";
 import { callouts } from "./pack/callouts";
@@ -67,8 +67,26 @@ function buildAsset(def: AssetDef, variant = "default") {
 		if (!found) throw new Error(`${def.id}: unknown colour slot "${slotId}"`);
 		return found.default;
 	};
-	const layers = def.build({ c, variant, w: def.w, h: def.h, frames, fps });
-	return round(buildAnimation({ w: def.w, h: def.h, fps, frames, name: def.name }, layers));
+	const textSlots = new Map<string, TextSlotDef>();
+	const imageSlots = new Map<string, ImageSlotDef>();
+	const layers = def.build({
+		c,
+		variant,
+		w: def.w,
+		h: def.h,
+		frames,
+		fps,
+		textSlot: (slot) => {
+			if (!def.colors.some((s) => s.id === slot.color)) throw new Error(`${def.id}: text slot ${slot.id} uses unknown colour slot ${slot.color}`);
+			textSlots.set(slot.id, slot);
+		},
+		imageSlot: (slot) => imageSlots.set(slot.id, slot),
+	});
+	return {
+		lottie: round(buildAnimation({ w: def.w, h: def.h, fps, frames, name: def.name }, layers)),
+		textSlots: round([...textSlots.values()]) as TextSlotDef[],
+		imageSlots: round([...imageSlots.values()]) as ImageSlotDef[],
+	};
 }
 
 const gcd = (a: number, b: number): number => (b ? gcd(b, a % b) : a);
@@ -99,17 +117,29 @@ function writePack({ thumbs }: { thumbs: boolean }) {
 	for (const entry of readdirSync(packDir)) if (entry !== "sounds") rmSync(join(packDir, entry), { recursive: true, force: true });
 	if (!existsSync(join(packDir, "sounds", "click.wav"))) throw new Error("Sounds are missing: run python3 scripts/assets/build-sounds.py");
 	const entries: Array<{ dir: string; def: AssetDef; category: string }> = [];
+	const slotsById = new Map<string, { textSlots?: TextSlotDef[]; imageSlots?: ImageSlotDef[] }>();
 	for (const category of CATEGORIES) {
 		for (const def of category.assets) {
 			if (def.category !== category.id) throw new Error(`${def.id}: category mismatch`);
 			const dir = join(packDir, category.id, def.id);
 			mkdirSync(dir, { recursive: true });
 			const variants = (def.variants ?? []).map((v, i) => ({ ...v, ...variantFiles(def.id, v.id, i === 0) }));
+			let built: ReturnType<typeof buildAsset> | null = null;
 			if (variants.length) {
-				for (const v of variants) writeFileSync(join(dir, v.file), JSON.stringify(buildAsset(def, v.id)));
+				for (const v of variants) {
+					const result = buildAsset(def, v.id);
+					built ??= result;
+					writeFileSync(join(dir, v.file), JSON.stringify(result.lottie));
+				}
 			} else {
-				writeFileSync(join(dir, `${def.id}.json`), JSON.stringify(buildAsset(def)));
+				built = buildAsset(def);
+				writeFileSync(join(dir, `${def.id}.json`), JSON.stringify(built.lottie));
 			}
+			const slots = {
+				...(built?.textSlots.length ? { textSlots: built.textSlots } : {}),
+				...(built?.imageSlots.length ? { imageSlots: built.imageSlots } : {}),
+			};
+			slotsById.set(def.id, slots);
 			const g = gcd(def.w, def.h);
 			const meta = {
 				schema: 1,
@@ -131,6 +161,7 @@ function writePack({ thumbs }: { thumbs: boolean }) {
 				colors: def.colors,
 				...(variants.length ? { defaultVariant: variants[0].id, variants } : {}),
 				...(def.sounds?.length ? { sounds: soundCues(def) } : {}),
+				...slots,
 			};
 			writeFileSync(join(dir, "asset.json"), `${JSON.stringify(meta, null, "\t")}\n`);
 			entries.push({ dir, def, category: category.id });
@@ -176,6 +207,7 @@ function writePack({ thumbs }: { thumbs: boolean }) {
 							})),
 						}
 					: {}),
+				...slotsById.get(def.id),
 				files: Object.fromEntries(files.map((f) => [f, { sha256: sha256(join(dir, f)) }])),
 			};
 		}),

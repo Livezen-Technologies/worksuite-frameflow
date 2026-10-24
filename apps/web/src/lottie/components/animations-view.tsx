@@ -17,6 +17,7 @@ import {
 } from "../actions";
 import {
 	loadPackIndex,
+	onMotionPacksChange,
 	packAssetThumbnailUrl,
 	groupPackCategories,
 	packLanguages,
@@ -29,6 +30,7 @@ import {
 } from "../catalog";
 import { listUserLotties, type UserLottie } from "../user-library";
 import { LottiePreview } from "./lottie-preview";
+import { AssetLibraryButton } from "@/asset-library/components/asset-library-button";
 
 const MY_IMPORTS = "my-imports";
 
@@ -60,8 +62,15 @@ export function AnimationsView() {
 		listUserLotties()
 			.then((items) => !cancelled && setImports(items))
 			.catch(() => {});
+		// Packs installed from the Asset Library join the library as they arrive.
+		const stop = onMotionPacksChange(() => {
+			loadPackIndex()
+				.then((loaded) => !cancelled && setIndex(loaded))
+				.catch(() => {});
+		});
 		return () => {
 			cancelled = true;
+			stop();
 		};
 	}, []);
 
@@ -117,6 +126,7 @@ export function AnimationsView() {
 			data-animations-view
 			onPointerDown={() => setSoundUnlocked(true)}
 		>
+			<AssetLibraryButton type="motion" />
 			{groups.map(({ group, categories }) => (
 				<div key={group ?? "main"} className="flex flex-wrap items-center gap-1" aria-label={group ?? "Categories"}>
 					{group && <span className="text-muted-foreground text-[11px]">{group}</span>}

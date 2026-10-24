@@ -26,7 +26,7 @@ function frameOf(editor: EditorCore) {
 	return editor.project.getActive().settings.canvasSize;
 }
 
-function insertAnimation({
+export function insertAnimation({
 	editor,
 	name,
 	lottie,

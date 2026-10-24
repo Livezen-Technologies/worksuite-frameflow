@@ -44,6 +44,40 @@ function checkLottie(jsonPath: string, meta: { durationSec: number; width: numbe
 	for (const color of slots) if (!used.includes(color)) fail(`colour slot ${color} isn't used`);
 }
 
+interface SlotMeta {
+	textSlots?: Array<{ id: string; layer: string; color: string; defaults: Record<string, string>; box: { w: number; h: number }; fontSize: number }>;
+	imageSlots?: Array<{ id: string; layer: string; mask: { shape: string; w: number; h: number }; placeholder: string }>;
+}
+
+/** Text and image slots (Motion Editor): each names a layer that exists, and valid colours. */
+export function checkSlots(meta: SlotMeta, colorIds: Set<string>, lottie: { layers?: Array<{ nm?: string }> }): string[] {
+	const problems: string[] = [];
+	const layers = new Set((lottie.layers ?? []).map((layer) => layer.nm));
+	const seen = new Set<string>();
+	for (const slot of meta.textSlots ?? []) {
+		if (seen.has(slot.id)) problems.push(`duplicate slot ${slot.id}`);
+		seen.add(slot.id);
+		if (slot.layer !== `slot:text:${slot.id}`) problems.push(`text slot ${slot.id} must use layer "slot:text:${slot.id}"`);
+		if (!layers.has(slot.layer)) problems.push(`text slot ${slot.id}: no layer named "${slot.layer}"`);
+		if (!colorIds.has(slot.color)) problems.push(`text slot ${slot.id}: unknown colour slot "${slot.color}"`);
+		for (const lang of ["en", "si", "ta"]) if (typeof slot.defaults?.[lang] !== "string" || !slot.defaults[lang]) problems.push(`text slot ${slot.id}: no ${lang} default`);
+		if (!(slot.box?.w > 0 && slot.box?.h > 0 && slot.fontSize > 0)) problems.push(`text slot ${slot.id}: box and font size must be positive`);
+	}
+	for (const slot of meta.imageSlots ?? []) {
+		if (seen.has(slot.id)) problems.push(`duplicate slot ${slot.id}`);
+		seen.add(slot.id);
+		if (slot.layer !== `slot:image:${slot.id}`) problems.push(`image slot ${slot.id} must use layer "slot:image:${slot.id}"`);
+		if (!layers.has(slot.layer)) problems.push(`image slot ${slot.id}: no layer named "${slot.layer}"`);
+		if (!colorIds.has(slot.placeholder)) problems.push(`image slot ${slot.id}: unknown placeholder colour slot "${slot.placeholder}"`);
+		if (!["ellipse", "rect"].includes(slot.mask?.shape) || !(slot.mask.w > 0 && slot.mask.h > 0)) problems.push(`image slot ${slot.id}: bad mask`);
+	}
+	for (const name of layers) {
+		const match = /^slot:(text|image):(.+)$/.exec(name ?? "");
+		if (match && !seen.has(match[2])) problems.push(`layer "${name}" has no slot in asset.json`);
+	}
+	return problems;
+}
+
 export function validatePack(packDir: string, { requireThumbnails = true } = {}): string[] {
 	const problems: string[] = [];
 	const ids = new Set<string>();
@@ -104,9 +138,18 @@ export function validatePack(packDir: string, { requireThumbnails = true } = {})
 					}
 			}
 
+			const colorIds = new Set<string>((meta.colors ?? []).map((s: { id: string }) => s.id));
+			const slotProblems = (lottie: { layers?: Array<{ nm?: string }> }) => checkSlots(meta, colorIds, lottie);
 			for (const { file, thumbnail, label } of files) {
 				const vfail = (msg: string) => fail(label + msg);
 				checkLottie(join(dir, file), meta, slots, vfail);
+				if (existsSync(join(dir, file))) {
+					try {
+						for (const problem of slotProblems(JSON.parse(readFileSync(join(dir, file), "utf8")))) vfail(problem);
+					} catch {
+						// Reported by checkLottie.
+					}
+				}
 				const thumbPath = join(dir, thumbnail);
 				if (!existsSync(thumbPath)) {
 					if (requireThumbnails) vfail(`missing ${thumbnail}`);

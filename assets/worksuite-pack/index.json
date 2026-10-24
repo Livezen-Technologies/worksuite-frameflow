@@ -2828,27 +2828,81 @@
 					"durationSec": 0.06
 				}
 			],
+			"textSlots": [
+				{
+					"id": "subscribe",
+					"name": "Button text",
+					"layer": "slot:text:subscribe",
+					"defaults": {
+						"en": "SUBSCRIBE",
+						"si": "සබ්ස්ක්‍රයිබ් කරන්න",
+						"ta": "சப்ஸ்கிரைப்"
+					},
+					"fontFamily": "Inter, Noto Sans Sinhala, Noto Sans Tamil",
+					"fontWeight": 700,
+					"fontSize": 67.5,
+					"box": {
+						"x": 216.25,
+						"y": 105,
+						"w": 467.5,
+						"h": 90
+					},
+					"origin": [
+						450,
+						150
+					],
+					"align": "center",
+					"color": "text",
+					"uppercase": true
+				},
+				{
+					"id": "subscribed",
+					"name": "Subscribed text",
+					"layer": "slot:text:subscribed",
+					"defaults": {
+						"en": "SUBSCRIBED",
+						"si": "සබ්ස්ක්‍රයිබ් කළා",
+						"ta": "சப்ஸ்கிரைப்"
+					},
+					"fontFamily": "Inter, Noto Sans Sinhala, Noto Sans Tamil",
+					"fontWeight": 700,
+					"fontSize": 67.5,
+					"box": {
+						"x": 216.25,
+						"y": 105,
+						"w": 467.5,
+						"h": 90
+					},
+					"origin": [
+						450,
+						150
+					],
+					"align": "center",
+					"color": "text",
+					"uppercase": true
+				}
+			],
 			"files": {
 				"sub-classic-click.json": {
-					"sha256": "1602a4d69b4851deb534e4000477f53c5cf30fb516f0922d8c6a8102cfeccc29"
+					"sha256": "c4c2b261c99fb5342f2178e93ff55b736c0d07d66cb5cdc6cafc096782b8e80b"
 				},
 				"thumbnail.png": {
 					"sha256": "d5be72b3689a13f392999ff2b3c6a28fd75c43b2ce401441c70255951afa1777"
 				},
 				"sub-classic-click.si.json": {
-					"sha256": "bf608ee347cdae0af962e618b84450a9c623dc0e9e93a9989bcc2597bb455cb4"
+					"sha256": "26fe0d14c126e934c0304b7fd6e4d484b30f53b765d48d80f22a5e33c81f1d1b"
 				},
 				"thumbnail.si.png": {
 					"sha256": "7c3d99228f0809668b796e8e4910508a05f66a695aa9fbc420b979c2238d960b"
 				},
 				"sub-classic-click.ta.json": {
-					"sha256": "9b51e1baf665fe57bbec774290e361c58a03a869f155154fcf6c19c399d4b1ad"
+					"sha256": "548c0f773b47972630d8358769cd8da7512131ac7853cdfad8f284335894a5c1"
 				},
 				"thumbnail.ta.png": {
 					"sha256": "260e07913f581d2f7a1cd03c15c6b1da6388e52ad7aabff5e0661e2e4353f065"
 				},
 				"asset.json": {
-					"sha256": "280265ae44cf3f1b30b5e6171c8b390be0d524d3614ff2fe2612efd8966090de"
+					"sha256": "1c23cccac65530094176fa324bf42db56735169efb3a99ed64e3f5ec0c7461d2"
 				}
 			}
 		},
@@ -2939,27 +2993,81 @@
 					"gainDb": -2
 				}
 			],
+			"textSlots": [
+				{
+					"id": "subscribe",
+					"name": "Button text",
+					"layer": "slot:text:subscribe",
+					"defaults": {
+						"en": "SUBSCRIBE",
+						"si": "සබ්ස්ක්‍රයිබ් කරන්න",
+						"ta": "சப்ஸ்கிரைப்"
+					},
+					"fontFamily": "Inter, Noto Sans Sinhala, Noto Sans Tamil",
+					"fontWeight": 700,
+					"fontSize": 67.5,
+					"box": {
+						"x": 166.25,
+						"y": 105,
+						"w": 467.5,
+						"h": 90
+					},
+					"origin": [
+						400,
+						150
+					],
+					"align": "center",
+					"color": "text",
+					"uppercase": true
+				},
+				{
+					"id": "subscribed",
+					"name": "Subscribed text",
+					"layer": "slot:text:subscribed",
+					"defaults": {
+						"en": "SUBSCRIBED",
+						"si": "සබ්ස්ක්‍රයිබ් කළා",
+						"ta": "சப்ஸ்கிரைப்"
+					},
+					"fontFamily": "Inter, Noto Sans Sinhala, Noto Sans Tamil",
+					"fontWeight": 700,
+					"fontSize": 67.5,
+					"box": {
+						"x": 166.25,
+						"y": 105,
+						"w": 467.5,
+						"h": 90
+					},
+					"origin": [
+						400,
+						150
+					],
+					"align": "center",
+					"color": "text",
+					"uppercase": true
+				}
+			],
 			"files": {
 				"sub-bell-combo.json": {
-					"sha256": "69ed50e7e4562d833cb71a7cca08a001489572287245a30bb33dec39eb4b1d24"
+					"sha256": "6656eecc2d995ef0ae50acc22a5b8e05901149d6661b844dcbabc9662b47e145"
 				},
 				"thumbnail.png": {
 					"sha256": "6bb851cbbd44f1c09e556a4772995448c3b2ec5105e8286fea742f9b62ed7669"
 				},
 				"sub-bell-combo.si.json": {
-					"sha256": "cb6f176ef53eb6f646c3004e57dc1d738e565bfdbc1efdca511754f12a19e843"
+					"sha256": "6a25527ce697cbe0ae58c25d917d8e22a042bda67f95a7551eaa4f1415b83389"
 				},
 				"thumbnail.si.png": {
 					"sha256": "b49a0bd79bd00b5d7d465fc9841a45f2eabe7dd3c19d395f8c08028bcd293168"
 				},
 				"sub-bell-combo.ta.json": {
-					"sha256": "ab1bd3bad89475ce5eb824028684494e71dfbe4164d12d6905dd68d00873ddbf"
+					"sha256": "8bbeb1bafbb45f8f6510c9a56c7eb54aa7de3f9f88cca56fbd5e09b3d1004eec"
 				},
 				"thumbnail.ta.png": {
 					"sha256": "8024967a7aa64cea86155b8313bef3968d24d34f4e379f1be7fa68c8df893fc8"
 				},
 				"asset.json": {
-					"sha256": "247726086218ea722e31b390f7879777f2922af341ef5bf8950c61e7faf7cbe3"
+					"sha256": "ac1d12b77e8cd6cf89da108c31def5a94ab085f8813031808b8e671f8eb5fb54"
 				}
 			}
 		},
@@ -3063,27 +3171,81 @@
 					"gainDb": -2
 				}
 			],
+			"textSlots": [
+				{
+					"id": "subscribe",
+					"name": "Button text",
+					"layer": "slot:text:subscribe",
+					"defaults": {
+						"en": "SUBSCRIBE",
+						"si": "සබ්ස්ක්‍රයිබ් කරන්න",
+						"ta": "சப்ஸ்கிரைப்"
+					},
+					"fontFamily": "Inter, Noto Sans Sinhala, Noto Sans Tamil",
+					"fontWeight": 700,
+					"fontSize": 62.1,
+					"box": {
+						"x": 406.25,
+						"y": 108.6,
+						"w": 387.5,
+						"h": 82.8
+					},
+					"origin": [
+						600,
+						150
+					],
+					"align": "center",
+					"color": "text",
+					"uppercase": true
+				},
+				{
+					"id": "subscribed",
+					"name": "Subscribed text",
+					"layer": "slot:text:subscribed",
+					"defaults": {
+						"en": "SUBSCRIBED",
+						"si": "සබ්ස්ක්‍රයිබ් කළා",
+						"ta": "சப்ஸ்கிரைப்"
+					},
+					"fontFamily": "Inter, Noto Sans Sinhala, Noto Sans Tamil",
+					"fontWeight": 700,
+					"fontSize": 62.1,
+					"box": {
+						"x": 406.25,
+						"y": 108.6,
+						"w": 387.5,
+						"h": 82.8
+					},
+					"origin": [
+						600,
+						150
+					],
+					"align": "center",
+					"color": "text",
+					"uppercase": true
+				}
+			],
 			"files": {
 				"sub-like-subscribe-bell.json": {
-					"sha256": "e4cb145f65bf66b10858e56b4191764562ab0bcefa47a2b731a62213ee3d5cd3"
+					"sha256": "a7cccd481b6266251c758f9f3f5664ba6542c6fb39c9781ddef34eacf3ad474e"
 				},
 				"thumbnail.png": {
 					"sha256": "8972c900c935ffec76680b74b9365be042de568eb6df49b69f5267950f91c17f"
 				},
 				"sub-like-subscribe-bell.si.json": {
-					"sha256": "5c6343e8798e3ff52f89bad652580dc3069cf90c57579fca446561e17867f1cc"
+					"sha256": "7a5f7d86fdfb647466816a37ea238be998d585379901e492ff85bd109e061d4f"
 				},
 				"thumbnail.si.png": {
 					"sha256": "96d9d4c9116e72c4c5608c693b935764ea963850e9ca5fe5e34c435abbbd1df2"
 				},
 				"sub-like-subscribe-bell.ta.json": {
-					"sha256": "97e74d0bd4f6ec18519077dd7406937bb705da37f1885e24a76720c248761dd2"
+					"sha256": "9dc3af6fc7264e6862cd71cc3173baeba198b1a22d0b03a20f9c974a119db748"
 				},
 				"thumbnail.ta.png": {
 					"sha256": "21f272cfed547fca5d0714fb4bef0e0036a4efe4e1cdb616b2f42451fea0c2ec"
 				},
 				"asset.json": {
-					"sha256": "946eec8774988e5f200a1c2caf3b16245ee927acbdb7e1777b08aa4902a44a53"
+					"sha256": "e3dfa40293d332eec87fa4ed13a6a9a97707188b39878402f0e7903a62e63301"
 				}
 			}
 		},
@@ -3644,27 +3806,155 @@
 					"durationSec": 0.06
 				}
 			],
+			"textSlots": [
+				{
+					"id": "channel",
+					"name": "Channel name",
+					"layer": "slot:text:channel",
+					"defaults": {
+						"en": "Your channel",
+						"si": "ඔබේ නාලිකාව",
+						"ta": "உங்கள் சேனல்"
+					},
+					"fontFamily": "Inter, Noto Sans Sinhala, Noto Sans Tamil",
+					"fontWeight": 700,
+					"fontSize": 40,
+					"box": {
+						"x": 250,
+						"y": 102,
+						"w": 360,
+						"h": 48
+					},
+					"origin": [
+						250,
+						126
+					],
+					"align": "left",
+					"color": "text"
+				},
+				{
+					"id": "subscribers",
+					"name": "Subscribers line",
+					"layer": "slot:text:subscribers",
+					"defaults": {
+						"en": "1.2K subscribers",
+						"si": "සබ්ස්ක්‍රයිබර්ස් 1.2K",
+						"ta": "1.2K சப்ஸ்கிரைபர்கள்"
+					},
+					"fontFamily": "Inter, Noto Sans Sinhala, Noto Sans Tamil",
+					"fontWeight": 400,
+					"fontSize": 26,
+					"box": {
+						"x": 250,
+						"y": 160,
+						"w": 300,
+						"h": 32
+					},
+					"origin": [
+						250,
+						176
+					],
+					"align": "left",
+					"color": "text"
+				},
+				{
+					"id": "subscribe",
+					"name": "Button text",
+					"layer": "slot:text:subscribe",
+					"defaults": {
+						"en": "SUBSCRIBE",
+						"si": "සබ්ස්ක්‍රයිබ් කරන්න",
+						"ta": "சப்ஸ்கிரைப்"
+					},
+					"fontFamily": "Inter, Noto Sans Sinhala, Noto Sans Tamil",
+					"fontWeight": 700,
+					"fontSize": 51.3,
+					"box": {
+						"x": 755,
+						"y": 115.8,
+						"w": 250,
+						"h": 68.4
+					},
+					"origin": [
+						880,
+						150
+					],
+					"align": "center",
+					"color": "text",
+					"uppercase": true
+				},
+				{
+					"id": "subscribed",
+					"name": "Subscribed text",
+					"layer": "slot:text:subscribed",
+					"defaults": {
+						"en": "SUBSCRIBED",
+						"si": "සබ්ස්ක්‍රයිබ් කළා",
+						"ta": "சப்ஸ்கிரைப்"
+					},
+					"fontFamily": "Inter, Noto Sans Sinhala, Noto Sans Tamil",
+					"fontWeight": 700,
+					"fontSize": 51.3,
+					"box": {
+						"x": 755,
+						"y": 115.8,
+						"w": 250,
+						"h": 68.4
+					},
+					"origin": [
+						880,
+						150
+					],
+					"align": "center",
+					"color": "text",
+					"uppercase": true
+				}
+			],
+			"imageSlots": [
+				{
+					"id": "avatar",
+					"name": "Channel picture",
+					"layer": "slot:image:avatar",
+					"mask": {
+						"shape": "ellipse",
+						"w": 150,
+						"h": 150
+					},
+					"origin": [
+						140,
+						150
+					],
+					"box": {
+						"x": 65,
+						"y": 75,
+						"w": 150,
+						"h": 150
+					},
+					"placeholder": "placeholder",
+					"aspect": "1:1"
+				}
+			],
 			"files": {
 				"sub-avatar-bar.json": {
-					"sha256": "62de0a56bdd0a73d750919e4d4ece2464ba6c40bcdbd6e058857260cb3377951"
+					"sha256": "b554148f5fc6116b7ed6a2b17ea91d83830abaec27831c6831cbb4ab91bdf8ec"
 				},
 				"thumbnail.png": {
 					"sha256": "4191e54291a333cc079b6d1601d97af02f5febb89acdd9120fa7e66c1cd05a5f"
 				},
 				"sub-avatar-bar.si.json": {
-					"sha256": "f2aae6637fade67c50ad7bcc334d1bb268671e436688a6ab92f0eef97848a336"
+					"sha256": "6f756d91c0f9d9a28f1f54e1405fccb93832af9e88f1ca963650ac5293652da9"
 				},
 				"thumbnail.si.png": {
 					"sha256": "f0f4b2bd1b4834fe2bba7170fbf7804deb3e2507b29908a3ebeadc813ee31392"
 				},
 				"sub-avatar-bar.ta.json": {
-					"sha256": "24ff1fc766d3c47a588f34fd8fee5b4dc92ec8da66e3e6026389b4b46e107872"
+					"sha256": "d75e2bf6e56e4d735f58540b2dc5d3f6d16c37792fccc8891c563de029b9ab58"
 				},
 				"thumbnail.ta.png": {
 					"sha256": "5a5f8f2ab02cf76eb53d367457436b6824fd52179f46e42897f89b400307349e"
 				},
 				"asset.json": {
-					"sha256": "34c01ec453cbf475ecb2023aa0732709a024b247e6941b773a032b16f524cc9d"
+					"sha256": "df8108c5a7c6dcc515aaadeca4a7ca5efcaecc887f6c904863f0fd8580d53b1d"
 				}
 			}
 		},
@@ -3757,27 +4047,81 @@
 					"durationSec": 0.06
 				}
 			],
+			"textSlots": [
+				{
+					"id": "subscribe",
+					"name": "Button text",
+					"layer": "slot:text:subscribe",
+					"defaults": {
+						"en": "SUBSCRIBE",
+						"si": "සබ්ස්ක්‍රයිබ් කරන්න",
+						"ta": "சப்ஸ்கிரைப்"
+					},
+					"fontFamily": "Inter, Noto Sans Sinhala, Noto Sans Tamil",
+					"fontWeight": 700,
+					"fontSize": 75.6,
+					"box": {
+						"x": 143.75,
+						"y": 279.6,
+						"w": 512.5,
+						"h": 100.8
+					},
+					"origin": [
+						400,
+						330
+					],
+					"align": "center",
+					"color": "text",
+					"uppercase": true
+				},
+				{
+					"id": "subscribed",
+					"name": "Subscribed text",
+					"layer": "slot:text:subscribed",
+					"defaults": {
+						"en": "SUBSCRIBED",
+						"si": "සබ්ස්ක්‍රයිබ් කළා",
+						"ta": "சப்ஸ்கிரைப்"
+					},
+					"fontFamily": "Inter, Noto Sans Sinhala, Noto Sans Tamil",
+					"fontWeight": 700,
+					"fontSize": 75.6,
+					"box": {
+						"x": 143.75,
+						"y": 279.6,
+						"w": 512.5,
+						"h": 100.8
+					},
+					"origin": [
+						400,
+						330
+					],
+					"align": "center",
+					"color": "text",
+					"uppercase": true
+				}
+			],
 			"files": {
 				"sub-cursor-click.json": {
-					"sha256": "8323aecebfd0efffa3f442bd34bfc158122f78c613a9d826dc34b04a9e189dca"
+					"sha256": "21d231212713be85649eb1889d482a201c67814846ac5daa7c88369afa3287ef"
 				},
 				"thumbnail.png": {
 					"sha256": "e9407cf208cb0faf8945f3cbcbca6bc92c4ec0bee31dee7ac2ddfa9494ae95e2"
 				},
 				"sub-cursor-click.si.json": {
-					"sha256": "6a1a0f1f23b4d7dcf05db25a90817df56846d9cb5b8333104c212ee8af3f7a5e"
+					"sha256": "9143eb7e9a0ca79e7ab9fcdc7528df3433c914560552c6010bdf76eca8b459ed"
 				},
 				"thumbnail.si.png": {
 					"sha256": "841ba0a471d00674a57099b4393af657c27cad21f3d242001f1539ecaf0be6e9"
 				},
 				"sub-cursor-click.ta.json": {
-					"sha256": "23dec24b3d24c479db499135852252cb81d055ec790e4230372748794f638e47"
+					"sha256": "661978621c62ff7327464753437fcbe3d6bb6afc6f774bccb701453f460a11e9"
 				},
 				"thumbnail.ta.png": {
 					"sha256": "89a65841f8cc0b34750d96af538adc84b53387d5c4bf172fc8fb0e1109da2da3"
 				},
 				"asset.json": {
-					"sha256": "ca79496d37d30df4cc654767a5a8ec92ef70facb151a7b87ed3f01cb75e87618"
+					"sha256": "6cf9d5c9ba9e24a655e2a3fa042988bbc09326f6f2b6b9920773516e041c6f77"
 				}
 			}
 		},
@@ -4086,27 +4430,81 @@
 					"gainDb": -4
 				}
 			],
+			"textSlots": [
+				{
+					"id": "subscribe",
+					"name": "Button text",
+					"layer": "slot:text:subscribe",
+					"defaults": {
+						"en": "SUBSCRIBE",
+						"si": "සබ්ස්ක්‍රයිබ් කරන්න",
+						"ta": "சப்ஸ்கிரைப்"
+					},
+					"fontFamily": "Inter, Noto Sans Sinhala, Noto Sans Tamil",
+					"fontWeight": 700,
+					"fontSize": 67.5,
+					"box": {
+						"x": 226.25,
+						"y": 245,
+						"w": 447.5,
+						"h": 90
+					},
+					"origin": [
+						450,
+						290
+					],
+					"align": "center",
+					"color": "text",
+					"uppercase": true
+				},
+				{
+					"id": "subscribed",
+					"name": "Subscribed text",
+					"layer": "slot:text:subscribed",
+					"defaults": {
+						"en": "SUBSCRIBED",
+						"si": "සබ්ස්ක්‍රයිබ් කළා",
+						"ta": "சப்ஸ்கிரைப்"
+					},
+					"fontFamily": "Inter, Noto Sans Sinhala, Noto Sans Tamil",
+					"fontWeight": 700,
+					"fontSize": 67.5,
+					"box": {
+						"x": 226.25,
+						"y": 245,
+						"w": 447.5,
+						"h": 90
+					},
+					"origin": [
+						450,
+						290
+					],
+					"align": "center",
+					"color": "text",
+					"uppercase": true
+				}
+			],
 			"files": {
 				"sub-countdown.json": {
-					"sha256": "8d4a988a0c8728222a6349445c2866bc3355263e3a50578f90209395ecd0ca2f"
+					"sha256": "f0bef243849d95059c9b67a669482ae5f05bd35f9a72bf04402841bd9c4ebc89"
 				},
 				"thumbnail.png": {
 					"sha256": "c14b6ea6b9fcdd0cf3cfde6b3fa0add287e7cfeea349507f6507e022346216e9"
 				},
 				"sub-countdown.si.json": {
-					"sha256": "6795537ed337422ca0e873887a34330c95423ef0b6f4fc80a665363fb1b502b9"
+					"sha256": "62f32c1ec8d88d75b743e1b28a73d9697e036f863166be8e847ba475d1cafae2"
 				},
 				"thumbnail.si.png": {
 					"sha256": "34d4dcb996e5efcf31d1ec259924692e8b82e6094587c6a1d0b79516e62f835a"
 				},
 				"sub-countdown.ta.json": {
-					"sha256": "d696b4fe442eee057248c8d2bd9e2e395f13b39daee0a2d6e6ef3442537fe1f9"
+					"sha256": "ca0977eb4722bbb4fc0cbe1d6e4b0659571916f87547b6c173ed523ba47738bd"
 				},
 				"thumbnail.ta.png": {
 					"sha256": "8889d24c7c918febf4c83dec98d7d08e83059b9bc54f45fec7146660ed800bc5"
 				},
 				"asset.json": {
-					"sha256": "951dfad0007912e3f344e6b384740d975a35425591fe926ec1c1e467dedcb414"
+					"sha256": "55b07cb7653e68bdadcc14d4586560a30583d5fc5e18d6680d713b1948a01f05"
 				}
 			}
 		},
@@ -4270,27 +4668,81 @@
 					"gainDb": -6
 				}
 			],
+			"textSlots": [
+				{
+					"id": "subscribe",
+					"name": "Button text",
+					"layer": "slot:text:subscribe",
+					"defaults": {
+						"en": "SUBSCRIBE",
+						"si": "සබ්ස්ක්‍රයිබ් කරන්න",
+						"ta": "சப்ஸ்கிரைப்"
+					},
+					"fontFamily": "Inter, Noto Sans Sinhala, Noto Sans Tamil",
+					"fontWeight": 700,
+					"fontSize": 64.8,
+					"box": {
+						"x": 202.5,
+						"y": 106.8,
+						"w": 455,
+						"h": 86.4
+					},
+					"origin": [
+						430,
+						150
+					],
+					"align": "center",
+					"color": "text",
+					"uppercase": true
+				},
+				{
+					"id": "subscribed",
+					"name": "Subscribed text",
+					"layer": "slot:text:subscribed",
+					"defaults": {
+						"en": "SUBSCRIBED",
+						"si": "සබ්ස්ක්‍රයිබ් කළා",
+						"ta": "சப்ஸ்கிரைப்"
+					},
+					"fontFamily": "Inter, Noto Sans Sinhala, Noto Sans Tamil",
+					"fontWeight": 700,
+					"fontSize": 64.8,
+					"box": {
+						"x": 202.5,
+						"y": 106.8,
+						"w": 455,
+						"h": 86.4
+					},
+					"origin": [
+						430,
+						150
+					],
+					"align": "center",
+					"color": "text",
+					"uppercase": true
+				}
+			],
 			"files": {
 				"sub-join-pair.json": {
-					"sha256": "9c01cad06ac2447f4d5043a90731d99d5eb2fe8d40cfb2e89ef9995801af2cfc"
+					"sha256": "db797de72ec9ac3bc3d8be6660ed76234024567177dc276166d8281b3a6854fc"
 				},
 				"thumbnail.png": {
 					"sha256": "d3d85daa1a32901088fd714e62e22331facc574b5c8405dc7ad28ddbda7df4dc"
 				},
 				"sub-join-pair.si.json": {
-					"sha256": "9a061ff730ac589aa645791cee0b7a682946ae57c86c2d034e8cede71e2cdb4b"
+					"sha256": "e5296639c00b46bfc89f1c2ceb5dff715ccf8226259fcdd203a20939e9b14dc9"
 				},
 				"thumbnail.si.png": {
 					"sha256": "a83cae23048e89a11fd51fb79bbb70a61a1a60bcd426d2536bfa54380e1d182a"
 				},
 				"sub-join-pair.ta.json": {
-					"sha256": "039e89fe3e214897ddec210461016b3bf5c2449a81da532ffd1f78d39877fe35"
+					"sha256": "e62129e623c924d4eb32a4386f988ed170a7d438fa319231b253cde5e672f50d"
 				},
 				"thumbnail.ta.png": {
 					"sha256": "218169e223545ac042c5f1265795831754eb5b452f9d45ab4af5e2471c4f4d1f"
 				},
 				"asset.json": {
-					"sha256": "28ec81c0183b3a5105e2c2a46336a405e2681d6de13f3c3134e005ab6e3a1754"
+					"sha256": "6b7047a3dd88fff302d34847441e01c8ddd2ff0e9bbed6cc28aecac70fb5b763"
 				}
 			}
 		},

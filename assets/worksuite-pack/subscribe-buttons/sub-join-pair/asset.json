@@ -97,5 +97,59 @@
 			"at": 2.133,
 			"gainDb": -6
 		}
+	],
+	"textSlots": [
+		{
+			"id": "subscribe",
+			"name": "Button text",
+			"layer": "slot:text:subscribe",
+			"defaults": {
+				"en": "SUBSCRIBE",
+				"si": "සබ්ස්ක්‍රයිබ් කරන්න",
+				"ta": "சப்ஸ்கிரைப்"
+			},
+			"fontFamily": "Inter, Noto Sans Sinhala, Noto Sans Tamil",
+			"fontWeight": 700,
+			"fontSize": 64.8,
+			"box": {
+				"x": 202.5,
+				"y": 106.8,
+				"w": 455,
+				"h": 86.4
+			},
+			"origin": [
+				430,
+				150
+			],
+			"align": "center",
+			"color": "text",
+			"uppercase": true
+		},
+		{
+			"id": "subscribed",
+			"name": "Subscribed text",
+			"layer": "slot:text:subscribed",
+			"defaults": {
+				"en": "SUBSCRIBED",
+				"si": "සබ්ස්ක්‍රයිබ් කළා",
+				"ta": "சப்ஸ்கிரைப்"
+			},
+			"fontFamily": "Inter, Noto Sans Sinhala, Noto Sans Tamil",
+			"fontWeight": 700,
+			"fontSize": 64.8,
+			"box": {
+				"x": 202.5,
+				"y": 106.8,
+				"w": 455,
+				"h": 86.4
+			},
+			"origin": [
+				430,
+				150
+			],
+			"align": "center",
+			"color": "text",
+			"uppercase": true
+		}
 	]
 }
