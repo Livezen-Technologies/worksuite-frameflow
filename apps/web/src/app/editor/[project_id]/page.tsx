@@ -3,6 +3,7 @@
 import { ProjectSettingsDialog } from "@/project-settings/components/project-settings-dialog";
 import { ProjectDefaultsSync } from "@/project-settings/components/project-defaults-sync";
 import { PasteAttributesDialog } from "@/tabs/components/paste-attributes-dialog";
+import { StartIntentHost } from "@/start/components/start-intent-host";
 import { PopoutPanel } from "@/popout/popout-panel";
 import { SphereWatcher } from "@/vr/components/sphere-watcher";
 import { TranscriptEditor } from "@/transcript/components/transcript-editor";
@@ -73,6 +74,7 @@ export default function Editor() {
 					<FootageWatcher />
 					<SphereWatcher />
 					<PasteAttributesDialog />
+					<StartIntentHost />
 				</div>
 			</EditorProvider>
 		</MobileGate>

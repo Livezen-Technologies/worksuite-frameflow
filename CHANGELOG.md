@@ -9,6 +9,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
+- The start screen has three main choices: **New screen recording** (opens the recorder ready to record the screen), **New video project** (with a menu of sizes and frame rates) and **Open existing project**. Drop video, audio or image files anywhere on it to start a project with them already on the timeline.
 - New FrameFlow loading animation on the project loading screen.
 - “Social follow” in Animations: 18 original Facebook, TikTok and Instagram style follow, like, share and save buttons (follow → following, avatar plus badge, action rails, double-tap heart, link in bio and more), with words in English, Sinhala and Tamil. No platform logos.
 - The Follow buttons now come with sound effects (click on follow, pop on likes and saves, whoosh on slide-ins, ding on the bell), and the Facebook-style like is a neutral rounded badge with an outlined thumb and sparkles.

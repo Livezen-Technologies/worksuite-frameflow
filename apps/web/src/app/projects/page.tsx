@@ -18,6 +18,7 @@ import { MigrationDialog } from "@/project/components/migration-dialog";
 import { StoragePersistenceDialog } from "@/services/storage/components/storage-persistence-dialog";
 import { Button } from "@/components/ui/button";
 import { OpenFolderButton } from "@/project-folder/components/open-folder-button";
+import { StartPanel } from "@/start/components/start-panel";
 import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -135,6 +136,7 @@ export default function ProjectsPage() {
 					<ProjectsTitleBar />
 					<ProjectsToolbar projectIds={projectsToDisplay.map((p) => p.id)} />
 					<main className="mx-auto px-4 pt-2 pb-6 flex flex-col gap-4">
+						<StartPanel />
 						<CloudOnlyProjects />
 						{isLoading || !isInitialized ? (
 							<ProjectsSkeleton />
