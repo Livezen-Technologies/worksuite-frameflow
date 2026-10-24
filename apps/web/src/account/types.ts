@@ -478,6 +478,14 @@ export interface WorksuiteCaptureBridge {
 	overlayStart?: (args: { sourceId: string | null; keys: boolean; clicks: boolean; privatePatterns: string[] }) => Promise<{ input: boolean; masks: boolean }>;
 	overlayPause?: (on: boolean) => Promise<void>;
 	overlayStop?: () => Promise<void>;
+	/** macOS: asks for mic/camera; for the screen, reports whether it's allowed. */
+	requestPermission?: (kind: "screen" | "microphone" | "camera") => Promise<boolean>;
+	openPermissionSettings?: (kind: "screen" | "microphone" | "camera") => Promise<void>;
+	/** Count-in and red recording frame, kept out of the video (not on Linux). */
+	frameShow?: (args: { sourceId: string | null; area: { x: number; y: number; width: number; height: number } | null }) => Promise<void>;
+	frameCount?: (n: number) => Promise<void>;
+	framePaused?: (on: boolean) => Promise<void>;
+	frameHide?: () => Promise<void>;
 	cursorStart?: (args: {
 		sourceId: string | null;
 	}) => Promise<{ cursor: boolean; clicks: boolean; keys: boolean }>;

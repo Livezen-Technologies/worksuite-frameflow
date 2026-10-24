@@ -2,7 +2,7 @@
 // SC-03, SC-10). Media permissions are granted only to the app's own origin;
 // the page picks a screen or window from `sources()` before it calls
 // getDisplayMedia, and the main process hands that source over.
-const { desktopCapturer, systemPreferences } = require("electron");
+const { desktopCapturer, shell, systemPreferences } = require("electron");
 
 const MEDIA_PERMISSIONS = new Set(["media", "display-capture"]);
 let chosenSourceId = null;
@@ -69,4 +69,24 @@ function permissionStatus() {
 	};
 }
 
-module.exports = { setupCapture, listSources, chooseSource, permissionStatus };
+const SETTINGS_PANES = {
+	screen: "Privacy_ScreenCapture",
+	microphone: "Privacy_Microphone",
+	camera: "Privacy_Camera",
+};
+
+/** Shows the macOS prompt for the mic or camera; screen access is only granted in System Settings. */
+async function requestPermission(kind) {
+	if (process.platform !== "darwin") return true;
+	if (kind === "microphone" || kind === "camera") return systemPreferences.askForMediaAccess(kind);
+	return systemPreferences.getMediaAccessStatus("screen") === "granted";
+}
+
+/** Opens System Settings > Privacy & Security at the right list. */
+function openPermissionSettings(kind) {
+	if (process.platform !== "darwin") return;
+	const pane = SETTINGS_PANES[kind] ?? SETTINGS_PANES.screen;
+	void shell.openExternal(`x-apple.systempreferences:com.apple.preference.security?${pane}`);
+}
+
+module.exports = { setupCapture, listSources, chooseSource, permissionStatus, requestPermission, openPermissionSettings };

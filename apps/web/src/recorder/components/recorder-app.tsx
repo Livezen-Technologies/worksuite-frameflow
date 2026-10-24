@@ -21,6 +21,12 @@ import { type Take, thumbnailOf, useRecorderLibrary, useRecorderPrefs } from "..
 import { RecorderSettings, RecordingsLibrary } from "./recorder-panels";
 
 type Phase = "setup" | "countdown" | "recording" | "stopping" | "done";
+type AccessKind = "screen" | "microphone" | "camera";
+const ACCESS_LABEL: Record<AccessKind, { title: string; why: string }> = {
+	screen: { title: "Screen Recording", why: "to record your screen. After you turn it on, macOS asks you to quit and reopen FrameFlow." },
+	microphone: { title: "Microphone", why: "to record your voice." },
+	camera: { title: "Camera", why: "to record your camera." },
+};
 type View = "record" | "library" | "settings";
 const VIEW_HEIGHT: Record<View, number> = { record: 290, library: 620, settings: 600 };
 
@@ -54,6 +60,8 @@ function RecorderWindow() {
 	const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
 	const [phase, setPhase] = useState<Phase>("setup");
 	const [count, setCount] = useState(0);
+	const [missing, setMissing] = useState<AccessKind[]>([]);
+	const [accessOpen, setAccessOpen] = useState(false);
 	const [elapsed, setElapsed] = useState(0);
 	const [paused, setPaused] = useState(false);
 	const [level, setLevel] = useState(-90);
@@ -170,10 +178,51 @@ function RecorderWindow() {
 
 	const canRecord = screenOn || cameraOn || micOn;
 
+	/** macOS privacy settings the current choices need but don't have yet. */
+	const checkAccess = async (): Promise<AccessKind[]> => {
+		const capture = window.worksuite?.capture;
+		if (!capture?.permissions) return [];
+		const status = await capture.permissions().catch(() => null);
+		if (!status) return [];
+		const wanted: AccessKind[] = [...(screenOn ? ["screen" as const] : []), ...(micOn ? ["microphone" as const] : []), ...(cameraOn ? ["camera" as const] : [])];
+		const missing: AccessKind[] = [];
+		for (const kind of wanted) {
+			if (status[kind] === "granted") continue;
+			// Mic and camera can be asked for in place; screen recording only in System Settings.
+			if (status[kind] === "not-determined" && kind !== "screen" && (await capture.requestPermission?.(kind))) continue;
+			missing.push(kind);
+		}
+		setMissing(missing);
+		return missing;
+	};
+
+	// Always re-check: on open, when choices change, and when coming back from System Settings.
+	useEffect(() => {
+		if (phase !== "setup") return;
+		const again = () => void checkAccess();
+		const first = window.setTimeout(again, 0);
+		window.addEventListener("focus", again);
+		return () => {
+			window.clearTimeout(first);
+			window.removeEventListener("focus", again);
+		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [phase, screenOn, micOn, cameraOn]);
+
+	useEffect(() => {
+		if (phase === "recording") void window.worksuite?.capture?.framePaused?.(paused);
+	}, [phase, paused]);
+
 	const begin = async () => {
 		if (!canRecord) return;
+		if ((await checkAccess()).length) {
+			setAccessOpen(true);
+			return;
+		}
 		setPhase("countdown");
+		const capture = window.worksuite?.capture;
 		try {
+			if (screenOn) await capture?.frameShow?.({ sourceId: source?.id ?? null, area: settings.area ?? null }).catch(() => null);
 			const opened = await Recorder.open({
 				mode: modeFor({ screen: screenOn, camera: cameraOn }),
 				projectId: "recorder",
@@ -203,9 +252,11 @@ function RecorderWindow() {
 			}
 			for (let n = Math.max(0, settings.countdown); n > 0; n--) {
 				setCount(n);
+				void capture?.frameCount?.(n);
 				await new Promise((resolve) => setTimeout(resolve, 1000));
 			}
 			setCount(0);
+			void capture?.frameCount?.(0);
 			opened.start();
 			setPaused(false);
 			setElapsed(0);
@@ -214,6 +265,7 @@ function RecorderWindow() {
 			recorder.current?.release();
 			recorder.current = null;
 			void window.worksuite?.capture?.overlayStop?.();
+			void window.worksuite?.capture?.frameHide?.();
 			setPhase("setup");
 			toast.error(error instanceof Error ? error.message : "Couldn't start recording");
 		}
@@ -224,6 +276,7 @@ function RecorderWindow() {
 		if (!active) return;
 		setPhase("stopping");
 		void window.worksuite?.capture?.overlayStop?.();
+		void window.worksuite?.capture?.frameHide?.();
 		try {
 			const finished = await active.stop();
 			setResult(finished);
@@ -266,6 +319,7 @@ function RecorderWindow() {
 
 	const discard = () => {
 		void window.worksuite?.capture?.overlayStop?.();
+		void window.worksuite?.capture?.frameHide?.();
 		const active = recorder.current;
 		if (active) {
 			const id = active.id;
@@ -384,6 +438,16 @@ function RecorderWindow() {
 					{settings.shortcuts.toggle} to start or stop
 				</span>
 			</div>
+			{view === "record" && missing.length > 0 && phase === "setup" && (
+				<button
+					type="button"
+					data-recorder-access-warning
+					onClick={() => setAccessOpen(true)}
+					className="flex shrink-0 items-center gap-2 border-b border-amber-500/30 bg-amber-500/10 px-3 py-1 text-left text-xs text-amber-500"
+				>
+					macOS hasn&apos;t allowed {missing.map((k) => ACCESS_LABEL[k].title).join(", ")} yet. Click to set it up.
+				</button>
+			)}
 			{view === "library" && <RecordingsLibrary />}
 			{view === "settings" && <RecorderSettings />}
 			<div className={cn("flex min-h-0 flex-1 items-stretch gap-3 p-3", view !== "record" && "hidden")}>
@@ -547,6 +611,49 @@ function RecorderWindow() {
 					)}
 				</div>
 			</div>
+
+			<Dialog open={accessOpen} onOpenChange={setAccessOpen}>
+				<DialogContent className="max-w-md" data-recorder-access>
+					<DialogHeader>
+						<DialogTitle>Allow FrameFlow to record</DialogTitle>
+						<DialogDescription>
+							Open System Settings → Privacy &amp; Security, turn on FrameFlow in each list below, then come back and press Start.
+						</DialogDescription>
+					</DialogHeader>
+					<div className="flex flex-col gap-2">
+						{missing.length === 0 ? (
+							<p className="text-sm text-emerald-500">Everything&apos;s allowed. You can start recording.</p>
+						) : (
+							missing.map((kind) => (
+								<div key={kind} className="flex items-center justify-between gap-3 border p-3">
+									<div className="text-sm">
+										<div className="font-medium">{ACCESS_LABEL[kind].title}</div>
+										<div className="text-muted-foreground text-xs">Needed {ACCESS_LABEL[kind].why}</div>
+									</div>
+									<Button size="sm" variant="outline" onClick={() => void window.worksuite?.capture?.openPermissionSettings?.(kind)}>
+										Open Settings
+									</Button>
+								</div>
+							))
+						)}
+					</div>
+					<DialogFooter>
+						<Button variant="ghost" onClick={() => setAccessOpen(false)}>
+							Close
+						</Button>
+						<Button
+							onClick={async () => {
+								if (!(await checkAccess()).length) {
+									setAccessOpen(false);
+									void begin();
+								}
+							}}
+						>
+							{missing.length ? "Check again" : "Start recording"}
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
 
 			<Dialog open={regionOpen} onOpenChange={setRegionOpen}>
 				<DialogContent className="max-w-xl">

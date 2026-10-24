@@ -65,6 +65,7 @@ async function updateMasks() {
 }
 
 module.exports = {
+	displayFor,
 	/** Opens the overlay for a take. Returns what it can do on this system. */
 	async start({ sourceId, keys = true, clicks = true, privatePatterns = [] } = {}) {
 		module.exports.stop();

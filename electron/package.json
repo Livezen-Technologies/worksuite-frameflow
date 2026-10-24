@@ -62,6 +62,8 @@
       "privacy.js",
       "capture-bar/**",
       "overlay/**",
+      "frame/**",
+      "recording-frame.js",
       "input-hook.js",
       "recording-overlay.js",
       "project-windows.js",

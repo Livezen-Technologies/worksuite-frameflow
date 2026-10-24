@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'self' 'unsafe-inline'" />
+<style>
+	html, body { margin: 0; height: 100%; background: transparent; overflow: hidden; font-family: -apple-system, system-ui, sans-serif; }
+	#box { position: fixed; inset: 0; border: 3px solid #ef4444; box-sizing: border-box; box-shadow: 0 0 0 1px rgba(0,0,0,.35); transition: border-color .2s; }
+	#box.paused { border-color: #f59e0b; border-style: dashed; }
+	#count { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; }
+	#count span { width: 180px; height: 180px; border-radius: 50%; background: rgba(0,0,0,.6); color: #fff; font-size: 96px; font-weight: 700; display: flex; align-items: center; justify-content: center; animation: pop 1s ease-out; }
+	@keyframes pop { from { transform: scale(1.35); opacity: 0; } 30% { opacity: 1; } to { transform: scale(1); } }
+</style>
+</head>
+<body>
+<div id="box"></div>
+<div id="count"><span></span></div>
+<script>
+	const box = document.getElementById("box");
+	const count = document.getElementById("count");
+	window.recFrame.on("frame:area", (a) => {
+		if (!a) return;
+		Object.assign(box.style, { left: `${a.x * 100}%`, top: `${a.y * 100}%`, width: `${a.width * 100}%`, height: `${a.height * 100}%`, right: "auto", bottom: "auto" });
+		Object.assign(count.style, box.style);
+	});
+	window.recFrame.on("frame:count", (n) => {
+		count.style.display = n > 0 ? "flex" : "none";
+		if (n > 0) {
+			const span = document.createElement("span");
+			span.textContent = n;
+			count.replaceChildren(span);
+		}
+	});
+	window.recFrame.on("frame:paused", (on) => box.classList.toggle("paused", on));
+</script>
+</body>
+</html>

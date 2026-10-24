@@ -11,6 +11,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 - The Templates card on the start screen opens a template gallery: filter by size and category, browse templates from the online library, and open the one you pick in the editor.
 
 ### Fixed
+- Recorder on macOS checks Screen Recording, Microphone and Camera access every time, explains what's missing and opens the right System Settings page before you record.
+- After you press record, a large countdown appears on the screen, then a thin red line frames the screen or area being recorded (it turns amber when paused and isn't in the video).
 - Sign in now shows why it failed instead of doing nothing, and Create Worksuite account opens sign-up in your browser when the sign-in service can't be reached.
 
 ### Added
