@@ -37,21 +37,22 @@ export const OVERLAY_CSS = `
 .al-menu-sep{height:1px;margin:4px 6px;background:color-mix(in srgb,currentColor 8%,transparent)}
 .al-notice{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);z-index:62;padding:9px 16px;border-radius:8px;background:#1f2937;color:#fff;font-size:13px;box-shadow:0 8px 24px rgba(0,0,0,.4)}
 .al-list{display:flex;flex-direction:column;gap:2px}
-.al-row{display:flex;align-items:center;gap:12px;padding:6px 10px;border-radius:8px;border:1px solid transparent}
-.al-row:hover{background:color-mix(in srgb,currentColor 4%,transparent)}
-.al-row[aria-current=true]{border-color:rgba(76,141,255,.6);background:rgba(76,141,255,.08)}
+.al-srow{display:flex;align-items:center;gap:12px;padding:6px 10px;border-radius:8px;border:1px solid transparent}
+.al-srow:hover{background:color-mix(in srgb,currentColor 4%,transparent)}
+.al-srow[aria-current=true]{border-color:rgba(76,141,255,.6);background:rgba(76,141,255,.08)}
 .al-play{width:32px;height:32px;flex-shrink:0;border-radius:50%;border:0;background:color-mix(in srgb,currentColor 8%,transparent);color:inherit;cursor:pointer;font-size:12px}
 .al-play:hover,.al-play.on{background:#4c8dff;color:#fff}
-.al-row-main{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;background:transparent;border:0;color:inherit;cursor:pointer;text-align:left;padding:0}
-.al-row-title{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
-.al-row-sub{font-size:11px;opacity:.55;text-transform:capitalize}
-.al-row-wave{width:160px;height:32px;flex-shrink:0;overflow:hidden;border-radius:4px}
-.al-row-wave img{width:100%;height:100%;object-fit:cover}
-.al-row-size{width:56px;text-align:right;font-size:12px;opacity:.6;font-variant-numeric:tabular-nums}
-.al-row-fav{background:transparent;border:0;color:inherit;font-size:16px;cursor:pointer;opacity:.7}
-.al-row-fav[aria-pressed=true]{color:#f87171;opacity:1}
-.al-row-add{padding:4px 10px}
-@media (max-width:900px){.al-row-wave{display:none}}
+.al-srow-main{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;background:transparent;border:0;color:inherit;cursor:pointer;text-align:left;padding:0}
+.al-srow-title{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.al-srow-sub{font-size:11px;opacity:.55;text-transform:capitalize}
+.al-srow-wave{width:160px;height:32px;flex-shrink:0;overflow:hidden;border-radius:4px}
+.al-srow-wave img,.al-srow-wave canvas{width:100%;height:100%;object-fit:cover;display:block}
+.al-still{width:100%;height:100%;object-fit:contain;display:block}
+.al-srow-size{width:56px;text-align:right;font-size:12px;opacity:.6;font-variant-numeric:tabular-nums}
+.al-srow-fav{background:transparent;border:0;color:inherit;font-size:16px;cursor:pointer;opacity:.7}
+.al-srow-fav[aria-pressed=true]{color:#f87171;opacity:1}
+.al-srow-add{padding:4px 10px}
+@media (max-width:900px){.al-srow-wave{display:none}}
 .al-sample{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;width:100%;height:100%;padding:8px;text-align:center;background:linear-gradient(135deg,color-mix(in srgb,#4c8dff 14%,transparent),color-mix(in srgb,#8b5cf6 10%,transparent))}
 .al-sample-main{font-size:34px;font-weight:700;line-height:1.1;font-family:"Noto Sans Sinhala","Noto Sans Tamil",Georgia,serif}
 .al-sample.large .al-sample-main{font-size:52px}

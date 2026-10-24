@@ -705,7 +705,7 @@ function SoundList({
 					<div
 						key={pack.id}
 						role="listitem"
-						className="al-row"
+						className="al-srow"
 						aria-current={selectedId === pack.id}
 						onContextMenu={(event) => onMenu({ pack, event })}
 						draggable={!!drag}
@@ -720,17 +720,17 @@ function SoundList({
 						>
 							{isWaiting ? "…" : isPlaying ? "■" : "▶"}
 						</button>
-						<button type="button" className="al-row-main" onClick={() => onSelect(pack)}>
-							<span className="al-row-title">{pack.title}</span>
-							<span className="al-row-sub">{(pack.tags.en ?? []).filter((x) => !["sfx", "sound", "worksuite"].includes(x)).slice(0, 3).join(" · ")}</span>
+						<button type="button" className="al-srow-main" onClick={() => onSelect(pack)}>
+							<span className="al-srow-title">{pack.title}</span>
+							<span className="al-srow-sub">{(pack.tags.en ?? []).filter((x) => !["sfx", "sound", "worksuite"].includes(x)).slice(0, 3).join(" · ")}</span>
 						</button>
-						<span className="al-row-wave">{thumb && <img src={thumb} alt="" draggable={false} loading="lazy" decoding="async" />}</span>
+						<span className="al-srow-wave">{thumb && <StillImage src={thumb} />}</span>
 						<span className={`al-badge ${BADGE_CLASS[status] ?? ""}`}>{t(STATUS_LABELS[status])}</span>
-						<span className="al-row-size">{pack.builtin ? "" : formatBytes(pack.sizeBytes)}</span>
+						<span className="al-srow-size">{pack.builtin ? "" : formatBytes(pack.sizeBytes)}</span>
 						{actions.setFavorite && (
 							<button
 								type="button"
-								className="al-row-fav"
+								className="al-srow-fav"
 								aria-pressed={favorite}
 								aria-label={favorite ? t("Remove from favorites") : t("Add to favorites")}
 								onClick={() => actions.setFavorite?.({ packId: pack.id, on: !favorite })}
@@ -739,7 +739,7 @@ function SoundList({
 							</button>
 						)}
 						{actions.downloadAndAdd && (
-							<button type="button" className="al-btn al-row-add" onClick={() => actions.downloadAndAdd?.(pack)}>
+							<button type="button" className="al-btn al-srow-add" onClick={() => actions.downloadAndAdd?.(pack)}>
 								{usable ? t("+ Add") : t("Get & add")}
 							</button>
 						)}
@@ -750,6 +750,34 @@ function SoundList({
 	);
 }
 
+/**
+ * Shows only the first frame of an image. Sound waveforms are animated
+ * pictures; a library of them all moving at once is distracting and slow.
+ */
+function StillImage({ src }: { src: string }) {
+	const canvas = useRef<HTMLCanvasElement>(null);
+	const [failed, setFailed] = useState(false);
+	useEffect(() => {
+		let cancelled = false;
+		const img = new Image();
+		img.decoding = "async";
+		img.onload = () => {
+			const c = canvas.current;
+			if (cancelled || !c) return;
+			c.width = img.naturalWidth || 320;
+			c.height = img.naturalHeight || 64;
+			c.getContext("2d")?.drawImage(img, 0, 0);
+		};
+		img.onerror = () => !cancelled && setFailed(true);
+		img.src = src;
+		return () => {
+			cancelled = true;
+		};
+	}, [src]);
+	if (failed) return <span className="ph">♪</span>;
+	return <canvas ref={canvas} className="al-still" aria-hidden />;
+}
+
 const SAMPLE: Partial<Record<string, string>> = { si: "අආ ශ්‍රී", ta: "அஆ தமிழ்" };
 
 /**
@@ -758,6 +786,7 @@ const SAMPLE: Partial<Record<string, string>> = { si: "අආ ශ්‍රී", 
  */
 function PackThumb({ src, pack, large = false }: { src: string | null; pack: CatalogPack; large?: boolean }) {
 	const [failed, setFailed] = useState(false);
+	if (src && !failed && pack.type === "sounds") return <StillImage src={src} />;
 	if (src && !failed) {
 		return <img src={src} alt="" draggable={false} loading={large ? "eager" : "lazy"} decoding="async" onError={() => setFailed(true)} />;
 	}
