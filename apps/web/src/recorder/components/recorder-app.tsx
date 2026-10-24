@@ -166,9 +166,13 @@ function RecorderWindow() {
 		return () => window.clearInterval(timer);
 	}, [phase]);
 
+	// Dialogs open inside this window, so it grows while one is up; at the
+	// Record tab's 290 px the window picker would be cut off.
+	const dialogOpen = regionOpen || accessOpen || (phase === "done" && !!result);
 	useEffect(() => {
-		void window.worksuite?.recorder?.setSize({ width: 900, height: VIEW_HEIGHT[view] });
-	}, [view]);
+		const height = regionOpen ? 680 : dialogOpen ? 460 : VIEW_HEIGHT[view];
+		void window.worksuite?.recorder?.setSize({ width: regionOpen ? 1000 : 900, height });
+	}, [view, dialogOpen, regionOpen]);
 
 	// Hold notifications back and pause for private windows during a take (CT-R4).
 	useEffect(() => {

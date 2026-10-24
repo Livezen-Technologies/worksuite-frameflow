@@ -7,6 +7,9 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+### Fixed
+- Recorder: the "What to record" picker (and the permission and finished dialogs) no longer open cut off and blank; the recorder window grows while they're open.
+
 ## [1.7.4] - 2026-10-24
 
 ### Changed
