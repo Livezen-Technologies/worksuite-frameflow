@@ -15,9 +15,27 @@ export interface ColorSlotDef {
 	default: string;
 }
 
+/** A language version of an asset (same timing and colour slots, different words). */
+export interface VariantDef {
+	id: string;
+	/** Shown in the editor, in the language itself. */
+	name: string;
+	/** BCP 47 language tag. */
+	lang: string;
+}
+
+/** The languages assets with words come in. The first is the default. */
+export const LANGUAGES: VariantDef[] = [
+	{ id: "en", name: "English", lang: "en" },
+	{ id: "si", name: "සිංහල", lang: "si" },
+	{ id: "ta", name: "தமிழ்", lang: "ta" },
+];
+
 export interface AssetContext {
 	/** The colour of a slot, by id. */
 	c: (slot: string) => string;
+	/** The variant being built (its id), or "default" for assets without variants. */
+	variant: string;
 	w: number;
 	h: number;
 	frames: number;
@@ -37,8 +55,23 @@ export interface AssetDef {
 	colors: ColorSlotDef[];
 	/** Thumbnail frame as a share of the timeline (default 0.6). */
 	thumbAt?: number;
+	/** Language versions; the first is the default. Omit for assets without words. */
+	variants?: VariantDef[];
+	/** Sound effects to place with the animation, timed in frames (30 fps). */
+	sounds?: SoundCue[];
 	build: (ctx: AssetContext) => LayerInput[];
 }
+
+/** Sounds in assets/worksuite-pack/sounds (built by scripts/assets/build-sounds.py). */
+export const SOUNDS = { click: 0.06, pop: 0.12, ding: 0.6, whoosh: 0.35, confetti: 0.5 } as const;
+export type SoundId = keyof typeof SOUNDS;
+export interface SoundCue {
+	sound: SoundId;
+	/** Frame the sound starts on. */
+	frame: number;
+	gainDb?: number;
+}
+export const cue = (sound: SoundId, frame: number, gainDb?: number): SoundCue => (gainDb === undefined ? { sound, frame } : { sound, frame, gainDb });
 
 export const slot = (id: string, name: string, color: string): ColorSlotDef => ({
 	id,

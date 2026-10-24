@@ -1,0 +1,106 @@
+{
+	"schema": 1,
+	"id": "sub-like-subscribe-bell",
+	"name": "Like, subscribe, bell bar",
+	"category": "subscribe-buttons",
+	"type": "lottie",
+	"file": "sub-like-subscribe-bell.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "A bar with a thumbs-up, a subscribe button and a bell, tapped one after another.",
+	"tags": [
+		"subscribe",
+		"youtube",
+		"button",
+		"සබ්ස්ක්‍රයිබ්",
+		"சப்ஸ்கிரைப்",
+		"like",
+		"thumbs up",
+		"bell",
+		"notification",
+		"bar",
+		"sequence"
+	],
+	"durationSec": 4,
+	"loop": false,
+	"aspect": "4:1",
+	"width": 1200,
+	"height": 300,
+	"thumbnailAt": 0.75,
+	"colors": [
+		{
+			"id": "button",
+			"name": "Button",
+			"default": "#E53935"
+		},
+		{
+			"id": "pressed",
+			"name": "Subscribed & circles",
+			"default": "#3A3F4B"
+		},
+		{
+			"id": "text",
+			"name": "Text & icons",
+			"default": "#FFFFFF"
+		},
+		{
+			"id": "liked",
+			"name": "Liked",
+			"default": "#4C8DFF"
+		},
+		{
+			"id": "accent",
+			"name": "Burst",
+			"default": "#F5A524"
+		},
+		{
+			"id": "bar",
+			"name": "Bar",
+			"default": "#0F1115"
+		}
+	],
+	"defaultVariant": "en",
+	"variants": [
+		{
+			"id": "en",
+			"name": "English",
+			"lang": "en",
+			"file": "sub-like-subscribe-bell.json",
+			"thumbnail": "thumbnail.png"
+		},
+		{
+			"id": "si",
+			"name": "සිංහල",
+			"lang": "si",
+			"file": "sub-like-subscribe-bell.si.json",
+			"thumbnail": "thumbnail.si.png"
+		},
+		{
+			"id": "ta",
+			"name": "தமிழ்",
+			"lang": "ta",
+			"file": "sub-like-subscribe-bell.ta.json",
+			"thumbnail": "thumbnail.ta.png"
+		}
+	],
+	"sounds": [
+		{
+			"file": "../../sounds/whoosh.wav",
+			"at": 0,
+			"gainDb": -8
+		},
+		{
+			"file": "../../sounds/pop.wav",
+			"at": 0.933
+		},
+		{
+			"file": "../../sounds/click.wav",
+			"at": 1.8
+		},
+		{
+			"file": "../../sounds/ding.wav",
+			"at": 2.667,
+			"gainDb": -2
+		}
+	]
+}

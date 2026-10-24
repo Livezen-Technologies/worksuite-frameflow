@@ -37,5 +37,11 @@
 			"name": "Burst",
 			"default": "#F5A524"
 		}
+	],
+	"sounds": [
+		{
+			"file": "../../sounds/pop.wav",
+			"at": 0.333
+		}
 	]
 }

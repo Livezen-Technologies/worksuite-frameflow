@@ -42,5 +42,11 @@
 			"name": "Confetti 4",
 			"default": "#FFFFFF"
 		}
+	],
+	"sounds": [
+		{
+			"file": "../../sounds/confetti.wav",
+			"at": 0
+		}
 	]
 }

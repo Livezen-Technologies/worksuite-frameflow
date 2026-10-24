@@ -37,8 +37,30 @@
 			"id": "status-infographics",
 			"name": "Status & infographics",
 			"count": 8
+		},
+		{
+			"id": "subscribe-buttons",
+			"name": "YouTube & subscribe",
+			"count": 16
 		}
 	],
+	"sounds": {
+		"sounds/click.wav": {
+			"sha256": "40a41d65f81c3ad06adbb3f9ac069f28766cc47e8f462fb83fd5246d94749613"
+		},
+		"sounds/pop.wav": {
+			"sha256": "2686b788011b27d66dd5bfe700970c65929d689b9b989fb4715190562eaf9c53"
+		},
+		"sounds/ding.wav": {
+			"sha256": "e3b1f96ae96fa44211e2493fa37e70425b8133b17e750714ea90d44cedc2ada8"
+		},
+		"sounds/whoosh.wav": {
+			"sha256": "dbb1f9388f298ad9a1278f44cf50812069888a5e8f6bad63af60a8e2c6b76635"
+		},
+		"sounds/confetti.wav": {
+			"sha256": "e04468420bc66de02e036163fae1de43b49e9205905e7bb1e9338e6c53e0ac98"
+		}
+	},
 	"assets": [
 		{
 			"id": "lt-bar-slide",
@@ -530,6 +552,14 @@
 					"default": "#F5A524"
 				}
 			],
+			"sounds": [
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 1.133,
+					"durationSec": 0.06
+				}
+			],
 			"files": {
 				"cta-subscribe-click.json": {
 					"sha256": "8876641929aedd4d91b758ed7704e2861dd03e610b51a72e2c971ffcb79ca5a2"
@@ -538,7 +568,7 @@
 					"sha256": "eea127ccd28cd06cf5d80dd0be255c8508f54f8998f5f877110a67c89071f480"
 				},
 				"asset.json": {
-					"sha256": "6b87d1a70f740c17b07678b59247baca95de70f117f5a2ea07120c09422f16ce"
+					"sha256": "d5108833d0307b60953fb164e44b9ac9fb49635a0d2cfeeac92e952ac56f839e"
 				}
 			}
 		},
@@ -575,6 +605,15 @@
 					"default": "#FFFFFF"
 				}
 			],
+			"sounds": [
+				{
+					"id": "ding",
+					"file": "sounds/ding.wav",
+					"at": 0.267,
+					"durationSec": 0.6,
+					"gainDb": -2
+				}
+			],
 			"files": {
 				"cta-bell-ring.json": {
 					"sha256": "74525ab1b83eed4abcc432750349b259366502d0fdfbf11f44301e58cd2c9009"
@@ -583,7 +622,7 @@
 					"sha256": "4bc1bc16f9e12d2483f5825ecc20e98c1e7dbffc347b50e5a4fb72d1464897c6"
 				},
 				"asset.json": {
-					"sha256": "7c69caa8196c357becccbeafcb5319f98aa55379ea7e857e9d1b38327a512442"
+					"sha256": "802d8c841dd9de63cebbf0a3f0f6ca2cd7796ed4446b4597e7dafd871bb8e436"
 				}
 			}
 		},
@@ -620,6 +659,14 @@
 					"default": "#F5A524"
 				}
 			],
+			"sounds": [
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0.333,
+					"durationSec": 0.12
+				}
+			],
 			"files": {
 				"cta-like-thumb.json": {
 					"sha256": "c4366f39d914acd472423d7eeadff19b8326fc529668859a77d0970b82799781"
@@ -628,7 +675,7 @@
 					"sha256": "093da4ebb7889c1c71c5ab59ab940f041e36841642bda7f4e5d65a69f9c6fdda"
 				},
 				"asset.json": {
-					"sha256": "b008ece14d955b15b87dec863be78d43c2482ca91fd0c632fa0d05827430491b"
+					"sha256": "b3d6d3c247188cd9ed5d5fbc17f8853beeb5b9bf91b96e62b5c43745b604248a"
 				}
 			}
 		},
@@ -883,17 +930,18 @@
 			}
 		},
 		{
-			"id": "cta-tap-here",
-			"name": "Tap here",
+			"id": "cta-mouse-click",
+			"name": "Mouse click",
 			"category": "call-to-action",
-			"path": "call-to-action/cta-tap-here",
+			"path": "call-to-action/cta-mouse-click",
 			"tags": [
-				"tap",
+				"mouse",
 				"click",
-				"finger",
+				"computer",
+				"button",
 				"press",
-				"touch",
-				"here"
+				"here",
+				"tap"
 			],
 			"durationSec": 3,
 			"loop": true,
@@ -901,8 +949,8 @@
 			"height": 1080,
 			"colors": [
 				{
-					"id": "hand",
-					"name": "Hand",
+					"id": "body",
+					"name": "Mouse",
 					"default": "#FFFFFF"
 				},
 				{
@@ -911,20 +959,33 @@
 					"default": "#0F1115"
 				},
 				{
+					"id": "pressed",
+					"name": "Pressed button",
+					"default": "#AEB6C4"
+				},
+				{
 					"id": "ripple",
-					"name": "Ripple",
+					"name": "Click ripple",
 					"default": "#2EC4B6"
 				}
 			],
+			"sounds": [
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 0.667,
+					"durationSec": 0.06
+				}
+			],
 			"files": {
-				"cta-tap-here.json": {
-					"sha256": "a38f1df813a4e4c4453cbcc0ae5ebb1ee3c30cd71f84919f41127d8964707fe2"
+				"cta-mouse-click.json": {
+					"sha256": "daade940718c05418ae7743dec5dbb7e3c5b74c32636724862fa45063d4a35a0"
 				},
 				"thumbnail.png": {
-					"sha256": "8614855c6e417d3a5f018804b2a6a63605b5455b2fadaeab1c696d3ef9b3f823"
+					"sha256": "9171ee1e8d43bb0ae3c714ddc1dba1fc7dc756ce77ea4b7ef5d0fa0ba3bcb032"
 				},
 				"asset.json": {
-					"sha256": "457aa87e2822f8223dfabbe2470563829d075bc35fb1565d0a9278f2a07ea3d0"
+					"sha256": "af93d0a1b1d5e10983e86a21d8428240e443bb67515a9acae793d6d73ae7a318"
 				}
 			}
 		},
@@ -1348,6 +1409,14 @@
 					"default": "#FFFFFF"
 				}
 			],
+			"sounds": [
+				{
+					"id": "confetti",
+					"file": "sounds/confetti.wav",
+					"at": 0,
+					"durationSec": 0.5
+				}
+			],
 			"files": {
 				"rx-confetti.json": {
 					"sha256": "8c4518b78a81ff35d97ad864320239fba7b98805b14e90eef0d93b08c008cdbd"
@@ -1356,7 +1425,7 @@
 					"sha256": "8e343a53c68a6d40c11a40675bb27a9541b1a72b122a6e62af23cbd7bbf9c2ef"
 				},
 				"asset.json": {
-					"sha256": "b89ef04e13b22ee55d945e10cf7cf943365209a972af4b172049bb7866ce7ac8"
+					"sha256": "8bae7762650a98b77252b4d70ccc2ce59965b49926c6b98b2aa5dae1f49e44eb"
 				}
 			}
 		},
@@ -2658,6 +2727,1667 @@
 				},
 				"asset.json": {
 					"sha256": "479d9acf9258dd077ddae3b2f06abb494d066226f910cc3b19a0cad1b3f42299"
+				}
+			}
+		},
+		{
+			"id": "sub-classic-click",
+			"name": "Subscribe click",
+			"category": "subscribe-buttons",
+			"path": "subscribe-buttons/sub-classic-click",
+			"tags": [
+				"subscribe",
+				"youtube",
+				"button",
+				"සබ්ස්ක්‍රයිබ්",
+				"சப்ஸ்கிரைப்",
+				"click",
+				"cursor",
+				"subscribed",
+				"pill"
+			],
+			"durationSec": 3.5,
+			"loop": false,
+			"width": 900,
+			"height": 300,
+			"colors": [
+				{
+					"id": "button",
+					"name": "Button",
+					"default": "#E53935"
+				},
+				{
+					"id": "pressed",
+					"name": "Subscribed button",
+					"default": "#3A3F4B"
+				},
+				{
+					"id": "text",
+					"name": "Text",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "cursor",
+					"name": "Cursor",
+					"default": "#F4F6FA"
+				},
+				{
+					"id": "shadow",
+					"name": "Shadow & outline",
+					"default": "#0F1115"
+				}
+			],
+			"defaultVariant": "en",
+			"variants": [
+				{
+					"id": "en",
+					"name": "English",
+					"lang": "en"
+				},
+				{
+					"id": "si",
+					"name": "සිංහල",
+					"lang": "si"
+				},
+				{
+					"id": "ta",
+					"name": "தமிழ்",
+					"lang": "ta"
+				}
+			],
+			"sounds": [
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0,
+					"durationSec": 0.12,
+					"gainDb": -4
+				},
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 1.467,
+					"durationSec": 0.06
+				}
+			],
+			"files": {
+				"sub-classic-click.json": {
+					"sha256": "1602a4d69b4851deb534e4000477f53c5cf30fb516f0922d8c6a8102cfeccc29"
+				},
+				"thumbnail.png": {
+					"sha256": "d5be72b3689a13f392999ff2b3c6a28fd75c43b2ce401441c70255951afa1777"
+				},
+				"sub-classic-click.si.json": {
+					"sha256": "bf608ee347cdae0af962e618b84450a9c623dc0e9e93a9989bcc2597bb455cb4"
+				},
+				"thumbnail.si.png": {
+					"sha256": "7c3d99228f0809668b796e8e4910508a05f66a695aa9fbc420b979c2238d960b"
+				},
+				"sub-classic-click.ta.json": {
+					"sha256": "9b51e1baf665fe57bbec774290e361c58a03a869f155154fcf6c19c399d4b1ad"
+				},
+				"thumbnail.ta.png": {
+					"sha256": "260e07913f581d2f7a1cd03c15c6b1da6388e52ad7aabff5e0661e2e4353f065"
+				},
+				"asset.json": {
+					"sha256": "280265ae44cf3f1b30b5e6171c8b390be0d524d3614ff2fe2612efd8966090de"
+				}
+			}
+		},
+		{
+			"id": "sub-bell-combo",
+			"name": "Subscribe + bell",
+			"category": "subscribe-buttons",
+			"path": "subscribe-buttons/sub-bell-combo",
+			"tags": [
+				"subscribe",
+				"youtube",
+				"button",
+				"සබ්ස්ක්‍රයිබ්",
+				"சப்ஸ்கிரைப்",
+				"bell",
+				"notification",
+				"ring",
+				"subscribed"
+			],
+			"durationSec": 4,
+			"loop": false,
+			"width": 1000,
+			"height": 300,
+			"colors": [
+				{
+					"id": "button",
+					"name": "Button",
+					"default": "#E53935"
+				},
+				{
+					"id": "pressed",
+					"name": "Subscribed & bell circle",
+					"default": "#3A3F4B"
+				},
+				{
+					"id": "text",
+					"name": "Text",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "accent",
+					"name": "Bell & burst",
+					"default": "#F5A524"
+				},
+				{
+					"id": "shadow",
+					"name": "Shadow",
+					"default": "#0F1115"
+				}
+			],
+			"defaultVariant": "en",
+			"variants": [
+				{
+					"id": "en",
+					"name": "English",
+					"lang": "en"
+				},
+				{
+					"id": "si",
+					"name": "සිංහල",
+					"lang": "si"
+				},
+				{
+					"id": "ta",
+					"name": "தமிழ்",
+					"lang": "ta"
+				}
+			],
+			"sounds": [
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0,
+					"durationSec": 0.12,
+					"gainDb": -4
+				},
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 0.933,
+					"durationSec": 0.06
+				},
+				{
+					"id": "ding",
+					"file": "sounds/ding.wav",
+					"at": 1.667,
+					"durationSec": 0.6,
+					"gainDb": -2
+				}
+			],
+			"files": {
+				"sub-bell-combo.json": {
+					"sha256": "69ed50e7e4562d833cb71a7cca08a001489572287245a30bb33dec39eb4b1d24"
+				},
+				"thumbnail.png": {
+					"sha256": "6bb851cbbd44f1c09e556a4772995448c3b2ec5105e8286fea742f9b62ed7669"
+				},
+				"sub-bell-combo.si.json": {
+					"sha256": "cb6f176ef53eb6f646c3004e57dc1d738e565bfdbc1efdca511754f12a19e843"
+				},
+				"thumbnail.si.png": {
+					"sha256": "b49a0bd79bd00b5d7d465fc9841a45f2eabe7dd3c19d395f8c08028bcd293168"
+				},
+				"sub-bell-combo.ta.json": {
+					"sha256": "ab1bd3bad89475ce5eb824028684494e71dfbe4164d12d6905dd68d00873ddbf"
+				},
+				"thumbnail.ta.png": {
+					"sha256": "8024967a7aa64cea86155b8313bef3968d24d34f4e379f1be7fa68c8df893fc8"
+				},
+				"asset.json": {
+					"sha256": "247726086218ea722e31b390f7879777f2922af341ef5bf8950c61e7faf7cbe3"
+				}
+			}
+		},
+		{
+			"id": "sub-like-subscribe-bell",
+			"name": "Like, subscribe, bell bar",
+			"category": "subscribe-buttons",
+			"path": "subscribe-buttons/sub-like-subscribe-bell",
+			"tags": [
+				"subscribe",
+				"youtube",
+				"button",
+				"සබ්ස්ක්‍රයිබ්",
+				"சப்ஸ்கிரைப்",
+				"like",
+				"thumbs up",
+				"bell",
+				"notification",
+				"bar",
+				"sequence"
+			],
+			"durationSec": 4,
+			"loop": false,
+			"width": 1200,
+			"height": 300,
+			"colors": [
+				{
+					"id": "button",
+					"name": "Button",
+					"default": "#E53935"
+				},
+				{
+					"id": "pressed",
+					"name": "Subscribed & circles",
+					"default": "#3A3F4B"
+				},
+				{
+					"id": "text",
+					"name": "Text & icons",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "liked",
+					"name": "Liked",
+					"default": "#4C8DFF"
+				},
+				{
+					"id": "accent",
+					"name": "Burst",
+					"default": "#F5A524"
+				},
+				{
+					"id": "bar",
+					"name": "Bar",
+					"default": "#0F1115"
+				}
+			],
+			"defaultVariant": "en",
+			"variants": [
+				{
+					"id": "en",
+					"name": "English",
+					"lang": "en"
+				},
+				{
+					"id": "si",
+					"name": "සිංහල",
+					"lang": "si"
+				},
+				{
+					"id": "ta",
+					"name": "தமிழ்",
+					"lang": "ta"
+				}
+			],
+			"sounds": [
+				{
+					"id": "whoosh",
+					"file": "sounds/whoosh.wav",
+					"at": 0,
+					"durationSec": 0.35,
+					"gainDb": -8
+				},
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0.933,
+					"durationSec": 0.12
+				},
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 1.8,
+					"durationSec": 0.06
+				},
+				{
+					"id": "ding",
+					"file": "sounds/ding.wav",
+					"at": 2.667,
+					"durationSec": 0.6,
+					"gainDb": -2
+				}
+			],
+			"files": {
+				"sub-like-subscribe-bell.json": {
+					"sha256": "e4cb145f65bf66b10858e56b4191764562ab0bcefa47a2b731a62213ee3d5cd3"
+				},
+				"thumbnail.png": {
+					"sha256": "8972c900c935ffec76680b74b9365be042de568eb6df49b69f5267950f91c17f"
+				},
+				"sub-like-subscribe-bell.si.json": {
+					"sha256": "5c6343e8798e3ff52f89bad652580dc3069cf90c57579fca446561e17867f1cc"
+				},
+				"thumbnail.si.png": {
+					"sha256": "96d9d4c9116e72c4c5608c693b935764ea963850e9ca5fe5e34c435abbbd1df2"
+				},
+				"sub-like-subscribe-bell.ta.json": {
+					"sha256": "97e74d0bd4f6ec18519077dd7406937bb705da37f1885e24a76720c248761dd2"
+				},
+				"thumbnail.ta.png": {
+					"sha256": "21f272cfed547fca5d0714fb4bef0e0036a4efe4e1cdb616b2f42451fea0c2ec"
+				},
+				"asset.json": {
+					"sha256": "946eec8774988e5f200a1c2caf3b16245ee927acbdb7e1777b08aa4902a44a53"
+				}
+			}
+		},
+		{
+			"id": "sub-bounce-pop",
+			"name": "Bounce pop",
+			"category": "subscribe-buttons",
+			"path": "subscribe-buttons/sub-bounce-pop",
+			"tags": [
+				"subscribe",
+				"youtube",
+				"button",
+				"සබ්ස්ක්‍රයිබ්",
+				"சப்ஸ்கிரைப்",
+				"bounce",
+				"pop",
+				"drop"
+			],
+			"durationSec": 2.5,
+			"loop": false,
+			"width": 900,
+			"height": 400,
+			"colors": [
+				{
+					"id": "button",
+					"name": "Button",
+					"default": "#E53935"
+				},
+				{
+					"id": "text",
+					"name": "Text",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "accent",
+					"name": "Sparks",
+					"default": "#F5A524"
+				},
+				{
+					"id": "shadow",
+					"name": "Shadow",
+					"default": "#0F1115"
+				}
+			],
+			"defaultVariant": "en",
+			"variants": [
+				{
+					"id": "en",
+					"name": "English",
+					"lang": "en"
+				},
+				{
+					"id": "si",
+					"name": "සිංහල",
+					"lang": "si"
+				},
+				{
+					"id": "ta",
+					"name": "தமிழ்",
+					"lang": "ta"
+				}
+			],
+			"sounds": [
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0.467,
+					"durationSec": 0.12
+				}
+			],
+			"files": {
+				"sub-bounce-pop.json": {
+					"sha256": "bdd148560117dbc0c8ca092b2187cef50ef55ece63909411071b773d84f21a18"
+				},
+				"thumbnail.png": {
+					"sha256": "f02bb7871268c7652f1c60920c6d1b6e5af71b3992522feb68c3d4aea7387eb5"
+				},
+				"sub-bounce-pop.si.json": {
+					"sha256": "d2540a07495fd8676610fdd8ff0e5b23e505f225fcd139476d716aa909073910"
+				},
+				"thumbnail.si.png": {
+					"sha256": "d9133c37b04d8d1361ac69f7e0a70aa2fbf397a2bdb3c60781b37449090ba699"
+				},
+				"sub-bounce-pop.ta.json": {
+					"sha256": "e040ef23136b8115ba5804ef3a2820a692c70c272e396642ce73b593f7e5722b"
+				},
+				"thumbnail.ta.png": {
+					"sha256": "bd945e959a533d79dcca6cc4eef8323d1ebe243bd7aa117d3870982ac4056b9b"
+				},
+				"asset.json": {
+					"sha256": "168fba7dbb424eb19d4606980bc937f650bf86a6f83411e9baab2fec0851886a"
+				}
+			}
+		},
+		{
+			"id": "sub-slide-shine",
+			"name": "Slide-in shine",
+			"category": "subscribe-buttons",
+			"path": "subscribe-buttons/sub-slide-shine",
+			"tags": [
+				"subscribe",
+				"youtube",
+				"button",
+				"සබ්ස්ක්‍රයිබ්",
+				"சப்ஸ்கிரைப்",
+				"slide",
+				"shine",
+				"sweep",
+				"gloss"
+			],
+			"durationSec": 3,
+			"loop": false,
+			"width": 900,
+			"height": 300,
+			"colors": [
+				{
+					"id": "button",
+					"name": "Button",
+					"default": "#E53935"
+				},
+				{
+					"id": "text",
+					"name": "Text",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "shine",
+					"name": "Shine",
+					"default": "#F4F6FA"
+				},
+				{
+					"id": "shadow",
+					"name": "Shadow",
+					"default": "#0F1115"
+				}
+			],
+			"defaultVariant": "en",
+			"variants": [
+				{
+					"id": "en",
+					"name": "English",
+					"lang": "en"
+				},
+				{
+					"id": "si",
+					"name": "සිංහල",
+					"lang": "si"
+				},
+				{
+					"id": "ta",
+					"name": "தமிழ்",
+					"lang": "ta"
+				}
+			],
+			"sounds": [
+				{
+					"id": "whoosh",
+					"file": "sounds/whoosh.wav",
+					"at": 0,
+					"durationSec": 0.35
+				}
+			],
+			"files": {
+				"sub-slide-shine.json": {
+					"sha256": "8c7a05fcf97496dcf974753263f9feb374e9c099e7b21dfb8ce2402a00b293bd"
+				},
+				"thumbnail.png": {
+					"sha256": "5e31b1aaf5805184d23571cf9439eb09fa85a2976c27169c5a57cf11017445df"
+				},
+				"sub-slide-shine.si.json": {
+					"sha256": "aef59b1b33751990946e4bcddc18171a3eae32a567be1bf0ff917b2bacc1f103"
+				},
+				"thumbnail.si.png": {
+					"sha256": "cec206dbeedb28d9ede098beb1f23ba6e3876085be0b8dcb309e30f9cd1b12e2"
+				},
+				"sub-slide-shine.ta.json": {
+					"sha256": "0c3c94241dc87890b2097e818af0a58045613220ffba1da123be7857fb9e61c3"
+				},
+				"thumbnail.ta.png": {
+					"sha256": "e40e7e57905273db88980bbdb9f3dbd82e8819ab7b60e84150b81610edad775c"
+				},
+				"asset.json": {
+					"sha256": "bc61f7cfc52c81b163c310ac9ef43d2281c167feaa7df0784330f789ddfaf70a"
+				}
+			}
+		},
+		{
+			"id": "sub-neon-glow",
+			"name": "Neon glow",
+			"category": "subscribe-buttons",
+			"path": "subscribe-buttons/sub-neon-glow",
+			"tags": [
+				"subscribe",
+				"youtube",
+				"button",
+				"සබ්ස්ක්‍රයිබ්",
+				"சப்ஸ்கிரைப்",
+				"neon",
+				"glow",
+				"outline",
+				"pulse"
+			],
+			"durationSec": 3,
+			"loop": true,
+			"width": 900,
+			"height": 300,
+			"colors": [
+				{
+					"id": "neon",
+					"name": "Neon",
+					"default": "#FF4D6D"
+				},
+				{
+					"id": "text",
+					"name": "Core & text",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "background",
+					"name": "Background",
+					"default": "#0F1115"
+				}
+			],
+			"defaultVariant": "en",
+			"variants": [
+				{
+					"id": "en",
+					"name": "English",
+					"lang": "en"
+				},
+				{
+					"id": "si",
+					"name": "සිංහල",
+					"lang": "si"
+				},
+				{
+					"id": "ta",
+					"name": "தமிழ்",
+					"lang": "ta"
+				}
+			],
+			"sounds": [
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0.133,
+					"durationSec": 0.12,
+					"gainDb": -6
+				}
+			],
+			"files": {
+				"sub-neon-glow.json": {
+					"sha256": "fac024e09d55b4c71add38c8cebfad8c17c54f55679809cf28d7f6f566402391"
+				},
+				"thumbnail.png": {
+					"sha256": "28266446c689985aad68474849e77cf76b16a6ce176ac0983ee7d26e88cace90"
+				},
+				"sub-neon-glow.si.json": {
+					"sha256": "8ba4bd86d33017865230d3cbc375ac4fedf7966b94d2c3f71a871ce0d4aadbc1"
+				},
+				"thumbnail.si.png": {
+					"sha256": "448f58e02f93019425d3126ed7199bfecf51fa568e9d61928dcaafea00a96004"
+				},
+				"sub-neon-glow.ta.json": {
+					"sha256": "70b0ea181f4fc272dd978d22952b97cbe00e169bfcddbd35e3247c98edd11434"
+				},
+				"thumbnail.ta.png": {
+					"sha256": "2594e3fcc1db78959106daca04d7100e9022c9877919fcb5fee0214eab56d54e"
+				},
+				"asset.json": {
+					"sha256": "ab2802fa70d5b77a035e550098f2b1dd68a75757e14a28549c55373c06d6ca0d"
+				}
+			}
+		},
+		{
+			"id": "sub-ghost-outline",
+			"name": "Ghost outline",
+			"category": "subscribe-buttons",
+			"path": "subscribe-buttons/sub-ghost-outline",
+			"tags": [
+				"subscribe",
+				"youtube",
+				"button",
+				"සබ්ස්ක්‍රයිබ්",
+				"சப்ஸ்கிரைப்",
+				"outline",
+				"ghost",
+				"minimal"
+			],
+			"durationSec": 2.5,
+			"loop": false,
+			"width": 900,
+			"height": 300,
+			"colors": [
+				{
+					"id": "button",
+					"name": "Button & outline",
+					"default": "#E53935"
+				},
+				{
+					"id": "text",
+					"name": "Filled text",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "shadow",
+					"name": "Shadow",
+					"default": "#0F1115"
+				}
+			],
+			"defaultVariant": "en",
+			"variants": [
+				{
+					"id": "en",
+					"name": "English",
+					"lang": "en"
+				},
+				{
+					"id": "si",
+					"name": "සිංහල",
+					"lang": "si"
+				},
+				{
+					"id": "ta",
+					"name": "தமிழ்",
+					"lang": "ta"
+				}
+			],
+			"sounds": [
+				{
+					"id": "whoosh",
+					"file": "sounds/whoosh.wav",
+					"at": 0,
+					"durationSec": 0.35,
+					"gainDb": -6
+				},
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 1.4,
+					"durationSec": 0.12,
+					"gainDb": -4
+				}
+			],
+			"files": {
+				"sub-ghost-outline.json": {
+					"sha256": "6805b4599c5056085d85c0f2789c4f84f736289fb81d1fb6ccd4dfd5108c0e2b"
+				},
+				"thumbnail.png": {
+					"sha256": "aa2bf12ba298baa2b24116fc1f56d3de406ce846e2592517d92956bf39457f8a"
+				},
+				"sub-ghost-outline.si.json": {
+					"sha256": "52decee7463a99e6bcfe25ed4749e6492409fe1dcde4f9f8985e3185acaca65f"
+				},
+				"thumbnail.si.png": {
+					"sha256": "324cab94e8ca51ee954ee097e0a53e3172e3f8116244c823449f17622286b1ee"
+				},
+				"sub-ghost-outline.ta.json": {
+					"sha256": "12727728e88b0fd2f39eac54b146b4541bd38b1b6ef9c6da6e6e0735709c710e"
+				},
+				"thumbnail.ta.png": {
+					"sha256": "2b54be2556ce79b87087eab69115dc600d3bc37847d7a45fb6af467f3042a2c3"
+				},
+				"asset.json": {
+					"sha256": "0d7885b833f8c13bdb0e1ad02b90dc8fa720f40f0f680f4ece61ad69d96d6c83"
+				}
+			}
+		},
+		{
+			"id": "sub-glass",
+			"name": "Frosted glass",
+			"category": "subscribe-buttons",
+			"path": "subscribe-buttons/sub-glass",
+			"tags": [
+				"subscribe",
+				"youtube",
+				"button",
+				"සබ්ස්ක්‍රයිබ්",
+				"சப்ஸ்கிரைப்",
+				"glass",
+				"frosted",
+				"blur",
+				"subscribed"
+			],
+			"durationSec": 3,
+			"loop": false,
+			"width": 900,
+			"height": 300,
+			"colors": [
+				{
+					"id": "button",
+					"name": "Blob 1",
+					"default": "#E53935"
+				},
+				{
+					"id": "accent",
+					"name": "Blob 2",
+					"default": "#4C8DFF"
+				},
+				{
+					"id": "text",
+					"name": "Glass & text",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "shadow",
+					"name": "Shadow",
+					"default": "#0F1115"
+				}
+			],
+			"defaultVariant": "en",
+			"variants": [
+				{
+					"id": "en",
+					"name": "English",
+					"lang": "en"
+				},
+				{
+					"id": "si",
+					"name": "සිංහල",
+					"lang": "si"
+				},
+				{
+					"id": "ta",
+					"name": "தமிழ்",
+					"lang": "ta"
+				}
+			],
+			"sounds": [
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0,
+					"durationSec": 0.12,
+					"gainDb": -4
+				},
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 1.467,
+					"durationSec": 0.06
+				}
+			],
+			"files": {
+				"sub-glass.json": {
+					"sha256": "c12c7681ac833479e7f0e1101f549d7512db72fd03680ffc44338edaf2664247"
+				},
+				"thumbnail.png": {
+					"sha256": "183fa0ad7fe87e9ee7dadfac887161da7b8b9bd6a1da1e7a50ed5588b045c563"
+				},
+				"sub-glass.si.json": {
+					"sha256": "7e86eb3c988408015a9625bb72d4fe1c2592318834ab2b50fcca98c0dcaba522"
+				},
+				"thumbnail.si.png": {
+					"sha256": "5795971c08064874c3e02f217bebac3cfd4d1eb5e8f7a12fa59e3142246411fd"
+				},
+				"sub-glass.ta.json": {
+					"sha256": "729415179c631f662eb86aa4ce9b809787281cecdc887d73b1746a6197210534"
+				},
+				"thumbnail.ta.png": {
+					"sha256": "9941ab2a4114bdca4cc2003a85d34b7ace37a9f9b39f21cc40a1de8c635c2574"
+				},
+				"asset.json": {
+					"sha256": "ef38d6164eb0ea39d5729180dac31f6b9e2866cc4f8bdbb2644772e7bbe16172"
+				}
+			}
+		},
+		{
+			"id": "sub-avatar-bar",
+			"name": "Channel bar",
+			"category": "subscribe-buttons",
+			"path": "subscribe-buttons/sub-avatar-bar",
+			"tags": [
+				"subscribe",
+				"youtube",
+				"button",
+				"සබ්ස්ක්‍රයිබ්",
+				"சப்ஸ்கிரைப்",
+				"channel",
+				"avatar",
+				"profile",
+				"lower third",
+				"subscribed"
+			],
+			"durationSec": 3.5,
+			"loop": false,
+			"width": 1100,
+			"height": 300,
+			"colors": [
+				{
+					"id": "panel",
+					"name": "Bar",
+					"default": "#0F1115"
+				},
+				{
+					"id": "placeholder",
+					"name": "Avatar & name area",
+					"default": "#596070"
+				},
+				{
+					"id": "accent",
+					"name": "Avatar ring",
+					"default": "#F5A524"
+				},
+				{
+					"id": "button",
+					"name": "Button",
+					"default": "#E53935"
+				},
+				{
+					"id": "pressed",
+					"name": "Subscribed button",
+					"default": "#3A3F4B"
+				},
+				{
+					"id": "text",
+					"name": "Text",
+					"default": "#FFFFFF"
+				}
+			],
+			"defaultVariant": "en",
+			"variants": [
+				{
+					"id": "en",
+					"name": "English",
+					"lang": "en"
+				},
+				{
+					"id": "si",
+					"name": "සිංහල",
+					"lang": "si"
+				},
+				{
+					"id": "ta",
+					"name": "தமிழ்",
+					"lang": "ta"
+				}
+			],
+			"sounds": [
+				{
+					"id": "whoosh",
+					"file": "sounds/whoosh.wav",
+					"at": 0,
+					"durationSec": 0.35,
+					"gainDb": -6
+				},
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0.6,
+					"durationSec": 0.12,
+					"gainDb": -4
+				},
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 1.933,
+					"durationSec": 0.06
+				}
+			],
+			"files": {
+				"sub-avatar-bar.json": {
+					"sha256": "62de0a56bdd0a73d750919e4d4ece2464ba6c40bcdbd6e058857260cb3377951"
+				},
+				"thumbnail.png": {
+					"sha256": "4191e54291a333cc079b6d1601d97af02f5febb89acdd9120fa7e66c1cd05a5f"
+				},
+				"sub-avatar-bar.si.json": {
+					"sha256": "f2aae6637fade67c50ad7bcc334d1bb268671e436688a6ab92f0eef97848a336"
+				},
+				"thumbnail.si.png": {
+					"sha256": "f0f4b2bd1b4834fe2bba7170fbf7804deb3e2507b29908a3ebeadc813ee31392"
+				},
+				"sub-avatar-bar.ta.json": {
+					"sha256": "24ff1fc766d3c47a588f34fd8fee5b4dc92ec8da66e3e6026389b4b46e107872"
+				},
+				"thumbnail.ta.png": {
+					"sha256": "5a5f8f2ab02cf76eb53d367457436b6824fd52179f46e42897f89b400307349e"
+				},
+				"asset.json": {
+					"sha256": "34c01ec453cbf475ecb2023aa0732709a024b247e6941b773a032b16f524cc9d"
+				}
+			}
+		},
+		{
+			"id": "sub-cursor-click",
+			"name": "Cursor click",
+			"category": "subscribe-buttons",
+			"path": "subscribe-buttons/sub-cursor-click",
+			"tags": [
+				"subscribe",
+				"youtube",
+				"button",
+				"සබ්ස්ක්‍රයිබ්",
+				"சப்ஸ்கிரைப்",
+				"click",
+				"cursor",
+				"mouse",
+				"pointer",
+				"mobile",
+				"shorts",
+				"vertical",
+				"subscribed"
+			],
+			"durationSec": 3,
+			"loop": false,
+			"width": 800,
+			"height": 800,
+			"colors": [
+				{
+					"id": "button",
+					"name": "Button",
+					"default": "#E53935"
+				},
+				{
+					"id": "pressed",
+					"name": "Subscribed button",
+					"default": "#3A3F4B"
+				},
+				{
+					"id": "text",
+					"name": "Text",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "cursor",
+					"name": "Cursor",
+					"default": "#F4F6FA"
+				},
+				{
+					"id": "outline",
+					"name": "Cursor outline & shadow",
+					"default": "#0F1115"
+				},
+				{
+					"id": "accent",
+					"name": "Click ripple",
+					"default": "#F5A524"
+				}
+			],
+			"defaultVariant": "en",
+			"variants": [
+				{
+					"id": "en",
+					"name": "English",
+					"lang": "en"
+				},
+				{
+					"id": "si",
+					"name": "සිංහල",
+					"lang": "si"
+				},
+				{
+					"id": "ta",
+					"name": "தமிழ்",
+					"lang": "ta"
+				}
+			],
+			"sounds": [
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0,
+					"durationSec": 0.12,
+					"gainDb": -4
+				},
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 1.333,
+					"durationSec": 0.06
+				}
+			],
+			"files": {
+				"sub-cursor-click.json": {
+					"sha256": "8323aecebfd0efffa3f442bd34bfc158122f78c613a9d826dc34b04a9e189dca"
+				},
+				"thumbnail.png": {
+					"sha256": "e9407cf208cb0faf8945f3cbcbca6bc92c4ec0bee31dee7ac2ddfa9494ae95e2"
+				},
+				"sub-cursor-click.si.json": {
+					"sha256": "6a1a0f1f23b4d7dcf05db25a90817df56846d9cb5b8333104c212ee8af3f7a5e"
+				},
+				"thumbnail.si.png": {
+					"sha256": "841ba0a471d00674a57099b4393af657c27cad21f3d242001f1539ecaf0be6e9"
+				},
+				"sub-cursor-click.ta.json": {
+					"sha256": "23dec24b3d24c479db499135852252cb81d055ec790e4230372748794f638e47"
+				},
+				"thumbnail.ta.png": {
+					"sha256": "89a65841f8cc0b34750d96af538adc84b53387d5c4bf172fc8fb0e1109da2da3"
+				},
+				"asset.json": {
+					"sha256": "ca79496d37d30df4cc654767a5a8ec92ef70facb151a7b87ed3f01cb75e87618"
+				}
+			}
+		},
+		{
+			"id": "sub-glitch",
+			"name": "Glitch",
+			"category": "subscribe-buttons",
+			"path": "subscribe-buttons/sub-glitch",
+			"tags": [
+				"subscribe",
+				"youtube",
+				"button",
+				"සබ්ස්ක්‍රයිබ්",
+				"சப்ஸ்கிரைப்",
+				"glitch",
+				"rgb",
+				"split",
+				"distortion"
+			],
+			"durationSec": 2.5,
+			"loop": false,
+			"width": 900,
+			"height": 300,
+			"colors": [
+				{
+					"id": "button",
+					"name": "Button",
+					"default": "#E53935"
+				},
+				{
+					"id": "text",
+					"name": "Text",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "split1",
+					"name": "Split 1",
+					"default": "#00E5FF"
+				},
+				{
+					"id": "split2",
+					"name": "Split 2",
+					"default": "#FF2DAA"
+				}
+			],
+			"defaultVariant": "en",
+			"variants": [
+				{
+					"id": "en",
+					"name": "English",
+					"lang": "en"
+				},
+				{
+					"id": "si",
+					"name": "සිංහල",
+					"lang": "si"
+				},
+				{
+					"id": "ta",
+					"name": "தமிழ்",
+					"lang": "ta"
+				}
+			],
+			"sounds": [
+				{
+					"id": "whoosh",
+					"file": "sounds/whoosh.wav",
+					"at": 0.2,
+					"durationSec": 0.35,
+					"gainDb": -4
+				}
+			],
+			"files": {
+				"sub-glitch.json": {
+					"sha256": "1ed0f3be94776bfd0d07c45818a447115c13568b56f5618971aac4e170776459"
+				},
+				"thumbnail.png": {
+					"sha256": "926e0d5b06500230cb0d9ad1c1f92895cfcdf327b9d0fa0203733b3340c881eb"
+				},
+				"sub-glitch.si.json": {
+					"sha256": "22effc825965b3ada44fe45da6b294480de518afce3b06e0ad5743a99e03a008"
+				},
+				"thumbnail.si.png": {
+					"sha256": "e488569f663b2a8860462769ec335367ecaf3ca0dbcf436e3923f9ccc57f1d21"
+				},
+				"sub-glitch.ta.json": {
+					"sha256": "28497ccbd285f21076fbbda802febbfb44e51e7382000fca601212d310b8c3e9"
+				},
+				"thumbnail.ta.png": {
+					"sha256": "5d1573b5954b41639427a684e552472dda443405d129ba17398b51c573ddc212"
+				},
+				"asset.json": {
+					"sha256": "0994da8b34ad094bbfacf617be3c11f84d15e4cfc381118fdbda9d11155b42d4"
+				}
+			}
+		},
+		{
+			"id": "sub-3d-press",
+			"name": "3D press",
+			"category": "subscribe-buttons",
+			"path": "subscribe-buttons/sub-3d-press",
+			"tags": [
+				"subscribe",
+				"youtube",
+				"button",
+				"සබ්ස්ක්‍රයිබ්",
+				"சப்ஸ்கிரைப்",
+				"3d",
+				"press",
+				"push",
+				"depth",
+				"subscribed"
+			],
+			"durationSec": 2.5,
+			"loop": false,
+			"width": 900,
+			"height": 340,
+			"colors": [
+				{
+					"id": "button",
+					"name": "Button",
+					"default": "#E53935"
+				},
+				{
+					"id": "side",
+					"name": "Button side",
+					"default": "#9E1F1C"
+				},
+				{
+					"id": "pressed",
+					"name": "Subscribed button",
+					"default": "#3A3F4B"
+				},
+				{
+					"id": "pressedSide",
+					"name": "Subscribed side",
+					"default": "#262A33"
+				},
+				{
+					"id": "text",
+					"name": "Text",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "shadow",
+					"name": "Shadow",
+					"default": "#0F1115"
+				}
+			],
+			"defaultVariant": "en",
+			"variants": [
+				{
+					"id": "en",
+					"name": "English",
+					"lang": "en"
+				},
+				{
+					"id": "si",
+					"name": "සිංහල",
+					"lang": "si"
+				},
+				{
+					"id": "ta",
+					"name": "தமிழ்",
+					"lang": "ta"
+				}
+			],
+			"sounds": [
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0,
+					"durationSec": 0.12,
+					"gainDb": -4
+				},
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 1,
+					"durationSec": 0.06
+				}
+			],
+			"files": {
+				"sub-3d-press.json": {
+					"sha256": "41ecd0618b33b5bd814d4295a764158f81a0733cfbf273fa8e0e9fd1606f0de0"
+				},
+				"thumbnail.png": {
+					"sha256": "88b2fc444a65ae621e6c1771625994b0769b3b972cfbffb41c54ea83c8ac78ab"
+				},
+				"sub-3d-press.si.json": {
+					"sha256": "dd09c60fbfd862258ad501885723392cb18a0f33a6981f62f2170b585200b304"
+				},
+				"thumbnail.si.png": {
+					"sha256": "f6f73ce4cf0f229e37108a478d654ec04191618682de5e2398df3e8269fd3782"
+				},
+				"sub-3d-press.ta.json": {
+					"sha256": "d14bf19d2ff12e27d9b554322aa769d3c4091c11181899a1ccdf9278bb3d8582"
+				},
+				"thumbnail.ta.png": {
+					"sha256": "b28431c68823239d38ade58daed44ad7e6b8f7303777151f8bcc6d23b7809e5c"
+				},
+				"asset.json": {
+					"sha256": "82a4fefbd00917b5a04e9a62e0f13a37cbabe4aa6b9430a275135ddf5a85d070"
+				}
+			}
+		},
+		{
+			"id": "sub-countdown",
+			"name": "Countdown end screen",
+			"category": "subscribe-buttons",
+			"path": "subscribe-buttons/sub-countdown",
+			"tags": [
+				"subscribe",
+				"youtube",
+				"button",
+				"සබ්ස්ක්‍රයිබ්",
+				"சப்ஸ்கிரைப்",
+				"countdown",
+				"end screen",
+				"timer",
+				"3 2 1",
+				"subscribed"
+			],
+			"durationSec": 4,
+			"loop": false,
+			"width": 900,
+			"height": 500,
+			"colors": [
+				{
+					"id": "button",
+					"name": "Button",
+					"default": "#E53935"
+				},
+				{
+					"id": "pressed",
+					"name": "Subscribed button",
+					"default": "#3A3F4B"
+				},
+				{
+					"id": "text",
+					"name": "Text",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "accent",
+					"name": "Ring & digits",
+					"default": "#F5A524"
+				},
+				{
+					"id": "track",
+					"name": "Track & badge",
+					"default": "#0F1115"
+				}
+			],
+			"defaultVariant": "en",
+			"variants": [
+				{
+					"id": "en",
+					"name": "English",
+					"lang": "en"
+				},
+				{
+					"id": "si",
+					"name": "සිංහල",
+					"lang": "si"
+				},
+				{
+					"id": "ta",
+					"name": "தமிழ்",
+					"lang": "ta"
+				}
+			],
+			"sounds": [
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 0.333,
+					"durationSec": 0.06,
+					"gainDb": -10
+				},
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 1.333,
+					"durationSec": 0.06,
+					"gainDb": -10
+				},
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 2.333,
+					"durationSec": 0.06,
+					"gainDb": -10
+				},
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 3.333,
+					"durationSec": 0.06
+				},
+				{
+					"id": "ding",
+					"file": "sounds/ding.wav",
+					"at": 3.433,
+					"durationSec": 0.6,
+					"gainDb": -4
+				}
+			],
+			"files": {
+				"sub-countdown.json": {
+					"sha256": "8d4a988a0c8728222a6349445c2866bc3355263e3a50578f90209395ecd0ca2f"
+				},
+				"thumbnail.png": {
+					"sha256": "c14b6ea6b9fcdd0cf3cfde6b3fa0add287e7cfeea349507f6507e022346216e9"
+				},
+				"sub-countdown.si.json": {
+					"sha256": "6795537ed337422ca0e873887a34330c95423ef0b6f4fc80a665363fb1b502b9"
+				},
+				"thumbnail.si.png": {
+					"sha256": "34d4dcb996e5efcf31d1ec259924692e8b82e6094587c6a1d0b79516e62f835a"
+				},
+				"sub-countdown.ta.json": {
+					"sha256": "d696b4fe442eee057248c8d2bd9e2e395f13b39daee0a2d6e6ef3442537fe1f9"
+				},
+				"thumbnail.ta.png": {
+					"sha256": "8889d24c7c918febf4c83dec98d7d08e83059b9bc54f45fec7146660ed800bc5"
+				},
+				"asset.json": {
+					"sha256": "951dfad0007912e3f344e6b384740d975a35425591fe926ec1c1e467dedcb414"
+				}
+			}
+		},
+		{
+			"id": "bell-notifications-on",
+			"name": "Notifications on",
+			"category": "subscribe-buttons",
+			"path": "subscribe-buttons/bell-notifications-on",
+			"tags": [
+				"bell",
+				"notification",
+				"notifications on",
+				"alert",
+				"subscribe",
+				"youtube",
+				"icon"
+			],
+			"durationSec": 3,
+			"loop": false,
+			"width": 600,
+			"height": 600,
+			"colors": [
+				{
+					"id": "bell",
+					"name": "Bell",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "disc",
+					"name": "Circle",
+					"default": "#0F1115"
+				},
+				{
+					"id": "accent",
+					"name": "Burst",
+					"default": "#F5A524"
+				},
+				{
+					"id": "badge",
+					"name": "Dot",
+					"default": "#E53935"
+				}
+			],
+			"sounds": [
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 1.467,
+					"durationSec": 0.06
+				},
+				{
+					"id": "ding",
+					"file": "sounds/ding.wav",
+					"at": 1.533,
+					"durationSec": 0.6,
+					"gainDb": -2
+				}
+			],
+			"files": {
+				"bell-notifications-on.json": {
+					"sha256": "6f40ee01e3b9576c628545c4e26d2bef3e83049c4e29bf093cadec22a488088c"
+				},
+				"thumbnail.png": {
+					"sha256": "8b3b8bbaf1cb1bbdb3133a61f01ba374fdd32eb15f7dd4b98c4d1e7baf3fb87c"
+				},
+				"asset.json": {
+					"sha256": "9dc0672fa8c5432882120b11ab88f0e858caf972beee62af58d3c4a18439c7b4"
+				}
+			}
+		},
+		{
+			"id": "sub-join-pair",
+			"name": "Subscribe + join",
+			"category": "subscribe-buttons",
+			"path": "subscribe-buttons/sub-join-pair",
+			"tags": [
+				"subscribe",
+				"youtube",
+				"button",
+				"සබ්ස්ක්‍රයිබ්",
+				"சப்ஸ்கிரைப்",
+				"join",
+				"member",
+				"membership",
+				"pair",
+				"subscribed"
+			],
+			"durationSec": 3.5,
+			"loop": false,
+			"width": 1200,
+			"height": 300,
+			"colors": [
+				{
+					"id": "button",
+					"name": "Button",
+					"default": "#E53935"
+				},
+				{
+					"id": "pressed",
+					"name": "Subscribed button",
+					"default": "#3A3F4B"
+				},
+				{
+					"id": "text",
+					"name": "Text",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "member",
+					"name": "Join button",
+					"default": "#4C8DFF"
+				},
+				{
+					"id": "accent",
+					"name": "Sparkle",
+					"default": "#F5A524"
+				},
+				{
+					"id": "shadow",
+					"name": "Shadow",
+					"default": "#0F1115"
+				}
+			],
+			"defaultVariant": "en",
+			"variants": [
+				{
+					"id": "en",
+					"name": "English",
+					"lang": "en"
+				},
+				{
+					"id": "si",
+					"name": "සිංහල",
+					"lang": "si"
+				},
+				{
+					"id": "ta",
+					"name": "தமிழ்",
+					"lang": "ta"
+				}
+			],
+			"sounds": [
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0.267,
+					"durationSec": 0.12,
+					"gainDb": -4
+				},
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 1.2,
+					"durationSec": 0.06
+				},
+				{
+					"id": "confetti",
+					"file": "sounds/confetti.wav",
+					"at": 2.133,
+					"durationSec": 0.5,
+					"gainDb": -6
+				}
+			],
+			"files": {
+				"sub-join-pair.json": {
+					"sha256": "9c01cad06ac2447f4d5043a90731d99d5eb2fe8d40cfb2e89ef9995801af2cfc"
+				},
+				"thumbnail.png": {
+					"sha256": "d3d85daa1a32901088fd714e62e22331facc574b5c8405dc7ad28ddbda7df4dc"
+				},
+				"sub-join-pair.si.json": {
+					"sha256": "9a061ff730ac589aa645791cee0b7a682946ae57c86c2d034e8cede71e2cdb4b"
+				},
+				"thumbnail.si.png": {
+					"sha256": "a83cae23048e89a11fd51fb79bbb70a61a1a60bcd426d2536bfa54380e1d182a"
+				},
+				"sub-join-pair.ta.json": {
+					"sha256": "039e89fe3e214897ddec210461016b3bf5c2449a81da532ffd1f78d39877fe35"
+				},
+				"thumbnail.ta.png": {
+					"sha256": "218169e223545ac042c5f1265795831754eb5b452f9d45ab4af5e2471c4f4d1f"
+				},
+				"asset.json": {
+					"sha256": "28ec81c0183b3a5105e2c2a46336a405e2681d6de13f3c3134e005ab6e3a1754"
+				}
+			}
+		},
+		{
+			"id": "sub-sticker-confetti",
+			"name": "Sticker with confetti",
+			"category": "subscribe-buttons",
+			"path": "subscribe-buttons/sub-sticker-confetti",
+			"tags": [
+				"subscribe",
+				"youtube",
+				"button",
+				"සබ්ස්ක්‍රයිබ්",
+				"சப்ஸ்கிரைப்",
+				"sticker",
+				"badge",
+				"confetti",
+				"celebrate",
+				"tilted"
+			],
+			"durationSec": 3,
+			"loop": false,
+			"width": 900,
+			"height": 500,
+			"colors": [
+				{
+					"id": "button",
+					"name": "Button",
+					"default": "#E53935"
+				},
+				{
+					"id": "text",
+					"name": "Text",
+					"default": "#FFFFFF"
+				},
+				{
+					"id": "sticker",
+					"name": "Sticker edge",
+					"default": "#F4F6FA"
+				},
+				{
+					"id": "shadow",
+					"name": "Shadow",
+					"default": "#0F1115"
+				},
+				{
+					"id": "confetti1",
+					"name": "Confetti 1",
+					"default": "#F5A524"
+				},
+				{
+					"id": "confetti2",
+					"name": "Confetti 2",
+					"default": "#4C8DFF"
+				},
+				{
+					"id": "confetti3",
+					"name": "Confetti 3",
+					"default": "#2EC4B6"
+				}
+			],
+			"defaultVariant": "en",
+			"variants": [
+				{
+					"id": "en",
+					"name": "English",
+					"lang": "en"
+				},
+				{
+					"id": "si",
+					"name": "සිංහල",
+					"lang": "si"
+				},
+				{
+					"id": "ta",
+					"name": "தமிழ்",
+					"lang": "ta"
+				}
+			],
+			"sounds": [
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0.2,
+					"durationSec": 0.12
+				},
+				{
+					"id": "confetti",
+					"file": "sounds/confetti.wav",
+					"at": 0.2,
+					"durationSec": 0.5,
+					"gainDb": -2
+				}
+			],
+			"files": {
+				"sub-sticker-confetti.json": {
+					"sha256": "8a5b2d6d2ffc35c1c8cac99e110ec9abd080ad26174516c360fe5f27190e61e5"
+				},
+				"thumbnail.png": {
+					"sha256": "bd11a060d8daf9a564ae9d4fa8d1c28a9085a072e2d9f4bc7632052f25078fe5"
+				},
+				"sub-sticker-confetti.si.json": {
+					"sha256": "f2522d3e52ae8547008ef7207bed301da93fb15fc12a458b4cd66887b7a1470b"
+				},
+				"thumbnail.si.png": {
+					"sha256": "a3a901d49280ba2b580a146e18b0b2e955bdf544e7849c393acea72345cadc7f"
+				},
+				"sub-sticker-confetti.ta.json": {
+					"sha256": "59a6dd8e227083162f43a2c6690f585886652f9db29829a07e245f5e1face638"
+				},
+				"thumbnail.ta.png": {
+					"sha256": "2d4c8c525a557bb1299da3ee527e02183828453a9cf1f76717e31a0202415dea"
+				},
+				"asset.json": {
+					"sha256": "9720e23c48859dfcf0f6bea19564e383169a58f9694d7c3c7d399980c0eed043"
 				}
 			}
 		}

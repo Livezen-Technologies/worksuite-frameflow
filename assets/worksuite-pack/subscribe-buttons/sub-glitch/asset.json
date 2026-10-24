@@ -1,0 +1,81 @@
+{
+	"schema": 1,
+	"id": "sub-glitch",
+	"name": "Glitch",
+	"category": "subscribe-buttons",
+	"type": "lottie",
+	"file": "sub-glitch.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "A subscribe button that glitches in with RGB-split jumps.",
+	"tags": [
+		"subscribe",
+		"youtube",
+		"button",
+		"සබ්ස්ක්‍රයිබ්",
+		"சப்ஸ்கிரைப்",
+		"glitch",
+		"rgb",
+		"split",
+		"distortion"
+	],
+	"durationSec": 2.5,
+	"loop": false,
+	"aspect": "3:1",
+	"width": 900,
+	"height": 300,
+	"thumbnailAt": 0.19,
+	"colors": [
+		{
+			"id": "button",
+			"name": "Button",
+			"default": "#E53935"
+		},
+		{
+			"id": "text",
+			"name": "Text",
+			"default": "#FFFFFF"
+		},
+		{
+			"id": "split1",
+			"name": "Split 1",
+			"default": "#00E5FF"
+		},
+		{
+			"id": "split2",
+			"name": "Split 2",
+			"default": "#FF2DAA"
+		}
+	],
+	"defaultVariant": "en",
+	"variants": [
+		{
+			"id": "en",
+			"name": "English",
+			"lang": "en",
+			"file": "sub-glitch.json",
+			"thumbnail": "thumbnail.png"
+		},
+		{
+			"id": "si",
+			"name": "සිංහල",
+			"lang": "si",
+			"file": "sub-glitch.si.json",
+			"thumbnail": "thumbnail.si.png"
+		},
+		{
+			"id": "ta",
+			"name": "தமிழ்",
+			"lang": "ta",
+			"file": "sub-glitch.ta.json",
+			"thumbnail": "thumbnail.ta.png"
+		}
+	],
+	"sounds": [
+		{
+			"file": "../../sounds/whoosh.wav",
+			"at": 0.2,
+			"gainDb": -4
+		}
+	]
+}

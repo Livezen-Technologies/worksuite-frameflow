@@ -19,6 +19,14 @@ export interface LottieColorSlot {
 	default: string;
 }
 
+/** A language version of a pack asset: same timing and colour slots, different words. */
+export interface LottieVariant {
+	id: string;
+	/** In the language itself, e.g. "සිංහල". */
+	name: string;
+	lang: string;
+}
+
 /** `asset.json` next to each animation in the Worksuite Assets pack. */
 export interface WorksuiteAssetMeta {
 	schema: 1;
@@ -37,11 +45,16 @@ export interface WorksuiteAssetMeta {
 	width: number;
 	height: number;
 	colors: LottieColorSlot[];
+	/** Language variants (the first is the default); absent for assets without words. */
+	defaultVariant?: string;
+	variants?: Array<LottieVariant & { file: string; thumbnail: string }>;
+	/** Sound effects timed to the animation; `file` is relative to the asset folder. */
+	sounds?: Array<{ file: string; at: number; gainDb?: number }>;
 }
 
 /** Where an animation element's Lottie comes from. */
 export type LottieSource =
-	| { kind: "pack"; assetId: string }
+	| { kind: "pack"; assetId: string; /** Language variant; the default when absent. */ variant?: string }
 	| { kind: "user"; id: string };
 
 /**

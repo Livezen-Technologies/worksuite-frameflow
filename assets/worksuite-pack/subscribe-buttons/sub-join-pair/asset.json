@@ -1,0 +1,101 @@
+{
+	"schema": 1,
+	"id": "sub-join-pair",
+	"name": "Subscribe + join",
+	"category": "subscribe-buttons",
+	"type": "lottie",
+	"file": "sub-join-pair.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "A subscribe button and a member “Join” button pop in side by side; subscribe is clicked, join sparkles.",
+	"tags": [
+		"subscribe",
+		"youtube",
+		"button",
+		"සබ්ස්ක්‍රයිබ්",
+		"சப்ஸ்கிரைப்",
+		"join",
+		"member",
+		"membership",
+		"pair",
+		"subscribed"
+	],
+	"durationSec": 3.5,
+	"loop": false,
+	"aspect": "4:1",
+	"width": 1200,
+	"height": 300,
+	"thumbnailAt": 0.75,
+	"colors": [
+		{
+			"id": "button",
+			"name": "Button",
+			"default": "#E53935"
+		},
+		{
+			"id": "pressed",
+			"name": "Subscribed button",
+			"default": "#3A3F4B"
+		},
+		{
+			"id": "text",
+			"name": "Text",
+			"default": "#FFFFFF"
+		},
+		{
+			"id": "member",
+			"name": "Join button",
+			"default": "#4C8DFF"
+		},
+		{
+			"id": "accent",
+			"name": "Sparkle",
+			"default": "#F5A524"
+		},
+		{
+			"id": "shadow",
+			"name": "Shadow",
+			"default": "#0F1115"
+		}
+	],
+	"defaultVariant": "en",
+	"variants": [
+		{
+			"id": "en",
+			"name": "English",
+			"lang": "en",
+			"file": "sub-join-pair.json",
+			"thumbnail": "thumbnail.png"
+		},
+		{
+			"id": "si",
+			"name": "සිංහල",
+			"lang": "si",
+			"file": "sub-join-pair.si.json",
+			"thumbnail": "thumbnail.si.png"
+		},
+		{
+			"id": "ta",
+			"name": "தமிழ்",
+			"lang": "ta",
+			"file": "sub-join-pair.ta.json",
+			"thumbnail": "thumbnail.ta.png"
+		}
+	],
+	"sounds": [
+		{
+			"file": "../../sounds/pop.wav",
+			"at": 0.267,
+			"gainDb": -4
+		},
+		{
+			"file": "../../sounds/click.wav",
+			"at": 1.2
+		},
+		{
+			"file": "../../sounds/confetti.wav",
+			"at": 2.133,
+			"gainDb": -6
+		}
+	]
+}

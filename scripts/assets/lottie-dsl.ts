@@ -229,6 +229,8 @@ export interface LayerInput extends TransformInput {
 	inPoint?: number;
 	outPoint?: number;
 	parent?: number;
+	/** Layer masks (added together); they move with the layer. */
+	masks?: PathData[];
 }
 
 export interface Doc {
@@ -271,6 +273,12 @@ export function buildAnimation(doc: Doc, layers: LayerInput[]) {
 			st: 0,
 			bm: 0,
 			...(layer.parent ? { parent: layer.parent } : {}),
+			...(layer.masks?.length
+				? {
+						hasMask: true,
+						masksProperties: layer.masks.map((pt) => ({ inv: false, mode: "a", pt: { a: 0, k: pt }, o: { a: 0, k: 100 }, x: { a: 0, k: 0 }, nm: "Mask" })),
+					}
+				: {}),
 		})),
 		markers: [],
 	};

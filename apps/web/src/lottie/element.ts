@@ -1,5 +1,5 @@
 import type { ParamValues } from "@/params";
-import type { PackIndexAsset } from "./catalog";
+import { type PackIndexAsset, resolvePackVariant } from "./catalog";
 import type { LottieColorSlot, LottieElementData, LottieJson, LottieSource } from "./types";
 
 /** Default size per category, as a share of the frame (contain-fitted). */
@@ -11,6 +11,7 @@ export const CATEGORY_SCALE: Record<string, number | "cover"> = {
 	reactions: 0.6,
 	"sri-lanka-seasonal": 0.5,
 	"status-infographics": 0.4,
+	"subscribe-buttons": 0.45,
 };
 
 /** Transform scale so a w×h source fills `scale` of the frame (or covers it). */
@@ -32,10 +33,11 @@ export function lottieInsertScale({
 	return { "transform.scaleX": factor, "transform.scaleY": factor };
 }
 
-export function lottieDataFromPackAsset(asset: PackIndexAsset): LottieElementData {
+export function lottieDataFromPackAsset(asset: PackIndexAsset, variant?: string | null): LottieElementData {
 	const fps = 30;
+	const resolved = resolvePackVariant(asset, variant);
 	return {
-		source: { kind: "pack", assetId: asset.id },
+		source: resolved ? { kind: "pack", assetId: asset.id, variant: resolved } : { kind: "pack", assetId: asset.id },
 		colors: {},
 		width: asset.width,
 		height: asset.height,
@@ -132,4 +134,23 @@ export function brandColorOverrides({
 		if (brand) overrides = setSlotColor({ overrides, slot, color: brand });
 	});
 	return overrides;
+}
+
+/**
+ * The same clip in another language: only the source changes, so colours,
+ * speed, looping and timing stay as they are (variants share timing and
+ * colour slots). An unknown variant leaves the clip unchanged.
+ */
+export function switchLottieVariant({
+	data,
+	asset,
+	variant,
+}: {
+	data: LottieElementData;
+	asset: Pick<PackIndexAsset, "id" | "variants" | "defaultVariant">;
+	variant: string;
+}): LottieElementData {
+	if (data.source.kind !== "pack" || data.source.assetId !== asset.id) return data;
+	if (!asset.variants?.some((v) => v.id === variant)) return data;
+	return { ...data, source: { kind: "pack", assetId: asset.id, variant } };
 }

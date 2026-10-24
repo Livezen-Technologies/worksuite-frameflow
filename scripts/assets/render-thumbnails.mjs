@@ -1,7 +1,8 @@
 // Renders thumbnail.png (512×512, transparent) for every asset in a pack
 // folder, using lottie-web's canvas renderer in Playwright's Chromium: the
 // same runtime the editor uses. The frame drawn is `thumbnailAt` (default
-// 60 %) of the way through the animation.
+// 60 %) of the way through the animation. Assets with language variants
+// get a thumbnail per variant (asset.json → variants[].thumbnail).
 //
 //   node scripts/assets/render-thumbnails.mjs assets/worksuite-pack [--screenshot out.png]
 //
@@ -41,7 +42,11 @@ for (const category of readdirSync(packDir)) {
 		const metaPath = join(dir, id, "asset.json");
 		if (!existsSync(metaPath)) continue;
 		const meta = JSON.parse(readFileSync(metaPath, "utf8"));
-		assets.push({ dir: join(dir, id), meta, json: readFileSync(join(dir, id, meta.file), "utf8") });
+		// Assets with language variants get one thumbnail per variant.
+		const variants = Array.isArray(meta.variants) && meta.variants.length ? meta.variants : [{ file: meta.file, thumbnail: meta.thumbnail }];
+		for (const variant of variants) {
+			assets.push({ dir: join(dir, id), meta, thumbnail: variant.thumbnail, json: readFileSync(join(dir, id, variant.file), "utf8") });
+		}
 	}
 }
 
@@ -50,7 +55,7 @@ const page = await browser.newPage();
 await page.setContent("<!doctype html><html><body style='margin:0;background:transparent'></body></html>");
 await page.addScriptTag({ path: lottiePath });
 
-for (const { dir, meta, json } of assets) {
+for (const { dir, meta, thumbnail, json } of assets) {
 	const dataUrl = await page.evaluate(
 		async ({ json, at }) => {
 			const data = JSON.parse(json);
@@ -80,7 +85,7 @@ for (const { dir, meta, json } of assets) {
 		},
 		{ json, at: meta.thumbnailAt ?? 0.6 },
 	);
-	writeFileSync(join(dir, meta.thumbnail), Buffer.from(dataUrl.split(",")[1], "base64"));
+	writeFileSync(join(dir, thumbnail), Buffer.from(dataUrl.split(",")[1], "base64"));
 	process.stdout.write(".");
 }
 process.stdout.write(`\nRendered ${assets.length} thumbnails\n`);

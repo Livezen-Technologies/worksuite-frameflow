@@ -84,9 +84,11 @@ export class TimelineManager {
 		this.editor.command.execute({ command });
 	}
 
-	insertElement({ element, placement }: InsertElementParams): void {
+	/** Inserts an element and returns its id. */
+	insertElement({ element, placement }: InsertElementParams): string {
 		const command = new InsertElementCommand({ element, placement });
 		this.editor.command.execute({ command });
+		return command.getElementId();
 	}
 
 	updateElementTrim({
@@ -899,7 +901,7 @@ export class TimelineManager {
 		);
 	}
 
-	private findTrackIdForElement({
+	findTrackIdForElement({
 		elementId,
 	}: {
 		elementId: string;

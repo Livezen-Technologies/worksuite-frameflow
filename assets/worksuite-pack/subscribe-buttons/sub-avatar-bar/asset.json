@@ -1,0 +1,101 @@
+{
+	"schema": 1,
+	"id": "sub-avatar-bar",
+	"name": "Channel bar",
+	"category": "subscribe-buttons",
+	"type": "lottie",
+	"file": "sub-avatar-bar.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "A channel bar with an empty avatar circle and name placeholder (cover them with your own picture and text) and a subscribe button that gets clicked.",
+	"tags": [
+		"subscribe",
+		"youtube",
+		"button",
+		"සබ්ස්ක්‍රයිබ්",
+		"சப்ஸ்கிரைப்",
+		"channel",
+		"avatar",
+		"profile",
+		"lower third",
+		"subscribed"
+	],
+	"durationSec": 3.5,
+	"loop": false,
+	"aspect": "11:3",
+	"width": 1100,
+	"height": 300,
+	"thumbnailAt": 0.45,
+	"colors": [
+		{
+			"id": "panel",
+			"name": "Bar",
+			"default": "#0F1115"
+		},
+		{
+			"id": "placeholder",
+			"name": "Avatar & name area",
+			"default": "#596070"
+		},
+		{
+			"id": "accent",
+			"name": "Avatar ring",
+			"default": "#F5A524"
+		},
+		{
+			"id": "button",
+			"name": "Button",
+			"default": "#E53935"
+		},
+		{
+			"id": "pressed",
+			"name": "Subscribed button",
+			"default": "#3A3F4B"
+		},
+		{
+			"id": "text",
+			"name": "Text",
+			"default": "#FFFFFF"
+		}
+	],
+	"defaultVariant": "en",
+	"variants": [
+		{
+			"id": "en",
+			"name": "English",
+			"lang": "en",
+			"file": "sub-avatar-bar.json",
+			"thumbnail": "thumbnail.png"
+		},
+		{
+			"id": "si",
+			"name": "සිංහල",
+			"lang": "si",
+			"file": "sub-avatar-bar.si.json",
+			"thumbnail": "thumbnail.si.png"
+		},
+		{
+			"id": "ta",
+			"name": "தமிழ்",
+			"lang": "ta",
+			"file": "sub-avatar-bar.ta.json",
+			"thumbnail": "thumbnail.ta.png"
+		}
+	],
+	"sounds": [
+		{
+			"file": "../../sounds/whoosh.wav",
+			"at": 0,
+			"gainDb": -6
+		},
+		{
+			"file": "../../sounds/pop.wav",
+			"at": 0.6,
+			"gainDb": -4
+		},
+		{
+			"file": "../../sounds/click.wav",
+			"at": 1.933
+		}
+	]
+}

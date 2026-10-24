@@ -1,0 +1,54 @@
+{
+	"schema": 1,
+	"id": "cta-mouse-click",
+	"name": "Mouse click",
+	"category": "call-to-action",
+	"type": "lottie",
+	"file": "cta-mouse-click.json",
+	"thumbnail": "thumbnail.png",
+	"license": "MIT",
+	"description": "A computer mouse clicks its left button, which presses down and darkens, sending out a click ripple.",
+	"tags": [
+		"mouse",
+		"click",
+		"computer",
+		"button",
+		"press",
+		"here",
+		"tap"
+	],
+	"durationSec": 3,
+	"loop": true,
+	"aspect": "1:1",
+	"width": 1080,
+	"height": 1080,
+	"thumbnailAt": 0.25,
+	"colors": [
+		{
+			"id": "body",
+			"name": "Mouse",
+			"default": "#FFFFFF"
+		},
+		{
+			"id": "outline",
+			"name": "Outline",
+			"default": "#0F1115"
+		},
+		{
+			"id": "pressed",
+			"name": "Pressed button",
+			"default": "#AEB6C4"
+		},
+		{
+			"id": "ripple",
+			"name": "Click ripple",
+			"default": "#2EC4B6"
+		}
+	],
+	"sounds": [
+		{
+			"file": "../../sounds/click.wav",
+			"at": 0.667
+		}
+	]
+}
