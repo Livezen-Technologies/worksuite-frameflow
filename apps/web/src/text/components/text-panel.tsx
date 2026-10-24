@@ -30,6 +30,11 @@ import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { useEditor } from "@/editor/use-editor";
 import { loadFonts } from "@/fonts/google-fonts";
+import { SINHALA_UNICODE_FONTS } from "@/fonts/sinhala-fonts";
+import { syncTextToVoice } from "@/text/voice-sync";
+import { timeWords } from "@/text/voice-words";
+import type { TimedWord } from "@/captions/words";
+import { TICKS_PER_SECOND } from "@/wasm";
 import type { ParamValues } from "@/params";
 import type { TextElement } from "@/timeline";
 import { cn } from "@/utils/ui";
@@ -439,7 +444,7 @@ export function TextBasicTab({
 					style={{
 						fontFamily: isLegacyFont({ fontFamily: String(p.fontFamily ?? "") })
 							? "'Noto Sans Sinhala', sans-serif"
-							: `"${String(p.fontFamily ?? "Inter")}", 'Noto Sans Sinhala', sans-serif`,
+							: `"${String(p.fontFamily ?? "Inter")}", "${String(p.sinhalaFontFamily || "Noto Sans Sinhala")}", sans-serif`,
 					}}
 					aria-label="Text"
 					data-text-content
@@ -464,6 +469,19 @@ export function TextBasicTab({
 						write({ fontFamily: font });
 					}}
 				/>
+			</Section>
+			<Section title="Sinhala font">
+				<SinhalaFontSelect
+					mainFont={String(p.fontFamily ?? "")}
+					value={String(p.sinhalaFontFamily ?? "")}
+					onChange={(font) => {
+						if (font) void loadFonts({ families: [font] }).catch(() => {});
+						write({ sinhalaFontFamily: font });
+					}}
+				/>
+			</Section>
+			<Section title="Voice">
+				<VoiceSync element={element} trackId={trackId} />
 			</Section>
 			<Section title="Format">
 				<div className="flex flex-wrap items-center gap-1">
@@ -934,6 +952,126 @@ function SinhalaTextTools({
 					Copy as legacy text
 				</Button>
 			)}
+		</div>
+	);
+}
+
+/**
+ * The font for Sinhala letters: English stays in the main font and Sinhala
+ * in this one, so one line can mix both. Legacy FM/DL fonts re-encode the
+ * whole text, so they can't be mixed this way.
+ */
+function SinhalaFontSelect({
+	mainFont,
+	value,
+	onChange,
+}: {
+	mainFont: string;
+	value: string;
+	onChange: (font: string) => void;
+}) {
+	if (isLegacyFont({ fontFamily: mainFont }))
+		return (
+			<p className="text-muted-foreground m-0 text-xs">
+				{mainFont} is a legacy font, so the whole text uses it. Pick a Unicode main font to mix
+				English and Sinhala.
+			</p>
+		);
+	return (
+		<div className="flex flex-col gap-1.5">
+			<select
+				className="bg-accent/50 h-8 rounded-md border-0 px-2 text-sm"
+				value={value}
+				onChange={(e) => onChange(e.target.value)}
+				aria-label="Sinhala font"
+				data-sinhala-font
+			>
+				<option value="">Default (Noto Sans Sinhala)</option>
+				{SINHALA_UNICODE_FONTS.map((font) => (
+					<option key={font.family} value={font.family}>
+						{font.family} · {font.style}
+					</option>
+				))}
+			</select>
+			<p className="text-muted-foreground m-0 text-xs">
+				English letters use {mainFont || "the main font"}; Sinhala letters use this font.
+			</p>
+		</div>
+	);
+}
+
+/** Times the words to the voice under the clip and shows them as spoken. */
+function VoiceSync({ element, trackId }: { element: TextElement; trackId: string }) {
+	const editor = useEditor();
+	const [step, setStep] = useState<string | null>(null);
+	const on = element.params["animation.caption"] === "voice";
+	const run = async () => {
+		setStep("Listening...");
+		const apply = (words: TimedWord[]) =>
+			editor.timeline.updateElements({
+				updates: [
+					{
+						trackId,
+						elementId: element.id,
+						patch: { words, params: { ...element.params, "animation.caption": "voice" } },
+					},
+				],
+			});
+		try {
+			const { words, matched } = await syncTextToVoice({ editor, element, onStep: setStep });
+			apply(words);
+			toast.success(
+				matched > 0
+					? "Words now appear as they're spoken"
+					: "No matching speech found; words follow the voice's pace",
+			);
+		} catch (error) {
+			// Still animate, evenly timed, so the clip works offline too.
+			apply(
+				timeWords({
+					content: String(element.params.content ?? ""),
+					spoken: [],
+					durationSeconds: element.duration / TICKS_PER_SECOND,
+				}).words,
+			);
+			toast.warning(
+				`Couldn't listen to the voice (${error instanceof Error ? error.message : "unknown error"}). Words are evenly timed for now; try again when you're online.`,
+			);
+		} finally {
+			setStep(null);
+		}
+	};
+	return (
+		<div className="flex flex-col gap-2">
+			<div className="flex flex-wrap items-center gap-2">
+				<Button size="sm" onClick={() => void run()} disabled={step !== null} data-voice-sync>
+					{step ?? "Sync with voice"}
+				</Button>
+				{on && (
+					<Button
+						size="sm"
+						variant="ghost"
+						onClick={() =>
+							editor.timeline.updateElements({
+								updates: [
+									{
+										trackId,
+										elementId: element.id,
+										patch: { params: { ...element.params, "animation.caption": "none" } },
+									},
+								],
+							})
+						}
+					>
+						Turn off
+					</Button>
+				)}
+			</div>
+			<p className="text-muted-foreground m-0 text-xs">
+				{on
+					? `Showing ${element.words?.length ? "word by word with the voice" : "word by word, evenly timed"}.`
+					: "Put the text over a voice clip, then each word appears as it's spoken."}
+			</p>
 		</div>
 	);
 }

@@ -1,4 +1,5 @@
-import { wordIndexAt } from "@/captions/words";
+import { estimateWords, splitWords, wordIndexAt } from "@/captions/words";
+import { voiceRevealWords } from "@/text/voice-words";
 import {
 	findReframeEffect,
 	type ProjectionDescriptor,
@@ -802,6 +803,22 @@ function resolveTextNode({
 				index,
 				color: typeof color === "string" ? color : "#ffd400",
 			};
+	}
+	if (node.params.params["animation.caption"] === "voice") {
+		const content = String(node.params.params.content ?? "");
+		const timed = words?.length
+			? words
+			: estimateWords({
+					text: content,
+					start: 0,
+					end: node.params.duration / TICKS_PER_SECOND,
+				});
+		const total = splitWords(content).length;
+		if (total > 0) {
+			const shown = voiceRevealWords({ words: timed, seconds: localTime / TICKS_PER_SECOND });
+			const voiceCount = revealCount({ content, reveal: Math.min(1, shown / total), unit: "word" });
+			styleEffects.revealGraphemes = Math.min(styleEffects.revealGraphemes ?? Number.POSITIVE_INFINITY, voiceCount);
+		}
 	}
 	if (animation.reveal < 1) {
 		const content = String(node.params.params.content ?? "");

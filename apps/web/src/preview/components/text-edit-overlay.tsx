@@ -129,7 +129,7 @@ export function TextEditOverlay({
 					// Editing shows Unicode in a Unicode font; legacy fonts apply when drawn (TI-19).
 					fontFamily: isLegacyFont({ fontFamily: textParams.fontFamily })
 						? "Noto Sans Sinhala"
-						: textParams.fontFamily,
+						: resolvedTextLayout.fontString.replace(/^\S+ \S+ \S+px /, ""),
 					fontWeight: textParams.fontWeight === "bold" ? "bold" : "normal",
 					fontStyle: textParams.fontStyle === "italic" ? "italic" : "normal",
 					textAlign: textParams.textAlign,

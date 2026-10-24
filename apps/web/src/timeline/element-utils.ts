@@ -403,6 +403,9 @@ export function getElementFontFamilies({
 			if (element.type === "text" && typeof element.params.fontFamily === "string") {
 				families.add(element.params.fontFamily);
 			}
+			if (element.type === "text" && typeof element.params.sinhalaFontFamily === "string" && element.params.sinhalaFontFamily) {
+				families.add(element.params.sinhalaFontFamily);
+			}
 			if ("masks" in element) {
 				for (const mask of element.masks ?? []) {
 					if (mask.type === "text" && mask.params.fontFamily) {

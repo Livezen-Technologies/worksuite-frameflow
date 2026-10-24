@@ -145,6 +145,11 @@ export function buildTextLayoutParamsFromElement({
 		key: "fontFamily",
 		fallback: "Arial",
 	});
+	const sinhalaFontFamily = readStringParam({
+		params: element.params,
+		key: "sinhalaFontFamily",
+		fallback: "",
+	});
 	return {
 		// Text stays Unicode; a legacy Sinhala font gets its own encoding when drawn (TI-18).
 		content: isLegacyFont({ fontFamily }) ? unicodeToLegacy({ text: content }) : content,
@@ -154,6 +159,13 @@ export function buildTextLayoutParamsFromElement({
 			fallback: 15,
 		}),
 		fontFamily,
+		// Legacy fonts re-encode the whole text, so they can't share a line.
+		sinhalaFontFamily:
+			sinhalaFontFamily &&
+			!isLegacyFont({ fontFamily }) &&
+			!isLegacyFont({ fontFamily: sinhalaFontFamily })
+				? sinhalaFontFamily
+				: undefined,
 		fontWeight: readFontWeight({
 			value: element.params.fontWeight,
 			fallback: "normal",

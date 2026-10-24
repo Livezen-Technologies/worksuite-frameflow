@@ -63,6 +63,8 @@ export const CAPTION_ANIMATIONS: AnimationPreset[] = [
 	{ value: "letters", label: "Letter by letter", textOnly: true },
 	// Uses the caption's word timings from transcription (AI-46).
 	{ value: "highlight", label: "Highlight spoken word", textOnly: true },
+	// Words appear as the voice says them (Text › Basic › Sync with voice).
+	{ value: "voice", label: "Show with voice", textOnly: true },
 ];
 
 const options = (presets: AnimationPreset[]) =>
@@ -361,7 +363,7 @@ export function animationState({
 		});
 	}
 	const caption = str({ params, key: "animation.caption" });
-	if (caption !== "none" && caption !== "highlight" && durationSeconds > 0) {
+	if (caption !== "none" && caption !== "highlight" && caption !== "voice" && durationSeconds > 0) {
 		const span =
 			caption === "words-fast" ? 0.4 : caption === "letters" ? 0.6 : 0.85;
 		state.reveal = Math.min(state.reveal, clamp01(localSeconds / (durationSeconds * span)));

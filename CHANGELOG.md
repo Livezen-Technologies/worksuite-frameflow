@@ -7,6 +7,11 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+### Added
+
+- **English and Sinhala in one line**: Text → Basic has a new **Sinhala font** setting. English letters use the main font and Sinhala letters use the Sinhala font you pick (Noto Sans Sinhala, Noto Serif Sinhala, Abhaya Libre, Yaldevi, Gemunu Libre or Stick No Bills), in the preview and in exports. Legacy FM/DL fonts still apply to the whole text.
+- **Show text with the voice**: Text → Basic → **Sync with voice** listens to the voice under a text clip and shows each word as it's spoken. You can also pick it as the **Show with voice** caption animation. Without an internet connection for the speech model, the words are spread evenly over the clip instead.
+
 ## [1.1.0] - 2026-10-24
 
 ### Added

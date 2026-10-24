@@ -20,6 +20,8 @@ export interface TextLayoutParams {
 	content: string;
 	fontSize: number;
 	fontFamily: string;
+	/** Draws Sinhala letters when the main font has none (mixed English and Sinhala lines). */
+	sinhalaFontFamily?: string;
 	fontWeight: TextFontWeight;
 	fontStyle: TextFontStyle;
 	textAlign: TextAlign;
@@ -60,16 +62,20 @@ export function quoteFontFamily({ fontFamily }: { fontFamily: string }): string 
 
 export function buildTextFontString({
 	fontFamily,
+	sinhalaFontFamily,
 	fontWeight,
 	fontStyle,
 	scaledFontSize,
 }: {
 	fontFamily: string;
+	sinhalaFontFamily?: string;
 	fontWeight: TextFontWeight;
 	fontStyle: TextFontStyle;
 	scaledFontSize: number;
 }): string {
-	return `${fontStyle} ${fontWeight} ${scaledFontSize}px ${quoteFontFamily({ fontFamily })}, sans-serif`;
+	// Letters the main font lacks fall back to the Sinhala font, glyph by glyph.
+	const sinhala = sinhalaFontFamily ? `${quoteFontFamily({ fontFamily: sinhalaFontFamily })}, ` : "";
+	return `${fontStyle} ${fontWeight} ${scaledFontSize}px ${quoteFontFamily({ fontFamily })}, ${sinhala}sans-serif`;
 }
 
 export function resolveTextLayout({
@@ -92,6 +98,7 @@ export function resolveTextLayout({
 		scaledFontSize,
 		fontString: buildTextFontString({
 			fontFamily: text.fontFamily,
+			sinhalaFontFamily: text.sinhalaFontFamily,
 			fontWeight,
 			fontStyle,
 			scaledFontSize,
