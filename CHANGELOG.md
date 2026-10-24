@@ -7,6 +7,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+## [1.5.0] - 2026-10-24
+
 ### Added
 
 - **Duck music under voice** in the Music & Audio Editor (Smart edits): pick the music and voice tracks, depth and release, and the music dips whenever someone speaks, using volume keyframes you can still adjust. Remove ducking takes them off again.
