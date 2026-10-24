@@ -1,17 +1,23 @@
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "opencut",
-  "main": ".open-next/worker.js",
-  "compatibility_date": "2025-04-01",
-  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
-  "assets": {
-    "directory": ".open-next/assets",
-    "binding": "ASSETS"
-  },
-  "services": [
-    {
-      "binding": "WORKER_SELF_REFERENCE",
-      "service": "opencut"
-    }
-  ]
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "frameflow-web",
+	"main": ".open-next/worker.js",
+	"compatibility_date": "2025-04-01",
+	"compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+	"assets": {
+		"directory": ".open-next/assets",
+		"binding": "ASSETS"
+	},
+	"services": [
+		{
+			"binding": "WORKER_SELF_REFERENCE",
+			"service": "frameflow-web"
+		}
+	],
+	// The worksuitecloud.com zone must be in the same Cloudflare account;
+	// Cloudflare creates the DNS record and certificate for a custom domain.
+	"routes": [{ "pattern": "frameflow.worksuitecloud.com", "custom_domain": true }],
+	"vars": {
+		"NEXT_PUBLIC_SITE_URL": "https://frameflow.worksuitecloud.com"
+	}
 }

@@ -2,6 +2,7 @@
 
 import { PacksView } from "@/packs/components/packs-view";
 import { TextLibraryView } from "@/text-library/components/text-library-view";
+import { parseTextTemplate, usePackItems } from "@/asset-library/pack-items";
 import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import { toast } from "sonner";
 import { PanelView } from "@/components/editor/panels/assets/views/base-panel";
@@ -23,7 +24,7 @@ import {
 	type TextTemplateCategory,
 } from "../templates";
 
-type Filter = "All" | TextTemplateCategory | "My templates";
+type Filter = "All" | TextTemplateCategory | "My templates" | "Downloaded";
 
 type Read<T> = { params: ParamValues; key: string; fallback: T };
 
@@ -98,6 +99,8 @@ function TextTemplatesView() {
 	const myTemplates = useMyTextTemplates((s) => s.templates);
 	const saveTemplate = useMyTextTemplates((s) => s.save);
 	const removeTemplate = useMyTextTemplates((s) => s.remove);
+	const downloadedItems = usePackItems({ types: ["text-templates"], parse: parseTextTemplate });
+	const downloaded = useMemo<TextTemplate[]>(() => downloadedItems.map(({ value }) => ({ ...value, categories: [] })), [downloadedItems]);
 	const [filter, setFilter] = useState<Filter>("All");
 	const [query, setQuery] = useState("");
 
@@ -114,11 +117,13 @@ function TextTemplatesView() {
 			filter === "My templates"
 				? myTemplates
 				: filter === "All"
-					? [...TEXT_TEMPLATES, ...myTemplates]
-					: TEXT_TEMPLATES.filter((t) => t.categories.includes(filter));
+					? [...TEXT_TEMPLATES, ...downloaded, ...myTemplates]
+					: filter === "Downloaded"
+						? downloaded
+						: TEXT_TEMPLATES.filter((t) => t.categories.includes(filter));
 		const q = query.trim().toLowerCase();
 		return q ? pool.filter((t) => t.name.toLowerCase().includes(q)) : pool;
-	}, [filter, query, myTemplates]);
+	}, [filter, query, myTemplates, downloaded]);
 
 	const addToTimeline = (template: TextTemplate) => {
 		if (!editor.scenes.getActiveScene()) return;
@@ -169,6 +174,7 @@ function TextTemplatesView() {
 		"All",
 		...TEXT_TEMPLATE_CATEGORIES,
 		"My templates",
+		...(downloaded.length ? (["Downloaded"] as const) : []),
 	];
 
 	return (

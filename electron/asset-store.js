@@ -43,6 +43,8 @@ function createAssetStore({
 	builtinPacks = [],
 	isOffline = () => false,
 	onChange = () => {},
+	/** Bearer token for Pro packs (Worksuite Cloud sign-in); null when signed out. */
+	getAccessToken = async () => null,
 }) {
 	fs.mkdirSync(root, { recursive: true });
 	const file = (...parts) => path.join(root, ...parts);
@@ -174,15 +176,18 @@ function createAssetStore({
 			have = 0;
 		}
 		if (have < pack.sizeBytes) {
+			const token = pack.plan === "free" ? null : await getAccessToken().catch(() => null);
 			const res = await fetchImpl(packUrl(pack), {
-				headers: have ? { Range: `bytes=${have}-` } : {},
+				headers: { ...(have ? { Range: `bytes=${have}-` } : {}), ...(token ? { Authorization: `Bearer ${token}` } : {}) },
 				signal: d.controller.signal,
 			});
 			if (res.status === 200 && have) {
 				// The server ignored the range: start over.
 				fs.rmSync(part, { force: true });
 				have = 0;
-			} else if (!res.ok) throw new Error(`Download failed (${res.status})`);
+			} else if (res.status === 401) throw Object.assign(new Error("Sign in to Worksuite Cloud to download Pro packs"), { code: "sign-in" });
+			else if (res.status === 403) throw Object.assign(new Error("This pack needs a Pro plan"), { code: "plan" });
+			else if (!res.ok) throw new Error(`Download failed (${res.status})`);
 			d.received = have;
 			d.total = pack.sizeBytes;
 			const out = fs.createWriteStream(part, { flags: have ? "a" : "w" });
@@ -464,6 +469,11 @@ const CONTENT_TYPES = {
 	".cube": "text/plain",
 	".mp4": "video/mp4",
 	".webm": "video/webm",
+	".gif": "image/gif",
+	".flac": "audio/flac",
+	".aac": "audio/aac",
+	".mov": "video/quicktime",
+	".txt": "text/plain",
 };
 
 // ---------- Electron glue ----------
@@ -485,22 +495,36 @@ function registerScheme() {
 	]);
 }
 
-function init({ isOffline } = {}) {
+/** Catalog checks while the app runs (Asset Library blueprint §8.2). */
+const SYNC_INTERVAL_MS = 15 * 60 * 1000;
+
+function init({ isOffline, onNetworkChange, getAccessToken } = {}) {
 	const { app, BrowserWindow } = require("electron");
 	store = createAssetStore({
 		root: path.join(app.getPath("userData"), "assets"),
 		appVersion: app.getVersion(),
 		builtinPacks: BUILTIN_PACKS,
 		isOffline,
+		getAccessToken,
 		onChange: (state) => {
 			for (const win of BrowserWindow.getAllWindows()) win.webContents.send("assets:changed", state);
 		},
 	});
-	// Catalog check and installed-pack updates shortly after start.
-	setTimeout(async () => {
+	const sync = async () => {
+		if (isOffline?.()) return;
 		await store.refreshCatalog();
 		if (store.getState().settings.autoUpdate) await store.updateAll();
-	}, 8000).unref?.();
+	};
+	// Catalog check and installed-pack updates shortly after start, then
+	// every 15 minutes and whenever the app comes back online, so newly
+	// published library assets appear without a restart.
+	setTimeout(sync, 8000).unref?.();
+	setInterval(sync, SYNC_INTERVAL_MS).unref?.();
+	let wasOffline = !!isOffline?.();
+	onNetworkChange?.((state) => {
+		if (wasOffline && !state.offline) sync();
+		wasOffline = !!state.offline;
+	});
 	return store;
 }
 

@@ -19,6 +19,7 @@ import {
 	templateDuration,
 	templateSlots,
 } from "../project-templates";
+import { parseProjectTemplate, usePackItems } from "@/asset-library/pack-items";
 
 type Filter = "All" | TemplateCategory;
 
@@ -117,6 +118,8 @@ export function TemplatesView() {
 	const [selectedId, setSelectedId] = useState<string | null>(null);
 	const [matchShape, setMatchShape] = useState(true);
 	const [busy, setBusy] = useState(false);
+	const downloaded = usePackItems({ types: ["video-templates"], parse: parseProjectTemplate });
+	const templates = useMemo(() => [...PROJECT_TEMPLATES, ...downloaded.map((d) => d.value)], [downloaded]);
 
 	useEffect(() => {
 		loadFonts({ families: PROJECT_TEMPLATE_FONTS }).catch(() => {});
@@ -124,16 +127,16 @@ export function TemplatesView() {
 
 	const visible = useMemo(() => {
 		const q = query.trim().toLowerCase();
-		return PROJECT_TEMPLATES.filter(
+		return templates.filter(
 			(t) =>
 				(filter === "All" || t.category === filter) &&
 				(!q ||
 					t.name.toLowerCase().includes(q) ||
 					t.description.toLowerCase().includes(q)),
 		);
-	}, [filter, query]);
+	}, [filter, query, templates]);
 
-	const selected = PROJECT_TEMPLATES.find((t) => t.id === selectedId) ?? null;
+	const selected = templates.find((t) => t.id === selectedId) ?? null;
 	const visualMedia = media.filter(
 		(m) => m.type === "image" || m.type === "video",
 	);

@@ -1,6 +1,10 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { toast } from "sonner";
+import { asFile, isMediaItem, usePackItems } from "@/asset-library/pack-items";
+import { insertPackMedia } from "@/asset-library/pack-media";
+import type { PackContentItem } from "@/asset-library/registry";
 import { PanelView } from "@/components/editor/panels/assets/views/base-panel";
 import { Input } from "@/components/ui/input";
 import { useEditor } from "@/editor/use-editor";
@@ -20,7 +24,7 @@ import {
 	type ElementPreset,
 } from "../library";
 
-type Filter = "All" | "GIFs" | "Animations" | ElementCategory;
+type Filter = "All" | "GIFs" | "Animations" | "Downloaded" | ElementCategory;
 
 /** Transform scale for a graphic drawn from a square source contained in the frame. */
 function graphicScale({
@@ -84,6 +88,21 @@ export function ElementsView() {
 	const editor = useEditor();
 	const [filter, setFilter] = useState<Filter>("All");
 	const [query, setQuery] = useState("");
+	const downloaded = usePackItems({ types: ["graphics", "stickers"], parse: asFile })
+		.map((d) => d.value)
+		.filter(isMediaItem);
+	const [adding, setAdding] = useState<string | null>(null);
+
+	const addDownloaded = async (item: PackContentItem) => {
+		setAdding(item.id);
+		try {
+			await insertPackMedia({ editor, item });
+		} catch (error) {
+			toast.error(error instanceof Error ? error.message : `Couldn't add ${item.name}`);
+		} finally {
+			setAdding(null);
+		}
+	};
 
 	const visible = useMemo(() => {
 		const q = query.trim().toLowerCase();
@@ -124,7 +143,7 @@ export function ElementsView() {
 		});
 	};
 
-	const filters: Filter[] = ["All", "GIFs", "Animations", ...ELEMENT_CATEGORIES];
+	const filters: Filter[] = ["All", "GIFs", "Animations", ...(downloaded.length ? (["Downloaded"] as const) : []), ...ELEMENT_CATEGORIES];
 
 	return (
 		<PanelView title="Elements">
@@ -153,6 +172,32 @@ export function ElementsView() {
 				) : filter === "Animations" ? (
 					<div className="min-h-0 flex-1">
 						<AnimationsView />
+					</div>
+				) : filter === "Downloaded" ? (
+					<div className="grid grid-cols-3 gap-x-2 gap-y-3" data-elements-downloaded>
+						{downloaded.map((item) => (
+							<button
+								key={item.id}
+								type="button"
+								title={`Add ${item.name} at the playhead`}
+								disabled={adding === item.id}
+								data-element-download={item.id}
+								onClick={() => void addDownloaded(item)}
+								className="group flex min-w-0 flex-col items-center gap-1 disabled:opacity-50"
+							>
+								<span className="flex aspect-square w-full items-center justify-center overflow-hidden rounded-xl bg-[repeating-conic-gradient(#1a1d24_0%_25%,#14171d_0%_50%)] bg-[length:16px_16px] ring-1 ring-white/5 transition group-hover:ring-[#22D3EE]">
+									{/\.(webm|mp4|mov)$/i.test(item.url) ? (
+										<video src={item.url} muted loop autoPlay playsInline className="size-full object-contain" />
+									) : (
+										// eslint-disable-next-line @next/next/no-img-element -- local pack file
+										<img src={item.url} alt="" className="size-full object-contain" />
+									)}
+								</span>
+								<span className="text-muted-foreground group-hover:text-foreground w-full truncate text-center text-[11px]">
+									{item.name}
+								</span>
+							</button>
+						))}
 					</div>
 				) : filter === "Stickers" ? (
 					<div className="-mx-2 min-h-0 flex-1">

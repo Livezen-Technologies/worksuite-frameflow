@@ -20,8 +20,9 @@ import {
 	readClipFilter,
 	withFilter,
 } from "../library";
+import { parseFilter, usePackItems } from "@/asset-library/pack-items";
 
-type Filter = "All" | FilterCategory;
+type Filter = "All" | "Downloaded" | FilterCategory;
 
 /** The filter's colour grade on the shared preview picture. */
 function FilterThumb({ preset }: { preset: FilterPreset }) {
@@ -56,6 +57,13 @@ export function FiltersView() {
 	const { selectedElements } = useElementSelection();
 	const [filter, setFilter] = useState<Filter>("All");
 	const [dragStrength, setDragStrength] = useState<number | null>(null);
+	const downloadedItems = usePackItems({ types: ["filters", "color-profiles"], parse: parseFilter });
+	// Downloaded presets sit with the built-in ones; their category is only for the type.
+	const downloaded = useMemo<FilterPreset[]>(
+		() => downloadedItems.map(({ value }) => ({ ...value, category: FILTER_CATEGORIES[0] })),
+		[downloadedItems],
+	);
+	const allPresets = useMemo(() => [...FILTER_PRESETS, ...downloaded], [downloaded]);
 
 	const targets = editor.timeline
 		.getElementsWithTracks({ elements: selectedElements })
@@ -65,12 +73,16 @@ export function FiltersView() {
 	const current =
 		targets.length > 0 ? readClipFilter(targets[0].element.effects) : null;
 	const currentPreset =
-		FILTER_PRESETS.find((p) => p.id === current?.id) ?? null;
+		allPresets.find((p) => p.id === current?.id) ?? null;
 
 	const visible = useMemo(
 		() =>
-			FILTER_PRESETS.filter((p) => filter === "All" || p.category === filter),
-		[filter],
+			filter === "Downloaded"
+				? downloaded
+				: filter === "All"
+					? allPresets
+					: FILTER_PRESETS.filter((p) => p.category === filter),
+		[filter, downloaded, allPresets],
 	);
 
 	const apply = ({
@@ -102,7 +114,7 @@ export function FiltersView() {
 		});
 	};
 
-	const filters: Filter[] = ["All", ...FILTER_CATEGORIES];
+	const filters: Filter[] = ["All", ...(downloaded.length ? (["Downloaded"] as const) : []), ...FILTER_CATEGORIES];
 	const strength = dragStrength ?? current?.strength ?? 100;
 
 	return (

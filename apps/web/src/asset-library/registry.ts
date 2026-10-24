@@ -10,8 +10,9 @@ import type { InstalledPack, PackType } from "./types";
  *   sounds  → Sounds → Packs (packSounds)
  *   fonts   → FontFace registrations, usable by name in text and slots
  *   others  → packContent(type): transitions, effects, filters, colour
- *             profiles, LUTs and templates are listed here for their
- *             panels to pick up (those panels don't read dynamic packs yet).
+ *             profiles, LUTs, templates, graphics, stickers and brand kits
+ *             are listed here for their panels to pick up (those panels
+ *             don't read dynamic packs yet).
  */
 
 export interface PackSound {

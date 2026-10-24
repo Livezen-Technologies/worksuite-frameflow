@@ -9,7 +9,8 @@ import { FontPicker } from "@/components/ui/font-picker";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import { useEditor } from "@/editor/use-editor";
-import { setOwnKit, switchBrandKit, useProjectKits } from "../project-kits";
+import { kitData, setOwnKit, switchBrandKit, useProjectKits } from "../project-kits";
+import { parseBrandKit, usePackItems, type PackBrandKit } from "@/asset-library/pack-items";
 import { useElementSelection } from "@/timeline/hooks/element/use-element-selection";
 import { generateUUID } from "@/utils/id";
 import { cn } from "@/utils/ui";
@@ -113,6 +114,7 @@ export function BrandKitView() {
 					aria-label="Brand name"
 				/>
 				<ProjectKitSwitch />
+				<DownloadedBrandKits />
 
 				<Section
 					title="Logos"
@@ -409,5 +411,61 @@ function ProjectKitSwitch() {
 			Separate brand kit for this project
 			<span className="text-muted-foreground">({own ? "only this project" : "shared by all projects"})</span>
 		</label>
+	);
+}
+
+/** Brand kits installed from the Asset Library: "Use" loads one into this kit (with undo). */
+function DownloadedBrandKits() {
+	const kits = usePackItems({ types: ["brand-kits"], parse: parseBrandKit });
+	const [busy, setBusy] = useState<string | null>(null);
+	if (kits.length === 0) return null;
+
+	const use = async (pack: PackBrandKit) => {
+		setBusy(pack.id);
+		try {
+			const logos = [];
+			for (const logo of pack.logos.slice(0, MAX_LOGOS)) {
+				const res = await fetch(logo.url);
+				if (!res.ok) continue;
+				const blob = await res.blob();
+				if (!blob.type.startsWith("image/") || blob.size > MAX_LOGO_BYTES) continue;
+				logos.push({ id: generateUUID(), name: logo.name, dataUrl: await readAsDataUrl(new File([blob], logo.name, { type: blob.type })) });
+			}
+			const previous = kitData(useBrandKit.getState());
+			useBrandKit.setState({
+				name: pack.name,
+				colors: pack.colors,
+				...(pack.headingFont ? { headingFont: pack.headingFont } : {}),
+				...(pack.bodyFont ? { bodyFont: pack.bodyFont } : {}),
+				...(logos.length ? { logos } : {}),
+			});
+			toast.success(`Using the ${pack.name} brand kit`, {
+				action: { label: "Undo", onClick: () => useBrandKit.setState(previous) },
+			});
+		} catch {
+			toast.error(`Couldn't load the ${pack.name} brand kit`);
+		} finally {
+			setBusy(null);
+		}
+	};
+
+	return (
+		<Section title="Downloaded brand kits">
+			<ul className="m-0 flex list-none flex-col gap-2 p-0" data-brand-downloads>
+				{kits.map(({ value: pack }) => (
+					<li key={pack.id} className="bg-card flex items-center gap-2 rounded-lg border p-2">
+						<span className="flex shrink-0">
+							{pack.colors.slice(0, 5).map((c) => (
+								<span key={c} className="size-4 rounded-full ring-1 ring-black/20" style={{ background: c }} />
+							))}
+						</span>
+						<span className="min-w-0 flex-1 truncate text-sm">{pack.name}</span>
+						<Button size="sm" variant="outline" className="h-6 px-2 text-[11px]" disabled={busy === pack.id} onClick={() => void use(pack)}>
+							Use
+						</Button>
+					</li>
+				))}
+			</ul>
+		</Section>
 	);
 }
