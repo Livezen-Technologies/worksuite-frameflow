@@ -5,3 +5,10 @@ declare module "lottie-web/build/player/lottie_canvas" {
 	const lottie: LottiePlayer;
 	export default lottie;
 }
+
+// The SVG-only light build (no expression engine), used for the brand loader.
+declare module "lottie-web/build/player/lottie_light" {
+	import type { LottiePlayer } from "lottie-web";
+	const lottie: LottiePlayer;
+	export default lottie;
+}

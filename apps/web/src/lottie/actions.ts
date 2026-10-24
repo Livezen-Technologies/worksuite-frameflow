@@ -56,9 +56,10 @@ export function insertAnimation({
 
 /**
  * Places a library animation's sound effects on audio tracks, timed from
- * `startTime`, and selects them together with the animation clip
- * (`elementId`). The timeline has no clip linking, so they move separately
- * afterwards. Returns the sound clips' ids.
+ * `startTime`, and leaves the animation clip (`elementId`) selected on its
+ * own so Properties shows its controls and "Edit motion…" (without one, the
+ * sounds are selected). The timeline has no clip linking, so they move
+ * separately. Returns the sound clips' ids.
  */
 export function addPackAnimationSounds({
 	editor,
@@ -75,7 +76,7 @@ export function addPackAnimationSounds({
 		editor.timeline.insertElement({ element, placement: { mode: "auto", trackType: "audio" } }),
 	);
 	if (ids.length) {
-		const refs = [...(elementId ? [elementId] : []), ...ids].flatMap((id) => {
+		const refs = (elementId ? [elementId] : ids).flatMap((id) => {
 			const trackId = editor.timeline.findTrackIdForElement({ elementId: id });
 			return trackId ? [{ trackId, elementId: id }] : [];
 		});

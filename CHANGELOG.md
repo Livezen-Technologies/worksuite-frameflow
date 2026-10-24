@@ -9,6 +9,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
+- New FrameFlow loading animation on the project loading screen.
 - “Social follow” in Animations: 18 original Facebook, TikTok and Instagram style follow, like, share and save buttons (follow → following, avatar plus badge, action rails, double-tap heart, link in bio and more), with words in English, Sinhala and Tamil. No platform logos.
 - The Follow buttons now come with sound effects (click on follow, pop on likes and saves, whoosh on slide-ins, ding on the bell), and the Facebook-style like is a neutral rounded badge with an outlined thumb and sparkles.
 - Motion Editor: double-click an animation clip (or Edit motion… in its properties) to change its colours (with your brand kit), words and fonts in English, Sinhala or Tamil, pictures such as your YouTube channel profile photo in the subscribe channel bar's avatar circle, timing (speed, delay, end hold, loop, trim), and its sound cues; hide parts, and save the result as your own asset. Edits are kept on the clip with undo and redo, survive pack updates, and export exactly as previewed.
@@ -164,6 +165,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Fixed
 
+- After adding an animation from Elements → Animations, its controls and **Edit motion…** show straight away (its sound clips are no longer selected with it). Escape closes the Motion Editor, and Ctrl/Cmd+Z works in it as soon as it opens. The properties panel no longer shows a stray "0" after "elements selected".
 - Video clips on the timeline show a real filmstrip: each thumbnail is the frame at that point of the clip, and they update when you trim, move, zoom or change the speed (they used to repeat one frame). Frames load only for what's on screen.
 - The “Tap here” and “Finger tap” animations used a pointing hand that could read as a rude gesture. They are now “Mouse click” (a computer mouse whose left button clicks) and “Cursor click” (a mouse cursor clicking the subscribe button). Projects that used “Tap here” get “Mouse click”.
 

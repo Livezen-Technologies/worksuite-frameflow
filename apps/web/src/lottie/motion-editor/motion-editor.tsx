@@ -151,8 +151,16 @@ export function MotionEditor(props: MotionEditorProps) {
 
 	const change = (next: LottieElementData, commit = true) => onChange(next, commit);
 
+	// Focus the dialog when it opens, so Escape and Ctrl/Cmd+Z reach it at once.
+	const rootRef = useRef<HTMLDivElement>(null);
+	useEffect(() => {
+		rootRef.current?.focus({ preventScroll: true });
+	}, []);
+
 	return (
 		<div
+			ref={rootRef}
+			tabIndex={-1}
 			className="me-root"
 			role="dialog"
 			aria-label="Motion Editor"
