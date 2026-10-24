@@ -147,6 +147,22 @@ export const ACTIONS = {
 		category: "assets",
 		args: { projectId: "string", assetId: "string" },
 	},
+	"timeline-zoom-in": {
+		description: "Zoom timeline in",
+		category: "timeline",
+	},
+	"timeline-zoom-out": {
+		description: "Zoom timeline out",
+		category: "timeline",
+	},
+	"timeline-zoom-fit": {
+		description: "Zoom to fit the whole timeline",
+		category: "timeline",
+	},
+	"open-shortcuts": {
+		description: "Show keyboard shortcuts",
+		category: "controls",
+	},
 	"remove-media-assets": {
 		description: "Remove media assets",
 		category: "assets",
@@ -178,6 +194,14 @@ const ACTION_DEFAULT_SHORTCUTS = [
 	["cancel-interaction", ["escape"]],
 	["duplicate-selected", ["ctrl+d"]],
 	["undo", ["ctrl+z"]],
+	["toggle-bookmark", ["m"]],
+	["toggle-elements-muted-selected", ["shift+m"]],
+	["toggle-elements-visibility-selected", ["shift+h"]],
+	["toggle-ripple-editing", ["shift+r"]],
+	["timeline-zoom-in", ["=", "ctrl+="]],
+	["timeline-zoom-out", ["-", "ctrl+-"]],
+	["timeline-zoom-fit", ["shift+z"]],
+	["open-shortcuts", ["ctrl+/"]],
 	["redo", ["ctrl+shift+z", "ctrl+y"]],
 ] as const satisfies ReadonlyArray<
 	readonly [TActionWithOptionalArgs, readonly ShortcutKey[]]

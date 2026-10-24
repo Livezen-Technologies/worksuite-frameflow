@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, Circle, Download, Film, ImagePlus, PenTool, Redo2, Square, Star, Type, Undo2 } from "lucide-react";
+import { ArrowLeft, Circle, Download, Film, Shapes, ImagePlus, PenTool, Redo2, Square, Star, Type, Undo2 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -14,6 +14,8 @@ import { LayersPanel } from "./layers-panel";
 import { MotionTimeline } from "./motion-timeline";
 import { PropertiesPanel } from "./properties-panel";
 import { ExportDialog } from "./export-dialog";
+import { IconPicker } from "./icon-picker";
+import { shapesToLayers, svgToSubpaths } from "../icons";
 import { publishToVideo } from "../video-link";
 
 function readAsDataUrl(file: File): Promise<string> {
@@ -208,6 +210,35 @@ export function MotionStudio({ projectId }: { projectId: string }) {
 		const s = useStudio.getState();
 		for (const file of files) {
 			try {
+				// Simple SVGs come in as editable shapes; others as a picture.
+				if (file.type === "image/svg+xml" || /\.svg$/i.test(file.name)) {
+					const shapes = svgToSubpaths(await file.text());
+					if (shapes) {
+						const name = file.name.replace(/\.svg$/i, "");
+						const size = Math.min(project.width, project.height) * 0.6;
+						const groupId = shapes.length > 1 ? newId("g") : undefined;
+						// All shapes in one frame so they keep their places; styles per shape below.
+						const layers = shapesToLayers({
+							name,
+							subpaths: shapes.flatMap((sh) => sh.subpaths),
+							project,
+							fill: null,
+							stroke: null,
+							strokeWidth: 0,
+							size,
+						}).layers;
+						let k = 0;
+						for (const sh of shapes)
+							for (let j = 0; j < sh.subpaths.length; j++) {
+								const l = layers[k++];
+								if (l?.kind === "path") Object.assign(l, { fill: l.closed ? sh.fill : null, stroke: sh.stroke ?? (l.closed ? null : sh.fill), strokeWidth: sh.strokeWidth || (l.closed ? 0 : 2), groupId });
+							}
+						s.commit((p) => ({ ...p, layers: [...p.layers, ...layers], groups: groupId ? [...p.groups, { id: groupId, name, collapsed: true }] : p.groups }));
+						s.select(layers.map((l) => l.id));
+						toast.success(`Added ${layers.length} editable shape${layers.length === 1 ? "" : "s"} from ${file.name}`);
+						continue;
+					}
+				}
 				const layer = await imageLayer({ file, width: project.width, height: project.height });
 				s.commit((p) => ({ ...p, layers: [...p.layers, layer] }));
 				s.select([layer.id]);
@@ -269,6 +300,13 @@ export function MotionStudio({ projectId }: { projectId: string }) {
 					>
 						<PenTool className="size-3.5" /> Pen
 					</button>
+					<IconPicker
+						trigger={
+							<button type="button" className={toolButton} data-motion-add="icon">
+								<Shapes className="size-3.5" /> Icons
+							</button>
+						}
+					/>
 					<button type="button" className={toolButton} onClick={() => fileRef.current?.click()} data-motion-add="image">
 						<ImagePlus className="size-3.5" /> Image / SVG
 					</button>

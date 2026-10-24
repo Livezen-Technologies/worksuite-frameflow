@@ -101,7 +101,21 @@ const groupTransform = { ty: "tr", p: { a: 0, k: [0, 0] }, a: { a: 0, k: [0, 0] 
 /** Turns a text layer into a picture: `{ src, w, h }`. Supplied by the caller (needs a canvas). */
 export type RasterizeText = (layer: Extract<Layer, { kind: "text" }>) => Promise<{ src: string; w: number; h: number }>;
 
-export async function motionToLottie({ project, rasterizeText }: { project: MotionProject; rasterizeText: RasterizeText }): Promise<LottieJson> {
+/** Frames of an animated picture as image URLs with start times (seconds), or null for a still. */
+export type AnimatedFrames = (src: string) => Promise<{ frames: Array<{ src: string; start: number }>; duration: number; width: number; height: number } | null>;
+
+const MAX_GIF_FRAMES = 900;
+
+export async function motionToLottie({
+	project,
+	rasterizeText,
+	animatedFrames,
+}: {
+	project: MotionProject;
+	rasterizeText: RasterizeText;
+	/** Keeps animated GIF/WebP layers moving: each frame becomes a picture in a looping pre-composition. */
+	animatedFrames?: AnimatedFrames;
+}): Promise<LottieJson> {
 	const fps = project.fps;
 	const op = Math.max(1, Math.round(project.duration * fps));
 	const assets: Json[] = [];
@@ -111,6 +125,38 @@ export async function motionToLottie({ project, rasterizeText }: { project: Moti
 	// Lottie draws its first layer on top.
 	for (const layer of [...visible].reverse()) {
 		const common = { ddd: 0, ind: ind++, nm: layer.name, sr: 1, ks: transform({ layer, fps }), ao: 0, ip: 0, op, st: 0, bm: 0 };
+		if (layer.kind === "image" && animatedFrames) {
+			const anim = await animatedFrames(layer.src);
+			if (anim && anim.frames.length > 1 && anim.frames.length <= MAX_GIF_FRAMES && anim.duration > 0) {
+				const compId = `comp_${assets.length}`;
+				const loopFrames = Math.max(1, Math.round(anim.duration * fps));
+				const frameLayers = anim.frames.map((f, k) => {
+					const id = `image_${assets.length}`;
+					assets.push({ id, w: anim.width, h: anim.height, u: "", p: f.src, e: 1 });
+					const next = anim.frames[k + 1]?.start ?? anim.duration;
+					const scale = [(layer.w / anim.width) * 100, (layer.h / anim.height) * 100, 100];
+					return {
+						ddd: 0,
+						ind: k + 1,
+						ty: 2,
+						nm: `Frame ${k + 1}`,
+						refId: id,
+						sr: 1,
+						ks: { o: { a: 0, k: 100 }, r: { a: 0, k: 0 }, p: { a: 0, k: [0, 0, 0] }, a: { a: 0, k: [0, 0, 0] }, s: { a: 0, k: scale } },
+						ao: 0,
+						ip: Math.round(f.start * fps),
+						op: Math.max(Math.round(f.start * fps) + 1, Math.round(next * fps)),
+						st: 0,
+						bm: 0,
+					};
+				});
+				assets.push({ id: compId, layers: frameLayers.reverse() });
+				// One pre-composition layer per loop, back to back.
+				for (let start = 0; start < op; start += loopFrames)
+					layers.push({ ...common, ind: ind++, nm: `${layer.name} (loop)`, ty: 0, refId: compId, w: layer.w, h: layer.h, st: start, ip: start, op: Math.min(op, start + loopFrames) });
+				continue;
+			}
+		}
 		if (layer.kind === "image" || layer.kind === "text") {
 			const pic = layer.kind === "image" ? { src: layer.src, w: layer.w, h: layer.h } : await rasterizeText(layer);
 			const id = `image_${assets.length}`;
@@ -222,6 +268,7 @@ export function lottieToMotion({ json, name }: { json: LottieJson; name?: string
 	const assets = new Map<string, Json>();
 	for (const a of json.assets ?? []) if (isObj(a) && typeof a.id === "string") assets.set(a.id, a);
 	const shift = json.ip / fps;
+	const seenComps = new Set<string>();
 	const layers: Layer[] = [];
 
 	for (const raw of [...json.layers].reverse()) {
@@ -284,25 +331,43 @@ export function lottieToMotion({ json, name }: { json: LottieJson; name?: string
 			const fill = typeof raw.sc === "string" ? raw.sc : "#000000";
 			layers.push({ ...build({ name: nm, w, h, ox: 0, oy: 0 }), kind: "rect", w, h, radius: 0, fill, stroke: null, strokeWidth: 0 });
 		} else if (ty === 5) {
-			const doc = isObj(raw.t) && isObj(raw.t.d) && Array.isArray(raw.t.d.k) && isObj(raw.t.d.k[0]) && isObj(raw.t.d.k[0].s) ? raw.t.d.k[0].s : null;
-			if (!doc) continue;
-			const fontSize = (numOf(doc.s) ?? 48);
-			const text = String(doc.t ?? "").replace(/\r/g, "\n");
-			// Lottie text sits on its baseline at the layer origin.
-			const l = build({ name: nm, w: 0, h: 0, ox: 0, oy: 0 });
-			layers.push({
-				...l,
-				anchorX: 0,
-				anchorY: 0,
-				y: l.y - fontSize * 0.8,
-				kind: "text",
-				text,
-				fontSize,
-				fontFamily: typeof doc.f === "string" ? doc.f.replace(/-.*$/, "") : "Inter",
-				fontWeight: /bold/i.test(String(doc.f)) ? 700 : 400,
-				fill: rgbaToHex(doc.fc),
+			const docs = isObj(raw.t) && isObj(raw.t.d) && Array.isArray(raw.t.d.k) ? raw.t.d.k.filter(isObj).filter((k) => isObj(k.s)) : [];
+			if (!docs.length) continue;
+			// Text that changes over time becomes one layer per version, each shown in its own time.
+			docs.forEach((frame, i) => {
+				const doc: Json = isObj(frame.s) ? frame.s : {};
+				const fontSize = numOf(doc.s) ?? 48;
+				const text = String(doc.t ?? "").replace(/\r/g, "\n");
+				// Lottie text sits on its baseline at the layer origin.
+				const l = build({ name: docs.length > 1 ? `${nm} ${i + 1}` : nm, w: 0, h: 0, ox: 0, oy: 0 });
+				let keyframes = l.keyframes;
+				if (docs.length > 1) {
+					const from = Math.max(0, (numOf(frame.t) ?? 0) / fps - shift);
+					const nextFrame = docs[i + 1];
+					const to = nextFrame ? Math.max(0, (numOf(nextFrame.t) ?? 0) / fps - shift) : null;
+					const HOLD: Ease = [1, 0, 1, 0];
+					const keys: Keyframe[] = [];
+					if (from > 0) keys.push({ t: 0, v: 0, ease: HOLD });
+					keys.push({ t: from, v: l.opacity, ease: HOLD });
+					if (to !== null) keys.push({ t: to, v: 0, ease: HOLD });
+					if (l.keyframes.opacity) warnings.add("Changing text with animated opacity was simplified.");
+					keyframes = { ...l.keyframes, opacity: keys };
+				}
+				layers.push({
+					...l,
+					keyframes,
+					anchorX: 0,
+					anchorY: 0,
+					y: l.y - fontSize * 0.8,
+					kind: "text",
+					text,
+					fontSize,
+					fontFamily: typeof doc.f === "string" ? doc.f.replace(/-.*$/, "") : "Inter",
+					fontWeight: /bold/i.test(String(doc.f)) ? 700 : 400,
+					fill: rgbaToHex(doc.fc),
+				});
 			});
-			warnings.add("Text keeps its words, size and colour; text animators were left out.");
+			if (isObj(raw.t) && Array.isArray(raw.t.a) && raw.t.a.length) warnings.add("Text animators (per-letter effects) were left out.");
 		} else if (ty === 4 && Array.isArray(raw.shapes)) {
 			const found = collectShapes({ items: raw.shapes, warnings });
 			if (!found.length) warnings.add("Some shape layers had nothing that could be edited.");
@@ -323,7 +388,26 @@ export function lottieToMotion({ json, name }: { json: LottieJson; name?: string
 					layers.push(s.kind === "rect" ? { ...common, kind: "rect", radius: s.radius } : { ...common, kind: "ellipse" });
 				}
 			});
-		} else if (ty === 0) warnings.add("Pre-compositions were left out.");
+		} else if (ty === 0) {
+			// A pre-composition of pictures (an animated GIF from FrameFlow): its first frame, once.
+			const comp = typeof raw.refId === "string" ? assets.get(raw.refId) : undefined;
+			const inner = comp && Array.isArray(comp.layers) ? comp.layers.filter(isObj) : [];
+			if (inner.length && inner.every((l) => l.ty === 2)) {
+				if (seenComps.has(String(raw.refId))) continue;
+				seenComps.add(String(raw.refId));
+				const firstFrame = [...inner].sort((a, b) => (numOf(a.ip) ?? 0) - (numOf(b.ip) ?? 0))[0];
+				const asset = firstFrame && typeof firstFrame.refId === "string" ? assets.get(firstFrame.refId) : undefined;
+				const src = asset && typeof asset.p === "string" ? asset.p : null;
+				if (src) {
+					const w = numOf(raw.w) ?? numOf(asset?.w) ?? 100;
+					const h = numOf(raw.h) ?? numOf(asset?.h) ?? 100;
+					layers.push({ ...build({ name: nm.replace(/ \(loop\)$/, ""), w, h, ox: 0, oy: 0 }), kind: "image", src, w, h });
+					warnings.add("Animated pictures came in as their first frame.");
+					continue;
+				}
+			}
+			warnings.add("Pre-compositions were left out.");
+		}
 		else if (ty === 3) continue; // Null layers only move their children.
 		else warnings.add(`A layer of an unsupported type (${String(ty)}) was left out.`);
 	}

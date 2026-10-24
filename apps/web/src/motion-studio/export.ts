@@ -1,7 +1,7 @@
 "use client";
 
 import { strToU8, zipSync } from "fflate";
-import { motionToLottie, type RasterizeText } from "./lottie-convert";
+import { motionToLottie, type AnimatedFrames, type RasterizeText } from "./lottie-convert";
 import type { Layer, MotionProject } from "./model";
 import { layerSize } from "./model";
 import { drawLayerContent, drawProject, prepareProject } from "./render";
@@ -53,8 +53,27 @@ export const rasterizeText: RasterizeText = async (layer) => {
 	return { src: canvas.toDataURL("image/png"), w, h };
 };
 
+/** GIF/WebP frames as PNG data URLs (at most 512 px) for Lottie. */
+const gifFrames: AnimatedFrames = async (src) => {
+	const { loadAnimatedImage } = await import("@/media/animated-image");
+	if (!/^data:image\/(gif|webp)/.test(src)) return null;
+	// Long animations get smaller frames so the Lottie file stays a sensible size.
+	let image = await loadAnimatedImage({ url: src, maxSourceSize: 512 });
+	if (image && image.frames.length > 300) image = await loadAnimatedImage({ url: src, maxSourceSize: 256 });
+	if (!image) return null;
+	const canvas = canvasOf({ width: image.width, height: image.height });
+	const ctx = canvas.getContext("2d");
+	if (!ctx) return null;
+	const frames = image.frames.map((f) => {
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		ctx.drawImage(f.bitmap, 0, 0);
+		return { src: canvas.toDataURL("image/png"), start: f.start };
+	});
+	return { frames, duration: image.duration, width: image.width, height: image.height };
+};
+
 async function lottieJson(project: MotionProject) {
-	return motionToLottie({ project, rasterizeText });
+	return motionToLottie({ project, rasterizeText, animatedFrames: gifFrames });
 }
 
 /** The project as a Lottie JSON object (for the video editor and exports). */

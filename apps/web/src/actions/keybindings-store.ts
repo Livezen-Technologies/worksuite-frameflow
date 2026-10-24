@@ -35,6 +35,8 @@ interface KeybindingsState {
 	}) => void;
 	removeKeybinding: (key: ShortcutKey) => void;
 	resetToDefaults: () => void;
+	/** Replaces every shortcut at once (presets). */
+	setAllKeybindings: (keybindings: Map<ShortcutKey, TActionWithOptionalArgs>) => void;
 	importKeybindings: (config: KeybindingConfig) => void;
 	exportKeybindings: () => Record<string, TActionWithOptionalArgs>;
 	openOverlay: (overlayId: string) => void;
@@ -130,6 +132,10 @@ export const useKeybindingsStore = create<KeybindingsState>()(
 					keybindings: getDefaultShortcuts(),
 					isCustomized: false,
 				});
+			},
+
+			setAllKeybindings: (keybindings) => {
+				set({ keybindings: new Map(keybindings), isCustomized: true });
 			},
 
 			importKeybindings: (config) => {
@@ -254,6 +260,9 @@ function getPressedKey(ev: KeyboardEvent): Key | null {
 		if (isKey(digit)) return digit;
 	}
 
+	// Punctuation by physical key, so Shift or the layout doesn't change it.
+	const PUNCTUATION: Record<string, Key> = { Equal: "=", Minus: "-", Comma: ",", Period: ".", Slash: "/", BracketLeft: "[", BracketRight: "]" };
+	if (PUNCTUATION[code]) return PUNCTUATION[code];
 	if (isKey(raw)) return raw;
 	return null;
 }

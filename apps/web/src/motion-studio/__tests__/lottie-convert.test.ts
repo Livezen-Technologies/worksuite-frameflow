@@ -51,3 +51,54 @@ describe("lottie conversion", () => {
 		expect(Array.isArray(warnings)).toBe(true);
 	});
 });
+
+describe("animated pictures in Lottie", () => {
+	test("a GIF layer becomes a looping pre-composition of its frames", async () => {
+		const project = createMotionProject({ width: 400, height: 400, fps: 10, duration: 3 });
+		project.layers = [
+			{ id: "g", name: "Gif", visible: true, locked: false, x: 200, y: 200, scale: 1, rotation: 0, opacity: 1, anchorX: 0.5, anchorY: 0.5, keyframes: {}, kind: "image", src: "data:image/gif;base64,AA", w: 100, h: 100 },
+		];
+		const json = await motionToLottie({
+			project,
+			rasterizeText,
+			animatedFrames: async () => ({ frames: [0, 0.5].map((start, i) => ({ src: `data:image/png;base64,F${i}`, start })), duration: 1, width: 50, height: 50 }),
+		});
+		const comps = (json.assets ?? []).filter((a) => JSON.stringify(a).includes('"layers"'));
+		expect(comps).toHaveLength(1);
+		// 3 s of a 1 s loop: three pre-comp layers starting at 0, 10 and 20.
+		const loops = json.layers.map((l) => JSON.parse(JSON.stringify(l))).filter((l) => l.ty === 0);
+		expect(loops.map((l) => l.st)).toEqual([0, 10, 20]);
+	});
+});
+
+describe("lottie import extras", () => {
+	test("text that changes over time becomes one layer per version, shown in turn", () => {
+		const doc = ({ t, text }: { t: number; text: string }) => ({ t, s: { t: text, s: 40, f: "Inter", fc: [1, 1, 1] } });
+		const json = {
+			v: "5.7.0", fr: 10, ip: 0, op: 30, w: 200, h: 100, assets: [],
+			layers: [{ ty: 5, nm: "Count", ip: 0, op: 30, ks: { p: { a: 0, k: [10, 50] } }, t: { d: { k: [doc({ t: 0, text: "3" }), doc({ t: 10, text: "2" }), doc({ t: 20, text: "1" })] } } }],
+		};
+		const { project } = lottieToMotion({ json });
+		expect(project.layers.map((l) => (l.kind === "text" ? l.text : ""))).toEqual(["3", "2", "1"]);
+		const second = project.layers[1];
+		expect(valueAt({ layer: second, prop: "opacity", t: 0.5 })).toBeCloseTo(0, 1);
+		expect(valueAt({ layer: second, prop: "opacity", t: 1.5 })).toBeCloseTo(1, 1);
+		expect(valueAt({ layer: second, prop: "opacity", t: 2.5 })).toBeCloseTo(0, 1);
+	});
+
+	test("a GIF exported by FrameFlow comes back as a picture", async () => {
+		const project = createMotionProject({ width: 400, height: 400, fps: 10, duration: 3 });
+		project.layers = [
+			{ id: "g", name: "Gif", visible: true, locked: false, x: 200, y: 200, scale: 1, rotation: 0, opacity: 1, anchorX: 0.5, anchorY: 0.5, keyframes: {}, kind: "image", src: "data:image/gif;base64,AA", w: 100, h: 100 },
+		];
+		const json = await motionToLottie({
+			project,
+			rasterizeText,
+			animatedFrames: async () => ({ frames: [0, 0.5].map((start, i) => ({ src: `data:image/png;base64,F${i}`, start })), duration: 1, width: 50, height: 50 }),
+		});
+		const back = lottieToMotion({ json: JSON.parse(JSON.stringify(json)) });
+		expect(back.project.layers).toHaveLength(1);
+		const layer = back.project.layers[0];
+		expect(layer.kind === "image" && layer.src).toBe("data:image/png;base64,F0");
+	});
+});

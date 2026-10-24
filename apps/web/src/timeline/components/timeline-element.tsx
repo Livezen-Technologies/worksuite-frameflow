@@ -4,7 +4,7 @@ import { ZoomLane } from "@/screen-zoom/components/zoom-lane";
 import { useMotionEditor } from "@/lottie/motion-editor/store";
 import { TimelineClipMenuExtras } from "@/clip-actions/components/clip-menus";
 import { TransitionBar, TransitionDropMarker, useTransitionDrop } from "@/transitions/components/timeline-transition";
-import { createContext, useContext } from "react";
+import { createContext, useContext, useLayoutEffect } from "react";
 import { useEditor } from "@/editor/use-editor";
 import { useAssetsPanelStore } from "@/components/editor/panels/assets/assets-panel-store";
 import { AudioWaveform, WAVEFORM_GAIN_SAMPLE_COUNT } from "./audio-waveform";
@@ -1239,9 +1239,44 @@ function VideoFilmstrip({
 		[element.duration, element.trimStart, element.retime?.rate, asset.duration, pixelsPerSecond, tileWidth],
 	);
 	const height = Math.round(trackHeight * (typeof window === "undefined" ? 1 : window.devicePixelRatio || 1));
+	// Only tiles near the visible part of the timeline exist in the DOM: a
+	// zoomed-in clip can have thousands, and every zoom step re-lays them out.
+	const ref = useRef<HTMLDivElement>(null);
+	const [view, setView] = useState({ from: 0, to: 2400 });
+	useLayoutEffect(() => {
+		const node = ref.current;
+		if (!node) return;
+		let scroller: HTMLElement | null = node.parentElement;
+		while (scroller && !/(auto|scroll)/.test(getComputedStyle(scroller).overflowX)) scroller = scroller.parentElement;
+		const measure = () => {
+			const box = node.getBoundingClientRect();
+			const port = scroller?.getBoundingClientRect() ?? { left: 0, width: window.innerWidth };
+			const from = Math.floor((port.left - box.left) / 200) * 200;
+			const to = Math.ceil((port.left + port.width - box.left) / 200) * 200;
+			setView((v) => (v.from === from && v.to === to ? v : { from, to }));
+		};
+		measure();
+		let frame = 0;
+		const onScroll = () => {
+			if (frame) return;
+			frame = requestAnimationFrame(() => {
+				frame = 0;
+				measure();
+			});
+		};
+		scroller?.addEventListener("scroll", onScroll, { passive: true });
+		window.addEventListener("resize", onScroll);
+		return () => {
+			cancelAnimationFrame(frame);
+			scroller?.removeEventListener("scroll", onScroll);
+			window.removeEventListener("resize", onScroll);
+		};
+	}, [tiles]);
+	const margin = 600;
 	return (
-		<div className="pointer-events-none absolute inset-0 overflow-hidden" data-filmstrip>
-			{tiles.map((tile, index) => (
+		<div ref={ref} className="pointer-events-none absolute inset-0 overflow-hidden" data-filmstrip>
+			{tiles.map((tile, index) =>
+				tile.left + tile.width < view.from - margin || tile.left > view.to + margin ? null : (
 				<FilmstripTileImage
 					// By position: tiles persist across zoom steps and keep their frame until the new one is ready.
 					key={index}
@@ -1252,7 +1287,8 @@ function VideoFilmstrip({
 					width={tile.width}
 					tileWidth={tileWidth}
 				/>
-			))}
+				),
+			)}
 		</div>
 	);
 }

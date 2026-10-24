@@ -48,7 +48,7 @@ import {
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { CircleMinus, CirclePlus, Pause, Play } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { formatTimecode } from "opencut-wasm";
 import type { MediaTime } from "@/wasm";
 import { OcRippleIcon } from "@/components/icons";
@@ -65,12 +65,29 @@ export function TimelineToolbar({
 	minZoom: number;
 	setZoomLevel: ({ zoom }: { zoom: number }) => void;
 }) {
+	// Button zoom eases over a few frames instead of jumping; clicking again
+	// mid-way continues from where the last click was heading.
+	const zoomAnimation = useRef<{ frame: number; target: number } | null>(null);
 	const handleZoom = ({ direction }: { direction: "in" | "out" }) => {
-		const newZoomLevel =
+		const running = zoomAnimation.current;
+		const fromTarget = running?.target ?? zoomLevel;
+		const target =
 			direction === "in"
-				? Math.min(TIMELINE_ZOOM_MAX, zoomLevel * TIMELINE_ZOOM_BUTTON_FACTOR)
-				: Math.max(minZoom, zoomLevel / TIMELINE_ZOOM_BUTTON_FACTOR);
-		setZoomLevel({ zoom: newZoomLevel });
+				? Math.min(TIMELINE_ZOOM_MAX, fromTarget * TIMELINE_ZOOM_BUTTON_FACTOR)
+				: Math.max(minZoom, fromTarget / TIMELINE_ZOOM_BUTTON_FACTOR);
+		if (running) cancelAnimationFrame(running.frame);
+		const start = zoomLevel;
+		const startTime = performance.now();
+		const DURATION = 180;
+		const step = (now: number) => {
+			const p = Math.min(1, (now - startTime) / DURATION);
+			const eased = 1 - (1 - p) ** 3;
+			// Geometric interpolation feels even at every zoom level.
+			setZoomLevel({ zoom: start * (target / start) ** eased });
+			if (p < 1 && zoomAnimation.current) zoomAnimation.current.frame = requestAnimationFrame(step);
+			else zoomAnimation.current = null;
+		};
+		zoomAnimation.current = { frame: requestAnimationFrame(step), target };
 	};
 
 	return (

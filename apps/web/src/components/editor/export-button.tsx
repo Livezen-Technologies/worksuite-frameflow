@@ -69,6 +69,7 @@ import {
 	type ExportQuality,
 	type ExportOptions,
 } from "@/export";
+import { recordExport } from "@/export/history";
 import { captionTracksToCues, cuesToSrt } from "@/export/captions";
 import {
 	EXPORT_CODEC_LABELS,
@@ -418,6 +419,18 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 		Math.abs(l.value - shortSide) < Math.abs(best.value - shortSide) ? l : best,
 	).value;
 	const format = kind === "gif" ? "gif" : formatForCodec(codec);
+	/** Adds a finished export to the Exports page. */
+	const log = ({ fileName: file, path, bytes, width, height }: { fileName: string; path?: string; bytes: number; width?: number; height?: number }) =>
+		recordExport({
+			projectId: project.metadata.id,
+			projectName: project.metadata.name,
+			fileName: path ? (path.split(/[\\/]/).pop() ?? file) : file,
+			path,
+			bytes,
+			format: (file.split(".").pop() ?? format).toLowerCase(),
+			width,
+			height,
+		});
 	const exportRate = kind === "gif" ? gifFps : fps;
 	// About 0.1 bits per pixel per frame for H.264, less for newer codecs.
 	const recommendedMbps = Math.max(
@@ -574,6 +587,7 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 					data,
 					sideFiles: [],
 				});
+				if (saved.saved) log({ fileName: name, path: saved.path, bytes: data.byteLength });
 				if (saved.saved && saved.path) {
 					setSavedPath(saved.path);
 					toast.success(t("Export saved"));
@@ -581,6 +595,7 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 				return;
 			}
 			downloadBuffer({ buffer: data, filename: name, mimeType });
+			log({ fileName: name, bytes: data.byteLength });
 			onClose();
 		} catch (error) {
 			toast.error("Export failed", {
@@ -694,6 +709,7 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 				data: exportResult.buffer,
 				sideFiles: srt ? [{ suffix: ".srt", content: srt }] : [],
 			});
+			if (saved.saved) log({ fileName: name, path: saved.path, bytes: exportResult.buffer.byteLength, ...size });
 			editor.project.clearExportState();
 			if (saved.saved && saved.path) {
 				setSavedPath(saved.path);
@@ -725,7 +741,10 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 						data: sdr.buffer,
 						sideFiles: [],
 					});
-					if (sdrSaved.saved) toast.success("SDR version saved too");
+					if (sdrSaved.saved) {
+						log({ fileName: `${fileName.trim() || project.metadata.name} (SDR).mp4`, path: sdrSaved.path, bytes: sdr.buffer.byteLength, ...size });
+						toast.success("SDR version saved too");
+					}
 				}
 			}
 			return;
@@ -735,6 +754,7 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 			filename: name,
 			mimeType: getExportMimeType({ format }),
 		});
+		log({ fileName: name, bytes: exportResult.buffer.byteLength, ...size });
 		if (srt) {
 			downloadBuffer({
 				buffer: new TextEncoder().encode(srt).buffer,

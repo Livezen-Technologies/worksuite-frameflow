@@ -1,5 +1,6 @@
 import type { EditorCore } from "@/core";
 import { downloadBuffer, getExportMimeType } from "@/export";
+import { recordExport } from "@/export/history";
 import { nextRunnable, useExportQueue } from "./store";
 
 let running = false;
@@ -65,6 +66,17 @@ export async function runExportQueue({ editor }: { editor: EditorCore }) {
 						mimeType: getExportMimeType({ format: job.options.format }),
 					});
 				}
+				const project = editor.project.getActiveOrNull();
+				recordExport({
+					projectId: job.projectId,
+					projectName: job.projectName ?? project?.metadata.name ?? "Project",
+					fileName: path?.split(/[\\/]/).pop() ?? job.fileName,
+					path,
+					bytes: result.buffer.byteLength,
+					format: job.options.format,
+					width: job.options.resolution?.width,
+					height: job.options.resolution?.height,
+				});
 				queue.update({
 					id: job.id,
 					patch: { status: "done", progress: 1, ...(path ? { path } : {}) },
