@@ -1,3 +1,4 @@
+import { getElementFx, hasFx } from "@/timeline/audio-fx";
 import type { EditorCore } from "@/core";
 import { TICKS_PER_SECOND } from "@/wasm";
 import { clampRetimeRate, shouldMaintainPitch } from "@/retime/rate";
@@ -6,8 +7,6 @@ import { createAudioContext, collectAudioClips } from "@/media/audio";
 import {
 	buildAudioGainAutomation,
 	getElementPitch,
-	getElementEq,
-	hasEq,
 	hasAnimatedVolume,
 } from "@/timeline/audio-state";
 import { createAudioMasteringChain } from "@/media/audio-mastering";
@@ -500,7 +499,7 @@ export class AudioManager {
 			this.hasCurveRetime({ clip }) ||
 			hasAnimatedVolume({ element: clip.timelineElement }) ||
 			getElementPitch({ element: clip.timelineElement }) !== 0 ||
-			hasEq(getElementEq({ element: clip.timelineElement })) ||
+			hasFx(getElementFx({ element: clip.timelineElement })) ||
 			shouldMaintainPitch({
 				rate: clip.retime?.rate ?? 1,
 				maintainPitch: clip.retime?.maintainPitch,
@@ -570,7 +569,7 @@ export class AudioManager {
 			trimEnd: clip.trimEnd,
 			retime: clip.retime ?? null,
 			pitch: getElementPitch({ element: clip.timelineElement }),
-			eq: getElementEq({ element: clip.timelineElement }),
+			fx: getElementFx({ element: clip.timelineElement }),
 		});
 	}
 
@@ -604,7 +603,7 @@ export class AudioManager {
 				retime: clip.retime,
 				maintainPitch: clip.retime?.maintainPitch === true,
 				pitchSemitones: getElementPitch({ element: clip.timelineElement }),
-				eq: getElementEq({ element: clip.timelineElement }),
+				fx: getElementFx({ element: clip.timelineElement }),
 			});
 		})();
 

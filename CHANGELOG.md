@@ -9,6 +9,11 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
+- **Loudness meter** in the Music & Audio Editor: measure the whole mix's integrated loudness (LUFS), true peak (dBTP) and loudness range against a target (Podcast, YouTube, Broadcast, Audiobook, Music).
+- **Clean up voice** panel: one-click presets (Podcast, Phone/Zoom call, Noisy street, Room echo, Narration) and sliders for noise reduction, echo removal, low cut, presence, de-esser and compressor. Heard in the preview and the export, and undo works.
+- **Parametric EQ** with a draggable curve (double-click to add a band, right-click to remove), and a **Dynamics** tab with a compressor and a −1 dB limiter.
+- **Export audio to a target**: Podcast (MP3 −16 LUFS), YouTube (AAC −14), Broadcast (WAV −23), Audiobook (MP3 mono −19), Music master (WAV −9) or Custom, as a full mix or one stem per track, with the true peak kept under the ceiling.
+- **Record voice-over** in the audio editor: microphone picker, input meter with level advice, a teleprompter that scrolls your script, count-in, the video playing along, and a list of takes to add at the spot you recorded them.
 - **Video converter redesign**: each file shows its codec, resolution, HDR and size before you convert, with a size estimate and time left while it runs. Drop whole folders, pick presets (WhatsApp, email, YouTube), and choose resolution, frame rate, encoder, quality, HDR tone mapping, burned-in subtitles, loudness levelling, noise removal and audio bitrate. Choose where files are saved, see a summary when the batch finishes, and repair damaged files that won't open.
 - **Quick tools** in the converter: Trim, Merge, Extract audio, Make GIF, Rotate & crop and Compress to size, each with a preview and range picker.
 - **Conversion history**: search everything you've converted, open it in the editor or show it in its folder.

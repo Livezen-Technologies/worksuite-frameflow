@@ -2,7 +2,9 @@
 
 import {
 	Copy,
+	Download,
 	FileAudio,
+	Mic,
 	Pause,
 	Play,
 	Plus,
@@ -36,9 +38,12 @@ import { mediaTimeFromSeconds, TICKS_PER_SECOND } from "@/wasm";
 import { importAudio, normalizeClip, setClipLoudness } from "../actions";
 import { EQ_PRESETS } from "../eq-presets";
 import { useStudioStore } from "../store";
+import { CleanupTab, DynamicsTab, ParametricEq } from "./fx-panels";
+import { ExportTargetsDialog, LoudnessCard } from "./loudness-export";
+import { VoiceOverDialog } from "./voice-over";
 
 type AudioClip = AudioElement | VideoElement;
-type InspectorTab = "process" | "eq" | "basic" | "voice" | "speed";
+type InspectorTab = "process" | "cleanup" | "eq" | "dynamics" | "basic" | "voice" | "speed";
 
 const EQ_KEYS: (keyof ClipEq)[] = ["low", "mid", "high", "lowCut"];
 const TRACK_COLORS = ["#7c5cff", "#ef6461", "#4f86c6", "#2fbf8f", "#e8a33d", "#d65db1"];
@@ -55,6 +60,7 @@ export function AudioStudio() {
 	const selected = useEditor((e) => e.selection.getSelectedElements());
 	const [tab, setTab] = useState<InspectorTab>("process");
 	const fileInput = useRef<HTMLInputElement>(null);
+	const [dialog, setDialog] = useState<"voice" | "export" | null>(null);
 
 	const audioTracks = tracks.audio;
 	const clip = selectedAudioClip({ selected, tracks: [tracks.main, ...tracks.overlay, ...tracks.audio] });
@@ -126,9 +132,10 @@ export function AudioStudio() {
 
 				{/* Centre: visualizer, toolbar, multi-track timeline */}
 				<div className="flex min-h-0 min-w-0 flex-col gap-2">
-					<div className="grid h-36 shrink-0 grid-cols-[minmax(0,1fr)_200px] gap-2">
+					<div className="grid h-36 shrink-0 grid-cols-[minmax(0,1fr)_170px_230px] gap-2">
 						<Spectrum />
 						<OutputMeter />
+						<LoudnessCard />
 					</div>
 					<div className="bg-panel flex flex-wrap items-center gap-1 rounded-md border px-2 py-1.5" data-studio-toolbar>
 						<ToolButton label="Undo" onClick={() => editor.command.undo()}>
@@ -184,10 +191,15 @@ export function AudioStudio() {
 						<Button size="sm" variant="ghost" disabled={!clip} onClick={() => setTab("process")}>
 							<Wand2 className="size-3.5" /> Process tools
 						</Button>
+						<Button size="sm" variant="ghost" className="ml-auto" onClick={() => setDialog("voice")} data-studio-voiceover-open>
+							<Mic className="size-3.5" /> Voice-over
+						</Button>
+						<Button size="sm" variant="ghost" onClick={() => setDialog("export")} data-studio-export-open>
+							<Download className="size-3.5" /> Export audio
+						</Button>
 						<Button
 							size="sm"
 							variant="outline"
-							className="ml-auto"
 							onClick={() => useStudioStore.getState().setStudio("video")}
 							data-studio-to-video
 						>
@@ -201,11 +213,13 @@ export function AudioStudio() {
 
 				{/* Right: inspector */}
 				<aside className="bg-panel flex min-h-0 flex-col overflow-hidden rounded-md border text-sm" data-studio-inspector>
-					<div className="grid grid-cols-5 gap-0.5 border-b p-1">
+					<div className="grid grid-cols-4 gap-0.5 border-b p-1">
 						{(
 							[
 								["process", "Process"],
+								["cleanup", "Clean up"],
 								["eq", "EQ"],
+								["dynamics", "Dynamics"],
 								["basic", "Volume"],
 								["voice", "Voice"],
 								["speed", "Speed"],
@@ -230,8 +244,12 @@ export function AudioStudio() {
 							<p className="text-muted-foreground m-0 p-4 text-xs">Select an audio clip (or a video with sound) to edit it.</p>
 						) : tab === "process" ? (
 							<ProcessTab clip={clip} />
+						) : tab === "cleanup" ? (
+							<CleanupTab clip={clip} />
 						) : tab === "eq" ? (
 							<EqTab clip={clip} />
+						) : tab === "dynamics" ? (
+							<DynamicsTab clip={clip} />
 						) : tab === "basic" ? (
 							clip.element.type === "audio" ? (
 								<AudioBasicTab element={clip.element} trackId={clip.trackId} />
@@ -247,6 +265,8 @@ export function AudioStudio() {
 				</aside>
 			</div>
 			<Transport />
+			<VoiceOverDialog open={dialog === "voice"} onOpenChange={(o) => setDialog(o ? "voice" : null)} />
+			<ExportTargetsDialog open={dialog === "export"} onOpenChange={(o) => setDialog(o ? "export" : null)} />
 		</div>
 	);
 }
@@ -482,6 +502,7 @@ function EqTab({ clip }: { clip: { trackId: string; element: AudioClip } }) {
 					/>
 				</div>
 			))}
+			<ParametricEq clip={clip} />
 			<p className="text-muted-foreground m-0 text-xs">Heard in the preview and the export.</p>
 		</div>
 	);
