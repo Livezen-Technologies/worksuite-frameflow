@@ -1,3 +1,4 @@
+import { isLegacyFont } from "@/input-method/legacy";
 import type { FontAtlas } from "@/fonts/types";
 import { SYSTEM_FONTS } from "@/fonts/system-fonts";
 
@@ -83,6 +84,7 @@ export async function loadFonts({
 }: {
 	families: string[];
 }): Promise<void> {
-	const googleFonts = families.filter((family) => !SYSTEM_FONTS.has(family));
+	// Legacy Sinhala fonts come from the computer, not Google Fonts.
+	const googleFonts = families.filter((family) => !SYSTEM_FONTS.has(family) && !isLegacyFont({ fontFamily: family }));
 	await Promise.all(googleFonts.map((family) => loadFullFont({ family })));
 }

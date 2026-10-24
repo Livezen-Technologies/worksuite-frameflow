@@ -27,6 +27,7 @@ import {
 } from "../types";
 import { findClipBefore } from "../windows";
 import { TransitionThumbnail } from "./transition-thumbnail";
+import { TRANSITION_DRAG_TYPE } from "./timeline-transition";
 
 type Clip = VideoElement | ImageElement;
 type Cut = { trackId: string; from: Clip; to: Clip };
@@ -112,8 +113,9 @@ export function TransitionsView() {
 			: null;
 	const existing = cut?.to.transitionIn;
 
-	// Show the selected cut's own transition when the selection moves to it.
-	const cutKey = cut ? `${cut.from.id}>${cut.to.id}` : null;
+	// Show the selected cut's own transition when the selection moves to it,
+	// or when it changes on the timeline (e.g. its ends were dragged).
+	const cutKey = cut ? `${cut.from.id}>${cut.to.id}:${JSON.stringify(existing ?? null)}` : null;
 	const [shownCut, setShownCut] = useState<string | null>(null);
 	if (cutKey !== shownCut) {
 		setShownCut(cutKey);
@@ -159,6 +161,15 @@ export function TransitionsView() {
 		toast.success(
 			`${definition.name} added to the cut before “${cut.to.name}”`,
 		);
+	};
+
+	/** Settings change: an existing transition on the selected cut follows live. */
+	const change = ({ next, live = false }: { next: typeof settings; live?: boolean }) => {
+		setSettings(next);
+		if (!cut || !existing) return;
+		const value: ClipTransition = { ...next, type };
+		if (live) editor.timeline.previewElements({ updates: [{ trackId: cut.trackId, elementId: cut.to.id, updates: { transitionIn: value } }] });
+		else editor.timeline.updateElements({ updates: [applyToCut({ target: cut, value })] });
 	};
 
 	const applyAll = () => {
@@ -269,6 +280,12 @@ export function TransitionsView() {
 							key={item.type}
 							type="button"
 							aria-pressed={type === item.type}
+							draggable
+							onDragStart={(event) => {
+								event.dataTransfer.effectAllowed = "copy";
+								event.dataTransfer.setData(TRANSITION_DRAG_TYPE, JSON.stringify({ ...settings, type: item.type }));
+							}}
+							data-transition-type={item.type}
 							onClick={() => setType(item.type)}
 							onDoubleClick={() => {
 								setType(item.type);
@@ -290,7 +307,7 @@ export function TransitionsView() {
 							onMouseLeave={() => setHovered(null)}
 							onFocus={() => setHovered(item.type)}
 							onBlur={() => setHovered(null)}
-							title={`${item.name} — double-click to apply to the selected cut`}
+							title={`${item.name}: drag onto a cut on the timeline, or double-click to apply to the selected cut`}
 							className={cn(
 								"bg-card flex flex-col gap-1.5 rounded-lg border-2 p-1.5 text-left",
 								type === item.type
@@ -332,40 +349,65 @@ export function TransitionsView() {
 						<input
 							type="range"
 							min={0.1}
-							max={3}
-							step={0.1}
+							max={5}
+							step={0.05}
 							value={settings.duration}
-							onChange={(event) =>
-								setSettings({
-									...settings,
-									duration: Number(event.target.value),
-								})
-							}
+							onChange={(event) => change({ next: { ...settings, duration: Number(event.target.value) }, live: true })}
+							onPointerUp={() => editor.timeline.commitPreview()}
+							onKeyUp={() => editor.timeline.commitPreview()}
 							className="accent-primary"
+							data-transition-duration
 						/>
-						<span className="text-muted-foreground text-right tabular-nums">
-							{settings.duration.toFixed(1)} s
+						<span className="text-muted-foreground text-right tabular-nums" data-transition-duration-value>
+							{settings.duration.toFixed(2)} s
 						</span>
 					</label>
+					<div className="grid grid-cols-[64px_1fr] items-center gap-2 text-xs">
+						Speed
+						<div className="flex flex-wrap gap-1" role="group" aria-label="Speed">
+							{(
+								[
+									["Slow", 1.5],
+									["Normal", 0.8],
+									["Fast", 0.4],
+									["Snap", 0.2],
+								] as const
+							).map(([label, seconds]) => (
+								<button
+									key={label}
+									type="button"
+									aria-pressed={Math.abs(settings.duration - seconds) < 0.01}
+									onClick={() => change({ next: { ...settings, duration: seconds } })}
+									className={cn(
+										"h-6 border px-2",
+										Math.abs(settings.duration - seconds) < 0.01 ? "bg-primary text-primary-foreground border-primary" : "hover:bg-accent",
+									)}
+									data-transition-speed={label}
+								>
+									{label}
+								</button>
+							))}
+						</div>
+					</div>
 					<SelectRow
 						label="Easing"
 						value={settings.easing}
 						options={EASINGS}
-						onChange={(easing) => setSettings({ ...settings, easing })}
+						onChange={(easing) => change({ next: { ...settings, easing } })}
 					/>
 					{definition.directional && (
 						<SelectRow
 							label="Direction"
 							value={settings.direction}
 							options={DIRECTIONS}
-							onChange={(direction) => setSettings({ ...settings, direction })}
+							onChange={(direction) => change({ next: { ...settings, direction } })}
 						/>
 					)}
 					<SelectRow
 						label="Alignment"
 						value={settings.alignment}
 						options={ALIGNMENTS}
-						onChange={(alignment) => setSettings({ ...settings, alignment })}
+						onChange={(alignment) => change({ next: { ...settings, alignment } })}
 					/>
 
 					<p

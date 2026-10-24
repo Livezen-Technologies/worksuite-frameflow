@@ -11,6 +11,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { loadFullFont } from "@/fonts/google-fonts";
 import { SYSTEM_FONTS } from "@/fonts/system-fonts";
+import { installedLegacyFonts, SINHALA_SAMPLE, SINHALA_UNICODE_FONTS } from "@/fonts/sinhala-fonts";
+import { isLegacyFont, LEGACY_FONT_FAMILIES, unicodeToLegacy } from "@/input-method/legacy";
 import type { FontAtlas, FontAtlasEntry } from "@/fonts/types";
 import { useFontAtlas } from "@/fonts/use-font-atlas";
 import { cn } from "@/utils/ui";
@@ -22,6 +24,7 @@ const FONT_TABS = [
 	{ key: "all", label: "All fonts" },
 	{ key: "my-fonts", label: "My fonts" },
 	{ key: "favorites", label: "Favorites" },
+	{ key: "sinhala", label: "සිංහල" },
 ] as const;
 
 type FontTab = (typeof FONT_TABS)[number]["key"];
@@ -62,7 +65,7 @@ export function FontPicker({
 
 	const handleSelect = useCallback(
 		async ({ family }: { family: string }) => {
-			if (!SYSTEM_FONTS.has(family)) {
+			if (!SYSTEM_FONTS.has(family) && !isLegacyFont({ fontFamily: family })) {
 				try {
 					await loadFullFont({ family });
 				} catch {
@@ -144,12 +147,15 @@ export function FontPicker({
 						</button>
 					))}
 				</div>
-				{status === "loading" && (
+				{activeTab === "sinhala" && (
+					<SinhalaFontList search={search} selectedFont={defaultValue} onFontSelect={handleSelect} />
+				)}
+				{activeTab !== "sinhala" && status === "loading" && (
 					<div className="py-8 text-center text-sm text-muted-foreground">
 						Loading fonts...
 					</div>
 				)}
-				{status === "error" && (
+				{activeTab !== "sinhala" && status === "error" && (
 					<div className="flex flex-col items-center gap-3 py-8 px-4">
 						<p className="text-sm text-muted-foreground text-center">
 							Failed to load font previews.
@@ -159,14 +165,15 @@ export function FontPicker({
 						</Button>
 					</div>
 				)}
-				{status === "idle" &&
+				{activeTab !== "sinhala" &&
+					status === "idle" &&
 					fontNames.length > 0 &&
 					filteredFonts.length === 0 && (
 						<div className="py-6 text-center text-sm text-muted-foreground">
 							No fonts found.
 						</div>
 					)}
-				{status === "idle" && atlas && filteredFonts.length > 0 && (
+				{activeTab !== "sinhala" && status === "idle" && atlas && filteredFonts.length > 0 && (
 					<List
 						rowCount={filteredFonts.length}
 						rowHeight={ROW_HEIGHT}
@@ -183,6 +190,69 @@ export function FontPicker({
 				)}
 			</PopoverContent>
 		</Popover>
+	);
+}
+
+/** The Sinhala font pack: Unicode fonts, then legacy fonts installed on this computer. */
+function SinhalaFontList({
+	search,
+	selectedFont,
+	onFontSelect,
+}: {
+	search: string;
+	selectedFont: string | undefined;
+	onFontSelect: (params: { family: string }) => void;
+}) {
+	const [installed, setInstalled] = useState<string[] | null>(null);
+	useEffect(() => {
+		let cancelled = false;
+		void installedLegacyFonts().then((list) => !cancelled && setInstalled(list));
+		// Load the previews of the Unicode fonts.
+		for (const f of SINHALA_UNICODE_FONTS) if (!f.bundled) void loadFullFont({ family: f.family, weights: [400] }).catch(() => {});
+		return () => {
+			cancelled = true;
+		};
+	}, []);
+	const q = search.toLowerCase();
+	const match = (name: string) => !q || name.toLowerCase().includes(q);
+	const row = ({ family, legacy, available = true }: { family: string; legacy: boolean; available?: boolean }) => (
+		<button
+			key={family}
+			type="button"
+			disabled={!available}
+			onClick={() => onFontSelect({ family })}
+			data-sinhala-font={family}
+			className={cn(
+				"hover:bg-accent flex w-full items-center gap-2 px-3 py-1.5 text-left disabled:cursor-default disabled:opacity-40",
+				family === selectedFont && "bg-accent",
+			)}
+		>
+			<span className="min-w-0 flex-1">
+				<span className="block truncate text-lg leading-tight" style={{ fontFamily: available ? `"${family}"` : undefined }}>
+					{legacy && available ? unicodeToLegacy({ text: SINHALA_SAMPLE }) : SINHALA_SAMPLE}
+				</span>
+				<span className="text-muted-foreground block truncate text-[11px]">{family}</span>
+			</span>
+			{legacy && <span className="text-muted-foreground border px-1 text-[10px]">{available ? "legacy" : "not installed"}</span>}
+		</button>
+	);
+	const missing = LEGACY_FONT_FAMILIES.filter((f) => !installed?.includes(f));
+	return (
+		<div className="max-h-80 overflow-y-auto py-1" data-sinhala-fonts>
+			<p className="text-muted-foreground px-3 pt-1 text-[10px] font-semibold uppercase">Unicode (recommended)</p>
+			{SINHALA_UNICODE_FONTS.filter((f) => match(f.family)).map((f) => row({ family: f.family, legacy: false }))}
+			<p className="text-muted-foreground px-3 pt-2 text-[10px] font-semibold uppercase">Legacy on this computer</p>
+			{installed === null ? (
+				<p className="text-muted-foreground px-3 py-1 text-xs">Looking…</p>
+			) : (
+				installed.filter(match).map((f) => row({ family: f, legacy: true }))
+			)}
+			{installed?.length === 0 && <p className="text-muted-foreground px-3 py-1 text-xs">None found. Install FM or DL fonts on this computer to use them.</p>}
+			{missing.filter(match).map((f) => row({ family: f, legacy: true, available: false }))}
+			<p className="text-muted-foreground px-3 pt-2 pb-1 text-[10px]">
+				Text stays Unicode; legacy fonts get it converted when drawn, so switching fonts never loses your words.
+			</p>
+		</div>
 	);
 }
 

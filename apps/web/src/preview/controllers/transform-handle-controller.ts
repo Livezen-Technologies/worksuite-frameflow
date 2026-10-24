@@ -56,6 +56,12 @@ interface CornerScaleSession extends CapturedPointerState {
 	readonly baseHeight: number;
 	readonly shouldClearScaleAnimation: boolean;
 	readonly animationsWithoutScale: ElementAnimations | undefined;
+	/** Text stretches width and height independently from a corner (Alt keeps proportions); other elements the reverse. */
+	readonly freeStretch: boolean;
+	readonly rotationRad: number;
+	/** The dragged corner's offset from the centre, in the element's own (unrotated) frame. */
+	readonly initialHalfWidth: number;
+	readonly initialHalfHeight: number;
 }
 
 interface EdgeScaleSession extends CapturedPointerState {
@@ -384,6 +390,10 @@ export class TransformHandleController {
 			baseHeight: context.bounds.height / context.resolvedTransform.scaleY,
 			shouldClearScaleAnimation,
 			animationsWithoutScale,
+			freeStretch: context.element.type === "text",
+			rotationRad: (context.bounds.rotation * Math.PI) / 180,
+			initialHalfWidth: Math.max(1e-3, context.bounds.width / 2),
+			initialHalfHeight: Math.max(1e-3, context.bounds.height / 2),
 			pointerId: event.pointerId,
 			captureTarget: this.capturePointer({
 				target: event.currentTarget as HTMLElement,
@@ -482,6 +492,10 @@ export class TransformHandleController {
 
 		switch (this.session.kind) {
 			case "corner-scale":
+				if (this.session.freeStretch !== event.altKey) {
+					this.previewCornerStretch({ session: this.session, position });
+					return;
+				}
 				this.previewCornerScale({
 					session: this.session,
 					position,
@@ -627,6 +641,39 @@ export class TransformHandleController {
 							scaleY: clampScaleNonZero(
 								session.initialTransform.scaleY * snappedScale,
 							),
+						},
+					}),
+					...(session.shouldClearScaleAnimation && {
+						animations: session.animationsWithoutScale,
+					}),
+				},
+			},
+		]);
+	}
+
+	/** Corner drag that stretches or squeezes width and height separately (one gesture, both axes). */
+	private previewCornerStretch({ session, position }: { session: CornerScaleSession; position: Point }): void {
+		const dx = position.x - session.initialBoundsCx;
+		const dy = position.y - session.initialBoundsCy;
+		const cos = Math.cos(session.rotationRad);
+		const sin = Math.sin(session.rotationRad);
+		const localX = Math.abs(dx * cos + dy * sin);
+		const localY = Math.abs(-dx * sin + dy * cos);
+		const round = (v: number) => Math.round(v * 1000) / 1000;
+		const factorX = localX / session.initialHalfWidth;
+		const factorY = localY / session.initialHalfHeight;
+		this.deps.preview.onSnapLinesChange?.([]);
+		this.deps.timeline.previewElements([
+			{
+				trackId: session.trackId,
+				elementId: session.elementId,
+				updates: {
+					params: buildParamsWithTransform({
+						params: session.initialParams,
+						transform: {
+							...session.initialTransform,
+							scaleX: clampScaleNonZero(round(session.initialTransform.scaleX * factorX)),
+							scaleY: clampScaleNonZero(round(session.initialTransform.scaleY * factorY)),
 						},
 					}),
 					...(session.shouldClearScaleAnimation && {

@@ -28,10 +28,13 @@ export function HandleButton({
 	onPointerMove,
 	onPointerUp,
 	children,
+	handle,
 }: {
 	screen: { x: number; y: number };
 	cursor?: string;
 	hitAreaSize: number;
+	/** Names the handle (data-preview-handle), e.g. for tests. */
+	handle?: string;
 	className?: string;
 	onPointerDown: (event: React.PointerEvent) => void;
 	onPointerMove: (event: React.PointerEvent) => void;
@@ -53,6 +56,7 @@ export function HandleButton({
 				pointerEvents: "auto",
 				cursor,
 			}}
+			data-preview-handle={handle}
 			onPointerDown={onPointerDown}
 			onPointerMove={onPointerMove}
 			onPointerUp={onPointerUp}
@@ -83,6 +87,7 @@ export function CornerHandle({
 			screen={screen}
 			cursor={cursor}
 			hitAreaSize={HANDLE_HIT_AREA_SIZE}
+			handle="corner"
 			onPointerDown={onPointerDown}
 			onPointerMove={onPointerMove}
 			onPointerUp={onPointerUp}
