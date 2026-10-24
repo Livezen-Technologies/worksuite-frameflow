@@ -17,6 +17,7 @@ import {
 } from "../actions";
 import {
 	loadPackIndex,
+	onMotionPacksChange,
 	packAssetThumbnailUrl,
 	packLanguages,
 	resolvePackVariant,
@@ -28,6 +29,7 @@ import {
 } from "../catalog";
 import { listUserLotties, type UserLottie } from "../user-library";
 import { LottiePreview } from "./lottie-preview";
+import { AssetLibraryButton } from "@/asset-library/components/asset-library-button";
 
 const MY_IMPORTS = "my-imports";
 
@@ -59,8 +61,15 @@ export function AnimationsView() {
 		listUserLotties()
 			.then((items) => !cancelled && setImports(items))
 			.catch(() => {});
+		// Packs installed from the Asset Library join the library as they arrive.
+		const stop = onMotionPacksChange(() => {
+			loadPackIndex()
+				.then((loaded) => !cancelled && setIndex(loaded))
+				.catch(() => {});
+		});
 		return () => {
 			cancelled = true;
+			stop();
 		};
 	}, []);
 
@@ -105,6 +114,7 @@ export function AnimationsView() {
 			data-animations-view
 			onPointerDown={() => setSoundUnlocked(true)}
 		>
+			<AssetLibraryButton type="motion" />
 			<div className="flex flex-wrap gap-1">
 				{chips.map((chip) => (
 					<button

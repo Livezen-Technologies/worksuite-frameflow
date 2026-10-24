@@ -1,4 +1,6 @@
+import { motionPacksEpoch } from "@/lottie/catalog";
 import { drawLottieFrame } from "@/lottie/player";
+import { slotsKey } from "@/lottie/slots";
 import type { LottieElementData } from "@/lottie/types";
 import { createCanvasSurface } from "../canvas-utils";
 import {
@@ -47,7 +49,7 @@ export class LottieNode extends VisualNode<
 		const height = Math.max(1, Math.round(lottie.height * resolution));
 		// Frames are drawn at 1/100 frame precision; closer than that looks the same.
 		const quantized = Math.round(frame * 100) / 100;
-		const key = `${quantized}|${width}x${height}`;
+		const key = `${quantized}|${width}x${height}|${slotsKey(lottie.slots)}|${JSON.stringify(lottie.colors)}|${motionPacksEpoch()}`;
 		if (this.lastBuffer && this.lastKey === key) return this.lastBuffer;
 
 		let buffer = this.buffers[this.next];
@@ -62,6 +64,7 @@ export class LottieNode extends VisualNode<
 			colors: lottie.colors,
 			frame: quantized,
 			target: buffer,
+			slots: lottie.slots,
 		});
 		this.lastKey = key;
 		this.lastBuffer = buffer;

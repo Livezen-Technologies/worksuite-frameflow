@@ -37,7 +37,12 @@ export function lottieDataFromPackAsset(asset: PackIndexAsset, variant?: string 
 	const fps = 30;
 	const resolved = resolvePackVariant(asset, variant);
 	return {
-		source: resolved ? { kind: "pack", assetId: asset.id, variant: resolved } : { kind: "pack", assetId: asset.id },
+		source: {
+			kind: "pack",
+			assetId: asset.id,
+			...(resolved ? { variant: resolved } : {}),
+			...(asset.pack ? { pack: { ...asset.pack } } : {}),
+		},
 		colors: {},
 		width: asset.width,
 		height: asset.height,

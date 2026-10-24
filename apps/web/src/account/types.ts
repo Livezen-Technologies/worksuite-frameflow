@@ -83,6 +83,7 @@ declare global {
 			cloud?: WorksuiteCloudBridge;
 			master?: MasterExportBridge;
 			updates?: WorksuiteUpdatesBridge;
+			assets?: import("@/asset-library/types").WorksuiteAssetsBridge;
 			capture?: WorksuiteCaptureBridge;
 			network?: WorksuiteNetworkBridge;
 			uploads?: WorksuiteUploadsBridge;

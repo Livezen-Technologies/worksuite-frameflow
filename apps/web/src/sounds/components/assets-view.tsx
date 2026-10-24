@@ -26,6 +26,7 @@ import { useSoundSearch } from "@/sounds/use-sound-search";
 import { useSoundsStore } from "@/sounds/sounds-store";
 import type { SavedSound, SoundEffect } from "@/sounds/types";
 import { cn } from "@/utils/ui";
+import { InstalledPackSounds } from "@/asset-library/components/installed-pack-sounds";
 import {
 	FavouriteIcon,
 	FilterMailIcon,
@@ -39,10 +40,11 @@ export function SoundsView() {
 	return (
 		<div className="flex h-full flex-col">
 			<Tabs defaultValue="sound-effects" className="flex h-full flex-col">
-				<div className="px-3 pt-4 pb-0">
+				<div className="flex items-center gap-2 px-3 pt-4 pb-0">
 					<TabsList>
 						<TabsTrigger value="sound-effects">Sound effects</TabsTrigger>
 						<TabsTrigger value="saved">Saved</TabsTrigger>
+						<TabsTrigger value="packs">Packs</TabsTrigger>
 					</TabsList>
 				</div>
 				<Separator className="my-4" />
@@ -57,6 +59,9 @@ export function SoundsView() {
 					className="mt-0 flex min-h-0 flex-1 flex-col p-5 pt-0"
 				>
 					<SavedSoundsView />
+				</TabsContent>
+				<TabsContent value="packs" className="mt-0 flex min-h-0 flex-1 flex-col p-5 pt-0">
+					<InstalledPackSounds />
 				</TabsContent>
 			</Tabs>
 		</div>

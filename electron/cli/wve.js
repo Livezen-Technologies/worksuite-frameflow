@@ -181,6 +181,20 @@ const TOOLS = [
 		{ removeFillers: { type: "boolean", description: "Remove um, uh and similar (default true)" } },
 	],
 	["captions_add", "captions.add", "Put the transcript on the timeline as a new caption track.", {}],
+	[
+		"assets_search",
+		"assets.search",
+		"Search the Asset Library (download center and built-in packs) in English, Sinhala or Tamil.",
+		{ query: strP("Words to search for"), type: strP("Pack type: motion, sounds, transitions, effects, filters, color-profiles, luts, fonts, text-templates, video-templates") },
+	],
+	["assets_install", "assets.install", "Download and install an asset pack by id (desktop app).", { packId: strP("Pack id from assets.search") }, ["packId"]],
+	[
+		"assets_apply",
+		"assets.apply",
+		"Add an animation from a pack at the playhead; downloads the pack first if needed (a placeholder fills in when it arrives).",
+		{ assetId: strP("Asset id, e.g. sub-avatar-bar"), packId: strP("Pack id (omit for built-in assets)") },
+		["assetId"],
+	],
 	["playback_seek", "playback.seek", "Move the playhead.", { seconds: num("Time in seconds") }, ["seconds"]],
 	[
 		"export_video",
