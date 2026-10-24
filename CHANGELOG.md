@@ -324,6 +324,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Changed
 
+- Timeline zoom is smooth: Ctrl/⌘+scroll zoom no longer stutters on long or zoomed-in video clips (only the thumbnails near the visible area are drawn), and the zoom buttons now glide to the new zoom instead of jumping.
 - New home screen: “Start something new” with large New video project (Ctrl+N), New screen recording (Ctrl+Shift+R) and Motion graphics cards, quick Templates sizes (16:9 YouTube, 9:16 Reels, 1:1 Post), Open existing project and a drop zone, then your recent projects. The sidebar has Home, Recent projects, Templates, Motion graphics and Screen recordings with counts, and search is in the middle of the top bar (Ctrl+K).
 - Corners are slightly rounded (5px) everywhere for a softer, consistent look.
 - Square corners across the whole interface: panels, buttons, menus, inputs, chips, the Asset Library, the Motion Editor and timeline clips.
