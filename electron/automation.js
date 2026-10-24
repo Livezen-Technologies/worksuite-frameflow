@@ -5,6 +5,7 @@ const net = require("node:net");
 const path = require("node:path");
 const account = require("./account");
 const cloudSync = require("./cloud-sync");
+const { startGrpc, DEFAULT_PORT } = require("./automation-grpc");
 
 /**
  * Local automation API (SRS AU-01–AU-03): newline-delimited JSON-RPC 2.0
@@ -30,6 +31,10 @@ const socketPath = () => {
 };
 
 let server = null;
+/** gRPC front (feature flag): settings `grpc: true`, --automation-grpc or WVE_AUTOMATION_GRPC=1. */
+let grpcServer = null;
+/** Event sinks other than sockets (the gRPC streams). */
+const eventSinks = new Set();
 let token = null;
 let nextCall = 1;
 const pending = new Map();
@@ -170,11 +175,17 @@ const EVENT_TOPICS = ["project.opened", "project.saved", "timeline.changed", "ex
 const subscribers = new Map();
 
 function emitEvent(topic, data) {
+	const at = new Date().toISOString();
 	for (const [socket, topics] of subscribers) {
 		if (!topics.has(topic) && !topics.has("*")) continue;
-		socket.write(`${JSON.stringify({ jsonrpc: "2.0", method: "event", params: { topic, data: data ?? null, at: new Date().toISOString() } })}\n`);
+		socket.write(`${JSON.stringify({ jsonrpc: "2.0", method: "event", params: { topic, data: data ?? null, at } })}\n`);
 	}
+	for (const sink of eventSinks)
+		if (sink.topics.has(topic) || sink.topics.has("*")) sink.send({ topic, data, at });
 }
+
+const grpcWanted = () =>
+	!!readSettings().grpc || process.argv.includes("--automation-grpc") || process.env.WVE_AUTOMATION_GRPC === "1";
 
 ipcMain.on("automation:event", (_event, { topic, data } = {}) => {
 	if (EVENT_TOPICS.includes(topic)) emitEvent(topic, data);
@@ -255,9 +266,28 @@ async function start() {
 		server.listen(address, resolve);
 	});
 	if (process.platform !== "win32") await fs.promises.chmod(address, 0o600);
+	if (grpcWanted())
+		grpcServer = await startGrpc({
+			token: () => token,
+			dispatch,
+			topics: EVENT_TOPICS,
+			port: Number(process.env.WVE_GRPC_PORT) || DEFAULT_PORT,
+			subscribe: (topics, send) => {
+				const sink = { topics, send };
+				eventSinks.add(sink);
+				return () => eventSinks.delete(sink);
+			},
+		}).catch((error) => {
+			console.error("Automation gRPC didn't start:", error.message);
+			return null;
+		});
 	await fs.promises.writeFile(
 		discoveryFile(),
-		JSON.stringify({ socket: address, token, pid: process.pid, api: VERSION }, null, 2),
+		JSON.stringify(
+			{ socket: address, token, pid: process.pid, api: VERSION, ...(grpcServer ? { grpc: grpcServer.address } : {}) },
+			null,
+			2,
+		),
 		{ mode: 0o600 },
 	);
 	await fs.promises.chmod(discoveryFile(), 0o600).catch(() => {});
@@ -267,13 +297,22 @@ async function stop() {
 	if (!server) return;
 	await new Promise((resolve) => server.close(resolve));
 	server = null;
+	if (grpcServer) await grpcServer.stop();
+	grpcServer = null;
+	eventSinks.clear();
 	token = null;
 	await fs.promises.rm(discoveryFile(), { force: true });
 	if (process.platform !== "win32") await fs.promises.rm(socketPath(), { force: true });
 }
 
 function getState() {
-	return { enabled: readSettings().enabled, running: !!server, socket: server ? socketPath() : null, discovery: discoveryFile() };
+	return {
+		enabled: readSettings().enabled,
+		running: !!server,
+		socket: server ? socketPath() : null,
+		grpc: grpcServer?.address ?? null,
+		discovery: discoveryFile(),
+	};
 }
 
 module.exports = {
@@ -282,7 +321,7 @@ module.exports = {
 	},
 	getState,
 	async setEnabled(enabled) {
-		await fs.promises.writeFile(settingsFile(), JSON.stringify({ enabled: !!enabled }));
+		await fs.promises.writeFile(settingsFile(), JSON.stringify({ ...readSettings(), enabled: !!enabled }));
 		if (enabled) await start();
 		else await stop();
 		const state = getState();

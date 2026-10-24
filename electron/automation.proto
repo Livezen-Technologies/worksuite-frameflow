@@ -1,0 +1,34 @@
+// Local automation API over gRPC (SRS AU-01–AU-03), behind a feature flag.
+// The same methods and events as the JSON-RPC API; values are JSON strings
+// so the two stay in step. Send `authorization: Bearer <token>` (the token
+// from automation.json) as metadata on every call.
+syntax = "proto3";
+
+package wve.automation.v1;
+
+service Automation {
+  // Runs one API method, e.g. "project.current" or "timeline.addText".
+  rpc Call(CallRequest) returns (CallReply);
+  // Streams events: project.opened, project.saved, timeline.changed,
+  // export.started, export.finished. No topics means all of them.
+  rpc Subscribe(SubscribeRequest) returns (stream Event);
+}
+
+message CallRequest {
+  string method = 1;
+  string params_json = 2;
+}
+
+message CallReply {
+  string result_json = 1;
+}
+
+message SubscribeRequest {
+  repeated string topics = 1;
+}
+
+message Event {
+  string topic = 1;
+  string data_json = 2;
+  string at = 3;
+}
