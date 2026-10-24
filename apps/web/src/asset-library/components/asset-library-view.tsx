@@ -19,6 +19,7 @@ import {
 	type PackStatus,
 	type PackType,
 } from "../types";
+import { onPackContentChange, packSounds } from "../registry";
 import { OVERLAY_CSS } from "./styles";
 
 export interface AssetLibraryActions {
@@ -497,6 +498,26 @@ export function AssetLibraryView({
 									? t("Packs you install or favorite show up here.")
 									: t("No packs match. Try another word or language.")}
 						</div>
+					) : type === "sounds" ? (
+						<SoundList
+							packs={visible}
+							state={state}
+							actions={actions}
+							selectedId={selected?.id ?? null}
+							favorites={favorites}
+							catalogBase={catalogBase}
+							onSelect={(pack) => {
+								setSelectedId(pack.id);
+								setSide("detail");
+							}}
+							onMenu={({ pack, event }) => {
+								event.preventDefault();
+								setSelectedId(pack.id);
+								setMenu({ pack, x: event.clientX, y: event.clientY });
+							}}
+							drag={drag}
+							t={t}
+						/>
 					) : (
 						<div className="al-grid">
 							{visible.map((pack) => (
@@ -600,6 +621,132 @@ function FavoriteButton({
 		>
 			{on ? "♥" : "♡"}
 		</span>
+	);
+}
+
+/**
+ * Sounds as a list: play, title, waveform, size and Add. A sound that isn't
+ * downloaded yet is fetched first (they're small), then plays.
+ */
+function SoundList({
+	packs,
+	state,
+	actions,
+	selectedId,
+	favorites,
+	catalogBase,
+	onSelect,
+	onMenu,
+	drag,
+	t,
+}: {
+	packs: CatalogPack[];
+	state: AssetStoreState;
+	actions: AssetLibraryActions;
+	selectedId: string | null;
+	favorites: string[];
+	catalogBase?: string;
+	onSelect: (pack: CatalogPack) => void;
+	onMenu: (args: { pack: CatalogPack; event: React.MouseEvent }) => void;
+	drag: DragHandlers | null;
+	t: T;
+}) {
+	const [playing, setPlaying] = useState<string | null>(null);
+	const [waiting, setWaiting] = useState<string | null>(null);
+	const audio = useRef<HTMLAudioElement | null>(null);
+	const stop = () => {
+		audio.current?.pause();
+		audio.current = null;
+		setPlaying(null);
+	};
+	const start = (packId: string) => {
+		const sound = packSounds().find((s) => s.packId === packId);
+		if (!sound) return false;
+		audio.current?.pause();
+		const el = new Audio(sound.url);
+		el.addEventListener("ended", () => setPlaying((p) => (p === packId ? null : p)));
+		audio.current = el;
+		void el.play().catch(() => setPlaying(null));
+		setPlaying(packId);
+		return true;
+	};
+	// Plays a sound as soon as its download finishes.
+	useEffect(() => {
+		if (!waiting) return;
+		const tryPlay = () => {
+			if (start(waiting)) setWaiting(null);
+		};
+		tryPlay();
+		return onPackContentChange(tryPlay);
+	}, [waiting]);
+	useEffect(() => () => audio.current?.pause(), []);
+	const toggle = (pack: CatalogPack) => {
+		if (playing === pack.id || waiting === pack.id) {
+			setWaiting(null);
+			stop();
+			return;
+		}
+		if (start(pack.id)) return;
+		stop();
+		setWaiting(pack.id);
+		const status = packStatus(pack, state);
+		if (status === "not-installed" || status === "error") actions.install(pack.id);
+	};
+	return (
+		<div className="al-list" role="list" data-sound-list>
+			{packs.map((pack) => {
+				const status = packStatus(pack, state);
+				const usable = status === "installed" || status === "builtin" || status === "update-available";
+				const thumb = resolveUrl(pack.thumbnailUrl, catalogBase);
+				const isPlaying = playing === pack.id;
+				const isWaiting = waiting === pack.id;
+				const favorite = favorites.includes(pack.id);
+				return (
+					<div
+						key={pack.id}
+						role="listitem"
+						className="al-row"
+						aria-current={selectedId === pack.id}
+						onContextMenu={(event) => onMenu({ pack, event })}
+						draggable={!!drag}
+						onDragStart={drag ? (event) => drag.start({ pack, event }) : undefined}
+						onDragEnd={drag?.end}
+					>
+						<button
+							type="button"
+							className={`al-play${isPlaying ? " on" : ""}`}
+							onClick={() => toggle(pack)}
+							aria-label={isPlaying ? t("Stop") : t("Play")}
+						>
+							{isWaiting ? "…" : isPlaying ? "■" : "▶"}
+						</button>
+						<button type="button" className="al-row-main" onClick={() => onSelect(pack)}>
+							<span className="al-row-title">{pack.title}</span>
+							<span className="al-row-sub">{(pack.tags.en ?? []).filter((x) => !["sfx", "sound", "worksuite"].includes(x)).slice(0, 3).join(" · ")}</span>
+						</button>
+						<span className="al-row-wave">{thumb && <img src={thumb} alt="" draggable={false} />}</span>
+						<span className={`al-badge ${BADGE_CLASS[status] ?? ""}`}>{t(STATUS_LABELS[status])}</span>
+						<span className="al-row-size">{pack.builtin ? "" : formatBytes(pack.sizeBytes)}</span>
+						{actions.setFavorite && (
+							<button
+								type="button"
+								className="al-row-fav"
+								aria-pressed={favorite}
+								aria-label={favorite ? t("Remove from favorites") : t("Add to favorites")}
+								onClick={() => actions.setFavorite?.({ packId: pack.id, on: !favorite })}
+							>
+								{favorite ? "♥" : "♡"}
+							</button>
+						)}
+						{actions.downloadAndAdd && (
+							<button type="button" className="al-btn al-row-add" onClick={() => actions.downloadAndAdd?.(pack)}>
+								{usable ? t("+ Add") : t("Get & add")}
+							</button>
+						)}
+					</div>
+				);
+			})}
+		</div>
 	);
 }
 

@@ -25,20 +25,36 @@ export const OVERLAY_CSS = `
 .al-hover{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
 .al-hover-sound{position:absolute;left:8px;bottom:8px;padding:2px 8px;border-radius:10px;background:rgba(0,0,0,.65);color:#fff;font-size:12px;animation:alPulse 1s ease-in-out infinite}
 @keyframes alPulse{50%{opacity:.4}}
-.al-sort{background:transparent;color:inherit;border:1px solid rgba(255,255,255,.12);border-radius:6px;padding:4px 6px;font-size:12px}
-.al-sort option{color:#111}
+.al-sort{background:transparent;color:inherit;border:1px solid color-mix(in srgb,currentColor 12%,transparent);border-radius:6px;padding:4px 6px;font-size:12px}
+.al-sort option{color:var(--foreground,#111);background:var(--popover,#fff)}
 .al-menu-scrim{position:fixed;inset:0;z-index:60}
-.al-menu{position:fixed;z-index:61;min-width:220px;padding:6px;border-radius:10px;background:#161a24;border:1px solid rgba(255,255,255,.1);box-shadow:0 12px 40px rgba(0,0,0,.45);display:flex;flex-direction:column}
+.al-menu{position:fixed;z-index:61;min-width:220px;padding:6px;border-radius:10px;background:var(--popover,#161a24);color:var(--popover-foreground,inherit);border:1px solid color-mix(in srgb,currentColor 10%,transparent);box-shadow:0 12px 40px rgba(0,0,0,.45);display:flex;flex-direction:column}
 .al-menu-title{padding:6px 10px 8px;font-size:12px;opacity:.6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px}
 .al-menu-item{text-align:left;padding:7px 10px;border-radius:6px;font-size:13px;background:transparent;border:0;color:inherit;cursor:pointer}
 .al-menu-item:hover:not(:disabled){background:rgba(76,141,255,.18)}
 .al-menu-item.danger{color:#f87171}
 .al-menu-item:disabled{opacity:.4;cursor:default}
-.al-menu-sep{height:1px;margin:4px 6px;background:rgba(255,255,255,.08)}
+.al-menu-sep{height:1px;margin:4px 6px;background:color-mix(in srgb,currentColor 8%,transparent)}
 .al-notice{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);z-index:62;padding:9px 16px;border-radius:8px;background:#1f2937;color:#fff;font-size:13px;box-shadow:0 8px 24px rgba(0,0,0,.4)}
-.al-cats{width:200px;flex-shrink:0;overflow:auto;padding:12px 8px;border-right:1px solid var(--al-border,rgba(255,255,255,.08));display:flex;flex-direction:column;gap:2px}
+.al-list{display:flex;flex-direction:column;gap:2px}
+.al-row{display:flex;align-items:center;gap:12px;padding:6px 10px;border-radius:8px;border:1px solid transparent}
+.al-row:hover{background:color-mix(in srgb,currentColor 4%,transparent)}
+.al-row[aria-current=true]{border-color:rgba(76,141,255,.6);background:rgba(76,141,255,.08)}
+.al-play{width:32px;height:32px;flex-shrink:0;border-radius:50%;border:0;background:color-mix(in srgb,currentColor 8%,transparent);color:inherit;cursor:pointer;font-size:12px}
+.al-play:hover,.al-play.on{background:#4c8dff;color:#fff}
+.al-row-main{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;background:transparent;border:0;color:inherit;cursor:pointer;text-align:left;padding:0}
+.al-row-title{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.al-row-sub{font-size:11px;opacity:.55;text-transform:capitalize}
+.al-row-wave{width:160px;height:32px;flex-shrink:0;overflow:hidden;border-radius:4px}
+.al-row-wave img{width:100%;height:100%;object-fit:cover}
+.al-row-size{width:56px;text-align:right;font-size:12px;opacity:.6;font-variant-numeric:tabular-nums}
+.al-row-fav{background:transparent;border:0;color:inherit;font-size:16px;cursor:pointer;opacity:.7}
+.al-row-fav[aria-pressed=true]{color:#f87171;opacity:1}
+.al-row-add{padding:4px 10px}
+@media (max-width:900px){.al-row-wave{display:none}}
+.al-cats{width:200px;flex-shrink:0;overflow:auto;padding:12px 8px;border-right:1px solid var(--al-border,color-mix(in srgb,currentColor 8%,transparent));display:flex;flex-direction:column;gap:2px}
 .al-cat{display:flex;justify-content:space-between;gap:8px;padding:6px 10px;border-radius:6px;font-size:13px;text-align:left;color:inherit;opacity:.8;background:transparent;border:0;cursor:pointer}
-.al-cat:hover{background:rgba(255,255,255,.05);opacity:1}
+.al-cat:hover{background:color-mix(in srgb,currentColor 5%,transparent);opacity:1}
 .al-cat[aria-pressed=true]{background:rgba(76,141,255,.18);color:#8fb6ff;opacity:1;font-weight:600}
 .al-cat-n{opacity:.55;font-variant-numeric:tabular-nums}
 .al-filters{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:14px}
@@ -123,4 +139,23 @@ export const OVERLAY_CSS = `
 .me-avatar{display:flex;gap:10px;align-items:center}
 .me-avatar .pic{width:56px;height:56px;border-radius:var(--ui-radius,5px);background:#596070 center/cover;flex:none;border:2px solid #f5a524}
 .me-hint{font-size:11.5px;color:var(--muted-foreground,#7d859a)}
+
+/* Light theme: next-themes drops the "dark" class. Accent text tones are
+   tuned for dark surfaces, so they get darker equivalents here. */
+html:not(.dark) .al-thumb{background:repeating-conic-gradient(#eef0f4 0 25%,#e4e7ed 0 50%) 0 0/16px 16px}
+html:not(.dark) .al-chip[aria-pressed=true]{color:#1d4fbf}
+html:not(.dark) .al-cat[aria-pressed=true]{color:#1d4fbf}
+html:not(.dark) .al-badge{background:#0f172a0f;color:#334155}
+html:not(.dark) .al-badge.installed,html:not(.dark) .al-badge.builtin{color:#0f766e}
+html:not(.dark) .al-badge.update{color:#b45309}
+html:not(.dark) .al-badge.pro{color:#7e22ce}
+html:not(.dark) .al-badge.error{color:#b91c1c}
+html:not(.dark) .al-banner{color:#92400e}
+html:not(.dark) .al-banner.error{color:#991b1b}
+html:not(.dark) .al-live{color:#0f766e}
+html:not(.dark) .al-heart{background:#ffffffd9;color:#e11d48}
+html:not(.dark) .al-heart[aria-pressed=false]{color:#334155}
+html:not(.dark) .al-menu{box-shadow:0 12px 40px rgba(15,23,42,.18)}
+html:not(.dark) .me-item[aria-current=true]{color:#1d4fbf}
+html:not(.dark) .me-item .k{background:#0f172a0f;color:#475569}
 `;
