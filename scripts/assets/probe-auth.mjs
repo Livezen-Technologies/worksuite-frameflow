@@ -41,13 +41,16 @@ for (const url of ["https://worksuitecloud.com/signup", "https://worksuitecloud.
 }
 
 // Download center feeds the app's updater reads.
-for (const channel of ["stable", "beta"]) {
-	for (const file of ["latest.yml", "latest-mac.yml", "latest-linux.yml"]) {
-		const url = `https://download.worksuitecloud.com/frameflow/${channel}/${file}`;
+const feedUrls = [];
+for (const channel of ["stable", "beta"]) for (const file of ["latest.yml", "latest-mac.yml", "latest-linux.yml"]) feedUrls.push(`https://download.worksuitecloud.com/frameflow/${channel}/${file}`);
+for (const extra of ["frameflow/latest-mac.yml", "frameflow/latest.yml", "latest-mac.yml", "frameflow", "frameflow/", "api/frameflow/latest", "frameflow/beta/", "frameflow/stable/"]) feedUrls.push(`https://download.worksuitecloud.com/${extra}`);
+feedUrls.push("https://worksuitecloud.com/download/frameflow");
+{
+	for (const url of feedUrls) {
 		try {
 			const r = await fetch(url);
 			const text = await r.text();
-			console.log(`${r.status} ${url} ${show(/^version:.*$/m.exec(text)?.[0] ?? text)}`);
+			console.log(`${r.status} ${r.headers.get("content-type")} ${url} ${/^version:/m.test(text) ? JSON.stringify(text.slice(0, 400)) : show(text.replace(/\s+/g, " ").slice(0, 300))}`);
 		} catch (error) {
 			console.log(`ERR ${url} ${error.cause?.code ?? error.message}`);
 		}
