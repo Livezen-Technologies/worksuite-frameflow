@@ -7,6 +7,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+## [1.7.1] - 2026-10-24
+
 ### Added
 - Recorder: choose what to record from cards: Full screen, a Window (with live previews of each open window) or a Custom area you drag.
 - While recording, a red dot with the elapsed time sits in the menu bar / system tray (click it to stop, pause or add a marker), the Dock shows a REC badge on macOS, and the taskbar icon gets a red dot on Windows.
