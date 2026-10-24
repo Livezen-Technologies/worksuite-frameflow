@@ -52,6 +52,11 @@ export const OVERLAY_CSS = `
 .al-row-fav[aria-pressed=true]{color:#f87171;opacity:1}
 .al-row-add{padding:4px 10px}
 @media (max-width:900px){.al-row-wave{display:none}}
+.al-sample{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;width:100%;height:100%;padding:8px;text-align:center;background:linear-gradient(135deg,color-mix(in srgb,#4c8dff 14%,transparent),color-mix(in srgb,#8b5cf6 10%,transparent))}
+.al-sample-main{font-size:34px;font-weight:700;line-height:1.1;font-family:"Noto Sans Sinhala","Noto Sans Tamil",Georgia,serif}
+.al-sample.large .al-sample-main{font-size:52px}
+.al-sample-name{font-size:12px;opacity:.6;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.al-card{content-visibility:auto;contain-intrinsic-size:auto 260px}
 .al-cats{width:200px;flex-shrink:0;overflow:auto;padding:12px 8px;border-right:1px solid var(--al-border,color-mix(in srgb,currentColor 8%,transparent));display:flex;flex-direction:column;gap:2px}
 .al-cat{display:flex;justify-content:space-between;gap:8px;padding:6px 10px;border-radius:6px;font-size:13px;text-align:left;color:inherit;opacity:.8;background:transparent;border:0;cursor:pointer}
 .al-cat:hover{background:color-mix(in srgb,currentColor 5%,transparent);opacity:1}

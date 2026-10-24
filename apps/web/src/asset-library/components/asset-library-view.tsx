@@ -724,7 +724,7 @@ function SoundList({
 							<span className="al-row-title">{pack.title}</span>
 							<span className="al-row-sub">{(pack.tags.en ?? []).filter((x) => !["sfx", "sound", "worksuite"].includes(x)).slice(0, 3).join(" · ")}</span>
 						</button>
-						<span className="al-row-wave">{thumb && <img src={thumb} alt="" draggable={false} />}</span>
+						<span className="al-row-wave">{thumb && <img src={thumb} alt="" draggable={false} loading="lazy" decoding="async" />}</span>
 						<span className={`al-badge ${BADGE_CLASS[status] ?? ""}`}>{t(STATUS_LABELS[status])}</span>
 						<span className="al-row-size">{pack.builtin ? "" : formatBytes(pack.sizeBytes)}</span>
 						{actions.setFavorite && (
@@ -748,6 +748,29 @@ function SoundList({
 			})}
 		</div>
 	);
+}
+
+const SAMPLE: Partial<Record<string, string>> = { si: "අආ ශ්‍රී", ta: "அஆ தமிழ்" };
+
+/**
+ * A pack's picture, loaded lazily. Without one (or if it fails to load)
+ * fonts show a type sample and other packs a plain mark, never an empty box.
+ */
+function PackThumb({ src, pack, large = false }: { src: string | null; pack: CatalogPack; large?: boolean }) {
+	const [failed, setFailed] = useState(false);
+	if (src && !failed) {
+		return <img src={src} alt="" draggable={false} loading={large ? "eager" : "lazy"} decoding="async" onError={() => setFailed(true)} />;
+	}
+	if (pack.type === "fonts" || pack.type === "text-templates" || pack.type === "text-animations") {
+		const script = pack.languages.find((l) => SAMPLE[l]) ?? ((pack.tags.en ?? []).includes("sinhala") ? "si" : (pack.tags.en ?? []).includes("tamil") ? "ta" : null);
+		return (
+			<span className={`al-sample${large ? " large" : ""}`}>
+				<span className="al-sample-main">{script ? SAMPLE[script] : "Aa Bb"}</span>
+				<span className="al-sample-name">{pack.title}</span>
+			</span>
+		);
+	}
+	return <span className="ph">◆</span>;
 }
 
 /** Right-click menu on a pack card. */
@@ -1024,11 +1047,7 @@ function PackCard({
 			}
 		>
 			<div className="al-thumb">
-				{thumb ? (
-					<img src={thumb} alt="" draggable={false} />
-				) : (
-					<span className="ph">◆</span>
-				)}
+				<PackThumb src={thumb} pack={pack} />
 				{hover.active && hover.kind === "video" && hoverPreview && (
 					<video
 						className="al-hover"
@@ -1117,7 +1136,7 @@ function PackDetail({
 	return (
 		<>
 			<div className="al-thumb al-preview">
-				{preview ? <img src={preview} alt="" /> : <span className="ph">◆</span>}
+				<PackThumb src={preview} pack={pack} large />
 			</div>
 			<div className="al-row" style={{ justifyContent: "space-between" }}>
 				<h3>{pack.title}</h3>
@@ -1594,7 +1613,13 @@ function packCategories(packs: CatalogPack[]) {
 	const covered = packs.filter((p) =>
 		tagsOf(p).some((tag) => useful.some(([u]) => u === tag)),
 	).length;
-	const byTags = useful.length >= 2 && covered >= packs.length * 0.6;
+	// Title stems only help when they form real groups ("Bold Cinematic 1…5");
+	// one-off names (fonts) would list every pack, so tags win there.
+	const stems = new Map<string, number>();
+	for (const p of packs) stems.set(stem(p), (stems.get(stem(p)) ?? 0) + 1);
+	const stemsUseful = stems.size > 1 && stems.size <= Math.max(8, packs.length / 3);
+	const byTags = useful.length >= 2 && (covered >= packs.length * 0.6 || !stemsUseful);
+	if (!byTags && !stemsUseful) return { list: [] as [string, number][], of: () => [] as string[], total: packs.length };
 	const of = (p: CatalogPack): string[] =>
 		byTags
 			? tagsOf(p)
