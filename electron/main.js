@@ -1,7 +1,6 @@
 // Worksuite FrameFlow desktop shell: runs the bundled Next.js server on a
 // private loopback port and shows it in a window.
-const { app, BrowserWindow, clipboard, shell, dialog, ipcMain, Menu, nativeTheme } = require("electron");
-const { spawn } = require("node:child_process");
+const { app, BrowserWindow, clipboard, shell, dialog, ipcMain, Menu, nativeTheme, utilityProcess } = require("electron");
 const capture = require("./capture");
 const cursorLog = require("./cursor-log");
 const recordingOverlay = require("./recording-overlay");
@@ -96,12 +95,14 @@ async function startServer() {
 	const serverJs = path.join(webRoot, "apps", "web", "server.js");
 	const origin = `http://${HOST}:${port}`;
 
-	server = spawn(process.execPath, [serverJs], {
+	// A utility process, not a second copy of the app: on macOS a plain child
+	// process shows up as its own Dock icon ("exec" / "next-server").
+	server = utilityProcess.fork(serverJs, [], {
 		cwd: path.dirname(serverJs),
 		stdio: "inherit",
+		serviceName: "FrameFlow Editor Server",
 		env: {
 			...process.env,
-			ELECTRON_RUN_AS_NODE: "1",
 			NODE_ENV: "production",
 			PORT: String(port),
 			HOSTNAME: HOST,

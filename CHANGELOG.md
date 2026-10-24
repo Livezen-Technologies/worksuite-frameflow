@@ -12,6 +12,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 - While recording, a red dot with the elapsed time sits in the menu bar / system tray (click it to stop, pause or add a marker), the Dock shows a REC badge on macOS, and the taskbar icon gets a red dot on Windows.
 
 ### Fixed
+- macOS: only one FrameFlow icon shows in the Dock; the editor's background server no longer appears as a second app ("exec" / "next-server").
 - macOS: FrameFlow no longer quits unexpectedly when recording with keys or clicks shown. It now asks for Accessibility access first and records without the keys overlay until you allow it.
 
 ## [1.7.0] - 2026-10-24
