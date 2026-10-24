@@ -9,6 +9,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
+- Motion Studio icons: 25 original icons (heart, stars, arrows, play, bell, thumbs up, chat, pin, lightning, crown and more) you can search and add in any colour as editable vector paths. SVG files you import now become editable shapes (with their fills and strokes) when they're simple shapes; others are still added as a picture.
+- Animated GIFs and WebPs in Motion Studio play in GIF, video and PNG-sequence exports, in step with the animation.
 - Shortcut manager (Ctrl/⌘+/ or the project menu): search actions or keys, click a key to change it, + to add another key for the same action, × to remove one, and ↺ to put an action back to its default. Keys already in use ask before they are moved. Every action is listed, including ones without a key yet. Presets for Premiere Pro, Final Cut Pro and CapCut style keys, and Import/Export of your shortcuts as a file.
 - New default shortcuts: = / − (or Ctrl/⌘ = / −) zoom the timeline, Shift+Z fits it, M adds a marker, Shift+M mutes and Shift+H hides the selected clips, Shift+R toggles ripple editing. If you had changed your shortcuts, these are only added where the key is still free.
 - Motion Studio: the selected layer's motion path is drawn on the canvas, with a dot per position keyframe you can drag. Selecting a keyframe shows the property's value graph and speed graph over the whole animation.
