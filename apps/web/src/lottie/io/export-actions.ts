@@ -1,4 +1,5 @@
 import { downloadBlob } from "@/motion-studio/export";
+import { backdropLottie } from "@/text-library/backdrop";
 import { styleFromResolvedText } from "@/text-animation/element-style";
 import type { TextAnimation, TextAnimationStyle } from "@/text-animation/types";
 import { drawTemplateFrame } from "@/text-library/template-render";
@@ -90,7 +91,9 @@ export async function exportTextClip({
 /** A library template (text slots drawn by the engine + its Lottie background). */
 export async function exportTemplate({ template, lang = "en", fps = 30, frame = { width: 1920, height: 1080 }, format }: { template: TextLibraryTemplate; lang?: string; fps?: number; frame?: { width: number; height: number }; format: LottieFormat }) {
 	let background: LottieJson | null = null;
-	if (template.background?.packAsset) {
+	if (template.bg) {
+		background = backdropLottie({ bg: template.bg, width: frame.width, height: frame.height, duration: template.duration, fps });
+	} else if (template.background?.packAsset) {
 		const asset = await findPackAsset(template.background.packAsset).catch(() => null);
 		if (asset) background = recolorLottie(await loadLottieJson({ kind: "pack", assetId: asset.id }), template.background.colors ?? {});
 	}

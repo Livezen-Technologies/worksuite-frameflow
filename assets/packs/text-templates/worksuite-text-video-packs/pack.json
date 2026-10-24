@@ -1,0 +1,34 @@
+{
+	"id": "worksuite-text-video-packs",
+	"type": "text-templates",
+	"version": "1.0.0",
+	"title": "Worksuite video packs",
+	"description": "1,000 ready-made video texts: intros, end screens, captions, name tags, social, podcast, YouTube, travel, news and tech, in English, Sinhala and Tamil.",
+	"tags": {
+		"en": [
+			"video",
+			"intro",
+			"end screen",
+			"youtube",
+			"podcast",
+			"news"
+		],
+		"si": [
+			"වීඩියෝ",
+			"ආරම්භක"
+		],
+		"ta": [
+			"வீடியோ",
+			"அறிமுகம்"
+		]
+	},
+	"languages": [
+		"en",
+		"si",
+		"ta"
+	],
+	"licence": "MIT",
+	"minAppVersion": "1.5.0",
+	"plan": "free",
+	"builtin": true
+}

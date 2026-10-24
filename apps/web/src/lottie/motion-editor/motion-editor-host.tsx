@@ -43,7 +43,7 @@ export function MotionEditorHost() {
 		if (!committed) return;
 		let cancelled = false;
 		const source = committed.source;
-		Promise.all([loadLottieJson(source), source.kind === "pack" ? findPackAsset(source.assetId, source.pack) : userAsset(source.id)])
+		Promise.all([loadLottieJson(source), source.kind === "pack" ? findPackAsset(source.assetId, source.pack) : source.kind === "user" ? userAsset(source.id) : null])
 			.then(([json, asset]) => !cancelled && setLoaded({ key, json, asset }))
 			.catch(() => !cancelled && close());
 		return () => {

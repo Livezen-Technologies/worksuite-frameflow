@@ -1,0 +1,90 @@
+[
+	{
+		"id": "greetings",
+		"name": {
+			"en": "Greetings",
+			"si": "සුභ පැතුම්",
+			"ta": "வாழ்த்துகள்"
+		}
+	},
+	{
+		"id": "events",
+		"name": {
+			"en": "Events",
+			"si": "උත්සව",
+			"ta": "நிகழ்வுகள்"
+		}
+	},
+	{
+		"id": "sales",
+		"name": {
+			"en": "Sales & promo",
+			"si": "වෙළඳ දීමනා",
+			"ta": "விற்பனை"
+		}
+	},
+	{
+		"id": "education",
+		"name": {
+			"en": "Education",
+			"si": "අධ්‍යාපන",
+			"ta": "கல்வி"
+		}
+	},
+	{
+		"id": "tutorial",
+		"name": {
+			"en": "Tutorials",
+			"si": "උපදෙස්",
+			"ta": "பயிற்சிகள்"
+		}
+	},
+	{
+		"id": "lower-thirds",
+		"name": {
+			"en": "Lower thirds",
+			"si": "පහළ පටි",
+			"ta": "கீழ் பட்டைகள்"
+		}
+	},
+	{
+		"id": "podcast",
+		"name": {
+			"en": "Podcast",
+			"si": "පොඩ්කාස්ට්",
+			"ta": "பாட்காஸ்ட்"
+		}
+	},
+	{
+		"id": "social",
+		"name": {
+			"en": "Social",
+			"si": "සමාජ මාධ්‍ය",
+			"ta": "சமூக ஊடகம்"
+		}
+	},
+	{
+		"id": "quotes",
+		"name": {
+			"en": "Quotes",
+			"si": "උපුටා දැක්වීම්",
+			"ta": "மேற்கோள்கள்"
+		}
+	},
+	{
+		"id": "end-screens",
+		"name": {
+			"en": "End screens",
+			"si": "අවසාන තිර",
+			"ta": "முடிவுத் திரைகள்"
+		}
+	},
+	{
+		"id": "notices",
+		"name": {
+			"en": "Notices",
+			"si": "දැනුම්දීම්",
+			"ta": "அறிவிப்புகள்"
+		}
+	}
+]

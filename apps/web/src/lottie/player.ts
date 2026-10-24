@@ -18,6 +18,7 @@ import {
 import { frameTime, renderAnimatedText } from "@/text-animation/render";
 import type { LottieJson, LottieSlotOverrides, LottieSource } from "./types";
 import { getUserLottie } from "./user-library";
+import { backdropLottie, parseBackdropSpec } from "@/text-library/backdrop";
 
 /*
  * lottie-web's canvas renderer, driven one frame at a time with
@@ -51,6 +52,7 @@ export function loadLottieRuntime(): Promise<LottiePlayer> {
 
 export function lottieSourceKey(source: LottieSource): string {
 	if (source.kind === "user") return `user:${source.id}`;
+	if (source.kind === "backdrop") return `backdrop:${source.spec}`;
 	const id = source.pack ? `${source.pack.id}@${source.pack.version}/${source.assetId}` : source.assetId;
 	return source.variant ? `pack:${id}#${source.variant}` : `pack:${id}`;
 }
@@ -58,6 +60,7 @@ export function lottieSourceKey(source: LottieSource): string {
 export function lottieSourceFromKey(key: string): LottieSource {
 	const [kind, ...rest] = key.split(":");
 	const id = rest.join(":");
+	if (kind === "backdrop") return { kind: "backdrop", spec: id };
 	if (kind !== "pack") return { kind: "user", id };
 	// pack:<asset>[#variant], pack:<pack>@<version>/<asset>[#variant]; older keys used @variant.
 	const [ref, hashVariant] = id.split("#");
@@ -86,6 +89,11 @@ export function loadLottieJson(source: LottieSource): Promise<LottieJson> {
 				const response = await fetch(packAssetJsonUrl(asset, source.variant));
 				if (!response.ok) throw new Error(`Couldn't load animation "${source.assetId}"`);
 				return (await response.json()) as LottieJson;
+			}
+			if (source.kind === "backdrop") {
+				const parsed = parseBackdropSpec(source.spec);
+				if (!parsed) throw new Error("This background can't be drawn");
+				return backdropLottie(parsed);
 			}
 			const entry = await getUserLottie(source.id);
 			if (!entry) throw new Error("This imported animation isn't on this device");
@@ -184,7 +192,7 @@ async function getInstance({
 			const [lottie, json, asset] = await Promise.all([
 				loadLottieRuntime(),
 				loadLottieJson(source),
-				source.kind === "pack" ? findPackAsset(source.assetId, source.pack) : userAsset(source.id),
+				source.kind === "pack" ? findPackAsset(source.assetId, source.pack) : source.kind === "user" ? userAsset(source.id) : null,
 			]);
 			const hide = layersToHide({ textSlots: asset?.textSlots ?? [], imageSlots: asset?.imageSlots ?? [], overrides: slots });
 			const canvas = document.createElement("canvas");

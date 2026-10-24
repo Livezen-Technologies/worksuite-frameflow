@@ -171,6 +171,7 @@ export function brandPatch({
 
 async function lottieSlots(source: LottieSource): Promise<LottieColorSlot[]> {
 	if (source.kind === "pack") return (await findPackAsset(source.assetId))?.colors ?? [];
+	if (source.kind === "backdrop") return [];
 	return (await getUserLottie(source.id))?.colors ?? [];
 }
 

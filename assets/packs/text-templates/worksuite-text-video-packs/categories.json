@@ -1,0 +1,82 @@
+[
+	{
+		"id": "intro",
+		"name": {
+			"en": "Intros",
+			"si": "ආරම්භක",
+			"ta": "அறிமுகம்"
+		}
+	},
+	{
+		"id": "end",
+		"name": {
+			"en": "End screens",
+			"si": "අවසාන තිර",
+			"ta": "முடிவுத் திரைகள்"
+		}
+	},
+	{
+		"id": "captions",
+		"name": {
+			"en": "Captions",
+			"si": "උපසිරැසි",
+			"ta": "தலைப்புகள்"
+		}
+	},
+	{
+		"id": "name-tag",
+		"name": {
+			"en": "Name tags & titles",
+			"si": "නම් පටි",
+			"ta": "பெயர் பட்டைகள்"
+		}
+	},
+	{
+		"id": "social",
+		"name": {
+			"en": "Social media",
+			"si": "සමාජ මාධ්‍ය",
+			"ta": "சமூக ஊடகம்"
+		}
+	},
+	{
+		"id": "podcast",
+		"name": {
+			"en": "Podcast",
+			"si": "පොඩ්කාස්ට්",
+			"ta": "பாட்காஸ்ட்"
+		}
+	},
+	{
+		"id": "youtube",
+		"name": {
+			"en": "YouTube",
+			"si": "YouTube",
+			"ta": "YouTube"
+		}
+	},
+	{
+		"id": "travel",
+		"name": {
+			"en": "Travel",
+			"si": "සංචාරක",
+			"ta": "பயணம்"
+		}
+	},
+	{
+		"id": "news",
+		"name": {
+			"en": "News",
+			"si": "පුවත්",
+			"ta": "செய்திகள்"
+		}
+	},
+	{
+		"id": "tech",
+		"name": {
+			"en": "Tech",
+			"si": "තාක්ෂණ",
+			"ta": "தொழில்நுட்பம்"
+		}
+	}
+]

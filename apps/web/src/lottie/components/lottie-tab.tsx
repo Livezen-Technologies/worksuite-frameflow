@@ -38,14 +38,16 @@ const SPEEDS = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 2, 3];
 
 /** Colour slots of an animation: from the pack's metadata or the imported file. */
 function useColorSlots(source: LottieSource): LottieColorSlot[] | null {
-	const key = source.kind === "pack" ? `pack:${source.assetId}` : `user:${source.id}`;
+	const key = source.kind === "pack" ? `pack:${source.assetId}` : source.kind === "user" ? `user:${source.id}` : `backdrop:${source.spec}`;
 	const [slots, setSlots] = useState<{ key: string; slots: LottieColorSlot[] } | null>(null);
 	useEffect(() => {
 		let cancelled = false;
 		const load =
 			source.kind === "pack"
 				? findPackAsset(source.assetId, source.pack).then((asset) => asset?.colors ?? [])
-				: getUserLottie(source.id).then((entry) => entry?.colors ?? []);
+				: source.kind === "user"
+					? getUserLottie(source.id).then((entry) => entry?.colors ?? [])
+					: Promise.resolve([]);
 		load
 			.then((result) => !cancelled && setSlots({ key, slots: result }))
 			.catch(() => !cancelled && setSlots({ key, slots: [] }));
@@ -59,7 +61,7 @@ function useColorSlots(source: LottieSource): LottieColorSlot[] | null {
 
 /** The library entry of a pack animation (for its language variants). */
 function usePackAsset(source: LottieSource): PackIndexAsset | null {
-	const assetId = source.kind === "pack" ? source.assetId : source.id;
+	const assetId = source.kind === "pack" ? source.assetId : source.kind === "user" ? source.id : source.spec;
 	const pack = source.kind === "pack" ? source.pack : undefined;
 	const isUser = source.kind === "user";
 	const [asset, setAsset] = useState<PackIndexAsset | null>(null);

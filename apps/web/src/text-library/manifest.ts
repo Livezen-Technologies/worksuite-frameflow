@@ -1,3 +1,4 @@
+import { BACKDROP_TYPES, type Backdrop, isBackdrop } from "./backdrop";
 import { getTextEffect } from "@/text-animation/effects";
 import { EASING_NAMES } from "@/text-animation/easing";
 import type { TextAnimation, TextAnimationStyle } from "@/text-animation/types";
@@ -66,6 +67,8 @@ export interface TextLibraryTemplate extends ItemBase {
 	 * (`{ "file": "lottie/bar.json" }`), with colour overrides.
 	 */
 	background?: { packAsset?: string; file?: string; colors?: Record<string, string> };
+	/** Animated background drawn by the app (rays, confetti, lanterns…): see backdrop.ts. */
+	bg?: Backdrop;
 }
 
 export type TextLibraryItem = TextLibraryAnimation | TextLibraryTemplate;
@@ -166,6 +169,7 @@ export function itemProblems(item: unknown, categories?: string[]): string[] {
 				if (slot?.animation) out.push(...animationProblems(slot.animation, `${sat}.animation`));
 			}
 		if (it.background && !it.background.packAsset && !it.background.file) out.push(`${at}: background needs packAsset or file`);
+		if (it.bg !== undefined && !isBackdrop(it.bg)) out.push(`${at}: bg must be { t: one of ${BACKDROP_TYPES.join(", ")}, c: [colours] }`);
 	} else out.push(`${at}: kind must be "animation" or "template"`);
 	return out;
 }

@@ -1,0 +1,98 @@
+[
+	{
+		"id": "reveals",
+		"name": {
+			"en": "Reveals",
+			"si": "Reveals",
+			"ta": "Reveals"
+		}
+	},
+	{
+		"id": "blur-focus",
+		"name": {
+			"en": "Blur & focus",
+			"si": "Blur & focus",
+			"ta": "Blur & focus"
+		}
+	},
+	{
+		"id": "slides",
+		"name": {
+			"en": "Slides",
+			"si": "Slides",
+			"ta": "Slides"
+		}
+	},
+	{
+		"id": "pop-bounce",
+		"name": {
+			"en": "Pop & bounce",
+			"si": "Pop & bounce",
+			"ta": "Pop & bounce"
+		}
+	},
+	{
+		"id": "elastic",
+		"name": {
+			"en": "Elastic",
+			"si": "Elastic",
+			"ta": "Elastic"
+		}
+	},
+	{
+		"id": "typewriter-decode",
+		"name": {
+			"en": "Typewriter & decode",
+			"si": "Typewriter & decode",
+			"ta": "Typewriter & decode"
+		}
+	},
+	{
+		"id": "-d-flips",
+		"name": {
+			"en": "3D & flips",
+			"si": "3D & flips",
+			"ta": "3D & flips"
+		}
+	},
+	{
+		"id": "kinetic",
+		"name": {
+			"en": "Kinetic",
+			"si": "Kinetic",
+			"ta": "Kinetic"
+		}
+	},
+	{
+		"id": "glitch",
+		"name": {
+			"en": "Glitch",
+			"si": "Glitch",
+			"ta": "Glitch"
+		}
+	},
+	{
+		"id": "masks-wipes",
+		"name": {
+			"en": "Masks & wipes",
+			"si": "Masks & wipes",
+			"ta": "Masks & wipes"
+		}
+	},
+	{
+		"id": "highlights",
+		"name": {
+			"en": "Highlights",
+			"si": "Highlights",
+			"ta": "Highlights"
+		}
+	},
+	{
+		"id": "karaoke-captions",
+		"name": {
+			"en": "Karaoke & captions",
+			"si": "Karaoke & captions",
+			"ta": "Karaoke & captions"
+		}
+	}
+]

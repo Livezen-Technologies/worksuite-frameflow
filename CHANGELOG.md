@@ -7,6 +7,12 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+### Added
+
+- **4,000 more text animations and templates** in the Text library (Text › Animate), in English, Sinhala and Tamil: Mixed languages (1,000 templates mixing English with Sinhala or Tamil), 1,000 animations, 1,000 templates and 1,000 Video packs (intros, end screens, captions, name tags, social, podcast, YouTube, travel, news and tech). 4,522 items in all, in the web editor and the desktop app.
+- Templates with **animated backgrounds** (rays, lanterns, lotus, gradients, stripes, confetti, waves, frames): the library previews play them, and adding the template puts the background on the timeline as an editable animation clip under the text. Lottie export includes it too.
+- A **Collection** picker in the Text library (Starter, Studio, Mixed languages, 1,000, Video packs), with categories narrowed to the chosen collection.
+
 ## [1.5.0] - 2026-10-24
 
 ### Added

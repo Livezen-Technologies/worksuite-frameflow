@@ -1,6 +1,8 @@
 import type { EditorCore } from "@/core";
 import { findPackAsset } from "@/lottie/catalog";
-import { addPackAnimation } from "@/lottie/actions";
+import { addPackAnimation, insertAnimation } from "@/lottie/actions";
+import { lottieDataFromJson, lottieInsertScale } from "@/lottie/element";
+import { backdropLottie, backdropSpec } from "./backdrop";
 import type { TextStyleOverrides } from "@/text-animation/element-style";
 import type { TextAnimation, TextAnimationStyle } from "@/text-animation/types";
 import { FONT_SIZE_SCALE_REFERENCE } from "@/text/typography";
@@ -84,11 +86,22 @@ export function addAnimationAtPlayhead({ editor, item, text, lang }: { editor: E
 export async function addTemplateAtPlayhead({ editor, template, lang }: { editor: EditorCore; template: TextLibraryTemplate; lang?: string }) {
 	if (!editor.scenes.getActiveSceneOrNull()) return;
 	const startTime = editor.playback.getCurrentTime();
-	if (template.background?.packAsset) {
+	const frame = editor.project.getActive().settings.canvasSize;
+	// Animated background (rays, confetti…): a frame-sized animation clip under the text.
+	if (template.bg) {
+		const spec = backdropSpec({ bg: template.bg, width: frame.width, height: frame.height, duration: template.duration });
+		const json = backdropLottie({ bg: template.bg, width: frame.width, height: frame.height, duration: template.duration });
+		insertAnimation({
+			editor,
+			name: `${localName(template.name, lang ?? "en")} — background`,
+			lottie: lottieDataFromJson({ source: { kind: "backdrop", spec }, json }),
+			params: lottieInsertScale({ width: frame.width, height: frame.height, frame, scale: 1 }),
+			startTime,
+		});
+	} else if (template.background?.packAsset) {
 		const asset = await findPackAsset(template.background.packAsset).catch(() => null);
 		if (asset) addPackAnimation({ editor, asset, startTime, withSound: false });
 	}
-	const frame = editor.project.getActive().settings.canvasSize;
 	for (const element of textClipsForTemplate({ template, lang, startTime, frame })) editor.timeline.insertElement({ element, placement: { mode: "auto" } });
 }
 

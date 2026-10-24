@@ -1,0 +1,35 @@
+{
+	"id": "worksuite-text-templates-mixed",
+	"type": "text-templates",
+	"version": "1.0.0",
+	"title": "Worksuite text templates: Mixed languages",
+	"description": "1,000 templates that mix English with Sinhala or Tamil the way people really write: greetings, events, sales, lessons, lower thirds and social posts, in 16:9, 9:16 and 1:1, with animated backgrounds.",
+	"tags": {
+		"en": [
+			"text",
+			"templates",
+			"mixed",
+			"code-mixed",
+			"singlish"
+		],
+		"si": [
+			"අකුරු",
+			"සැකිලි",
+			"මිශ්‍ර"
+		],
+		"ta": [
+			"உரை",
+			"வார்ப்புருக்கள்",
+			"கலப்பு"
+		]
+	},
+	"languages": [
+		"en",
+		"si",
+		"ta"
+	],
+	"licence": "MIT",
+	"minAppVersion": "1.5.0",
+	"plan": "free",
+	"builtin": true
+}

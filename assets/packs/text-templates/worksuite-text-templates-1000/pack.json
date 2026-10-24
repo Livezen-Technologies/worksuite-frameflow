@@ -1,0 +1,35 @@
+{
+	"id": "worksuite-text-templates-1000",
+	"type": "text-templates",
+	"version": "1.0.0",
+	"title": "Worksuite text templates: 1,000",
+	"description": "1,000 editable text templates with animated backgrounds: greetings, events, sales, education, tutorials, lower thirds and podcasts, in English, Sinhala and Tamil.",
+	"tags": {
+		"en": [
+			"text",
+			"templates",
+			"titles",
+			"greetings",
+			"festive"
+		],
+		"si": [
+			"අකුරු",
+			"සැකිලි",
+			"උත්සව"
+		],
+		"ta": [
+			"உரை",
+			"வார்ப்புருக்கள்",
+			"பண்டிகை"
+		]
+	},
+	"languages": [
+		"en",
+		"si",
+		"ta"
+	],
+	"licence": "MIT",
+	"minAppVersion": "1.5.0",
+	"plan": "free",
+	"builtin": true
+}

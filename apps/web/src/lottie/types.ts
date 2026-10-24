@@ -137,7 +137,9 @@ export type LottieSource =
 			 */
 			pack?: { id: string; version: string };
 	  }
-	| { kind: "user"; id: string };
+	| { kind: "user"; id: string }
+	/** A template background built from a short recipe (text-library/backdrop.ts). */
+	| { kind: "backdrop"; spec: string };
 
 /**
  * What an animation (Lottie) graphic element stores: a reference to the

@@ -1,0 +1,32 @@
+{
+	"id": "worksuite-text-animations-1000",
+	"type": "text-animations",
+	"version": "1.0.0",
+	"title": "Worksuite text animations: 1,000",
+	"description": "1,000 more text animations: reveals, kinetic type, 3D flips, glitch, neon, typewriter, captions and loops, for English, Sinhala and Tamil text.",
+	"tags": {
+		"en": [
+			"text",
+			"animations",
+			"kinetic",
+			"captions"
+		],
+		"si": [
+			"අකුරු",
+			"සජීවිකරණ"
+		],
+		"ta": [
+			"உரை",
+			"அசைவூட்டம்"
+		]
+	},
+	"languages": [
+		"en",
+		"si",
+		"ta"
+	],
+	"licence": "MIT",
+	"minAppVersion": "1.5.0",
+	"plan": "free",
+	"builtin": true
+}

@@ -5,6 +5,7 @@ import { renderAnimatedText } from "@/text-animation/render";
 import type { TextAnimationStyle } from "@/text-animation/types";
 import type { LibraryEntry, TextLibraryContent } from "../library-content";
 import { localName, searchItems, type TextLibraryAnimation, type TextLibraryItem, type TextLibraryTemplate } from "../manifest";
+import { drawBackdrop } from "../backdrop";
 import { aspectBox, drawTemplateFrame } from "../template-render";
 import { PreviewCanvas } from "./text-preview-canvas";
 
@@ -31,6 +32,10 @@ export interface TextLibraryPanelProps {
 	initialTab?: LibraryTab;
 }
 
+/** "Worksuite text templates: Studio" → "Studio"; the base packs read "Starter". */
+const collectionLabel = (name: string) =>
+	/video packs/i.test(name) ? "Video packs" : name.replace(/^Worksuite text (templates|animations)(: )?/i, "") || "Starter";
+
 export const itemKey = (item: Pick<TextLibraryItem, "kind" | "id">) => `${item.kind}:${item.id}`;
 
 const TILE_W = 148;
@@ -49,6 +54,7 @@ function drawTemplateTile(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderi
 		ctx.fillRect(box.x, box.y, box.width, box.height);
 	}
 	ctx.translate(box.x, box.y);
+	if (template.bg) drawBackdrop({ ctx, bg: template.bg, width: box.width, height: box.height, time: t });
 	drawTemplateFrame({ ctx, template, width: box.width, height: box.height, time: t, lang, override: text });
 	ctx.restore();
 }
@@ -175,9 +181,18 @@ export function TextLibraryPanel(props: TextLibraryPanelProps) {
 	const [tab, setTab] = useState<LibraryTab>(props.initialTab ?? "animations");
 	const [category, setCategory] = useState<string>("all");
 	const [query, setQuery] = useState("");
+	const [collection, setCollection] = useState("all");
 
-	const pool: LibraryEntry[] = useMemo(() => (content ? (tab === "animations" ? content.animations : content.templates) : []), [content, tab]);
-	const categories = content ? (tab === "animations" ? content.categories.animations : content.categories.templates) : [];
+	const packs = (content?.packs ?? []).filter((p) => p.type === (tab === "animations" ? "text-animations" : "text-templates"));
+	const pool: LibraryEntry[] = useMemo(() => {
+		const all = content ? (tab === "animations" ? content.animations : content.templates) : [];
+		return collection === "all" ? all : all.filter((i) => i.packId === collection);
+	}, [content, tab, collection]);
+	// Only the categories that have something in the chosen collection.
+	const categories = useMemo(() => {
+		const used = new Set(pool.map((i) => i.category));
+		return (content ? (tab === "animations" ? content.categories.animations : content.categories.templates) : []).filter((c) => used.has(c.id));
+	}, [content, tab, pool]);
 	const shown = useMemo(() => {
 		let list = pool;
 		if (category === "favourites") list = pool.filter((i) => favourites.includes(itemKey(i)));
@@ -205,6 +220,7 @@ export function TextLibraryPanel(props: TextLibraryPanelProps) {
 						onClick={() => {
 							setTab(t);
 							setCategory("all");
+							setCollection("all");
 						}}
 						className={`-mb-px border-b-2 pb-1.5 text-sm ${tab === t ? "border-primary text-foreground" : "text-muted-foreground border-transparent"}`}
 					>
@@ -213,6 +229,25 @@ export function TextLibraryPanel(props: TextLibraryPanelProps) {
 					</button>
 				))}
 			</div>
+			{packs.length > 1 && (
+				<select
+					value={collection}
+					onChange={(e) => {
+						setCollection(e.target.value);
+						setCategory("all");
+					}}
+					className="border-input bg-background h-8 rounded-md border px-2 text-sm"
+					aria-label="Collection"
+					data-text-library-collection
+				>
+					<option value="all">All collections</option>
+					{packs.map((p) => (
+						<option key={p.id} value={p.id}>
+							{collectionLabel(p.name)}
+						</option>
+					))}
+				</select>
+			)}
 			<input
 				type="search"
 				placeholder="Search (English, සිංහල, தமிழ்)"
