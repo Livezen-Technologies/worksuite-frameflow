@@ -53,5 +53,21 @@
 			"name": "Shadow",
 			"default": "#0F1115"
 		}
+	],
+	"sounds": [
+		{
+			"file": "../../sounds/click.wav",
+			"at": 0.067,
+			"gainDb": -10
+		},
+		{
+			"file": "../../sounds/click.wav",
+			"at": 0.3,
+			"gainDb": -10
+		},
+		{
+			"file": "../../sounds/pop.wav",
+			"at": 0.533
+		}
 	]
 }

@@ -66,5 +66,16 @@
 			"name": "Icon shadow",
 			"default": "#0F1115"
 		}
+	],
+	"sounds": [
+		{
+			"file": "../../sounds/whoosh.wav",
+			"at": 0,
+			"gainDb": -8
+		},
+		{
+			"file": "../../sounds/pop.wav",
+			"at": 1.6
+		}
 	]
 }

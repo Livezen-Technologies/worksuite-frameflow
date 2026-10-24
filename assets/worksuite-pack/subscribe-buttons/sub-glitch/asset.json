@@ -70,5 +70,12 @@
 			"file": "sub-glitch.ta.json",
 			"thumbnail": "thumbnail.ta.png"
 		}
+	],
+	"sounds": [
+		{
+			"file": "../../sounds/whoosh.wav",
+			"at": 0.2,
+			"gainDb": -4
+		}
 	]
 }

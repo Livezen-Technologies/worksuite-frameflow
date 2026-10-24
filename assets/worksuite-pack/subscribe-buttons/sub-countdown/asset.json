@@ -76,5 +76,31 @@
 			"file": "sub-countdown.ta.json",
 			"thumbnail": "thumbnail.ta.png"
 		}
+	],
+	"sounds": [
+		{
+			"file": "../../sounds/click.wav",
+			"at": 0.333,
+			"gainDb": -10
+		},
+		{
+			"file": "../../sounds/click.wav",
+			"at": 1.333,
+			"gainDb": -10
+		},
+		{
+			"file": "../../sounds/click.wav",
+			"at": 2.333,
+			"gainDb": -10
+		},
+		{
+			"file": "../../sounds/click.wav",
+			"at": 3.333
+		},
+		{
+			"file": "../../sounds/ding.wav",
+			"at": 3.433,
+			"gainDb": -4
+		}
 	]
 }

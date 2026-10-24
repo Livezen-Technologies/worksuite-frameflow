@@ -48,6 +48,8 @@ export interface WorksuiteAssetMeta {
 	/** Language variants (the first is the default); absent for assets without words. */
 	defaultVariant?: string;
 	variants?: Array<LottieVariant & { file: string; thumbnail: string }>;
+	/** Sound effects timed to the animation; `file` is relative to the asset folder. */
+	sounds?: Array<{ file: string; at: number; gainDb?: number }>;
 }
 
 /** Where an animation element's Lottie comes from. */

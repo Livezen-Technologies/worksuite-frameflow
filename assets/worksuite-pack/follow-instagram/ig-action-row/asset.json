@@ -60,5 +60,15 @@
 			"name": "Bar",
 			"default": "#0F1115"
 		}
+	],
+	"sounds": [
+		{
+			"file": "../../sounds/pop.wav",
+			"at": 1.133
+		},
+		{
+			"file": "../../sounds/pop.wav",
+			"at": 2.333
+		}
 	]
 }

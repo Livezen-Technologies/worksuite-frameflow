@@ -13,6 +13,7 @@ import {
 	packAssetInsertParams,
 } from "./element";
 import { type LottieElementData, LOTTIE_GRAPHIC_DEFINITION_ID } from "./types";
+import { packSoundElements } from "./sounds";
 import { importUserLottie, type UserLottie } from "./user-library";
 
 function durationOf(data: LottieElementData): MediaTime {
@@ -37,18 +38,50 @@ function insertAnimation({
 	lottie: LottieElementData;
 	params: ParamValues;
 	startTime?: MediaTime;
-}) {
-	editor.timeline.insertElement({
+}): { elementId: string; startTime: MediaTime } {
+	const start = startTime ?? editor.playback.getCurrentTime();
+	const elementId = editor.timeline.insertElement({
 		element: buildGraphicElement({
 			definitionId: LOTTIE_GRAPHIC_DEFINITION_ID,
 			name,
-			startTime: startTime ?? editor.playback.getCurrentTime(),
+			startTime: start,
 			params,
 			lottie,
 			duration: durationOf(lottie),
 		}),
 		placement: { mode: "auto" },
 	});
+	return { elementId, startTime: start };
+}
+
+/**
+ * Places a library animation's sound effects on audio tracks, timed from
+ * `startTime`, and selects them together with the animation clip
+ * (`elementId`). The timeline has no clip linking, so they move separately
+ * afterwards. Returns the sound clips' ids.
+ */
+export function addPackAnimationSounds({
+	editor,
+	asset,
+	startTime,
+	elementId,
+}: {
+	editor: EditorCore;
+	asset: PackIndexAsset;
+	startTime: MediaTime;
+	elementId?: string;
+}): string[] {
+	const ids = packSoundElements({ asset, startTime }).map((element) =>
+		editor.timeline.insertElement({ element, placement: { mode: "auto", trackType: "audio" } }),
+	);
+	if (ids.length) {
+		const refs = [...(elementId ? [elementId] : []), ...ids].flatMap((id) => {
+			const trackId = editor.timeline.findTrackIdForElement({ elementId: id });
+			return trackId ? [{ trackId, elementId: id }] : [];
+		});
+		editor.selection.setSelectedElements({ elements: refs });
+	}
+	return ids;
 }
 
 /** Adds a library animation at the playhead on a free layer. */
@@ -57,20 +90,24 @@ export function addPackAnimation({
 	asset,
 	variant,
 	startTime,
+	withSound = true,
 }: {
 	editor: EditorCore;
 	asset: PackIndexAsset;
 	/** Language variant; the asset's default when absent. */
 	variant?: string | null;
 	startTime?: MediaTime;
+	/** Also place the animation's sound effects (default on). */
+	withSound?: boolean;
 }) {
-	insertAnimation({
+	const inserted = insertAnimation({
 		editor,
 		name: asset.name,
 		lottie: lottieDataFromPackAsset(asset, variant),
 		params: packAssetInsertParams({ asset, frame: frameOf(editor) }),
 		startTime,
 	});
+	if (withSound) addPackAnimationSounds({ editor, asset, ...inserted });
 }
 
 export function addUserAnimation({
@@ -101,10 +138,12 @@ export function packAnimationDragData({
 	asset,
 	frame,
 	variant,
+	withSound = true,
 }: {
 	asset: PackIndexAsset;
 	frame: { width: number; height: number };
 	variant?: string | null;
+	withSound?: boolean;
 }): TimelineDragData {
 	const lottie = lottieDataFromPackAsset(asset, variant);
 	return {
@@ -115,6 +154,7 @@ export function packAnimationDragData({
 		params: packAssetInsertParams({ asset, frame }),
 		lottie,
 		duration: durationOf(lottie),
+		...(withSound && asset.sounds?.length ? { packAsset: asset } : {}),
 	};
 }
 

@@ -15,7 +15,8 @@ import {
 	stroke,
 	trim,
 } from "../lottie-dsl";
-import { type AssetContext, type AssetDef, LANGUAGES, type LayerInput, PALETTE, slot } from "./common";
+import { type AssetContext, type AssetDef, cue, LANGUAGES, type LayerInput, PALETTE, slot } from "./common";
+import { cursorClick } from "./pointer";
 import shaped from "./subscribe-text.json";
 
 // Generic, brand-free subscribe / bell / like buttons. Words are vector
@@ -160,18 +161,7 @@ export function thumb(color: string): Shape[] {
 	];
 }
 
-export const cursorArrow = pathData([[0, 0], [0, 92], [24, 70], [40, 106], [56, 99], [40, 64], [70, 64]], true);
-
-/** A pointing hand: the fingertip is at the origin. */
-export function hand(color: string, outline: string): Shape[] {
-	const part = (size: number[], at: number[], r: number, rotation = 0) => group([rect(size, [0, 0], r), stroke(outline, 8), fill(color)], { position: at, rotation });
-	return [part([66, 120], [-76, 210], 33, -28), part([190, 180], [26, 230], 56), part([70, 230], [0, 112], 35)];
-}
-
-/** A ring that expands and fades from the origin at `start`. */
-export function ripple(color: string, start: number, size = 220): Shape {
-	return group([ellipse([size, size]), stroke(color, 10, { opacity: [[start, 0], [start + 1, 90, EASE.out], [start + 18, 0]] })], { scale: [[start, [30, 30], EASE.out], [start + 18, [100, 100]]] }, "Ripple");
-}
+const cursorArrow = pathData([[0, 0], [0, 92], [24, 70], [40, 106], [56, 99], [40, 64], [70, 64]], true);
 
 /** Pop in (0 → overshoot → 100) then a squash when pressed at `press`. */
 export const popPress = (pop: number, press?: number): Key[] => [
@@ -225,6 +215,7 @@ export const subscribeButtons: AssetDef[] = [
 		durationSec: 3.5,
 		thumbAt: 0.4,
 		colors: [slot("button", "Button", RED), slot("pressed", "Subscribed button", GREY), slot("text", "Text", WHITE), slot("cursor", "Cursor", SOFT), slot("shadow", "Shadow & outline", INK)],
+		sounds: [cue("pop", 0, -4), cue("click", 44)],
 		build: (ctx) => [
 			{
 				name: "Cursor",
@@ -247,6 +238,7 @@ export const subscribeButtons: AssetDef[] = [
 		durationSec: 4,
 		thumbAt: 0.5,
 		colors: [slot("button", "Button", RED), slot("pressed", "Subscribed & bell circle", GREY), slot("text", "Text", WHITE), slot("accent", "Bell & burst", AMBER), slot("shadow", "Shadow", INK)],
+		sounds: [cue("pop", 0, -4), cue("click", 28), cue("ding", 50, -2)],
 		build: (ctx) => {
 			const { c } = ctx;
 			return [
@@ -270,6 +262,7 @@ export const subscribeButtons: AssetDef[] = [
 		durationSec: 4,
 		thumbAt: 0.75,
 		colors: [slot("button", "Button", RED), slot("pressed", "Subscribed & circles", GREY), slot("text", "Text & icons", WHITE), slot("liked", "Liked", BLUE), slot("accent", "Burst", AMBER), slot("bar", "Bar", INK)],
+		sounds: [cue("whoosh", 0, -8), cue("pop", 28), cue("click", 54), cue("ding", 80, -2)],
 		build: (ctx) => {
 			const { c } = ctx;
 			const circle = (x: number, pop: number, press: number, extra: Shape[] = []): LayerInput => ({ name: "Circle", position: [x, 150], scale: popPress(pop, press), shapes: [...extra, group([ellipse([150, 150]), fill(c("pressed"))])] });
@@ -296,6 +289,7 @@ export const subscribeButtons: AssetDef[] = [
 		durationSec: 2.5,
 		thumbAt: 0.8,
 		colors: [slot("button", "Button", RED), slot("text", "Text", WHITE), slot("accent", "Sparks", AMBER), slot("shadow", "Shadow", INK)],
+		sounds: [cue("pop", 14)],
 		build: (ctx) => {
 			const { c } = ctx;
 			const y: Key[] = [[0, [450, -10], EASE.in], [14, [450, 300], EASE.out], [23, [450, 236], EASE.in], [31, [450, 300], EASE.out], [36, [450, 282], EASE.in], [41, [450, 300]]];
@@ -319,6 +313,7 @@ export const subscribeButtons: AssetDef[] = [
 		durationSec: 3,
 		thumbAt: 0.6,
 		colors: [slot("button", "Button", RED), slot("text", "Text", WHITE), slot("shine", "Shine", SOFT), slot("shadow", "Shadow", INK)],
+		sounds: [cue("whoosh", 0)],
 		build: (ctx) => {
 			const { c } = ctx;
 			const x = (dy = 0): Key[] => [[0, [-340, 150 + dy], EASE.back], [22, [450, 150 + dy]]];
@@ -342,6 +337,7 @@ export const subscribeButtons: AssetDef[] = [
 		loop: true,
 		thumbAt: 0.5,
 		colors: [slot("neon", "Neon", "#FF4D6D"), slot("text", "Core & text", WHITE), slot("background", "Background", INK)],
+		sounds: [cue("pop", 4, -6)],
 		build: (ctx) => {
 			const { c } = ctx;
 			const glow: Key[] = [[0, 0], [4, 100], [6, 20], [9, 100], [12, 40], [15, 100, EASE.soft], [45, 60, EASE.soft], [75, 100, EASE.soft], [89, 100], [90, 0]];
@@ -364,6 +360,7 @@ export const subscribeButtons: AssetDef[] = [
 		durationSec: 2.5,
 		thumbAt: 0.45,
 		colors: [slot("button", "Button & outline", RED), slot("text", "Filled text", WHITE), slot("shadow", "Shadow", INK)],
+		sounds: [cue("whoosh", 0, -6), cue("pop", 42, -4)],
 		build: (ctx) => {
 			const { c } = ctx;
 			const key = `${lang(ctx)}.subscribe`;
@@ -386,6 +383,7 @@ export const subscribeButtons: AssetDef[] = [
 		durationSec: 3,
 		thumbAt: 0.4,
 		colors: [slot("button", "Blob 1", RED), slot("accent", "Blob 2", BLUE), slot("text", "Glass & text", WHITE), slot("shadow", "Shadow", INK)],
+		sounds: [cue("pop", 0, -4), cue("click", 44)],
 		build: (ctx) => {
 			const { c } = ctx;
 			const s = popPress(0, 44);
@@ -409,6 +407,7 @@ export const subscribeButtons: AssetDef[] = [
 		durationSec: 3.5,
 		thumbAt: 0.45,
 		colors: [slot("panel", "Bar", INK), slot("placeholder", "Avatar & name area", "#596070"), slot("accent", "Avatar ring", AMBER), slot("button", "Button", RED), slot("pressed", "Subscribed button", GREY), slot("text", "Text", WHITE)],
+		sounds: [cue("whoosh", 0, -6), cue("pop", 18, -4), cue("click", 58)],
 		build: (ctx) => {
 			const { c } = ctx;
 			const grow = (t: number): Key[] => [[t, [0, 100], EASE.out], [t + 12, [100, 100]]];
@@ -425,25 +424,20 @@ export const subscribeButtons: AssetDef[] = [
 		...base,
 		w: 800,
 		h: 800,
-		id: "sub-finger-tap",
-		name: "Finger tap",
-		description: "A hand taps the subscribe button with a ripple — made for vertical, mobile and Shorts videos.",
-		tags: [...commonTags, "tap", "hand", "finger", "mobile", "shorts", "vertical", "subscribed"],
+		id: "sub-cursor-click",
+		name: "Cursor click",
+		description: "A mouse cursor glides in and clicks the subscribe button with a ripple — sized for vertical, mobile and Shorts videos.",
+		tags: [...commonTags, "click", "cursor", "mouse", "pointer", "mobile", "shorts", "vertical", "subscribed"],
 		durationSec: 3,
-		thumbAt: 0.42,
-		colors: [slot("button", "Button", RED), slot("pressed", "Subscribed button", GREY), slot("text", "Text", WHITE), slot("hand", "Hand", SOFT), slot("outline", "Hand outline & shadow", INK), slot("accent", "Ripple", AMBER)],
+		thumbAt: 0.46,
+		colors: [slot("button", "Button", RED), slot("pressed", "Subscribed button", GREY), slot("text", "Text", WHITE), slot("cursor", "Cursor", SOFT), slot("outline", "Cursor outline & shadow", INK), slot("accent", "Click ripple", AMBER)],
+		sounds: [cue("pop", 0, -4), cue("click", 40)],
 		build: (ctx) => {
 			const { c } = ctx;
-			const shadowless = subscribeButton({ ...ctx, c: (id: string) => (id === "shadow" ? c("outline") : c(id)) }, { at: [400, 330], w: 640, h: 170, cap: 56, pop: 0, press: 40 });
+			const button = subscribeButton({ ...ctx, c: (id: string) => (id === "shadow" ? c("outline") : c(id)) }, { at: [400, 330], w: 640, h: 170, cap: 56, pop: 0, press: 40 });
 			return [
-				{
-					name: "Hand",
-					position: [[8, [560, 980], EASE.inOut], [34, [440, 360]], [38, [440, 360], EASE.out], [41, [436, 350], EASE.out], [46, [440, 360]], [66, [440, 360], EASE.in], [86, [560, 980]]],
-					scale: [[38, [100, 100], EASE.out], [41, [94, 94], EASE.out], [46, [100, 100]]],
-					shapes: hand(c("hand"), c("outline")),
-				},
-				{ name: "Ripple", position: [440, 350], shapes: [ripple(c("accent"), 41, 260)] },
-				...shadowless,
+				...cursorClick({ at: [470, 350], from: [690, 760], arrive: 32, press: 40, leave: 66, fill: c("cursor"), outline: c("outline"), ripple: c("accent"), scale: 150, rippleSize: 180 }),
+				...button,
 			];
 		},
 	},
@@ -457,6 +451,7 @@ export const subscribeButtons: AssetDef[] = [
 		durationSec: 2.5,
 		thumbAt: 0.19,
 		colors: [slot("button", "Button", RED), slot("text", "Text", WHITE), slot("split1", "Split 1", "#00E5FF"), slot("split2", "Split 2", "#FF2DAA")],
+		sounds: [cue("whoosh", 6, -4)],
 		build: (ctx) => {
 			const { c } = ctx;
 			const rnd = seeded(11);
@@ -497,6 +492,7 @@ export const subscribeButtons: AssetDef[] = [
 		durationSec: 2.5,
 		thumbAt: 0.35,
 		colors: [slot("button", "Button", RED), slot("side", "Button side", "#9E1F1C"), slot("pressed", "Subscribed button", GREY), slot("pressedSide", "Subscribed side", "#262A33"), slot("text", "Text", WHITE), slot("shadow", "Shadow", INK)],
+		sounds: [cue("pop", 0, -4), cue("click", 30)],
 		build: (ctx) => {
 			const { c } = ctx;
 			const top: Key[] = [[0, [450, 150], EASE.out], [28, [450, 150], EASE.in], [33, [450, 172], EASE.out], [44, [450, 164]]];
@@ -522,6 +518,7 @@ export const subscribeButtons: AssetDef[] = [
 		durationSec: 4,
 		thumbAt: 0.4,
 		colors: [slot("button", "Button", RED), slot("pressed", "Subscribed button", GREY), slot("text", "Text", WHITE), slot("accent", "Ring & digits", AMBER), slot("track", "Track & badge", INK)],
+		sounds: [cue("click", 10, -10), cue("click", 40, -10), cue("click", 70, -10), cue("click", 100), cue("ding", 103, -4)],
 		build: (ctx) => {
 			const { c } = ctx;
 			const digit = (n: number, t: number) =>
@@ -551,6 +548,7 @@ export const subscribeButtons: AssetDef[] = [
 		durationSec: 3,
 		thumbAt: 0.7,
 		colors: [slot("bell", "Bell", WHITE), slot("disc", "Circle", INK), slot("accent", "Burst", AMBER), slot("badge", "Dot", RED)],
+		sounds: [cue("click", 44), cue("ding", 46, -2)],
 		build: ({ c }) => {
 			const slash = pathData([[-170, -170], [170, 170]]);
 			const gone: Key[] = [[30, 100, EASE.inOut], [42, 0]];
@@ -574,6 +572,7 @@ export const subscribeButtons: AssetDef[] = [
 		durationSec: 3.5,
 		thumbAt: 0.75,
 		colors: [slot("button", "Button", RED), slot("pressed", "Subscribed button", GREY), slot("text", "Text", WHITE), slot("member", "Join button", BLUE), slot("accent", "Sparkle", AMBER), slot("shadow", "Shadow", INK)],
+		sounds: [cue("pop", 8, -4), cue("click", 36), cue("confetti", 64, -6)],
 		build: (ctx) => {
 			const { c } = ctx;
 			const s = popPress(8, 62);
@@ -598,6 +597,7 @@ export const subscribeButtons: AssetDef[] = [
 		durationSec: 3,
 		thumbAt: 0.3,
 		colors: [slot("button", "Button", RED), slot("text", "Text", WHITE), slot("sticker", "Sticker edge", SOFT), slot("shadow", "Shadow", INK), slot("confetti1", "Confetti 1", AMBER), slot("confetti2", "Confetti 2", BLUE), slot("confetti3", "Confetti 3", TEAL)],
+		sounds: [cue("pop", 6), cue("confetti", 6, -2)],
 		build: (ctx) => {
 			const { c } = ctx;
 			const rnd = seeded(2024);

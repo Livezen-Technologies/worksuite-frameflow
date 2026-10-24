@@ -80,5 +80,16 @@
 			"file": "ig-follow-toggle.ta.json",
 			"thumbnail": "thumbnail.ta.png"
 		}
+	],
+	"sounds": [
+		{
+			"file": "../../sounds/pop.wav",
+			"at": 0,
+			"gainDb": -4
+		},
+		{
+			"file": "../../sounds/click.wav",
+			"at": 0.933
+		}
 	]
 }

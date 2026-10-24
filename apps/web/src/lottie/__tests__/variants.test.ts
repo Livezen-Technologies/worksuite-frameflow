@@ -80,6 +80,7 @@ describe("Subscribe buttons pack", () => {
 		try {
 			const asset = withVariants[0];
 			cpSync(join(packDir, asset.path), join(dir, asset.path), { recursive: true });
+			cpSync(join(packDir, "sounds"), join(dir, "sounds"), { recursive: true });
 			const files = Object.keys(asset.files);
 			writeFileSync(join(dir, "index.json"), JSON.stringify({ assets: [{ ...asset, files: Object.fromEntries(files.map((f) => [f, asset.files[f]])) }] }));
 			expect(validatePack(dir)).toEqual([]);

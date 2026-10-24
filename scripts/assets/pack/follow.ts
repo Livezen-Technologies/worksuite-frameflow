@@ -1,6 +1,7 @@
 import { EASE, ellipse, fill, group, type Key, path, type PathData, pathData, rect, seeded, type Shape, smoothLine, star, stroke, trim } from "../lottie-dsl";
-import { type AssetContext, type AssetDef, LANGUAGES, type LayerInput, PALETTE, slot } from "./common";
-import { bell, burst, cursorArrow, fadeIn, fadeOut, label, lang, pill, popPress, ringSwing, ripple, roundRectPath, thumb, tick } from "./subscribe";
+import { type AssetContext, type AssetDef, cue, LANGUAGES, type LayerInput, PALETTE, slot } from "./common";
+import { cursorClick } from "./pointer";
+import { bell, burst, fadeIn, fadeOut, label, lang, pill, popPress, ringSwing, roundRectPath, thumb, tick } from "./subscribe";
 
 // Generic follow / like / share / save buttons for three short-video and
 // social-feed moods. The platform names are only category labels and tags:
@@ -89,6 +90,11 @@ function chain(color: string): Shape[] {
 
 const chevron = (color: string, w = 120, weight = 22) => [path(pathData([[-w / 2, w / 4], [0, -w / 4], [w / 2, w / 4]])), stroke(color, weight)];
 
+/** A ring that expands and fades from the origin at `start` (a touch or tap). */
+function ripple(color: string, start: number, size = 220): Shape {
+	return group([ellipse([size, size]), stroke(color, 10, { opacity: [[start, 0], [start + 1, 90, EASE.out], [start + 18, 0]] })], { scale: [[start, [30, 30], EASE.out], [start + 18, [100, 100]]] }, "Ripple");
+}
+
 // ---------- words ----------
 
 /** An optional icon then a word, centred; returns the shape (fading by `opacity`). */
@@ -169,17 +175,6 @@ function followButton(
 	return layers;
 }
 
-/** A cursor that glides in, clicks at `click` and leaves. */
-function cursor(c: (id: string) => string, { to, click, from = [to[0] + 420, to[1] + 260], fillSlot = "cursor", outlineSlot = "shadow" }: { to: number[]; click: number; from?: number[]; fillSlot?: string; outlineSlot?: string }): LayerInput {
-	return {
-		name: "Cursor",
-		position: [[click - 28, from, EASE.inOut], [click - 4, to], [click + 26, to, EASE.in], [click + 50, from]],
-		scale: [[0, [80, 80]], [click - 2, [80, 80], EASE.out], [click + 2, [72, 72], EASE.out], [click + 8, [80, 80]]],
-		opacity: [[click - 28, 0, EASE.out], [click - 22, 100], [click + 40, 100, EASE.in], [click + 50, 0]],
-		shapes: [path(cursorArrow), fill(c(fillSlot)), stroke(c(outlineSlot), 7)],
-	};
-}
-
 /** Small hearts floating up and away from the origin. */
 function floatHearts(color: string, start: number, count: number, seed: number, spread = 160): Shape[] {
 	const rnd = seeded(seed);
@@ -213,8 +208,10 @@ export const followFacebook: AssetDef[] = [
 		tags: [...fbTags, "click", "cursor", "pill"],
 		durationSec: 3,
 		thumbAt: 0.33,
-		colors: [slot("button", "Button", FB_BLUE), slot("pressed", "Following button", GREY), slot("text", "Text & icon", WHITE), slot("cursor", "Cursor", SOFT), slot("shadow", "Shadow & outline", INK)],
-		build: (ctx) => [cursor(ctx.c, { to: [560, 182], click: 42 }), { name: "Click ripple", position: [560, 182], shapes: [ripple(ctx.c("cursor"), 43, 140)] }, ...followButton(ctx, { at: [450, 150], w: 600, h: 150, cap: 48, press: 42 })],
+		sounds: [cue("pop", 0, -4), cue("click", 42)],
+		colors: [slot("button", "Button", FB_BLUE), slot("pressed", "Following button", GREY), slot("text", "Text & icon", WHITE), slot("cursor", "Cursor", SOFT), slot("shadow", "Shadow & outline", INK), slot("accent", "Click ripple", AMBER)],
+		build: (ctx) => [
+			...cursorClick({ at: [560, 182], from: [900, 400], arrive: 30, press: 42, leave: 70, fill: ctx.c("cursor"), outline: ctx.c("shadow"), ripple: ctx.c("accent"), rippleSize: 150 }), ...followButton(ctx, { at: [450, 150], w: 600, h: 150, cap: 48, press: 42 })],
 	},
 	{
 		...fb,
@@ -226,6 +223,7 @@ export const followFacebook: AssetDef[] = [
 		tags: [...fbTags, "card", "profile", "avatar", "page follow"],
 		durationSec: 3.5,
 		thumbAt: 0.85,
+		sounds: [cue("whoosh", 0, -8), cue("pop", 22, -4), cue("click", 64)],
 		colors: [slot("panel", "Card", INK), slot("placeholder", "Avatar & text area", MUTED), slot("button", "Button", FB_BLUE), slot("pressed", "Following button", GREY), slot("text", "Text", WHITE), slot("cover", "Cover strip", "#24324F")],
 		build: (ctx) => {
 			const { c } = ctx;
@@ -244,37 +242,40 @@ export const followFacebook: AssetDef[] = [
 		w: 800,
 		h: 800,
 		id: "fb-like-burst",
-		name: "Like burst with reactions",
-		description: "A thumbs-up circle pops with a burst, three reaction bubbles (heart, thumb, star) bob up above it and a “Like” label appears.",
-		tags: [...fbTags, "like", "thumbs up", "reaction", "burst", "ලයික්", "லைக்"],
+		name: "Like sparkle badge",
+		description: "A rounded-square badge with an outlined thumbs-up pops in, the thumb gives a nod, sparkles burst around it and a “Like” label appears.",
+		tags: [...fbTags, "like", "thumbs up", "sparkle", "badge", "burst", "ලයික්", "லைக்"],
 		durationSec: 3,
 		thumbAt: 0.55,
-		colors: [slot("button", "Like circle", FB_BLUE), slot("text", "Icons & text", WHITE), slot("heart", "Heart bubble", LIKED), slot("star", "Star bubble", AMBER), slot("label", "Label pill", INK)],
+		colors: [slot("badge", "Badge", "#2B2F38"), slot("icon", "Thumb & text", WHITE), slot("sparkle", "Sparkles", AMBER), slot("sparkle2", "Small sparkles", "#2EC4B6"), slot("label", "Label pill", INK)],
+		sounds: [cue("pop", 0, -2), cue("pop", 16, -8)],
 		build: (ctx) => {
 			const { c } = ctx;
-			const reaction = (x: number, y: number, t: number, color: string, icon: Shape[]) =>
-				group([...icon, group([ellipse([150, 150]), fill(c(color))]), group([ellipse([166, 166]), fill(c("text"))])], {
-					position: [[t, [400, 380], EASE.back], [t + 14, [x, y], EASE.soft], [t + 34, [x, y - 14], EASE.soft], [t + 54, [x, y]]],
-					scale: [[t, [0, 0], EASE.back], [t + 12, [100, 100]]],
+			const rnd = seeded(7);
+			const sparkles = Array.from({ length: 9 }, (_, i) => {
+				const a = (i / 9) * Math.PI * 2 + 0.3;
+				const d = 200 + rnd() * 70;
+				const t = 8 + (i % 3) * 3;
+				const size = i % 2 ? 22 : 36;
+				return group([star({ points: 4, outer: size, inner: size * 0.36 }), fill(c(i % 2 ? "sparkle2" : "sparkle"))], {
+					position: [[t, [0, 0], EASE.out], [t + 16, [Math.cos(a) * d, Math.sin(a) * d]]],
+					scale: [[t, [0, 0], EASE.back], [t + 10, [100, 100], EASE.inOut], [t + 34, [100, 100], EASE.in], [t + 44, [0, 0]]],
+					rotation: [[t, 0], [t + 44, 120]],
 				});
-			const iconScale = (shapes: Shape[], s: number) => [group(shapes, { scale: [s, s] })];
+			});
+			const outlineThumb = thumb(c("icon")).map((g) => {
+				const it = (g as { it: Shape[] }).it;
+				return { ...g, it: [it[0], stroke(c("icon"), 22), it[it.length - 1]] };
+			});
 			return [
-				{
-					name: "Reactions",
-					position: [0, 0],
-					shapes: [
-						reaction(220, 200, 26, "heart", iconScale(heart(c("text")), 42)),
-						reaction(400, 150, 30, "button", iconScale(thumb(c("text")), 34)),
-						reaction(580, 200, 34, "star", [group([star({ points: 5, outer: 50, inner: 22, position: [0, 6] }), fill(c("text"))])]),
-					],
-				},
-				{ name: "Label", position: [400, 650], scale: popPress(16), shapes: [iconWord(ctx, "like", { cap: 46, maxW: 300, color: c("text") }), pill(360, 110, c("label"), 90)] },
-				{ name: "Burst", position: [400, 420], shapes: burst(c("button"), 10, { count: 10, r1: 150, r2: 210, width: 14 }) },
-				{ name: "Thumb", position: [404, 420], scale: [[0, [0, 0], EASE.out], [8, [56, 56], EASE.inOut], [14, [44, 44], EASE.out], [20, [48, 48]]], rotation: [[0, -30, EASE.out], [12, 8, EASE.inOut], [20, 0]], shapes: thumb(c("text")) },
-				{ name: "Circle", position: [400, 420], scale: popPress(0), shapes: [group([ellipse([240, 240]), fill(c("button"))])] },
+				{ name: "Label", position: [400, 650], scale: popPress(16), shapes: [iconWord(ctx, "like", { cap: 46, maxW: 300, color: c("icon") }), pill(360, 110, c("label"), 90)] },
+				{ name: "Sparkles", position: [400, 400], shapes: sparkles },
+				{ name: "Thumb", position: [404, 404], scale: [[0, [0, 0], EASE.out], [8, [50, 50], EASE.inOut], [14, [40, 40], EASE.out], [20, [44, 44]]], rotation: [[0, -30, EASE.out], [12, 8, EASE.inOut], [20, 0], [40, 0, EASE.inOut], [46, -12, EASE.inOut], [54, 0]], shapes: outlineThumb },
+				{ name: "Badge", position: [400, 400], scale: popPress(0), rotation: [[0, -12, EASE.out], [16, 0]], shapes: [group([rect([250, 250], [0, 0], 64), fill(c("badge"))])] },
 			];
 		},
 	},
+
 	{
 		...fb,
 		w: 900,
@@ -285,6 +286,7 @@ export const followFacebook: AssetDef[] = [
 		tags: [...fbTags, "share", "arrow", "fly", "ෂෙයා", "பகிர்"],
 		durationSec: 3,
 		thumbAt: 0.9,
+		sounds: [cue("pop", 0, -4), cue("click", 30), cue("whoosh", 34)],
 		colors: [slot("button", "Button", FB_BLUE), slot("text", "Text & arrow", WHITE), slot("accent", "Trail", AMBER), slot("shadow", "Shadow", INK)],
 		build: (ctx) => {
 			const { c } = ctx;
@@ -317,6 +319,7 @@ export const followFacebook: AssetDef[] = [
 		tags: [...fbTags, "lower third", "bar", "page", "name"],
 		durationSec: 4,
 		thumbAt: 0.62,
+		sounds: [cue("whoosh", 0, -4), cue("click", 62), cue("whoosh", 100, -6)],
 		colors: [slot("panel", "Bar", INK), slot("placeholder", "Text area", MUTED), slot("accent", "Accent strip", AMBER), slot("button", "Button", FB_BLUE), slot("pressed", "Following button", GREY), slot("text", "Text", WHITE)],
 		build: (ctx) => {
 			const { c } = ctx;
@@ -343,6 +346,7 @@ export const followFacebook: AssetDef[] = [
 		tags: [...fbTags, "bell", "notification", "ring"],
 		durationSec: 3.5,
 		thumbAt: 0.62,
+		sounds: [cue("pop", 0, -4), cue("click", 26), cue("ding", 50, -2)],
 		colors: [slot("button", "Button", FB_BLUE), slot("pressed", "Following & bell circle", GREY), slot("text", "Text", WHITE), slot("accent", "Bell & burst", AMBER), slot("shadow", "Shadow", INK)],
 		build: (ctx) => {
 			const { c } = ctx;
@@ -398,6 +402,7 @@ export const followTikTok: AssetDef[] = [
 		tags: [...ttTags, "avatar", "plus", "tick", "profile", "icon"],
 		durationSec: 2.5,
 		thumbAt: 0.25,
+		sounds: [cue("pop", 8, -4), cue("click", 28)],
 		colors: [slot("avatar", "Avatar area", MUTED), slot("ring", "Avatar ring", WHITE), slot("badge", "Plus badge", TT_PINK), slot("mark", "Plus", SOFT), slot("done", "Tick badge", "#FDFDFE"), slot("accent", "Ripple", TT_CYAN)],
 		build: ({ c }) => [
 			{ name: "Ripple", position: [250, 360], shapes: [ripple(c("accent"), 30, 200)] },
@@ -415,6 +420,7 @@ export const followTikTok: AssetDef[] = [
 		tags: [...ttTags, "rail", "side bar", "heart", "like", "comment", "bookmark", "share", "9:16"],
 		durationSec: 3.5,
 		thumbAt: 0.55,
+		sounds: [cue("whoosh", 0, -8), cue("pop", 48)],
 		colors: [slot("icon", "Icons", WHITE), slot("liked", "Liked heart & badge", TT_PINK), slot("avatar", "Avatar area", MUTED), slot("count", "Count bars", "#C9CED8"), slot("accent", "Burst", TT_CYAN), slot("shadow", "Icon shadow", INK)],
 		build: ({ c }) => {
 			const x = RAIL.x;
@@ -452,6 +458,7 @@ export const followTikTok: AssetDef[] = [
 		tags: [...ttTags, "double tap", "heart", "like", "love", "tap"],
 		durationSec: 2.5,
 		thumbAt: 0.32,
+		sounds: [cue("click", 2, -10), cue("click", 9, -10), cue("pop", 16)],
 		colors: [slot("heart", "Heart", TT_PINK), slot("small", "Small hearts", "#FF8FA8"), slot("accent", "Taps & burst", WHITE), slot("shadow", "Shadow", INK)],
 		build: ({ c }) => {
 			const t = 16;
@@ -478,6 +485,7 @@ export const followTikTok: AssetDef[] = [
 		tags: [...ttTags, "part 2", "series", "sticker", "frame", "episode"],
 		durationSec: 3,
 		thumbAt: 0.5,
+		sounds: [cue("pop", 0), cue("pop", 14, -8)],
 		colors: [slot("sticker", "Sticker", WHITE), slot("panel", "Text area", "#E7EAF0"), slot("button", "Button", TT_PINK), slot("text", "Button text", SOFT), slot("badge", "Badge", TT_CYAN), slot("digit", "Badge digit", INK), slot("shadow", "Shadow", "#0B0C10")],
 		build: (ctx) => {
 			const { c } = ctx;
@@ -505,6 +513,7 @@ export const followTikTok: AssetDef[] = [
 		tags: [...ttTags, "swipe up", "scroll", "hint", "gesture", "touch", "9:16"],
 		durationSec: 2,
 		thumbAt: 0.4,
+		sounds: [cue("whoosh", 4, -6)],
 		colors: [slot("chevron", "Chevrons", WHITE), slot("track", "Track", "#8A92A3"), slot("dot", "Touch dot", SOFT), slot("outline", "Touch ring", INK), slot("accent", "Trail", TT_CYAN)],
 		build: ({ c }) => {
 			const chev = (i: number) => {
@@ -535,6 +544,7 @@ export const followTikTok: AssetDef[] = [
 		tags: [...ttTags, "comment", "reply", "bubble", "කමෙන්ට්", "கருத்து"],
 		durationSec: 3.5,
 		thumbAt: 0.85,
+		sounds: [cue("pop", 0, -4), cue("click", 62)],
 		colors: [slot("bubble", "Bubble", WHITE), slot("placeholder", "Avatar & text area", "#C4C9D3"), slot("chip", "Comment tag", INK), slot("button", "Button", TT_PINK), slot("pressed", "Following button", GREY), slot("text", "Text", SOFT), slot("shadow", "Shadow", "#0B0C10")],
 		build: (ctx) => {
 			const { c } = ctx;
@@ -567,6 +577,7 @@ export const followInstagram: AssetDef[] = [
 		tags: [...igTags, "toggle", "tap", "rounded"],
 		durationSec: 2.5,
 		thumbAt: 0.25,
+		sounds: [cue("pop", 0, -4), cue("click", 28)],
 		colors: [slot("button", "Button", IG_BLUE), slot("pressed", "Following button", "#2C3038"), slot("text", "Text", WHITE), slot("accent", "Ripple", IG_ORANGE), slot("shadow", "Shadow", INK)],
 		build: (ctx) => [
 			{ name: "Ripple", position: [450, 150], shapes: [ripple(ctx.c("accent"), 31, 300)] },
@@ -583,6 +594,7 @@ export const followInstagram: AssetDef[] = [
 		tags: [...igTags, "profile", "header", "card", "avatar", "stats", "followers"],
 		durationSec: 3.5,
 		thumbAt: 0.85,
+		sounds: [cue("pop", 6, -4), cue("click", 66)],
 		colors: [slot("panel", "Card", INK), slot("placeholder", "Avatar & stats", MUTED), slot("ring", "Avatar ring", IG_MAGENTA), slot("button", "Button", IG_BLUE), slot("pressed", "Following button", GREY), slot("text", "Text", WHITE)],
 		build: (ctx) => {
 			const { c } = ctx;
@@ -607,6 +619,7 @@ export const followInstagram: AssetDef[] = [
 		tags: [...igTags, "sticker", "tap", "tilt", "story sticker"],
 		durationSec: 3,
 		thumbAt: 0.32,
+		sounds: [cue("whoosh", 0, -8), cue("click", 46)],
 		colors: [slot("sticker", "Sticker", WHITE), slot("text", "Text & icon", IG_MAGENTA), slot("done", "Following text", "#2E9E6A"), slot("accent", "Tap ring", IG_ORANGE), slot("shadow", "Shadow", INK)],
 		build: (ctx) => {
 			const { c } = ctx;
@@ -640,6 +653,7 @@ export const followInstagram: AssetDef[] = [
 		tags: [...igTags, "heart", "like", "comment", "share", "save", "bookmark", "action row"],
 		durationSec: 3.5,
 		thumbAt: 0.8,
+		sounds: [cue("pop", 34), cue("pop", 70)],
 		colors: [slot("icon", "Icons", WHITE), slot("liked", "Liked heart", IG_MAGENTA), slot("saved", "Saved bookmark", IG_ORANGE), slot("accent", "Burst", AMBER), slot("bar", "Bar", INK)],
 		build: ({ c }) => {
 			const pop = (t: number): Key[] => [[t, [0, 0], EASE.back], [t + 12, [100, 100]]];
@@ -668,6 +682,7 @@ export const followInstagram: AssetDef[] = [
 		tags: [...igTags, "link in bio", "bio", "link", "pointer", "arrow", "බයෝ", "பயோ"],
 		durationSec: 2,
 		thumbAt: 0.5,
+		sounds: [cue("pop", 0, -6)],
 		colors: [slot("button", "Pill", IG_MAGENTA), slot("text", "Text & icon", WHITE), slot("arrow", "Arrow", IG_ORANGE), slot("shadow", "Shadow", INK)],
 		build: (ctx) => {
 			const { c } = ctx;
@@ -691,6 +706,7 @@ export const followInstagram: AssetDef[] = [
 		tags: [...igTags, "save", "bookmark", "saved", "pop", "සේව්", "சேமி"],
 		durationSec: 2.5,
 		thumbAt: 0.7,
+		sounds: [cue("click", 24, -6), cue("pop", 26)],
 		colors: [slot("icon", "Bookmark outline & text", WHITE), slot("saved", "Saved fill", IG_ORANGE), slot("disc", "Circle & label", INK), slot("accent", "Burst", IG_MAGENTA)],
 		build: (ctx) => {
 			const { c } = ctx;

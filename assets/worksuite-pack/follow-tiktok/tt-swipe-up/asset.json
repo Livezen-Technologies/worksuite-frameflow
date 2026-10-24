@@ -59,5 +59,12 @@
 			"name": "Trail",
 			"default": "#3ED6CF"
 		}
+	],
+	"sounds": [
+		{
+			"file": "../../sounds/whoosh.wav",
+			"at": 0.133,
+			"gainDb": -6
+		}
 	]
 }

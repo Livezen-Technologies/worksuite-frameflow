@@ -57,8 +57,21 @@ export interface AssetDef {
 	thumbAt?: number;
 	/** Language versions; the first is the default. Omit for assets without words. */
 	variants?: VariantDef[];
+	/** Sound effects to place with the animation, timed in frames (30 fps). */
+	sounds?: SoundCue[];
 	build: (ctx: AssetContext) => LayerInput[];
 }
+
+/** Sounds in assets/worksuite-pack/sounds (built by scripts/assets/build-sounds.py). */
+export const SOUNDS = { click: 0.06, pop: 0.12, ding: 0.6, whoosh: 0.35, confetti: 0.5 } as const;
+export type SoundId = keyof typeof SOUNDS;
+export interface SoundCue {
+	sound: SoundId;
+	/** Frame the sound starts on. */
+	frame: number;
+	gainDb?: number;
+}
+export const cue = (sound: SoundId, frame: number, gainDb?: number): SoundCue => (gainDb === undefined ? { sound, frame } : { sound, frame, gainDb });
 
 export const slot = (id: string, name: string, color: string): ColorSlotDef => ({
 	id,

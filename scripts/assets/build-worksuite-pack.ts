@@ -7,12 +7,12 @@
 // Thumbnails are rendered by render-thumbnails.mjs in Playwright's Chromium
 // with lottie-web (the same runtime as the editor).
 import { createHash } from "node:crypto";
-import { mkdirSync, readFileSync, rmSync, writeFileSync, existsSync } from "node:fs";
+import { mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync, existsSync } from "node:fs";
 import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 import { buildAnimation } from "./lottie-dsl";
-import type { AssetDef } from "./pack/common";
+import { type AssetDef, SOUNDS } from "./pack/common";
 import { lowerThirds } from "./pack/lower-thirds";
 import { callToAction } from "./pack/call-to-action";
 import { callouts } from "./pack/callouts";
@@ -84,8 +84,20 @@ export function variantFiles(id: string, variant: string, isDefault: boolean) {
 		: { file: `${id}.${variant}.json`, thumbnail: `thumbnail.${variant}.png` };
 }
 
+/** Sound cues in seconds, as asset.json stores them (files relative to the asset folder). */
+function soundCues(def: AssetDef) {
+	return (def.sounds ?? []).map(({ sound, frame, gainDb }) => {
+		if (!(sound in SOUNDS)) throw new Error(`${def.id}: unknown sound ${sound}`);
+		const at = Math.round((frame / 30) * 1000) / 1000;
+		return { file: `../../sounds/${sound}.wav`, at, ...(gainDb !== undefined ? { gainDb } : {}) };
+	});
+}
+
 function writePack({ thumbs }: { thumbs: boolean }) {
-	rmSync(packDir, { recursive: true, force: true });
+	// Everything is regenerated except sounds/ (built by build-sounds.py).
+	mkdirSync(packDir, { recursive: true });
+	for (const entry of readdirSync(packDir)) if (entry !== "sounds") rmSync(join(packDir, entry), { recursive: true, force: true });
+	if (!existsSync(join(packDir, "sounds", "click.wav"))) throw new Error("Sounds are missing: run python3 scripts/assets/build-sounds.py");
 	const entries: Array<{ dir: string; def: AssetDef; category: string }> = [];
 	for (const category of CATEGORIES) {
 		for (const def of category.assets) {
@@ -118,6 +130,7 @@ function writePack({ thumbs }: { thumbs: boolean }) {
 				thumbnailAt: def.thumbAt ?? 0.6,
 				colors: def.colors,
 				...(variants.length ? { defaultVariant: variants[0].id, variants } : {}),
+				...(def.sounds?.length ? { sounds: soundCues(def) } : {}),
 			};
 			writeFileSync(join(dir, "asset.json"), `${JSON.stringify(meta, null, "\t")}\n`);
 			entries.push({ dir, def, category: category.id });
@@ -134,6 +147,7 @@ function writePack({ thumbs }: { thumbs: boolean }) {
 		name: "Worksuite Assets",
 		license: "MIT",
 		categories: CATEGORIES.map(({ id, name, group, assets }) => ({ id, name, ...(group ? { group } : {}), count: assets.length })),
+		sounds: Object.fromEntries(Object.keys(SOUNDS).map((id) => [`sounds/${id}.wav`, { sha256: sha256(join(packDir, "sounds", `${id}.wav`)) }])),
 		assets: entries.map(({ dir, def, category }) => {
 			const variantNames = (def.variants ?? []).slice(1).flatMap((v) => Object.values(variantFiles(def.id, v.id, false)));
 			const files = [`${def.id}.json`, "thumbnail.png", ...variantNames, "asset.json"].filter((f) => existsSync(join(dir, f)));
@@ -150,6 +164,17 @@ function writePack({ thumbs }: { thumbs: boolean }) {
 				colors: def.colors,
 				...(def.variants?.length
 					? { defaultVariant: def.variants[0].id, variants: def.variants.map(({ id, name, lang }) => ({ id, name, lang })) }
+					: {}),
+				...(def.sounds?.length
+					? {
+							sounds: def.sounds.map(({ sound, frame, gainDb }) => ({
+								id: sound,
+								file: `sounds/${sound}.wav`,
+								at: Math.round((frame / 30) * 1000) / 1000,
+								durationSec: SOUNDS[sound],
+								...(gainDb !== undefined ? { gainDb } : {}),
+							})),
+						}
 					: {}),
 				files: Object.fromEntries(files.map((f) => [f, { sha256: sha256(join(dir, f)) }])),
 			};
@@ -170,6 +195,10 @@ function writeReadme(entries: Array<{ def: AssetDef; category: string }>) {
 		"",
 		"Rebuild with `bun scripts/assets/build-worksuite-pack.ts` and check with",
 		"`bun scripts/assets/validate-worksuite-pack.ts`. Do not edit the generated files by hand.",
+		"",
+		"Sound effects (click, pop, ding, whoosh, confetti) live in [`sounds/`](sounds); they are synthesised by",
+		"`python3 scripts/assets/build-sounds.py`. Assets list them in `asset.json` → `sounds` (`file`, `at` in",
+		"seconds, optional `gainDb`), and the editor places them on an audio track when the animation is added.",
 		"",
 	];
 	for (const category of CATEGORIES) {
@@ -196,7 +225,7 @@ function writeReadme(entries: Array<{ def: AssetDef; category: string }>) {
 		for (const { def } of items) {
 			const thumb = `${category.id}/${def.id}/thumbnail.png`;
 			lines.push(
-				`| <img src="${thumb}" width="128" alt=""> | **${def.name}** \`${def.id}\`<br>${def.description}${def.variants ? `<br>Languages: ${def.variants.map((v) => v.name).join(", ")}` : ""} | ${def.durationSec} s${def.loop ? ", loops" : ""} | ${def.colors.map((s) => `${s.name} \`${s.default}\``).join("<br>")} |`,
+				`| <img src="${thumb}" width="128" alt=""> | **${def.name}** \`${def.id}\`<br>${def.description}${def.variants ? `<br>Languages: ${def.variants.map((v) => v.name).join(", ")}` : ""}${def.sounds?.length ? `<br>Sounds: ${def.sounds.map((s) => `${s.sound} @ ${Math.round((s.frame / 30) * 100) / 100} s`).join(", ")}` : ""} | ${def.durationSec} s${def.loop ? ", loops" : ""} | ${def.colors.map((s) => `${s.name} \`${s.default}\``).join("<br>")} |`,
 			);
 		}
 		lines.push("");

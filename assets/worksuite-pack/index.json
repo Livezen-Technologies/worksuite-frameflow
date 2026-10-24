@@ -62,6 +62,23 @@
 			"count": 6
 		}
 	],
+	"sounds": {
+		"sounds/click.wav": {
+			"sha256": "40a41d65f81c3ad06adbb3f9ac069f28766cc47e8f462fb83fd5246d94749613"
+		},
+		"sounds/pop.wav": {
+			"sha256": "2686b788011b27d66dd5bfe700970c65929d689b9b989fb4715190562eaf9c53"
+		},
+		"sounds/ding.wav": {
+			"sha256": "e3b1f96ae96fa44211e2493fa37e70425b8133b17e750714ea90d44cedc2ada8"
+		},
+		"sounds/whoosh.wav": {
+			"sha256": "dbb1f9388f298ad9a1278f44cf50812069888a5e8f6bad63af60a8e2c6b76635"
+		},
+		"sounds/confetti.wav": {
+			"sha256": "e04468420bc66de02e036163fae1de43b49e9205905e7bb1e9338e6c53e0ac98"
+		}
+	},
 	"assets": [
 		{
 			"id": "lt-bar-slide",
@@ -553,6 +570,14 @@
 					"default": "#F5A524"
 				}
 			],
+			"sounds": [
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 1.133,
+					"durationSec": 0.06
+				}
+			],
 			"files": {
 				"cta-subscribe-click.json": {
 					"sha256": "8876641929aedd4d91b758ed7704e2861dd03e610b51a72e2c971ffcb79ca5a2"
@@ -561,7 +586,7 @@
 					"sha256": "eea127ccd28cd06cf5d80dd0be255c8508f54f8998f5f877110a67c89071f480"
 				},
 				"asset.json": {
-					"sha256": "6b87d1a70f740c17b07678b59247baca95de70f117f5a2ea07120c09422f16ce"
+					"sha256": "d5108833d0307b60953fb164e44b9ac9fb49635a0d2cfeeac92e952ac56f839e"
 				}
 			}
 		},
@@ -598,6 +623,15 @@
 					"default": "#FFFFFF"
 				}
 			],
+			"sounds": [
+				{
+					"id": "ding",
+					"file": "sounds/ding.wav",
+					"at": 0.267,
+					"durationSec": 0.6,
+					"gainDb": -2
+				}
+			],
 			"files": {
 				"cta-bell-ring.json": {
 					"sha256": "74525ab1b83eed4abcc432750349b259366502d0fdfbf11f44301e58cd2c9009"
@@ -606,7 +640,7 @@
 					"sha256": "4bc1bc16f9e12d2483f5825ecc20e98c1e7dbffc347b50e5a4fb72d1464897c6"
 				},
 				"asset.json": {
-					"sha256": "7c69caa8196c357becccbeafcb5319f98aa55379ea7e857e9d1b38327a512442"
+					"sha256": "802d8c841dd9de63cebbf0a3f0f6ca2cd7796ed4446b4597e7dafd871bb8e436"
 				}
 			}
 		},
@@ -643,6 +677,14 @@
 					"default": "#F5A524"
 				}
 			],
+			"sounds": [
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0.333,
+					"durationSec": 0.12
+				}
+			],
 			"files": {
 				"cta-like-thumb.json": {
 					"sha256": "c4366f39d914acd472423d7eeadff19b8326fc529668859a77d0970b82799781"
@@ -651,7 +693,7 @@
 					"sha256": "093da4ebb7889c1c71c5ab59ab940f041e36841642bda7f4e5d65a69f9c6fdda"
 				},
 				"asset.json": {
-					"sha256": "b008ece14d955b15b87dec863be78d43c2482ca91fd0c632fa0d05827430491b"
+					"sha256": "b3d6d3c247188cd9ed5d5fbc17f8853beeb5b9bf91b96e62b5c43745b604248a"
 				}
 			}
 		},
@@ -906,17 +948,18 @@
 			}
 		},
 		{
-			"id": "cta-tap-here",
-			"name": "Tap here",
+			"id": "cta-mouse-click",
+			"name": "Mouse click",
 			"category": "call-to-action",
-			"path": "call-to-action/cta-tap-here",
+			"path": "call-to-action/cta-mouse-click",
 			"tags": [
-				"tap",
+				"mouse",
 				"click",
-				"finger",
+				"computer",
+				"button",
 				"press",
-				"touch",
-				"here"
+				"here",
+				"tap"
 			],
 			"durationSec": 3,
 			"loop": true,
@@ -924,8 +967,8 @@
 			"height": 1080,
 			"colors": [
 				{
-					"id": "hand",
-					"name": "Hand",
+					"id": "body",
+					"name": "Mouse",
 					"default": "#FFFFFF"
 				},
 				{
@@ -934,20 +977,33 @@
 					"default": "#0F1115"
 				},
 				{
+					"id": "pressed",
+					"name": "Pressed button",
+					"default": "#AEB6C4"
+				},
+				{
 					"id": "ripple",
-					"name": "Ripple",
+					"name": "Click ripple",
 					"default": "#2EC4B6"
 				}
 			],
+			"sounds": [
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 0.667,
+					"durationSec": 0.06
+				}
+			],
 			"files": {
-				"cta-tap-here.json": {
-					"sha256": "a38f1df813a4e4c4453cbcc0ae5ebb1ee3c30cd71f84919f41127d8964707fe2"
+				"cta-mouse-click.json": {
+					"sha256": "daade940718c05418ae7743dec5dbb7e3c5b74c32636724862fa45063d4a35a0"
 				},
 				"thumbnail.png": {
-					"sha256": "8614855c6e417d3a5f018804b2a6a63605b5455b2fadaeab1c696d3ef9b3f823"
+					"sha256": "9171ee1e8d43bb0ae3c714ddc1dba1fc7dc756ce77ea4b7ef5d0fa0ba3bcb032"
 				},
 				"asset.json": {
-					"sha256": "457aa87e2822f8223dfabbe2470563829d075bc35fb1565d0a9278f2a07ea3d0"
+					"sha256": "af93d0a1b1d5e10983e86a21d8428240e443bb67515a9acae793d6d73ae7a318"
 				}
 			}
 		},
@@ -1371,6 +1427,14 @@
 					"default": "#FFFFFF"
 				}
 			],
+			"sounds": [
+				{
+					"id": "confetti",
+					"file": "sounds/confetti.wav",
+					"at": 0,
+					"durationSec": 0.5
+				}
+			],
 			"files": {
 				"rx-confetti.json": {
 					"sha256": "8c4518b78a81ff35d97ad864320239fba7b98805b14e90eef0d93b08c008cdbd"
@@ -1379,7 +1443,7 @@
 					"sha256": "8e343a53c68a6d40c11a40675bb27a9541b1a72b122a6e62af23cbd7bbf9c2ef"
 				},
 				"asset.json": {
-					"sha256": "b89ef04e13b22ee55d945e10cf7cf943365209a972af4b172049bb7866ce7ac8"
+					"sha256": "8bae7762650a98b77252b4d70ccc2ce59965b49926c6b98b2aa5dae1f49e44eb"
 				}
 			}
 		},
@@ -2749,6 +2813,21 @@
 					"lang": "ta"
 				}
 			],
+			"sounds": [
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0,
+					"durationSec": 0.12,
+					"gainDb": -4
+				},
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 1.467,
+					"durationSec": 0.06
+				}
+			],
 			"files": {
 				"sub-classic-click.json": {
 					"sha256": "1602a4d69b4851deb534e4000477f53c5cf30fb516f0922d8c6a8102cfeccc29"
@@ -2769,7 +2848,7 @@
 					"sha256": "260e07913f581d2f7a1cd03c15c6b1da6388e52ad7aabff5e0661e2e4353f065"
 				},
 				"asset.json": {
-					"sha256": "ebf0363fd4e46551b0ed9a81bc23e16c88ef9156d19d6c86c653953d3d65016b"
+					"sha256": "280265ae44cf3f1b30b5e6171c8b390be0d524d3614ff2fe2612efd8966090de"
 				}
 			}
 		},
@@ -2838,6 +2917,28 @@
 					"lang": "ta"
 				}
 			],
+			"sounds": [
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0,
+					"durationSec": 0.12,
+					"gainDb": -4
+				},
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 0.933,
+					"durationSec": 0.06
+				},
+				{
+					"id": "ding",
+					"file": "sounds/ding.wav",
+					"at": 1.667,
+					"durationSec": 0.6,
+					"gainDb": -2
+				}
+			],
 			"files": {
 				"sub-bell-combo.json": {
 					"sha256": "69ed50e7e4562d833cb71a7cca08a001489572287245a30bb33dec39eb4b1d24"
@@ -2858,7 +2959,7 @@
 					"sha256": "8024967a7aa64cea86155b8313bef3968d24d34f4e379f1be7fa68c8df893fc8"
 				},
 				"asset.json": {
-					"sha256": "894ce9ea56ec0dfffd7e1e3dc95471556425e205098fbb9bd09bdf603635ce97"
+					"sha256": "247726086218ea722e31b390f7879777f2922af341ef5bf8950c61e7faf7cbe3"
 				}
 			}
 		},
@@ -2934,6 +3035,34 @@
 					"lang": "ta"
 				}
 			],
+			"sounds": [
+				{
+					"id": "whoosh",
+					"file": "sounds/whoosh.wav",
+					"at": 0,
+					"durationSec": 0.35,
+					"gainDb": -8
+				},
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0.933,
+					"durationSec": 0.12
+				},
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 1.8,
+					"durationSec": 0.06
+				},
+				{
+					"id": "ding",
+					"file": "sounds/ding.wav",
+					"at": 2.667,
+					"durationSec": 0.6,
+					"gainDb": -2
+				}
+			],
 			"files": {
 				"sub-like-subscribe-bell.json": {
 					"sha256": "e4cb145f65bf66b10858e56b4191764562ab0bcefa47a2b731a62213ee3d5cd3"
@@ -2954,7 +3083,7 @@
 					"sha256": "21f272cfed547fca5d0714fb4bef0e0036a4efe4e1cdb616b2f42451fea0c2ec"
 				},
 				"asset.json": {
-					"sha256": "b9ae6ab3d9462a4fce0fc6c3f33838798c645f5b3f81d365f9db51fd36a18533"
+					"sha256": "946eec8774988e5f200a1c2caf3b16245ee927acbdb7e1777b08aa4902a44a53"
 				}
 			}
 		},
@@ -3017,6 +3146,14 @@
 					"lang": "ta"
 				}
 			],
+			"sounds": [
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0.467,
+					"durationSec": 0.12
+				}
+			],
 			"files": {
 				"sub-bounce-pop.json": {
 					"sha256": "bdd148560117dbc0c8ca092b2187cef50ef55ece63909411071b773d84f21a18"
@@ -3037,7 +3174,7 @@
 					"sha256": "bd945e959a533d79dcca6cc4eef8323d1ebe243bd7aa117d3870982ac4056b9b"
 				},
 				"asset.json": {
-					"sha256": "9379b279c96a9717c14d2d2aaf925af5abbbbaf14aa6ae8510723f5fd131f209"
+					"sha256": "168fba7dbb424eb19d4606980bc937f650bf86a6f83411e9baab2fec0851886a"
 				}
 			}
 		},
@@ -3101,6 +3238,14 @@
 					"lang": "ta"
 				}
 			],
+			"sounds": [
+				{
+					"id": "whoosh",
+					"file": "sounds/whoosh.wav",
+					"at": 0,
+					"durationSec": 0.35
+				}
+			],
 			"files": {
 				"sub-slide-shine.json": {
 					"sha256": "8c7a05fcf97496dcf974753263f9feb374e9c099e7b21dfb8ce2402a00b293bd"
@@ -3121,7 +3266,7 @@
 					"sha256": "e40e7e57905273db88980bbdb9f3dbd82e8819ab7b60e84150b81610edad775c"
 				},
 				"asset.json": {
-					"sha256": "524da09dbf6f3c25f68b875367d445dafb1efa1adb9f336798c2b463ae8b5349"
+					"sha256": "bc61f7cfc52c81b163c310ac9ef43d2281c167feaa7df0784330f789ddfaf70a"
 				}
 			}
 		},
@@ -3180,6 +3325,15 @@
 					"lang": "ta"
 				}
 			],
+			"sounds": [
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0.133,
+					"durationSec": 0.12,
+					"gainDb": -6
+				}
+			],
 			"files": {
 				"sub-neon-glow.json": {
 					"sha256": "fac024e09d55b4c71add38c8cebfad8c17c54f55679809cf28d7f6f566402391"
@@ -3200,7 +3354,7 @@
 					"sha256": "2594e3fcc1db78959106daca04d7100e9022c9877919fcb5fee0214eab56d54e"
 				},
 				"asset.json": {
-					"sha256": "2f9de712fc86f8c64cc11188c37c7c062b85ae3f19aef582ee2a319d87385c0c"
+					"sha256": "ab2802fa70d5b77a035e550098f2b1dd68a75757e14a28549c55373c06d6ca0d"
 				}
 			}
 		},
@@ -3258,6 +3412,22 @@
 					"lang": "ta"
 				}
 			],
+			"sounds": [
+				{
+					"id": "whoosh",
+					"file": "sounds/whoosh.wav",
+					"at": 0,
+					"durationSec": 0.35,
+					"gainDb": -6
+				},
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 1.4,
+					"durationSec": 0.12,
+					"gainDb": -4
+				}
+			],
 			"files": {
 				"sub-ghost-outline.json": {
 					"sha256": "6805b4599c5056085d85c0f2789c4f84f736289fb81d1fb6ccd4dfd5108c0e2b"
@@ -3278,7 +3448,7 @@
 					"sha256": "2b54be2556ce79b87087eab69115dc600d3bc37847d7a45fb6af467f3042a2c3"
 				},
 				"asset.json": {
-					"sha256": "c76adf9fa940f61f2d6ffd4389945f82f3e7c0ea263eb62d10330259d5127b01"
+					"sha256": "0d7885b833f8c13bdb0e1ad02b90dc8fa720f40f0f680f4ece61ad69d96d6c83"
 				}
 			}
 		},
@@ -3342,6 +3512,21 @@
 					"lang": "ta"
 				}
 			],
+			"sounds": [
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0,
+					"durationSec": 0.12,
+					"gainDb": -4
+				},
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 1.467,
+					"durationSec": 0.06
+				}
+			],
 			"files": {
 				"sub-glass.json": {
 					"sha256": "c12c7681ac833479e7f0e1101f549d7512db72fd03680ffc44338edaf2664247"
@@ -3362,7 +3547,7 @@
 					"sha256": "9941ab2a4114bdca4cc2003a85d34b7ace37a9f9b39f21cc40a1de8c635c2574"
 				},
 				"asset.json": {
-					"sha256": "4ee740c0dd7fd84380b6fc61712d8c90e38c93511c9d770b73fd40e87123e14b"
+					"sha256": "ef38d6164eb0ea39d5729180dac31f6b9e2866cc4f8bdbb2644772e7bbe16172"
 				}
 			}
 		},
@@ -3437,6 +3622,28 @@
 					"lang": "ta"
 				}
 			],
+			"sounds": [
+				{
+					"id": "whoosh",
+					"file": "sounds/whoosh.wav",
+					"at": 0,
+					"durationSec": 0.35,
+					"gainDb": -6
+				},
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0.6,
+					"durationSec": 0.12,
+					"gainDb": -4
+				},
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 1.933,
+					"durationSec": 0.06
+				}
+			],
 			"files": {
 				"sub-avatar-bar.json": {
 					"sha256": "62de0a56bdd0a73d750919e4d4ece2464ba6c40bcdbd6e058857260cb3377951"
@@ -3457,24 +3664,25 @@
 					"sha256": "5a5f8f2ab02cf76eb53d367457436b6824fd52179f46e42897f89b400307349e"
 				},
 				"asset.json": {
-					"sha256": "4ad45909568b657855ae6d8d83b1c5fda15353d89c8d9fc920ab9f09d2703f86"
+					"sha256": "34c01ec453cbf475ecb2023aa0732709a024b247e6941b773a032b16f524cc9d"
 				}
 			}
 		},
 		{
-			"id": "sub-finger-tap",
-			"name": "Finger tap",
+			"id": "sub-cursor-click",
+			"name": "Cursor click",
 			"category": "subscribe-buttons",
-			"path": "subscribe-buttons/sub-finger-tap",
+			"path": "subscribe-buttons/sub-cursor-click",
 			"tags": [
 				"subscribe",
 				"youtube",
 				"button",
 				"සබ්ස්ක්‍රයිබ්",
 				"சப்ஸ்கிரைப்",
-				"tap",
-				"hand",
-				"finger",
+				"click",
+				"cursor",
+				"mouse",
+				"pointer",
 				"mobile",
 				"shorts",
 				"vertical",
@@ -3501,18 +3709,18 @@
 					"default": "#FFFFFF"
 				},
 				{
-					"id": "hand",
-					"name": "Hand",
+					"id": "cursor",
+					"name": "Cursor",
 					"default": "#F4F6FA"
 				},
 				{
 					"id": "outline",
-					"name": "Hand outline & shadow",
+					"name": "Cursor outline & shadow",
 					"default": "#0F1115"
 				},
 				{
 					"id": "accent",
-					"name": "Ripple",
+					"name": "Click ripple",
 					"default": "#F5A524"
 				}
 			],
@@ -3534,27 +3742,42 @@
 					"lang": "ta"
 				}
 			],
+			"sounds": [
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0,
+					"durationSec": 0.12,
+					"gainDb": -4
+				},
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 1.333,
+					"durationSec": 0.06
+				}
+			],
 			"files": {
-				"sub-finger-tap.json": {
-					"sha256": "0bd41650fe7efff611e672dc301dfd5a02368257da1687fad0513bd2facb70a1"
+				"sub-cursor-click.json": {
+					"sha256": "8323aecebfd0efffa3f442bd34bfc158122f78c613a9d826dc34b04a9e189dca"
 				},
 				"thumbnail.png": {
-					"sha256": "76a448eb55cae876813193b84794c3be8f0efe311cb535913ea1bcf1f234ec47"
+					"sha256": "e9407cf208cb0faf8945f3cbcbca6bc92c4ec0bee31dee7ac2ddfa9494ae95e2"
 				},
-				"sub-finger-tap.si.json": {
-					"sha256": "52427384cf5719f4dde46c26f37620c63af60bfd886e34580bca589aff9b69fb"
+				"sub-cursor-click.si.json": {
+					"sha256": "6a1a0f1f23b4d7dcf05db25a90817df56846d9cb5b8333104c212ee8af3f7a5e"
 				},
 				"thumbnail.si.png": {
-					"sha256": "1a2b6f33b36fa67bb6a3ef518a9f211559825250f5d50ed69638942aae2b66a9"
+					"sha256": "841ba0a471d00674a57099b4393af657c27cad21f3d242001f1539ecaf0be6e9"
 				},
-				"sub-finger-tap.ta.json": {
-					"sha256": "479be06a414abaf9fdc95074621785b042a13b6e3dd65c22dc9f2841c951639a"
+				"sub-cursor-click.ta.json": {
+					"sha256": "23dec24b3d24c479db499135852252cb81d055ec790e4230372748794f638e47"
 				},
 				"thumbnail.ta.png": {
-					"sha256": "1ac01666807510a8b6c7602270842e48c64733fa19042f731356d168419546b1"
+					"sha256": "89a65841f8cc0b34750d96af538adc84b53387d5c4bf172fc8fb0e1109da2da3"
 				},
 				"asset.json": {
-					"sha256": "4c196f965dd8448016815696d89ce66f3c7564c505c9764bcc3c511d1b46aa47"
+					"sha256": "ca79496d37d30df4cc654767a5a8ec92ef70facb151a7b87ed3f01cb75e87618"
 				}
 			}
 		},
@@ -3618,6 +3841,15 @@
 					"lang": "ta"
 				}
 			],
+			"sounds": [
+				{
+					"id": "whoosh",
+					"file": "sounds/whoosh.wav",
+					"at": 0.2,
+					"durationSec": 0.35,
+					"gainDb": -4
+				}
+			],
 			"files": {
 				"sub-glitch.json": {
 					"sha256": "1ed0f3be94776bfd0d07c45818a447115c13568b56f5618971aac4e170776459"
@@ -3638,7 +3870,7 @@
 					"sha256": "5d1573b5954b41639427a684e552472dda443405d129ba17398b51c573ddc212"
 				},
 				"asset.json": {
-					"sha256": "89294d0631d96034fc0dfc0a48f5f7db855da31b7d7a314a74a00af37bd13c66"
+					"sha256": "0994da8b34ad094bbfacf617be3c11f84d15e4cfc381118fdbda9d11155b42d4"
 				}
 			}
 		},
@@ -3713,6 +3945,21 @@
 					"lang": "ta"
 				}
 			],
+			"sounds": [
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0,
+					"durationSec": 0.12,
+					"gainDb": -4
+				},
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 1,
+					"durationSec": 0.06
+				}
+			],
 			"files": {
 				"sub-3d-press.json": {
 					"sha256": "41ecd0618b33b5bd814d4295a764158f81a0733cfbf273fa8e0e9fd1606f0de0"
@@ -3733,7 +3980,7 @@
 					"sha256": "b28431c68823239d38ade58daed44ad7e6b8f7303777151f8bcc6d23b7809e5c"
 				},
 				"asset.json": {
-					"sha256": "719991439bfe4753409f1a1b65c99b4b12da9bee763aad42a7dab35143280a0c"
+					"sha256": "82a4fefbd00917b5a04e9a62e0f13a37cbabe4aa6b9430a275135ddf5a85d070"
 				}
 			}
 		},
@@ -3803,6 +4050,42 @@
 					"lang": "ta"
 				}
 			],
+			"sounds": [
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 0.333,
+					"durationSec": 0.06,
+					"gainDb": -10
+				},
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 1.333,
+					"durationSec": 0.06,
+					"gainDb": -10
+				},
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 2.333,
+					"durationSec": 0.06,
+					"gainDb": -10
+				},
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 3.333,
+					"durationSec": 0.06
+				},
+				{
+					"id": "ding",
+					"file": "sounds/ding.wav",
+					"at": 3.433,
+					"durationSec": 0.6,
+					"gainDb": -4
+				}
+			],
 			"files": {
 				"sub-countdown.json": {
 					"sha256": "8d4a988a0c8728222a6349445c2866bc3355263e3a50578f90209395ecd0ca2f"
@@ -3823,7 +4106,7 @@
 					"sha256": "8889d24c7c918febf4c83dec98d7d08e83059b9bc54f45fec7146660ed800bc5"
 				},
 				"asset.json": {
-					"sha256": "94f29500a4bb3c0fab224101bbfadb0c465608cafbc6c5e81a0d27316094a4a1"
+					"sha256": "951dfad0007912e3f344e6b384740d975a35425591fe926ec1c1e467dedcb414"
 				}
 			}
 		},
@@ -3867,6 +4150,21 @@
 					"default": "#E53935"
 				}
 			],
+			"sounds": [
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 1.467,
+					"durationSec": 0.06
+				},
+				{
+					"id": "ding",
+					"file": "sounds/ding.wav",
+					"at": 1.533,
+					"durationSec": 0.6,
+					"gainDb": -2
+				}
+			],
 			"files": {
 				"bell-notifications-on.json": {
 					"sha256": "6f40ee01e3b9576c628545c4e26d2bef3e83049c4e29bf093cadec22a488088c"
@@ -3875,7 +4173,7 @@
 					"sha256": "8b3b8bbaf1cb1bbdb3133a61f01ba374fdd32eb15f7dd4b98c4d1e7baf3fb87c"
 				},
 				"asset.json": {
-					"sha256": "e1ba6dacbbe9f033efa4b01a2545ea8876a5db5403b9cec2cd3879e60d3378e1"
+					"sha256": "9dc0672fa8c5432882120b11ab88f0e858caf972beee62af58d3c4a18439c7b4"
 				}
 			}
 		},
@@ -3950,6 +4248,28 @@
 					"lang": "ta"
 				}
 			],
+			"sounds": [
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0.267,
+					"durationSec": 0.12,
+					"gainDb": -4
+				},
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 1.2,
+					"durationSec": 0.06
+				},
+				{
+					"id": "confetti",
+					"file": "sounds/confetti.wav",
+					"at": 2.133,
+					"durationSec": 0.5,
+					"gainDb": -6
+				}
+			],
 			"files": {
 				"sub-join-pair.json": {
 					"sha256": "9c01cad06ac2447f4d5043a90731d99d5eb2fe8d40cfb2e89ef9995801af2cfc"
@@ -3970,7 +4290,7 @@
 					"sha256": "218169e223545ac042c5f1265795831754eb5b452f9d45ab4af5e2471c4f4d1f"
 				},
 				"asset.json": {
-					"sha256": "771113b56412fcebb4296378bc54b086b3dd9a572538ba02c76ef98c9cb368e6"
+					"sha256": "28ec81c0183b3a5105e2c2a46336a405e2681d6de13f3c3134e005ab6e3a1754"
 				}
 			}
 		},
@@ -4050,6 +4370,21 @@
 					"lang": "ta"
 				}
 			],
+			"sounds": [
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0.2,
+					"durationSec": 0.12
+				},
+				{
+					"id": "confetti",
+					"file": "sounds/confetti.wav",
+					"at": 0.2,
+					"durationSec": 0.5,
+					"gainDb": -2
+				}
+			],
 			"files": {
 				"sub-sticker-confetti.json": {
 					"sha256": "8a5b2d6d2ffc35c1c8cac99e110ec9abd080ad26174516c360fe5f27190e61e5"
@@ -4070,7 +4405,7 @@
 					"sha256": "2d4c8c525a557bb1299da3ee527e02183828453a9cf1f76717e31a0202415dea"
 				},
 				"asset.json": {
-					"sha256": "53f9da429945b25b0694fbc99587c36700f72aa1a4f5b4689866a0f0d1266d68"
+					"sha256": "9720e23c48859dfcf0f6bea19564e383169a58f9694d7c3c7d399980c0eed043"
 				}
 			}
 		},
@@ -4123,6 +4458,11 @@
 					"id": "shadow",
 					"name": "Shadow & outline",
 					"default": "#0F1115"
+				},
+				{
+					"id": "accent",
+					"name": "Click ripple",
+					"default": "#F5A524"
 				}
 			],
 			"defaultVariant": "en",
@@ -4143,27 +4483,42 @@
 					"lang": "ta"
 				}
 			],
+			"sounds": [
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0,
+					"durationSec": 0.12,
+					"gainDb": -4
+				},
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 1.4,
+					"durationSec": 0.06
+				}
+			],
 			"files": {
 				"fb-follow-click.json": {
-					"sha256": "02c7c14902817810ad28a502fad51ab2b73b0d6f3b1c89d4639918f195df7c93"
+					"sha256": "7b82a178823d09784a5d1970318743706658e2cbe71ff417496d4b1160d9f791"
 				},
 				"thumbnail.png": {
-					"sha256": "041e4da21e0723a0d3ff0b79f9f54d0d95f958a4500650d2edab42e6896d4172"
+					"sha256": "d401ee04914a2b16742b7e6ef7f57cb6dba7da6cd0f40dbc2e423f5afe540c31"
 				},
 				"fb-follow-click.si.json": {
-					"sha256": "bc748a9f18eb6849700ac7cd99379737f00da9c171ef4614e28af70322b5e9b5"
+					"sha256": "c1556390136aa573c1abc18b7d3c1a27891d575293671962a3db4b334e7684c9"
 				},
 				"thumbnail.si.png": {
-					"sha256": "5472ea0ad3c353ecc37c434976f7fbacad31f9c06d7bf404b9dba2cf62273fe9"
+					"sha256": "14f0334e60fc05b4f6af6670b0c1851199771420d7fe3ef336378bebc6d1001d"
 				},
 				"fb-follow-click.ta.json": {
-					"sha256": "b9d8e755e4a72f040e36b885c9ca7a0498b6c15f2bdd1e0a0cc48aa3429ed44f"
+					"sha256": "1ee9b7d657399b31e876a06fa2a57749e0e9b937c41646254189e0b57d7974de"
 				},
 				"thumbnail.ta.png": {
-					"sha256": "d17842ce3375fe0ab849d943336cf1c4ba7907ce9ffe4d17bbc70b5a0f015f0b"
+					"sha256": "e3c9a678d6a745e2b875d8a4bed045b0552ccdd871bba380fe26505ef90efe12"
 				},
 				"asset.json": {
-					"sha256": "37bbd70348e8ff579205422e72e16a0da264eca98770b33a24ed1b42c900aa51"
+					"sha256": "2d8d30ee3b25618afa08d4d94e24891b2c3233a95009005b2d1535d84a8cff40"
 				}
 			}
 		},
@@ -4242,6 +4597,28 @@
 					"lang": "ta"
 				}
 			],
+			"sounds": [
+				{
+					"id": "whoosh",
+					"file": "sounds/whoosh.wav",
+					"at": 0,
+					"durationSec": 0.35,
+					"gainDb": -8
+				},
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0.733,
+					"durationSec": 0.12,
+					"gainDb": -4
+				},
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 2.133,
+					"durationSec": 0.06
+				}
+			],
 			"files": {
 				"fb-page-card.json": {
 					"sha256": "73a4d2135c3e89a27fb61def31ebc54945564ee21c140ad3e9c64e1cf586bdcc"
@@ -4262,13 +4639,13 @@
 					"sha256": "de91e41f1b0e12e0337dc28938bb063392d35ea6d9e2dd0ca3cfb94f931ce02c"
 				},
 				"asset.json": {
-					"sha256": "0c7b0b482ba55f6a7e3913461fcd47bb45998321f5f88722fd16fc7b9dabd2f8"
+					"sha256": "6f65536b7d8c22ba0032549da26288e7a24c0aaf3473c4dec0ab1f7b30a9f0bd"
 				}
 			}
 		},
 		{
 			"id": "fb-like-burst",
-			"name": "Like burst with reactions",
+			"name": "Like sparkle badge",
 			"category": "follow-facebook",
 			"path": "follow-facebook/fb-like-burst",
 			"tags": [
@@ -4284,7 +4661,8 @@
 				"பின்தொடர்",
 				"like",
 				"thumbs up",
-				"reaction",
+				"sparkle",
+				"badge",
 				"burst",
 				"ලයික්",
 				"லைக்"
@@ -4295,24 +4673,24 @@
 			"height": 800,
 			"colors": [
 				{
-					"id": "button",
-					"name": "Like circle",
-					"default": "#2F6FDE"
+					"id": "badge",
+					"name": "Badge",
+					"default": "#2B2F38"
 				},
 				{
-					"id": "text",
-					"name": "Icons & text",
+					"id": "icon",
+					"name": "Thumb & text",
 					"default": "#FFFFFF"
 				},
 				{
-					"id": "heart",
-					"name": "Heart bubble",
-					"default": "#E8455A"
+					"id": "sparkle",
+					"name": "Sparkles",
+					"default": "#F5A524"
 				},
 				{
-					"id": "star",
-					"name": "Star bubble",
-					"default": "#F5A524"
+					"id": "sparkle2",
+					"name": "Small sparkles",
+					"default": "#2EC4B6"
 				},
 				{
 					"id": "label",
@@ -4338,27 +4716,43 @@
 					"lang": "ta"
 				}
 			],
+			"sounds": [
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0,
+					"durationSec": 0.12,
+					"gainDb": -2
+				},
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0.533,
+					"durationSec": 0.12,
+					"gainDb": -8
+				}
+			],
 			"files": {
 				"fb-like-burst.json": {
-					"sha256": "8f71528225ee0cc43436217ee5405d1ef0605d896e387b40f9c35dd11c6590cc"
+					"sha256": "e39cdb39382aff7d60f24b14a154c946cca1512c70ba6efd70a541129452d589"
 				},
 				"thumbnail.png": {
-					"sha256": "8d588cc7e316b8ddd9f69d634e53fa45ac380f4ab01a0be989913e743ca35f7a"
+					"sha256": "651a622d7e68e1ef54475598dc4f2b3966fe5da984fac6fd9f666b8341ff4533"
 				},
 				"fb-like-burst.si.json": {
-					"sha256": "5fb716a866770dba8c37e1470a9d74f6b703d59902ff103579ef38693c8f60dd"
+					"sha256": "2d01a661e6c3e04f88ea464e2ba56601f2f9e6f2b096beb50d60ad8caf38b44a"
 				},
 				"thumbnail.si.png": {
-					"sha256": "357441aaef769a652d4b3cc3bc35fad3c342c1d6a275b9a95d7e2594f1fee625"
+					"sha256": "6b03524198c3418953bde768ac284c3598de4e39983e847d96c14a54b1321992"
 				},
 				"fb-like-burst.ta.json": {
-					"sha256": "8d65686bedf7341207152919c4d86dd4454feb2871e3ba2bd8ee1b61e5ae69da"
+					"sha256": "f917e1a68f41168d602ad7576ea4f6205d71679fa3846bfae0cdbb30fdd08ee1"
 				},
 				"thumbnail.ta.png": {
-					"sha256": "1c127677f4edf208696d65c413b5a3e159b54d24ce3ab63c7e4f72b496e9ae6f"
+					"sha256": "e9dc21cf1468caefbe5dc0e493022ae8316aa76bd47989d1ede08baab1e70aee"
 				},
 				"asset.json": {
-					"sha256": "dd067a8ba23ee752c5d30834b434577cb6b1f6e2db101523a83862edaf337f35"
+					"sha256": "a21cb3d3bfaac2223d55047147b8deea1dadd686ecc64d18a33c24bae2a47577"
 				}
 			}
 		},
@@ -4428,6 +4822,27 @@
 					"lang": "ta"
 				}
 			],
+			"sounds": [
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0,
+					"durationSec": 0.12,
+					"gainDb": -4
+				},
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 1,
+					"durationSec": 0.06
+				},
+				{
+					"id": "whoosh",
+					"file": "sounds/whoosh.wav",
+					"at": 1.133,
+					"durationSec": 0.35
+				}
+			],
 			"files": {
 				"fb-share-flyout.json": {
 					"sha256": "bd7dc518bb2f05f4405aa722614c40ce1e828d827aca434196922d388cf4fc3c"
@@ -4448,7 +4863,7 @@
 					"sha256": "7c6b285a9c023a31075312140917d8dc10fc7793bd06f62fffa1efb045464290"
 				},
 				"asset.json": {
-					"sha256": "668772ee8df3b4adedafff35c1b79018ac0bd5e3731cfffc46e401a72b19890e"
+					"sha256": "c63476cce6f562845665bc323816b4632f22cfa290f048382e9f2a1d7c906154"
 				}
 			}
 		},
@@ -4527,6 +4942,28 @@
 					"lang": "ta"
 				}
 			],
+			"sounds": [
+				{
+					"id": "whoosh",
+					"file": "sounds/whoosh.wav",
+					"at": 0,
+					"durationSec": 0.35,
+					"gainDb": -4
+				},
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 2.067,
+					"durationSec": 0.06
+				},
+				{
+					"id": "whoosh",
+					"file": "sounds/whoosh.wav",
+					"at": 3.333,
+					"durationSec": 0.35,
+					"gainDb": -6
+				}
+			],
 			"files": {
 				"fb-follow-lower-third.json": {
 					"sha256": "c62cbce8d3bae69cc2540197df59d2fe789d7f3916c727b324c3b6419e285701"
@@ -4547,7 +4984,7 @@
 					"sha256": "8fcd41e11b76b23eb02005bfae27106370b0a30507436bcb3787869960c02884"
 				},
 				"asset.json": {
-					"sha256": "59281327c9322d284148c752efbf6b4fb37d3f0781cf77f0374041611035e911"
+					"sha256": "0410d1ac704574954ed319343246bfccec66745ecc5fd5b2a7ea3416b183db76"
 				}
 			}
 		},
@@ -4620,6 +5057,28 @@
 					"lang": "ta"
 				}
 			],
+			"sounds": [
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0,
+					"durationSec": 0.12,
+					"gainDb": -4
+				},
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 0.867,
+					"durationSec": 0.06
+				},
+				{
+					"id": "ding",
+					"file": "sounds/ding.wav",
+					"at": 1.667,
+					"durationSec": 0.6,
+					"gainDb": -2
+				}
+			],
 			"files": {
 				"fb-bell-follow.json": {
 					"sha256": "35a4c2552194bbe816d931a7008f75ae92f7742524a1ca69afed3aa9a5aebf57"
@@ -4640,7 +5099,7 @@
 					"sha256": "5e3e131bdae62b55f94927080608ac56599c92575f53d73898995db9ee2a10c4"
 				},
 				"asset.json": {
-					"sha256": "aca4fad8b5d207036095afb799291e5ea7cbbd9f5f674518653112e9ddb6f9b0"
+					"sha256": "da357c63ed7b4815a1d55ffdbd7cfb8d81d1a342cd0c975447b103dc73a48389"
 				}
 			}
 		},
@@ -4703,6 +5162,21 @@
 					"default": "#3ED6CF"
 				}
 			],
+			"sounds": [
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0.267,
+					"durationSec": 0.12,
+					"gainDb": -4
+				},
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 0.933,
+					"durationSec": 0.06
+				}
+			],
 			"files": {
 				"tt-avatar-plus.json": {
 					"sha256": "91ee0907f1ce16a354437cba60d171af236ab19366beadaed6d08683c92eb3bb"
@@ -4711,7 +5185,7 @@
 					"sha256": "c0daff078027971c76cbeb2bd912467f11f25b79a7f2411691ef368c771b64bf"
 				},
 				"asset.json": {
-					"sha256": "6ae69fcde6fe04349f076dc885b5f3ed7936b94ad5d56588f05c8218ddb0a4c6"
+					"sha256": "5f850a3307e5d2da497416cd875a7f403db9ce7a237559350be1481089eb1e11"
 				}
 			}
 		},
@@ -4777,6 +5251,21 @@
 					"default": "#0F1115"
 				}
 			],
+			"sounds": [
+				{
+					"id": "whoosh",
+					"file": "sounds/whoosh.wav",
+					"at": 0,
+					"durationSec": 0.35,
+					"gainDb": -8
+				},
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 1.6,
+					"durationSec": 0.12
+				}
+			],
 			"files": {
 				"tt-action-rail.json": {
 					"sha256": "e199b1063427c02169e3b8c2d0cf911deb0d4fae4ceeb1fc4eedfff268e71e9b"
@@ -4785,7 +5274,7 @@
 					"sha256": "339bbb37608f496addb9908f4de846e38278cbe310cfb0becd4730889089d359"
 				},
 				"asset.json": {
-					"sha256": "68806d90e5c5f293a3f2c33d114017027fe80adc91c799bc31fec59a53034e42"
+					"sha256": "da671341438bd87bbd7ad4880d10b878bda2b67d9735170e5d27a47a7a2040f4"
 				}
 			}
 		},
@@ -4838,6 +5327,28 @@
 					"default": "#0F1115"
 				}
 			],
+			"sounds": [
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 0.067,
+					"durationSec": 0.06,
+					"gainDb": -10
+				},
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 0.3,
+					"durationSec": 0.06,
+					"gainDb": -10
+				},
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0.533,
+					"durationSec": 0.12
+				}
+			],
 			"files": {
 				"tt-double-tap.json": {
 					"sha256": "7c64b109b37972a03c380911dd1c700bfb6571ba816c784b8b9e6631c179bda1"
@@ -4846,7 +5357,7 @@
 					"sha256": "19eb147d439a00344c08c32d98366be7a104244d4d6d53e244c2fd5f68d4a2dc"
 				},
 				"asset.json": {
-					"sha256": "0b43057d37aa0014cfe286bf319ff5614454d0186ee5eeff937c355a5fab399b"
+					"sha256": "e179e7fda04cbf80cc990d876de5f710b42fe05e01d37f0bf477726f79e5d417"
 				}
 			}
 		},
@@ -4932,6 +5443,21 @@
 					"lang": "ta"
 				}
 			],
+			"sounds": [
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0,
+					"durationSec": 0.12
+				},
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0.467,
+					"durationSec": 0.12,
+					"gainDb": -8
+				}
+			],
 			"files": {
 				"tt-part2-sticker.json": {
 					"sha256": "b53865f2b51b31885db272b58b97d972e9f116e4181b24c619e8d5c2873f39b1"
@@ -4952,7 +5478,7 @@
 					"sha256": "e46086a27aaf5d2227da946d99b1c4b3bc9f26dc5ac0b9bd44d2d0cbfc5ef58c"
 				},
 				"asset.json": {
-					"sha256": "1fb74ae3d96946cca3b80ab4d8724135c1dde7ea7b03984c4f2a298d6ae1294f"
+					"sha256": "47cad68633445dca9ed055666df67b58c3e53e273322e802aae34715954a381e"
 				}
 			}
 		},
@@ -5011,6 +5537,15 @@
 					"default": "#3ED6CF"
 				}
 			],
+			"sounds": [
+				{
+					"id": "whoosh",
+					"file": "sounds/whoosh.wav",
+					"at": 0.133,
+					"durationSec": 0.35,
+					"gainDb": -6
+				}
+			],
 			"files": {
 				"tt-swipe-up.json": {
 					"sha256": "a88a92de8fb6134d41b333dc55ffdd692b14d595ee792b6c6719644eac7022b5"
@@ -5019,7 +5554,7 @@
 					"sha256": "8afd847378cfb5be98277a0d3b442c45981c22018bd45e398be580a53db0eea9"
 				},
 				"asset.json": {
-					"sha256": "050557abbfeb0cf370312ec5cc25db85d635f21380593cedee0a11a4754f1a18"
+					"sha256": "87996b00814072c79d46493c27689401cbd83699bbd4061fe82d7a631fd1fcc8"
 				}
 			}
 		},
@@ -5105,6 +5640,21 @@
 					"lang": "ta"
 				}
 			],
+			"sounds": [
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0,
+					"durationSec": 0.12,
+					"gainDb": -4
+				},
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 2.067,
+					"durationSec": 0.06
+				}
+			],
 			"files": {
 				"tt-comment-reply.json": {
 					"sha256": "8ff3d15374fc710ca2eb0fd6367399128b0d7056387ceae7c8ec4f2409b8c68e"
@@ -5125,7 +5675,7 @@
 					"sha256": "8ec277ac6aad8c6d67901c0c5d7e9af197d107de70633176709164a226dda1b3"
 				},
 				"asset.json": {
-					"sha256": "a3230b7defb480c572b338b022cfe45863efde3824305be14a8c88f032d4249d"
+					"sha256": "70a30e25a763271140ee8d7357601c4a5bde0685c942de58b8bc345faac6e567"
 				}
 			}
 		},
@@ -5199,6 +5749,21 @@
 					"lang": "ta"
 				}
 			],
+			"sounds": [
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0,
+					"durationSec": 0.12,
+					"gainDb": -4
+				},
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 0.933,
+					"durationSec": 0.06
+				}
+			],
 			"files": {
 				"ig-follow-toggle.json": {
 					"sha256": "a3f52739587b44a9e100706d854d4e2db9c88b64f97049afd1d3d5a2ee67daa6"
@@ -5219,7 +5784,7 @@
 					"sha256": "761fb9536109de62e368dfc18e1a3619feaba9fd56abc4179f8df482b5ee2246"
 				},
 				"asset.json": {
-					"sha256": "00bd6150612b0678e300993688e9a151f532ac1aaf7a3a74a0ff040c7ec3ea61"
+					"sha256": "365098f155e343d471f5d5b1fa0581965c8a7bf30f20042d7523c115325400b0"
 				}
 			}
 		},
@@ -5301,6 +5866,21 @@
 					"lang": "ta"
 				}
 			],
+			"sounds": [
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0.2,
+					"durationSec": 0.12,
+					"gainDb": -4
+				},
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 2.2,
+					"durationSec": 0.06
+				}
+			],
 			"files": {
 				"ig-profile-card.json": {
 					"sha256": "b68a5fbfe8ac5dfdbbb13e31e64ae88e3df55d4dbab3c313b3afd20cc0b883d6"
@@ -5321,7 +5901,7 @@
 					"sha256": "36ec75ad25969d26cf44d511abf2099c763441a9ac5bc47224a03787013a0b25"
 				},
 				"asset.json": {
-					"sha256": "11029ea7fb4f71b3991371a75695d7dfdc64bf5002e8791d4df176cccb36164b"
+					"sha256": "ee2980b90461195cad1cafd9c24ac63da6481e6f539b28888e9e598bbd65058d"
 				}
 			}
 		},
@@ -5396,6 +5976,21 @@
 					"lang": "ta"
 				}
 			],
+			"sounds": [
+				{
+					"id": "whoosh",
+					"file": "sounds/whoosh.wav",
+					"at": 0,
+					"durationSec": 0.35,
+					"gainDb": -8
+				},
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 1.533,
+					"durationSec": 0.06
+				}
+			],
 			"files": {
 				"ig-story-sticker.json": {
 					"sha256": "7de80bb3c9a8ef491f0e082e0a74ab15495cb760267b6dcc0849295175565ba0"
@@ -5416,7 +6011,7 @@
 					"sha256": "463a1cf0f0f4295d2bf57c5fe485a85a3bb260c6ace417a5f96b30095d7bca7d"
 				},
 				"asset.json": {
-					"sha256": "7f4a9f5c61ad19a17c0a6aa1b9ccfd1c26bda3c2df2e12d76affc18ad7a98284"
+					"sha256": "e3d3048d50de2d6eae213ce56d7a7d296fa568ae35fad38ff3fad857a9345dc3"
 				}
 			}
 		},
@@ -5476,6 +6071,20 @@
 					"default": "#0F1115"
 				}
 			],
+			"sounds": [
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 1.133,
+					"durationSec": 0.12
+				},
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 2.333,
+					"durationSec": 0.12
+				}
+			],
 			"files": {
 				"ig-action-row.json": {
 					"sha256": "bb7822c9b62014cbc87b58e5398437334d073a62a282f2b03f2693b9e1da7de9"
@@ -5484,7 +6093,7 @@
 					"sha256": "3fe559a1eb7aefe2be002d8470a4495bd69d1736e8391eaf37b512b08c2dc57b"
 				},
 				"asset.json": {
-					"sha256": "8ac33a650e0cbc4bda2c0a34dfce208f3ef3c68412599038e87281b3c7699b27"
+					"sha256": "488d55c513bc2e205547553af1ff25105c10ffe270947ab58fba5d72e07a7d3b"
 				}
 			}
 		},
@@ -5557,6 +6166,15 @@
 					"lang": "ta"
 				}
 			],
+			"sounds": [
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0,
+					"durationSec": 0.12,
+					"gainDb": -6
+				}
+			],
 			"files": {
 				"ig-link-in-bio.json": {
 					"sha256": "b64d8fe400561fd06b66339289db537474fde36a0a0f6cde1572771f5b6e53c3"
@@ -5577,7 +6195,7 @@
 					"sha256": "f6d476aeaa631b60abbfec40abcbbd96a8669a16f2f4e106b2fb6d4fa7861166"
 				},
 				"asset.json": {
-					"sha256": "2e7ec45420eb1c4b1662ec3e803309f79b33554c1ac2a92572c7e7b57042e505"
+					"sha256": "4eab49fbae6cfff939bbd827229fad3b687b2c527deccbbfd7fec2880b12ea14"
 				}
 			}
 		},
@@ -5649,6 +6267,21 @@
 					"lang": "ta"
 				}
 			],
+			"sounds": [
+				{
+					"id": "click",
+					"file": "sounds/click.wav",
+					"at": 0.8,
+					"durationSec": 0.06,
+					"gainDb": -6
+				},
+				{
+					"id": "pop",
+					"file": "sounds/pop.wav",
+					"at": 0.867,
+					"durationSec": 0.12
+				}
+			],
 			"files": {
 				"ig-save-pop.json": {
 					"sha256": "d71179147077c12fd87b5be0c2306ed95fbf339e145d3483a8a477b7667f16e4"
@@ -5669,7 +6302,7 @@
 					"sha256": "99f4bd5f8882d15f72094a6339c2d2558203656d8b1480a1c4c70bd029535150"
 				},
 				"asset.json": {
-					"sha256": "fcd5806b4b33ff67ae11f36cdc4c16b76693f7451246e1849ddc94684b9cfec5"
+					"sha256": "74df9d1a6a0cbecfe2febf03b2fc582b05ed8ea4940b645bfb4f9f354e787456"
 				}
 			}
 		}

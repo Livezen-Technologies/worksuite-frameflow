@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { Volume2, VolumeX } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { DraggableItem } from "@/components/editor/panels/assets/draggable-item";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { useEditor } from "@/editor/use-editor";
@@ -22,6 +24,8 @@ import {
 	searchPackAssets,
 	type PackIndex,
 	type PackIndexAsset,
+	type PackSoundCue,
+	packSoundUrl,
 } from "../catalog";
 import { listUserLotties, type UserLottie } from "../user-library";
 import { LottiePreview } from "./lottie-preview";
@@ -42,6 +46,11 @@ export function AnimationsView() {
 	const [query, setQuery] = useState("");
 	/** Language filter; also picks the variant that is previewed and added. */
 	const [language, setLanguage] = useState<string | null>(null);
+	/** Place an animation's sound effects with it. */
+	const [addSound, setAddSound] = useState(true);
+	/** Hover previews stay silent until the user clicks in the panel (autoplay rules) and while muted. */
+	const [soundUnlocked, setSoundUnlocked] = useState(false);
+	const [previewMuted, setPreviewMuted] = useState(false);
 
 	useEffect(() => {
 		let cancelled = false;
@@ -103,7 +112,11 @@ export function AnimationsView() {
 	const groups = groupPackCategories(index.categories);
 
 	return (
-		<div className="flex h-full flex-col gap-2" data-animations-view>
+		<div
+			className="flex h-full flex-col gap-2"
+			data-animations-view
+			onPointerDown={() => setSoundUnlocked(true)}
+		>
 			{groups.map(({ group, categories }) => (
 				<div key={group ?? "main"} className="flex flex-wrap items-center gap-1" aria-label={group ?? "Categories"}>
 					{group && <span className="text-muted-foreground text-[11px]">{group}</span>}
@@ -138,6 +151,26 @@ export function AnimationsView() {
 				onChange={(event) => setQuery(event.target.value)}
 				className="h-8"
 			/>
+			<div className="flex items-center gap-3 text-[11px]">
+				<label className="text-muted-foreground flex items-center gap-1.5">
+					<Checkbox
+						checked={addSound}
+						onCheckedChange={(checked) => setAddSound(checked === true)}
+						aria-label="Add sound"
+					/>
+					Add sound
+				</label>
+				<button
+					type="button"
+					className="text-muted-foreground hover:text-foreground ml-auto flex items-center gap-1"
+					onClick={() => setPreviewMuted((muted) => !muted)}
+					aria-pressed={previewMuted}
+					title={previewMuted ? "Unmute preview sounds" : "Mute preview sounds"}
+				>
+					{previewMuted ? <VolumeX className="size-3.5" /> : <Volume2 className="size-3.5" />}
+					{previewMuted ? "Preview muted" : "Preview sound"}
+				</button>
+			</div>
 			<div className="grid grid-cols-3 gap-2">
 				{visible.map((asset) => {
 					const variant = resolvePackVariant(asset, language);
@@ -153,8 +186,9 @@ export function AnimationsView() {
 									playing={playing}
 								/>
 							)}
-							dragData={packAnimationDragData({ asset, frame, variant })}
-							onAdd={() => addPackAnimation({ editor, asset, variant })}
+							dragData={packAnimationDragData({ asset, frame, variant, withSound: addSound })}
+							onAdd={() => addPackAnimation({ editor, asset, variant, withSound: addSound })}
+							sounds={soundUnlocked && !previewMuted ? asset.sounds : undefined}
 						/>
 					);
 				})}
@@ -189,7 +223,10 @@ function AnimationTile({
 	preview,
 	dragData,
 	onAdd,
+	sounds,
 }: {
+	/** Played with the hover preview; absent when silent. */
+	sounds?: PackSoundCue[];
 	name: string;
 	tags: string[];
 	preview: (playing: boolean) => React.ReactNode;
@@ -197,6 +234,7 @@ function AnimationTile({
 	onAdd: () => void;
 }) {
 	const [hovered, setHovered] = useState(false);
+	usePreviewSounds(hovered ? sounds : undefined);
 	const add = () => {
 		onAdd();
 		toast.success(`Added ${name}`);
@@ -232,4 +270,25 @@ function AnimationTile({
 			/>
 		</div>
 	);
+}
+
+/** Plays `sounds` at their times while set; stops when cleared. */
+function usePreviewSounds(sounds: PackSoundCue[] | undefined) {
+	const playing = useRef<HTMLAudioElement[]>([]);
+	useEffect(() => {
+		if (!sounds?.length) return;
+		const timers = sounds.map((cue) =>
+			window.setTimeout(() => {
+				const audio = new Audio(packSoundUrl(cue));
+				audio.volume = Math.min(1, 10 ** ((cue.gainDb ?? 0) / 20));
+				playing.current.push(audio);
+				audio.play().catch(() => {});
+			}, cue.at * 1000),
+		);
+		return () => {
+			for (const timer of timers) window.clearTimeout(timer);
+			for (const audio of playing.current) audio.pause();
+			playing.current = [];
+		};
+	}, [sounds]);
 }

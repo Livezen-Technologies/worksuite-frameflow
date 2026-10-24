@@ -85,5 +85,21 @@
 			"file": "fb-follow-lower-third.ta.json",
 			"thumbnail": "thumbnail.ta.png"
 		}
+	],
+	"sounds": [
+		{
+			"file": "../../sounds/whoosh.wav",
+			"at": 0,
+			"gainDb": -4
+		},
+		{
+			"file": "../../sounds/click.wav",
+			"at": 2.067
+		},
+		{
+			"file": "../../sounds/whoosh.wav",
+			"at": 3.333,
+			"gainDb": -6
+		}
 	]
 }

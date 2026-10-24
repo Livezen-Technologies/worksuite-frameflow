@@ -63,5 +63,16 @@
 			"name": "Ripple",
 			"default": "#3ED6CF"
 		}
+	],
+	"sounds": [
+		{
+			"file": "../../sounds/pop.wav",
+			"at": 0.267,
+			"gainDb": -4
+		},
+		{
+			"file": "../../sounds/click.wav",
+			"at": 0.933
+		}
 	]
 }

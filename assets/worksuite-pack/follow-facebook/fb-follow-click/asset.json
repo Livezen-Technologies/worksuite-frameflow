@@ -54,6 +54,11 @@
 			"id": "shadow",
 			"name": "Shadow & outline",
 			"default": "#0F1115"
+		},
+		{
+			"id": "accent",
+			"name": "Click ripple",
+			"default": "#F5A524"
 		}
 	],
 	"defaultVariant": "en",
@@ -78,6 +83,17 @@
 			"lang": "ta",
 			"file": "fb-follow-click.ta.json",
 			"thumbnail": "thumbnail.ta.png"
+		}
+	],
+	"sounds": [
+		{
+			"file": "../../sounds/pop.wav",
+			"at": 0,
+			"gainDb": -4
+		},
+		{
+			"file": "../../sounds/click.wav",
+			"at": 1.4
 		}
 	]
 }

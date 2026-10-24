@@ -1,13 +1,13 @@
 {
 	"schema": 1,
 	"id": "fb-like-burst",
-	"name": "Like burst with reactions",
+	"name": "Like sparkle badge",
 	"category": "follow-facebook",
 	"type": "lottie",
 	"file": "fb-like-burst.json",
 	"thumbnail": "thumbnail.png",
 	"license": "MIT",
-	"description": "A thumbs-up circle pops with a burst, three reaction bubbles (heart, thumb, star) bob up above it and a “Like” label appears.",
+	"description": "A rounded-square badge with an outlined thumbs-up pops in, the thumb gives a nod, sparkles burst around it and a “Like” label appears.",
 	"tags": [
 		"facebook",
 		"fb",
@@ -21,7 +21,8 @@
 		"பின்தொடர்",
 		"like",
 		"thumbs up",
-		"reaction",
+		"sparkle",
+		"badge",
 		"burst",
 		"ලයික්",
 		"லைக்"
@@ -34,24 +35,24 @@
 	"thumbnailAt": 0.55,
 	"colors": [
 		{
-			"id": "button",
-			"name": "Like circle",
-			"default": "#2F6FDE"
+			"id": "badge",
+			"name": "Badge",
+			"default": "#2B2F38"
 		},
 		{
-			"id": "text",
-			"name": "Icons & text",
+			"id": "icon",
+			"name": "Thumb & text",
 			"default": "#FFFFFF"
 		},
 		{
-			"id": "heart",
-			"name": "Heart bubble",
-			"default": "#E8455A"
+			"id": "sparkle",
+			"name": "Sparkles",
+			"default": "#F5A524"
 		},
 		{
-			"id": "star",
-			"name": "Star bubble",
-			"default": "#F5A524"
+			"id": "sparkle2",
+			"name": "Small sparkles",
+			"default": "#2EC4B6"
 		},
 		{
 			"id": "label",
@@ -81,6 +82,18 @@
 			"lang": "ta",
 			"file": "fb-like-burst.ta.json",
 			"thumbnail": "thumbnail.ta.png"
+		}
+	],
+	"sounds": [
+		{
+			"file": "../../sounds/pop.wav",
+			"at": 0,
+			"gainDb": -2
+		},
+		{
+			"file": "../../sounds/pop.wav",
+			"at": 0.533,
+			"gainDb": -8
 		}
 	]
 }

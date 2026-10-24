@@ -1,5 +1,6 @@
 import { arcPoints, EASE, ellipse, fill, group, type Key, path, pathData, rect, star, stroke, trim } from "../lottie-dsl";
-import { type AssetDef, cycle, LINE, PALETTE, slot, SQUARE } from "./common";
+import { type AssetDef, cue, cycle, LINE, PALETTE, slot, SQUARE } from "./common";
+import { mouseDevice } from "./pointer";
 
 // Generic, brand-free call-to-action icons. 3 s loops at 1080×1080.
 const base = { category: "call-to-action", durationSec: 3, loop: true, ...SQUARE } as const;
@@ -25,6 +26,7 @@ export const callToAction: AssetDef[] = [
 		description: "A cursor glides to a play-button pill and clicks it; the pill switches to its pressed colour.",
 		tags: ["subscribe", "button", "click", "cursor", "pill", "play"],
 		colors: [slot("pill", "Pill", PALETTE.blue), slot("pressed", "Pressed pill", PALETTE.ink), slot("icon", "Icon", PALETTE.white), slot("cursor", "Cursor", "#F4F6FA"), slot("outline", "Cursor outline", PALETTE.amber)],
+		sounds: [cue("click", 34)],
 		build: ({ c }) => [
 			{
 				name: "Cursor",
@@ -52,6 +54,7 @@ export const callToAction: AssetDef[] = [
 		description: "A notification bell swings back and forth while sound arcs pulse out.",
 		tags: ["bell", "notification", "ring", "alert", "subscribe"],
 		colors: [slot("bell", "Bell", PALETTE.amber), slot("clapper", "Clapper", PALETTE.ink), slot("waves", "Sound arcs", PALETTE.white)],
+		sounds: [cue("ding", 8, -2)],
 		build: ({ c }) => {
 			const bell = pathData([[0, -150, -78, 0, 78, 0], [110, -40, 0, -70, 0, 60], [128, 80, -4, -30, 8, 18], [165, 120, 0, -20, 0, 0], [-165, 120, 0, 0, 0, -20], [-128, 80, -8, 18, 4, -30], [-110, -40, 0, 60, 0, -70]], true);
 			const arcs = (side: 1 | -1) =>
@@ -78,6 +81,7 @@ export const callToAction: AssetDef[] = [
 		description: "A thumbs-up pops with a burst of short lines.",
 		tags: ["like", "thumbs up", "approve", "pop", "burst"],
 		colors: [slot("hand", "Hand", PALETTE.blue), slot("cuff", "Cuff", PALETTE.ink), slot("burst", "Burst", PALETTE.amber)],
+		sounds: [cue("pop", 10)],
 		build: ({ c }) => {
 			const rays = Array.from({ length: 8 }, (_, i) =>
 				group([path(pathData([[0, -230], [0, -290]])), trim([[10, 0, EASE.out], [22, 0], [30, 100]] as Key[], [[10, 0, EASE.out], [22, 100]] as Key[]), stroke(c("burst"), LINE.regular)], { rotation: i * 45 }),
@@ -231,35 +235,13 @@ export const callToAction: AssetDef[] = [
 	},
 	{
 		...base,
-		id: "cta-tap-here",
-		name: "Tap here",
-		description: "A pointing finger taps and sends out ripple rings.",
-		tags: ["tap", "click", "finger", "press", "touch", "here"],
-		colors: [slot("hand", "Hand", PALETTE.white), slot("outline", "Outline", PALETTE.ink), slot("ripple", "Ripple", PALETTE.teal)],
-		build: ({ c }) => {
-			const ripple = (delayFrames: number) => ({
-				name: `Ripple ${delayFrames}`,
-				position: [470, 400],
-				scale: [[0, [20, 20]], [14 + delayFrames, [20, 20], EASE.out], [50 + delayFrames, [140, 140]], [F, [140, 140]]] as Key[],
-				opacity: [[0, 0], [14 + delayFrames, 0], [15 + delayFrames, 100, EASE.out], [50 + delayFrames, 0], [F, 0]] as Key[],
-				shapes: [ellipse([220, 220]), stroke(c("ripple"), LINE.regular)],
-			});
-			const finger = pathData([[-34, 0, 0, 0, 0, -20], [0, -34, -19, 0, 19, 0], [34, 0, 0, -20, 0, 0], [34, 150], [-34, 150]], true);
-			const hand = pathData([[-34, 120], [150, 100], [180, 160], [170, 300], [40, 330], [-40, 270], [-90, 170]], true);
-			return [
-				{
-					name: "Hand",
-					position: [[0, [470, 400]], [8, [470, 400], EASE.in], [14, [480, 420], EASE.out], [24, [470, 400]], [F, [470, 400]]],
-					scale: [[0, [100, 100]], [8, [100, 100], EASE.in], [14, [94, 94], EASE.out], [24, [100, 100]], [F, [100, 100]]],
-					shapes: [
-						group([path(finger), fill(c("hand")), stroke(c("outline"), 14)]),
-						group([path(hand), fill(c("hand")), stroke(c("outline"), 14)]),
-						group([rect([60, 110], [70, 160], 30), rect([60, 110], [130, 175], 30), fill(c("hand")), stroke(c("outline"), 10)]),
-					],
-				},
-				ripple(0),
-				ripple(10),
-			];
-		},
+		id: "cta-mouse-click",
+		name: "Mouse click",
+		description: "A computer mouse clicks its left button, which presses down and darkens, sending out a click ripple.",
+		tags: ["mouse", "click", "computer", "button", "press", "here", "tap"],
+		colors: [slot("body", "Mouse", PALETTE.white), slot("outline", "Outline", PALETTE.ink), slot("pressed", "Pressed button", "#AEB6C4"), slot("ripple", "Click ripple", PALETTE.teal)],
+		thumbAt: 0.25,
+		sounds: [cue("click", 20)],
+		build: ({ c }) => mouseDevice({ at: [540, 640], press: 20, body: c("body"), outline: c("outline"), pressed: c("pressed"), ripple: c("ripple") }),
 	},
 ];

@@ -75,5 +75,16 @@
 			"file": "sub-classic-click.ta.json",
 			"thumbnail": "thumbnail.ta.png"
 		}
+	],
+	"sounds": [
+		{
+			"file": "../../sounds/pop.wav",
+			"at": 0,
+			"gainDb": -4
+		},
+		{
+			"file": "../../sounds/click.wav",
+			"at": 1.467
+		}
 	]
 }

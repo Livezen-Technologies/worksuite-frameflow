@@ -44,5 +44,16 @@
 			"name": "Dot",
 			"default": "#E53935"
 		}
+	],
+	"sounds": [
+		{
+			"file": "../../sounds/click.wav",
+			"at": 1.467
+		},
+		{
+			"file": "../../sounds/ding.wav",
+			"at": 1.533,
+			"gainDb": -2
+		}
 	]
 }
