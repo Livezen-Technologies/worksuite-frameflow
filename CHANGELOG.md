@@ -7,6 +7,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+## [1.7.0] - 2026-10-24
+
 ### Added
 - The Templates card on the start screen opens a template gallery: filter by size and category, browse templates from the online library, and open the one you pick in the editor.
 
