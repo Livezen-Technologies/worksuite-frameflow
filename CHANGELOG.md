@@ -13,6 +13,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Fixed
 
+- **Record voice-over** redesigned: a large teleprompter with a reading line, a round Record/Stop button with a live timer, a segmented level meter, scroll-speed and count-in presets, and takes you can listen to, add or delete. Fixed: closing the dialog during the count-in no longer starts a hidden recording, the microphone can't be switched mid-take, the timer resets for each take, a microphone that can't open now says why, and typing in the script is no longer slowed by the meter.
 - **Asset Library loads the FrameFlow library again** (4,600+ packs). The app now reads the feed at frameflow.worksuitecloud.com/library/feed, trusts the library's signing key, and fetches the catalog together with its signature (retrying when the live feed changes between requests), so the "failed its signature check" error is gone. A malformed pack is skipped instead of hiding the whole library.
 
 ## [1.6.0] - 2026-10-24

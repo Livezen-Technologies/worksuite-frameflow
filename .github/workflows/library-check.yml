@@ -26,5 +26,6 @@ jobs:
           BASE: ${{ inputs.base }}
           CHANNEL: ${{ inputs.channel }}
         run: |
+          node scripts/assets/probe-auth.mjs || true
           node scripts/assets/probe-library-signing.mjs "$BASE" || true
           node scripts/assets/check-library-feed.mjs "$BASE" "$CHANNEL"
