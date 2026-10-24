@@ -7,6 +7,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+## [1.7.2] - 2026-10-24
+
 ### Added
 - Screen recorder options for smart zoom (strength, follow the mouse), the camera overlay (circle, rounded, square or original; size, border and corner), and highlights (a halo that follows the mouse, click colour and size).
 - Rectangle masks can have rounded corners.
