@@ -306,6 +306,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Changed
 
+- Square corners across the whole interface: panels, buttons, menus, inputs, chips, the Asset Library, the Motion Editor and timeline clips.
 - The window title bar is dark in dark mode and light in light mode, following the app's theme setting, and remembers it on the next launch.
 - New app icon (frames with a play button and a timeline bar) for the desktop app on macOS, Windows and Linux, and for the browser tab and home-screen icons.
 - New dark Worksuite look across the app, matching the "Worksuite Video Editor — Screens" designs. Dark is now the default theme and primary buttons are Worksuite blue.
