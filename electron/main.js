@@ -201,6 +201,45 @@ function guardWindow(win, origin) {
 	});
 }
 
+// The standalone recorder (Camtasia-style): a small window that stays on
+// top and is left out of screen captures, so it never shows in a recording.
+let recorderWindow = null;
+let mainWindow = null;
+function openRecorder() {
+	if (recorderWindow && !recorderWindow.isDestroyed()) {
+		recorderWindow.show();
+		recorderWindow.focus();
+		return;
+	}
+	recorderWindow = new BrowserWindow({
+		...WINDOW_OPTIONS,
+		width: 900,
+		height: 260,
+		minWidth: 760,
+		minHeight: 220,
+		resizable: true,
+		maximizable: false,
+		fullscreenable: false,
+		alwaysOnTop: true,
+		title: "FrameFlow Recorder",
+		backgroundColor: windowBackground(),
+	});
+	recorderWindow.setContentProtection(true);
+	guardWindow(recorderWindow, appOrigin);
+	recorderWindow.on("closed", () => {
+		recorderWindow = null;
+	});
+	void recorderWindow.loadURL(`${appOrigin}/recorder`);
+}
+
+function focusMain() {
+	const win = mainWindow && !mainWindow.isDestroyed() ? mainWindow : BrowserWindow.getAllWindows().find((w) => w !== recorderWindow);
+	if (!win) return;
+	if (win.isMinimized()) win.restore();
+	win.show();
+	win.focus();
+}
+
 async function createWindow() {
 	const origin = await startServer();
 	appOrigin = origin;
@@ -220,6 +259,7 @@ async function createWindow() {
 		},
 	});
 
+	mainWindow = win;
 	capture.setupCapture({ session: win.webContents.session, origin });
 	captureControls.init({ window: win });
 	network.guardSession({
@@ -291,6 +331,9 @@ function registerAccountIpc() {
 		for (const win of BrowserWindow.getAllWindows()) if (!win.isDestroyed()) win.setBackgroundColor(windowBackground());
 		return source;
 	});
+	handle("recorder:open", () => openRecorder());
+	handle("recorder:focus-main", () => focusMain());
+	handleFrom("recorder:minimize", (event) => BrowserWindow.fromWebContents(event.sender)?.minimize());
 	handle("capture:sources", () => capture.listSources());
 	handle("capture:choose", (id) => capture.chooseSource(id));
 	handle("capture:permissions", () => capture.permissionStatus());

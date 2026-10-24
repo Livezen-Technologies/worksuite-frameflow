@@ -9,10 +9,12 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
+- **Screen recorder window** (desktop): New screen recording (or Ctrl+Shift+R) opens a small recorder that stays on top, like Camtasia, with switches for Full screen or a Region (drag the area, shown in pixels), Camera (live preview, pick the camera), Microphone (live level, pick the mic) and System audio, and a big Rec button with countdown, pause, stop and discard. The recorder is left out of the recording. When you stop, choose **Save video…** (one file with your voice and system sound mixed in) or **Open in editor** to cut and export it.
 - **Whisper speech models in Settings → Local models**: download, check the size of, or remove the Tiny, Small, Medium and Large v3 Turbo models used by Captions, the transcript and Sync with voice, next to the AI export models.
 
 ### Fixed
 
+- Sinhala and Tamil word suggestions open as a dropdown right under the word you're typing (instead of a strip across the panel), flip above it near the bottom of the screen, follow the mouse, and show the keys: ↑↓, Space or Enter, the number keys and Esc.
 - Project thumbnails on the home screen are no longer black: they show the first frame that has something on it (instead of the very first frame), and refresh while you edit and each time you open the project.
 - The FrameFlow logo in the app (home, settings, sign-in, the editor's top-left menu and the website header) is now the real app icon instead of a plain play button or the old "W" mark.
 - Local models now download from the Worksuite download center first and fall back to the public source, so a moved or private public link no longer stops the download (the "Download failed (404)" and "(401)" errors). The new "Local models" workflow mirrors every model to the download center. The public fallbacks now point at working copies of Real-ESRGAN x4plus, RIFE 4.7 and Whisper Medium.

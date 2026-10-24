@@ -93,6 +93,12 @@ declare global {
 			automation?: AutomationBridge;
 			helper?: NativeHelperBridge;
 			windows?: ProjectWindowsBridge;
+			/** The standalone recorder window. */
+			recorder?: {
+				open: () => Promise<void>;
+				focusMain: () => Promise<void>;
+				minimize: () => Promise<void>;
+			};
 		};
 	}
 }

@@ -130,6 +130,11 @@ contextBridge.exposeInMainWorld("worksuite", {
 		show: (args) => ipcRenderer.invoke("folders:show", args),
 		move: (args) => ipcRenderer.invoke("folders:move", args),
 	},
+	recorder: {
+		open: () => ipcRenderer.invoke("recorder:open"),
+		focusMain: () => ipcRenderer.invoke("recorder:focus-main"),
+		minimize: () => ipcRenderer.invoke("recorder:minimize"),
+	},
 	files: {
 		saveExport: (args) => ipcRenderer.invoke("files:save-export", args),
 		saveToFolder: (args) => ipcRenderer.invoke("files:save-to-folder", args),
