@@ -7,6 +7,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-10-24
+
 ### Added
 
 - **English and Sinhala in one line**: Text → Basic has a new **Sinhala font** setting. English letters use the main font and Sinhala letters use the Sinhala font you pick (Noto Sans Sinhala, Noto Serif Sinhala, Abhaya Libre, Yaldevi, Gemunu Libre or Stick No Bills), in the preview and in exports. Legacy FM/DL fonts still apply to the whole text.
