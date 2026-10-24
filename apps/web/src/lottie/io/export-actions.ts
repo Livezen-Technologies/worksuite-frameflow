@@ -26,7 +26,7 @@ export function saveLottie({ json, name, format }: { json: LottieJson; name: str
 	const colors = detectColorSlots(json);
 	const slotted = addColorSlots(json, Object.fromEntries(colors.map((c) => [c.default.toUpperCase(), c.id])));
 	const bytes = writeDotLottie({ animations: [{ id: "main", name, json: slotted }], themes: colors.length ? [{ id: "default", colors: Object.fromEntries(colors.map((c) => [c.id, c.default])) }] : [] });
-	downloadBlob({ blob: new Blob([bytes], { type: "application/zip" }), name: `${safeName(name)}.lottie` });
+	downloadBlob({ blob: new Blob([bytes as Uint8Array<ArrayBuffer>], { type: "application/zip" }), name: `${safeName(name)}.lottie` });
 }
 
 /** A text clip's words, look and animation as a Lottie of the clip's length. */

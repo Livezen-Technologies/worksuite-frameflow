@@ -1,5 +1,6 @@
 "use client";
 
+import { animatedFrameAt, loadAnimatedImage } from "@/media/animated-image";
 import { layerSize, pathD, valueAt, type Layer, type MotionProject } from "./model";
 
 type Ctx = CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
@@ -31,7 +32,7 @@ export async function prepareProject(project: MotionProject): Promise<void> {
 		);
 }
 
-async function drawShape({ ctx, layer }: { ctx: Ctx; layer: Layer }) {
+async function drawShape({ ctx, layer, t = 0 }: { ctx: Ctx; layer: Layer; t?: number }) {
 	switch (layer.kind) {
 		case "rect":
 		case "ellipse":
@@ -68,6 +69,14 @@ async function drawShape({ ctx, layer }: { ctx: Ctx; layer: Layer }) {
 			return;
 		}
 		case "image": {
+			// Animated GIF/WebP: the frame for this moment, looping.
+			if (/^data:image\/(gif|webp)/.test(layer.src)) {
+				const animated = await loadAnimatedImage({ url: layer.src });
+				if (animated) {
+					ctx.drawImage(animatedFrameAt({ image: animated, seconds: t }), 0, 0, layer.w, layer.h);
+					return;
+				}
+			}
 			const img = await loadImage(layer.src);
 			if (img) ctx.drawImage(img, 0, 0, layer.w, layer.h);
 		}
@@ -100,7 +109,7 @@ export async function drawProject({ ctx, project, t, scale = 1 }: { ctx: Ctx; pr
 		const s = valueAt({ layer, prop: "scale", t });
 		ctx.scale(s, s);
 		ctx.translate(-layer.anchorX * w, -layer.anchorY * h);
-		await drawShape({ ctx, layer });
+		await drawShape({ ctx, layer, t });
 		ctx.restore();
 	}
 	ctx.restore();

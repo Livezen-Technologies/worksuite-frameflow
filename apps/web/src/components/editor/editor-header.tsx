@@ -36,6 +36,7 @@ import { useEditor } from "@/editor/use-editor";
 import { CommandIcon, Logout05Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { ShortcutsDialog } from "@/actions/components/shortcuts-dialog";
+import { useActionHandler } from "@/actions/use-action-handler";
 import Image from "next/image";
 import { cn } from "@/utils/ui";
 import { WorkspaceBar } from "@/workspaces/components/workspace-bar";
@@ -69,6 +70,7 @@ function ProjectDropdown() {
 	const [openDialog, setOpenDialog] = useState<
 		"delete" | "rename" | "shortcuts" | null
 	>(null);
+	useActionHandler("open-shortcuts", () => setOpenDialog("shortcuts"), undefined);
 	const [isExiting, setIsExiting] = useState(false);
 	const router = useRouter();
 	const editor = useEditor();

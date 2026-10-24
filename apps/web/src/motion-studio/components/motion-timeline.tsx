@@ -20,6 +20,7 @@ import {
 } from "../model";
 import { useStudio } from "../store";
 import { CurveEditor } from "./curve-editor";
+import { ValueGraph } from "./value-graph";
 
 const PROP_LABEL: Record<AnimProp, string> = { x: "Position X", y: "Position Y", scale: "Scale", rotation: "Rotation", opacity: "Opacity" };
 const NAME_W = 176;
@@ -318,6 +319,12 @@ export function MotionTimeline() {
 								easeDirty.current = false;
 							}}
 						/>
+						{firstLayer && firstKey && (
+							<>
+								<span className="text-muted-foreground mt-1 text-[10px] font-semibold uppercase">{PROP_LABEL[firstKey.prop]} over time</span>
+								<ValueGraph layer={firstLayer} prop={firstKey.prop} duration={project.duration} time={time} onSeek={(t) => studio().setTime(snap(t))} />
+							</>
+						)}
 						<p className="text-muted-foreground text-[10px]">
 							The curve runs from each selected keyframe to the next one. Drag keyframes to retime; Shift-click to select more; Ctrl+C / Ctrl+V copies them to the playhead.
 						</p>

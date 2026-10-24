@@ -24,6 +24,23 @@ import {
 	type GifResult,
 } from "../giphy";
 
+/** GIFs downloaded on hover, so a drag can carry the file onto the timeline. */
+const prefetched = new Map<string, File>();
+const prefetching = new Map<string, Promise<File | null>>();
+function prefetch(gif: GifResult) {
+	if (prefetched.has(gif.id) || prefetching.has(gif.id)) return;
+	prefetching.set(
+		gif.id,
+		downloadGif(gif)
+			.then((file) => {
+				prefetched.set(gif.id, file);
+				return file;
+			})
+			.catch(() => null)
+			.finally(() => prefetching.delete(gif.id)),
+	);
+}
+
 /** Adds a GIF to the project's media and the timeline at the playhead, on its own layer. */
 export async function insertGif({ editor, gif }: { editor: EditorCore; gif: GifResult }) {
 	const project = editor.project.getActive();
@@ -271,9 +288,23 @@ export function GifLibrary() {
 							>
 								<button
 									type="button"
-									title={`${gif.title}: click to preview, double-click to add`}
+									title={`${gif.title}: click to preview, double-click to add, or drag onto the timeline`}
 									data-gif={gif.id}
 									className="size-full"
+									draggable
+									onPointerEnter={() => prefetch(gif)}
+									onDragStart={(e) => {
+										const file = prefetched.get(gif.id);
+										if (!file) {
+											e.preventDefault();
+											prefetch(gif);
+											toast.info("Getting the GIF ready. Drag it again in a moment.");
+											return;
+										}
+										e.dataTransfer.effectAllowed = "copy";
+										e.dataTransfer.items.add(file);
+										useGifLibrary.getState().markUsed(gif);
+									}}
 									onClick={() => setSelected(gif)}
 									onDoubleClick={() => void add(gif)}
 								>

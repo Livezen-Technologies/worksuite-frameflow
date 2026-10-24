@@ -51,3 +51,22 @@ describe("lottie conversion", () => {
 		expect(Array.isArray(warnings)).toBe(true);
 	});
 });
+
+describe("animated pictures in Lottie", () => {
+	test("a GIF layer becomes a looping pre-composition of its frames", async () => {
+		const project = createMotionProject({ width: 400, height: 400, fps: 10, duration: 3 });
+		project.layers = [
+			{ id: "g", name: "Gif", visible: true, locked: false, x: 200, y: 200, scale: 1, rotation: 0, opacity: 1, anchorX: 0.5, anchorY: 0.5, keyframes: {}, kind: "image", src: "data:image/gif;base64,AA", w: 100, h: 100 },
+		];
+		const json = await motionToLottie({
+			project,
+			rasterizeText,
+			animatedFrames: async () => ({ frames: [0, 0.5].map((start, i) => ({ src: `data:image/png;base64,F${i}`, start })), duration: 1, width: 50, height: 50 }),
+		});
+		const comps = (json.assets ?? []).filter((a) => JSON.stringify(a).includes('"layers"'));
+		expect(comps).toHaveLength(1);
+		// 3 s of a 1 s loop: three pre-comp layers starting at 0, 10 and 20.
+		const loops = json.layers.map((l) => JSON.parse(JSON.stringify(l))).filter((l) => l.ty === 0);
+		expect(loops.map((l) => l.st)).toEqual([0, 10, 20]);
+	});
+});
