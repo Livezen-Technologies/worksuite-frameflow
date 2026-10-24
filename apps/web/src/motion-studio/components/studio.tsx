@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { BrandLoader } from "@/components/brand-loader";
 import { cn } from "@/utils/ui";
 import { copyKeyframes, createLayer, newId, pasteKeyframes, removeKeyframe, type Layer } from "../model";
-import { loadMotionProject, saveMotionProject } from "../storage";
+import { loadMotionProject, saveMotionProject, saveMotionTemplate } from "../storage";
 import { useStudio } from "../store";
 import { MotionCanvas, type Tool } from "./canvas";
 import { LayersPanel } from "./layers-panel";
@@ -314,6 +314,17 @@ export function MotionStudio({ projectId }: { projectId: string }) {
 					}}
 				>
 					<Film className="size-3.5" /> {project.usedInVideo ? "Update in video" : "Use in video"}
+				</button>
+				<button
+					type="button"
+					className="hover:bg-accent border px-2 py-1 text-xs"
+					data-motion-save-template
+					onClick={async () => {
+						await saveMotionTemplate({ id: newId("t"), name: project.name, savedAt: Date.now(), project });
+						toast.success(`Saved “${project.name}” to My templates`, { description: "Find it on the Motion Studio home. Rename the project first to name the template." });
+					}}
+				>
+					Save as template
 				</button>
 				<button type="button" className="bg-primary text-primary-foreground flex items-center gap-1.5 px-2 py-1 text-xs" onClick={() => setExporting(true)} data-motion-export-open>
 					<Download className="size-3.5" /> Export

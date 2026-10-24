@@ -23,3 +23,26 @@ export async function listMotionProjects(): Promise<MotionProject[]> {
 export function deleteMotionProject(id: string): Promise<void> {
 	return store().remove(id);
 }
+
+let templateAdapter: IndexedDBAdapter<{ id: string; name: string; savedAt: number; project: MotionProject }> | null = null;
+const templateStore = () =>
+	(templateAdapter ??= new IndexedDBAdapter({ dbName: "frameflow-motion-templates", storeName: "templates", version: 1 }));
+
+export interface SavedTemplate {
+	id: string;
+	name: string;
+	savedAt: number;
+	project: MotionProject;
+}
+
+export function saveMotionTemplate(template: SavedTemplate): Promise<void> {
+	return templateStore().set({ key: template.id, value: template });
+}
+
+export async function listMotionTemplates(): Promise<SavedTemplate[]> {
+	return (await templateStore().getAll()).sort((a, b) => b.savedAt - a.savedAt);
+}
+
+export function deleteMotionTemplate(id: string): Promise<void> {
+	return templateStore().remove(id);
+}

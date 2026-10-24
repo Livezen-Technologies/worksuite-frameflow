@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import { createMotionProject, type MotionProject } from "../model";
 import { deleteMotionProject, listMotionProjects, saveMotionProject } from "../storage";
 import { StageThumbnail } from "./stage";
+import { TemplateLibrary } from "./template-library";
 
 const SIZES = [
 	{ label: "Landscape 16:9", width: 1920, height: 1080 },
@@ -105,6 +106,7 @@ export function MotionHome() {
 						</label>
 					</div>
 				</section>
+				<TemplateLibrary />
 				<section>
 					<h2 className="mb-3 text-sm font-semibold">Recent motion projects</h2>
 					{projects === null ? null : projects.length === 0 ? (

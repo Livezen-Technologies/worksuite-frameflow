@@ -1,6 +1,7 @@
 "use client";
 
 import { ChevronDown, ChevronRight, Eye, EyeOff, Folder, Lock, LockOpen } from "lucide-react";
+import { useState } from "react";
 import { newId, type Layer } from "../model";
 import { useStudio } from "../store";
 import { cn } from "@/utils/ui";
@@ -8,6 +9,7 @@ import { cn } from "@/utils/ui";
 function Row({ layer, depth }: { layer: Layer; depth: number }) {
 	const selected = useStudio((s) => s.selection.includes(layer.id));
 	const { select, updateLayer } = useStudio.getState();
+	const [renaming, setRenaming] = useState(false);
 	return (
 		<div
 			className={cn("group flex items-center gap-1 px-2 py-1 text-xs", selected ? "bg-primary/20" : "hover:bg-accent")}
@@ -21,13 +23,29 @@ function Row({ layer, depth }: { layer: Layer; depth: number }) {
 					const ids = useStudio.getState().selection;
 					select(e.shiftKey ? (ids.includes(layer.id) ? ids.filter((i) => i !== layer.id) : [...ids, layer.id]) : [layer.id]);
 				}}
-				onDoubleClick={() => {
-					const name = window.prompt("Layer name", layer.name);
-					if (name) updateLayer({ id: layer.id, update: (l) => ({ ...l, name }) });
-				}}
+				onDoubleClick={() => setRenaming(true)}
 			>
 				<span className="text-muted-foreground mr-1 text-[10px] uppercase">{layer.kind}</span>
-				{layer.name}
+				{renaming ? (
+					<input
+						ref={(el) => el?.focus()}
+						defaultValue={layer.name}
+						aria-label="Layer name"
+						className="bg-muted h-5 w-[calc(100%-2.5rem)] border px-1"
+						onClick={(e) => e.stopPropagation()}
+						onBlur={(e) => {
+							const name = e.target.value.trim();
+							if (name && name !== layer.name) updateLayer({ id: layer.id, update: (l) => ({ ...l, name }) });
+							setRenaming(false);
+						}}
+						onKeyDown={(e) => {
+							if (e.key === "Enter") e.currentTarget.blur();
+							if (e.key === "Escape") setRenaming(false);
+						}}
+					/>
+				) : (
+					layer.name
+				)}
 			</button>
 			<button
 				type="button"

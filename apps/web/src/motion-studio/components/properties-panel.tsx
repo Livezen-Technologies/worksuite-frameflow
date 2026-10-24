@@ -5,6 +5,7 @@ import { useState } from "react";
 import { cn } from "@/utils/ui";
 import { editProp, removeKeyframe, setKeyframe, valueAt, type AnimProp, type Layer, type MotionProject } from "../model";
 import { useStudio } from "../store";
+import { projectColors, projectFonts, replaceColor, replaceFont } from "../templates";
 
 function NumberField({
 	label,
@@ -205,6 +206,42 @@ function ProjectProps({ project }: { project: MotionProject }) {
 			<NumberField label="Duration" value={project.duration} step={0.5} min={0.1} max={600} suffix="s" onChange={(duration) => set({ duration })} />
 			<ColorField label="Background" value={project.background} onChange={(background) => set({ background })} />
 			<p className="text-muted-foreground text-[10px]">Background “none” is transparent.</p>
+			<h3 className="text-muted-foreground mt-3 text-[10px] font-semibold uppercase">Colours in this animation</h3>
+			<div className="flex flex-wrap gap-1.5" data-motion-theme-colors>
+				{projectColors(project).map((c) => (
+					<label key={c} className="relative size-7 cursor-pointer border" style={{ background: c }} title={`${c}: click to change it everywhere`}>
+						<span className="sr-only">Change {c}</span>
+						<input
+							type="color"
+							value={c.slice(0, 7)}
+							className="absolute inset-0 opacity-0"
+							onChange={(e) => commit((p) => replaceColor({ project: p, from: c, to: e.target.value.toUpperCase() }))}
+						/>
+					</label>
+				))}
+			</div>
+			{projectFonts(project).length > 0 && (
+				<>
+					<h3 className="text-muted-foreground mt-3 text-[10px] font-semibold uppercase">Fonts</h3>
+					{projectFonts(project).map((f) => (
+						<label key={f} className="flex items-center gap-1 text-[11px]">
+							<span className="text-muted-foreground w-14 shrink-0 truncate">{f}</span>
+							<select
+								value={f}
+								onChange={(e) => commit((p) => replaceFont({ project: p, from: f, to: e.target.value }))}
+								className="bg-muted/50 h-6 min-w-0 flex-1 border px-1"
+								data-motion-theme-font
+							>
+								{[...new Set([f, "Inter", "Poppins", "Montserrat", "Roboto", "Noto Sans Sinhala", "Noto Sans Tamil", "Georgia", "Courier New"])].map((name) => (
+									<option key={name} value={name}>
+										{name}
+									</option>
+								))}
+							</select>
+						</label>
+					))}
+				</>
+			)}
 		</div>
 	);
 }
