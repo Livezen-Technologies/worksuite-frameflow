@@ -26,6 +26,10 @@ function toLocal({ x, y }) {
 }
 
 const handlers = {
+	mousemove: (e) => {
+		if (paused || !options?.halo) return;
+		send("overlay:move", toLocal(e));
+	},
 	mousedown: (e) => {
 		if (paused || !options?.clicks) return;
 		send("overlay:click", { ...toLocal(e), button: e.button });
@@ -67,9 +71,9 @@ async function updateMasks() {
 module.exports = {
 	displayFor,
 	/** Opens the overlay for a take. Returns what it can do on this system. */
-	async start({ sourceId, keys = true, clicks = true, privatePatterns = [] } = {}) {
+	async start({ sourceId, keys = true, clicks = true, privatePatterns = [], halo = false, clickColor = "#ffc400", clickSize = 56 } = {}) {
 		module.exports.stop();
-		options = { keys, clicks, privatePatterns };
+		options = { keys, clicks, privatePatterns, halo };
 		paused = false;
 		display = await displayFor(sourceId);
 		win = new BrowserWindow({
@@ -90,8 +94,12 @@ module.exports = {
 		win.setAlwaysOnTop(true, "screen-saver");
 		win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
 		await win.loadFile(path.join(__dirname, "overlay", "overlay.html"));
+		send("overlay:style", {
+			clickColor: /^#[0-9a-f]{6}$/i.test(clickColor) ? clickColor : "#ffc400",
+			clickSize: Math.min(160, Math.max(24, Number(clickSize) || 56)),
+		});
 		win.showInactive();
-		const hooked = (keys || clicks) && inputHook.acquire(handlers);
+		const hooked = (keys || clicks || halo) && inputHook.acquire(handlers);
 		options.hooked = hooked;
 		if (privatePatterns.length) {
 			await updateMasks();

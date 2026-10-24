@@ -39,3 +39,17 @@ for (const url of ["https://worksuitecloud.com/signup", "https://worksuitecloud.
 		console.log(`ERR ${url} ${error.cause?.code ?? error.message}`);
 	}
 }
+
+// Download center feeds the app's updater reads.
+for (const channel of ["stable", "beta"]) {
+	for (const file of ["latest.yml", "latest-mac.yml", "latest-linux.yml"]) {
+		const url = `https://download.worksuitecloud.com/frameflow/${channel}/${file}`;
+		try {
+			const r = await fetch(url);
+			const text = await r.text();
+			console.log(`${r.status} ${url} ${show(/^version:.*$/m.exec(text)?.[0] ?? text)}`);
+		} catch (error) {
+			console.log(`ERR ${url} ${error.cause?.code ?? error.message}`);
+		}
+	}
+}

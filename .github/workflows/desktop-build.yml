@@ -175,14 +175,18 @@ jobs:
           AWS_DEFAULT_REGION: auto
         shell: bash
         run: |
-          channel=stable
-          [[ "$GITHUB_REF_NAME" == *-beta* ]] && channel=beta
-          # Installers first, feeds last, so the feed never points at a missing file.
-          aws s3 cp electron/dist/ "s3://$DOWNLOAD_CENTER_BUCKET/frameflow/$channel/" --recursive \
-            --exclude "*" --include "*.dmg" --include "*.zip" --include "*.exe" --include "*.AppImage" \
-            --include "*.deb" --include "*.blockmap" --endpoint-url "$DOWNLOAD_CENTER_ENDPOINT"
-          aws s3 cp electron/dist/ "s3://$DOWNLOAD_CENTER_BUCKET/frameflow/$channel/" --recursive \
-            --exclude "*" --include "latest*.yml" --cache-control "no-cache" --endpoint-url "$DOWNLOAD_CENTER_ENDPOINT"
+          # Stable releases go to both channels (beta users get every release);
+          # "-beta" tags go to beta only.
+          channels="stable beta"
+          [[ "$GITHUB_REF_NAME" == *-beta* ]] && channels=beta
+          for channel in $channels; do
+            # Installers first, feeds last, so the feed never points at a missing file.
+            aws s3 cp electron/dist/ "s3://$DOWNLOAD_CENTER_BUCKET/frameflow/$channel/" --recursive \
+              --exclude "*" --include "*.dmg" --include "*.zip" --include "*.exe" --include "*.AppImage" \
+              --include "*.deb" --include "*.blockmap" --endpoint-url "$DOWNLOAD_CENTER_ENDPOINT"
+            aws s3 cp electron/dist/ "s3://$DOWNLOAD_CENTER_BUCKET/frameflow/$channel/" --recursive \
+              --exclude "*" --include "latest*.yml" --cache-control "no-cache" --endpoint-url "$DOWNLOAD_CENTER_ENDPOINT"
+          done
 
       - name: Attach to release
         if: startsWith(github.ref, 'refs/tags/v')

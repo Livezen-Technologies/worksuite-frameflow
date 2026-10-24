@@ -1,5 +1,6 @@
 "use client";
 
+import { RecordingLookOptions } from "@/recording/components/look-options";
 import { Download, FolderOpen, Pencil, Search, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -235,14 +236,11 @@ export function RecorderSettings() {
 						{clashes.join(", ")} {clashes.length === 1 ? "is" : "are"} already used by another app or the system. Pick a different key.
 					</p>
 				)}
+				<RecordingLookOptions />
 				<h3 className="text-muted-foreground mt-2 text-xs font-semibold tracking-wider uppercase">While recording</h3>
 				<label className="flex items-center gap-2">
 					<input type="checkbox" checked={settings.doNotDisturb} onChange={(e) => settings.set({ doNotDisturb: e.target.checked })} />
 					Hold notifications back
-				</label>
-				<label className="flex items-center gap-2">
-					<input type="checkbox" checked={settings.autoZoom} onChange={(e) => settings.set({ autoZoom: e.target.checked })} />
-					Zoom in on clicks and typing in the editor
 				</label>
 				<label className="flex items-center gap-2">
 					<input type="checkbox" checked={prefs.highlightClicks} onChange={(e) => prefs.set({ highlightClicks: e.target.checked })} data-recorder-clicks />

@@ -8,7 +8,8 @@ import { BatchCommand, Command, type CommandResult } from "@/commands";
 import { AddMediaAssetCommand } from "@/commands/media";
 import { AddTrackCommand, InsertElementCommand } from "@/commands/timeline";
 import { EditorCore } from "@/core";
-import { watermarkTransform } from "@/brand/watermark";
+import { buildDefaultMaskInstance } from "@/masks";
+import type { ParamValues } from "@/params";
 import { processMediaAssets } from "@/media/processing";
 import type { Bookmark, TScene } from "@/timeline";
 import { buildElementFromMedia } from "@/timeline/element-utils";
@@ -18,6 +19,7 @@ import { ApplyTracksCommand } from "@/commands/timeline/apply-tracks";
 import { generateUUID } from "@/utils/id";
 import { cropLog } from "./area";
 import { punchIn } from "./punch";
+import { type CameraOverlay, DEFAULT_CAMERA_OVERLAY, useRecordingSettings } from "./settings";
 import type { RecordedFile, SessionManifest } from "./storage";
 
 /** Adds the take's markers as timeline bookmarks (SC-36), undoable. */
@@ -78,6 +80,8 @@ export async function placeRecording({
 		time: mediaTimeFromSeconds({ seconds: session.timelineStart }),
 	});
 	const commands: Command[] = [];
+	const look = useRecordingSettings.getState();
+	const zoomSettings = { ...DEFAULT_ZOOM_SETTINGS, level: look.zoomLevel ?? DEFAULT_ZOOM_SETTINGS.level, follow: look.zoomFollow ?? true };
 	// Overlays go above: insert the camera's track first at index 0.
 	const order = ["camera", "screen", "mic"] as const;
 	const sorted = [...files].sort(
@@ -132,21 +136,12 @@ export async function placeRecording({
 			commands.push(track);
 			const pip =
 				recorded.role === "camera" && hasScreen
-					? {
-							...element,
-							params: {
-								...element.params,
-								...watermarkTransform({
-									frame: project.settings.canvasSize,
-									image: {
-										width: asset.width ?? 1280,
-										height: asset.height ?? 720,
-									},
-									corner: "bottom-right",
-									size: 26,
-								}),
-							},
-						}
+					? cameraOverlay({
+							element,
+							frame: project.settings.canvasSize,
+							image: { width: asset.width ?? 1280, height: asset.height ?? 720 },
+							overlay: look.camera,
+						})
 					: recorded.role === "screen" && cursorLog
 						? {
 								...element,
@@ -154,18 +149,18 @@ export async function placeRecording({
 									? {
 											screenStyle: {
 												...DEFAULT_SCREEN_STYLE,
-												cursor: { ...DEFAULT_SCREEN_STYLE.cursor, enabled: true },
+												cursor: { ...DEFAULT_SCREEN_STYLE.cursor, enabled: true, rippleColor: look.clickColor },
 											},
 										}
 									: {}),
 								screenZoom: {
-									settings: DEFAULT_ZOOM_SETTINGS,
+									settings: zoomSettings,
 									log: cursorLog,
 									segments: autoZoom
 										? generateZooms({
 												log: cursorLog,
 												duration: seconds,
-												settings: DEFAULT_ZOOM_SETTINGS,
+												settings: zoomSettings,
 											})
 										: [],
 								},
@@ -196,4 +191,57 @@ export async function placeRecording({
 		editor.command.execute({ command: new BatchCommand(commands) });
 	}
 	return placed;
+}
+
+const CORNER_RADIUS = { circle: 0.5, rounded: 0.18, square: 0, original: 0 } as const;
+
+/**
+ * The camera as a picture-in-picture: cut to a circle, rounded or square
+ * shape with an optional border, sized and parked in a corner (SC-20).
+ */
+function cameraOverlay<T extends { params: ParamValues }>({
+	element,
+	frame,
+	image,
+	overlay = DEFAULT_CAMERA_OVERLAY,
+}: {
+	element: T;
+	frame: { width: number; height: number };
+	image: { width: number; height: number };
+	overlay?: CameraOverlay;
+}): T {
+	const shaped = overlay.shape !== "original";
+	const contain = Math.min(frame.width / image.width, frame.height / image.height);
+	// Shaped cameras keep a centred square the height of the picture.
+	const visibleW = (shaped ? Math.min(image.width, image.height) : image.width) * contain;
+	const visibleH = (shaped ? Math.min(image.width, image.height) : image.height) * contain;
+	const scale = ((Math.min(50, Math.max(8, overlay.size)) / 100) * frame.width) / visibleW;
+	const margin = Math.round(frame.height * 0.04);
+	const x = frame.width / 2 - margin - (visibleW * scale) / 2;
+	const y = frame.height / 2 - margin - (visibleH * scale) / 2;
+	const placed = {
+		...element,
+		params: {
+			...element.params,
+			"transform.scaleX": scale,
+			"transform.scaleY": scale,
+			"transform.positionX": Math.round(overlay.corner.endsWith("left") ? -x : x),
+			"transform.positionY": Math.round(overlay.corner.startsWith("top") ? -y : y),
+		},
+	};
+	if (!shaped && overlay.border <= 0) return placed;
+	const side = Math.min(image.width, image.height);
+	const mask = buildDefaultMaskInstance({ maskType: "rectangle", elementSize: image });
+	if (mask.type === "rectangle") {
+		mask.params = {
+			...mask.params,
+			width: shaped ? side / image.width : 1,
+			height: shaped ? side / image.height : 1,
+			cornerRadius: CORNER_RADIUS[overlay.shape],
+			strokeWidth: Math.max(0, overlay.border) / (contain * scale),
+			strokeColor: "#ffffff",
+			strokeAlign: "inside",
+		};
+	}
+	return { ...placed, masks: [mask] };
 }

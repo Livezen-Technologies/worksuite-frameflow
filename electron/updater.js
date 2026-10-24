@@ -16,8 +16,6 @@ const FEED_BASE = process.env.WSC_UPDATE_URL || "https://download.worksuitecloud
 const DOWNLOAD_PAGE = process.env.WSC_DOWNLOAD_PAGE || "https://worksuitecloud.com/download/frameflow";
 const CHECK_EVERY_MS = 6 * 60 * 60 * 1000;
 const CHANNELS = ["stable", "beta"];
-/** Fallback feed: the repository's GitHub Releases, which carry the same latest*.yml files. */
-const GITHUB = { owner: "Livezen-Technologies", repo: "worksuite-frameflow" };
 const DEFAULT_CHANNEL = "beta";
 
 const settingsFile = () => path.join(app.getPath("userData"), "updates.json");
@@ -152,40 +150,12 @@ async function downloadCenterVersion() {
 	}
 }
 
-/** The newest GitHub release for the channel that carries this platform's feed file. */
-async function githubRelease() {
-	const res = await fetch(`https://api.github.com/repos/${GITHUB.owner}/${GITHUB.repo}/releases?per_page=20`, {
-		headers: { Accept: "application/vnd.github+json" },
-		cache: "no-store",
-	});
-	if (!res.ok) throw new Error(`GitHub returned ${res.status}`);
-	const releases = await res.json();
-	const release = releases.find(
-		(r) =>
-			!r.draft &&
-			/^v\d/.test(r.tag_name) &&
-			(state.channel === "beta" || !r.prerelease) &&
-			r.assets?.some((a) => a.name === feedFileName()),
-	);
-	return release ? { version: release.tag_name.replace(/^v/, ""), page: release.html_url } : null;
-}
-
-let source = "download-center"; // or "github"
 
 async function checkFeedOnly() {
 	setState({ status: "checking", error: null });
-	let version = await downloadCenterVersion();
-	let page = DOWNLOAD_PAGE;
-	source = "download-center";
-	if (!version) {
-		const release = await githubRelease();
-		if (!release) {
-			setState({ status: "up-to-date", checkedAt: Date.now() });
-			return;
-		}
-		({ version, page } = release);
-		source = "github";
-	}
+	const version = await downloadCenterVersion();
+	if (!version) throw new Error("Can't reach the Worksuite download center. Try again later.");
+	const page = `${DOWNLOAD_PAGE}?channel=${state.channel}`;
 	setState(
 		isNewer(version, app.getVersion())
 			? { status: "available", version, downloadPage: page, checkedAt: Date.now() }
@@ -209,9 +179,8 @@ async function check() {
 	try {
 		const u = getUpdater();
 		u.allowPrerelease = state.channel === "beta";
-		// The download center when it has a feed, otherwise GitHub Releases.
-		if (await downloadCenterVersion()) u.setFeedURL({ provider: "generic", url: feedUrl(), channel: "latest" });
-		else u.setFeedURL({ provider: "github", owner: GITHUB.owner, repo: GITHUB.repo });
+		// Updates come only from the Worksuite download center.
+		u.setFeedURL({ provider: "generic", url: feedUrl(), channel: "latest" });
 		await u.checkForUpdates();
 	} catch (error) {
 		setState({ status: "error", error: String(error?.message ?? error).split("\n")[0] });
@@ -222,7 +191,7 @@ async function check() {
 async function download() {
 	if (!state.selfInstall) {
 		// macOS ad-hoc builds and .deb: get the new installer from the download center.
-		await shell.openExternal(source === "github" ? state.downloadPage : `${DOWNLOAD_PAGE}?channel=${state.channel}`);
+		await shell.openExternal(`${DOWNLOAD_PAGE}?channel=${state.channel}`);
 		return state;
 	}
 	try {

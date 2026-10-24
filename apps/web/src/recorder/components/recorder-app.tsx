@@ -262,12 +262,15 @@ function RecorderWindow() {
 			opened.onLevel(setLevel);
 			recorder.current = opened;
 			// Drawn on screen so it's in the video: clicks, keys, private-window covers (CT-R4).
-			if (screenOn && (prefs.highlightClicks || prefs.showKeys || prefs.privateMode === "cover")) {
+			if (screenOn && (prefs.highlightClicks || prefs.showKeys || settings.cursorHalo || prefs.privateMode === "cover")) {
 				await window.worksuite?.capture
 					?.overlayStart?.({
 						sourceId: source?.id ?? null,
 						keys: prefs.showKeys,
 						clicks: prefs.highlightClicks,
+						halo: settings.cursorHalo,
+						clickColor: settings.clickColor,
+						clickSize: settings.clickSize,
 						privatePatterns: prefs.privateMode === "cover" ? settings.protectedApps : [],
 					})
 					.catch(() => null);

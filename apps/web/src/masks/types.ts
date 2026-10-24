@@ -41,6 +41,8 @@ export interface RectangleMaskParams extends BaseMaskParams {
 	height: number;
 	rotation: number;
 	scale: number;
+	/** Rounded corners, 0–0.5 of the shorter side (0.5 = pill/circle). Rectangle only. */
+	cornerRadius?: number;
 }
 
 export interface TextMaskParams extends BaseMaskParams {

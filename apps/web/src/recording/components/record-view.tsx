@@ -1,5 +1,6 @@
 "use client";
 
+import { RecordingLookOptions } from "./look-options";
 import type { CursorLog } from "@/screen-zoom/types";
 import type { CaptureCommand } from "@/account/types";
 import { useRecordingCommands } from "../commands";
@@ -923,16 +924,12 @@ export function RecordView() {
 						</label>
 					)}
 					{needsScreen && (
-						<label className="flex items-center gap-2 text-xs">
-							<input
-								type="checkbox"
-								data-auto-zoom
-								checked={settings.autoZoom}
-								onChange={(e) => settings.set({ autoZoom: e.target.checked })}
-							/>
-							Zoom in on clicks and typing afterwards (edit in the clip&apos;s
-							Zoom tab)
-						</label>
+						<details className="border p-2 text-xs" data-auto-zoom>
+							<summary className="cursor-pointer font-medium">Smart zoom, camera overlay &amp; click highlights</summary>
+							<div className="pt-2">
+								<RecordingLookOptions camera={settings.mode === "screen-camera"} />
+							</div>
+						</details>
 					)}
 					{needsScreen && capture?.windowNames && (
 						<div className="flex flex-col gap-1 text-xs" data-privacy>
