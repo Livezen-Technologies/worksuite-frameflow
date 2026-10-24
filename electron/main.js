@@ -1,6 +1,6 @@
 // Worksuite FrameFlow desktop shell: runs the bundled Next.js server on a
 // private loopback port and shows it in a window.
-const { app, BrowserWindow, clipboard, shell, dialog, ipcMain, Menu } = require("electron");
+const { app, BrowserWindow, clipboard, shell, dialog, ipcMain, Menu, nativeTheme } = require("electron");
 const { spawn } = require("node:child_process");
 const capture = require("./capture");
 const cursorLog = require("./cursor-log");
@@ -125,6 +125,23 @@ async function startServer() {
 	return origin;
 }
 
+// The native title bar (macOS, Windows) follows nativeTheme: keep it on the
+// app's own Light/Dark choice, remembered so the next launch starts right.
+const themeFile = () => path.join(app.getPath("userData"), "theme.json");
+function applyTheme(theme) {
+	const source = theme === "light" || theme === "dark" ? theme : "system";
+	nativeTheme.themeSource = source;
+	return source;
+}
+function loadTheme() {
+	try {
+		return applyTheme(JSON.parse(fs.readFileSync(themeFile(), "utf8")).theme);
+	} catch {
+		return applyTheme("dark"); // the app's default theme
+	}
+}
+const windowBackground = () => (nativeTheme.shouldUseDarkColors ? "#0F172A" : "#FFFFFF");
+
 const WINDOW_OPTIONS = {
 	width: 1440,
 	height: 900,
@@ -178,7 +195,7 @@ async function createWindow() {
 		minWidth: 1024,
 		minHeight: 640,
 		title: "Worksuite FrameFlow",
-		backgroundColor: "#0F172A",
+		backgroundColor: windowBackground(),
 		icon: path.join(__dirname, "build", "icon.png"),
 		autoHideMenuBar: true,
 		webPreferences: {
@@ -236,6 +253,12 @@ function registerAccountIpc() {
 	handleFrom("windows:is-main", (event) => projectWindows.isMain(event));
 
 	handle("app:version", () => app.getVersion());
+	handle("app:set-theme", (theme) => {
+		const source = applyTheme(theme);
+		fs.promises.writeFile(themeFile(), JSON.stringify({ theme: source })).catch(() => {});
+		for (const win of BrowserWindow.getAllWindows()) if (!win.isDestroyed()) win.setBackgroundColor(windowBackground());
+		return source;
+	});
 	handle("capture:sources", () => capture.listSources());
 	handle("capture:choose", (id) => capture.chooseSource(id));
 	handle("capture:permissions", () => capture.permissionStatus());
@@ -435,6 +458,7 @@ if (!app.requestSingleInstanceLock()) {
 	app
 		.whenReady()
 		.then(() => {
+			loadTheme();
 			registerAccountIpc();
 			void automation.init();
 			void nativeHelper.init();

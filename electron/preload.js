@@ -5,6 +5,7 @@ const { contextBridge, ipcRenderer } = require("electron");
 contextBridge.exposeInMainWorld("worksuite", {
 	app: {
 		getVersion: () => ipcRenderer.invoke("app:version"),
+		setTheme: (theme) => ipcRenderer.invoke("app:set-theme", theme),
 	},
 	capture: {
 		sources: () => ipcRenderer.invoke("capture:sources"),
