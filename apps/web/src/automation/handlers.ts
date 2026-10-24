@@ -12,6 +12,14 @@ import {
 import { defaultStillDuration } from "@/timeline/creation";
 import { mediaTimeFromSeconds, TICKS_PER_SECOND } from "@/wasm";
 import { asRecord, AutomationError, num, oneOf, str } from "./params";
+import { aiCleanUp, aiTranslate } from "@/ai/tasks";
+import { buildSubtitlesFromTranscript } from "@/transcript/build";
+import { exportTranscript, importTranscript } from "@/transcript/format";
+import { generateTranscript } from "@/transcript/generate";
+import { useTranscriptStore } from "@/transcript/store";
+import { updateSegmentText } from "@/transcript/transcript";
+import type { Transcript } from "@/transcript/types";
+import { TRANSCRIPTION_LANGUAGES } from "@/transcription/supported-languages";
 
 /**
  * Editor side of the automation API. Each method takes plain JSON and
@@ -287,6 +295,124 @@ export const HANDLERS: Record<string, Handler> = {
 		return { projectId: id, synced: true };
 	},
 };
+
+function currentTranscript(editor: EditorCore) {
+	const projectId = activeProject(editor).metadata.id;
+	return { projectId, transcript: useTranscriptStore.getState().byProject[projectId] ?? null };
+}
+
+function requireTranscript(editor: EditorCore) {
+	const found = currentTranscript(editor);
+	if (!found.transcript)
+		throw new AutomationError({
+			message: "This project has no transcript. Call transcript.generate or transcript.import first.",
+			code: -32004,
+		});
+	return { projectId: found.projectId, transcript: found.transcript };
+}
+
+function saveTranscript({ projectId, transcript }: { projectId: string; transcript: Transcript }) {
+	useTranscriptStore.getState().setTranscript({ projectId, transcript });
+}
+
+function describeTranscript(transcript: Transcript) {
+	return {
+		language: transcript.language,
+		engine: transcript.engine,
+		segments: transcript.segments.map((s) => ({
+			id: s.id,
+			start: s.start,
+			end: s.end,
+			text: s.text,
+			verified: s.verified,
+		})),
+	};
+}
+
+const LANGUAGE_CODES = ["auto", ...TRANSCRIPTION_LANGUAGES.map((l) => l.code)] as const;
+
+/** Captions and AI (SRS AU-01): the transcript-first caption workflow, scripted. */
+const CAPTION_HANDLERS: Record<string, Handler> = {
+	"transcript.get": async ({ ctx: { editor } }) => {
+		const { transcript } = currentTranscript(editor);
+		return transcript ? describeTranscript(transcript) : null;
+	},
+
+	"transcript.generate": async ({ ctx: { editor }, params }) => {
+		const { projectId } = currentTranscript(editor);
+		if (!editor.timeline.getTotalDuration())
+			throw new AutomationError({ message: "The timeline is empty" });
+		const transcript = await generateTranscript({
+			editor,
+			language: oneOf({ params, key: "language", values: LANGUAGE_CODES }) ?? "auto",
+			engine: oneOf({ params, key: "engine", values: ["local", "gemini"] as const }) ?? "local",
+			narrationTrackId: str({ params, key: "narrationTrackId" }) ?? null,
+		});
+		if (!transcript.segments.length)
+			throw new AutomationError({ message: "No speech was found in the timeline audio" });
+		saveTranscript({ projectId, transcript });
+		return describeTranscript(transcript);
+	},
+
+	"transcript.setText": async ({ ctx: { editor }, params }) => {
+		const { projectId, transcript } = requireTranscript(editor);
+		const id = str({ params, key: "id", required: true }) ?? "";
+		if (!transcript.segments.some((s) => s.id === id))
+			throw new AutomationError({ message: `No segment with id ${id}`, code: -32004 });
+		const next = updateSegmentText({ transcript, id, text: str({ params, key: "text", required: true }) ?? "" });
+		saveTranscript({ projectId, transcript: next });
+		return describeTranscript(next);
+	},
+
+	"transcript.import": async ({ ctx: { editor }, params }) => {
+		const { projectId, transcript } = currentTranscript(editor);
+		const format = oneOf({ params, key: "format", values: ["srt", "vtt", "ass", "json", "txt"] as const }) ?? "srt";
+		let next: Transcript;
+		try {
+			next = importTranscript({
+				fileName: `import.${format}`,
+				input: str({ params, key: "content", required: true }) ?? "",
+				current: transcript,
+			});
+		} catch (error) {
+			throw new AutomationError({ message: error instanceof Error ? error.message : String(error), code: -32602 });
+		}
+		saveTranscript({ projectId, transcript: next });
+		return describeTranscript(next);
+	},
+
+	"transcript.export": async ({ ctx: { editor }, params }) => {
+		const { transcript } = requireTranscript(editor);
+		const format = oneOf({ params, key: "format", values: ["srt", "vtt", "txt", "json"] as const }) ?? "srt";
+		const { content, mimeType } = exportTranscript({ transcript, format });
+		return { format, mimeType, content };
+	},
+
+	"transcript.translate": async ({ ctx: { editor }, params }) => {
+		const { projectId, transcript } = requireTranscript(editor);
+		const target = str({ params, key: "target", required: true }) ?? "";
+		const { transcript: next, changed } = await aiTranslate({ transcript, target, projectId });
+		saveTranscript({ projectId, transcript: next });
+		return { changed, ...describeTranscript(next) };
+	},
+
+	"transcript.cleanUp": async ({ ctx: { editor }, params }) => {
+		const { projectId, transcript } = requireTranscript(editor);
+		const { transcript: next, changed } = await aiCleanUp({
+			transcript,
+			removeFillers: params.removeFillers !== false,
+		});
+		saveTranscript({ projectId, transcript: next });
+		return { changed, ...describeTranscript(next) };
+	},
+
+	"captions.add": async ({ ctx: { editor } }) => {
+		const { transcript } = requireTranscript(editor);
+		const { trackId, cueCount } = await buildSubtitlesFromTranscript({ editor, transcript });
+		return { trackId, captions: cueCount };
+	},
+};
+Object.assign(HANDLERS, CAPTION_HANDLERS);
 
 export async function handleAutomationCall({
 	ctx,

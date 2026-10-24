@@ -167,6 +167,14 @@ const PAGE_METHODS = [
 	"timeline.addText",
 	"playback.seek",
 	"cloud.sync",
+	"transcript.get",
+	"transcript.generate",
+	"transcript.setText",
+	"transcript.import",
+	"transcript.export",
+	"transcript.translate",
+	"transcript.cleanUp",
+	"captions.add",
 ];
 
 /** Topics a client can subscribe to (AU-03); "*" means all of them. */

@@ -9,30 +9,22 @@ import {
 } from "@/components/ui/select";
 import { useMemo, useReducer, useRef, useState, useSyncExternalStore } from "react";
 import { aiBridge } from "@/ai/bridge";
-import { aiTranscribe, estimateTranscription } from "@/ai/tasks";
+import { estimateTranscription } from "@/ai/tasks";
 import { AiCostNote } from "@/ai/components/ai-spending";
 import { AiSuggestionsPanel } from "@/ai-suggest/components/suggestions-panel";
 import { useAiSettings } from "@/ai/store";
-import { extractTimelineAudio } from "@/media/mediabunny";
-import { narrationSources, onlyTrack } from "@/captions/narration";
+import { narrationSources } from "@/captions/narration";
 import { useEditor } from "@/editor/use-editor";
 import { TICKS_PER_SECOND } from "@/wasm";
 import { TRANSCRIPTION_DIAGNOSTICS_SCOPE } from "@/transcription/diagnostics";
-import { DEFAULT_TRANSCRIPTION_SAMPLE_RATE } from "@/transcription/audio";
 import { TRANSCRIPTION_LANGUAGES } from "@/transcription/supported-languages";
 import type {
 	CaptionChunk,
 	TranscriptionLanguage,
 	TranscriptionProgress,
 } from "@/transcription/types";
-import { transcriptionService } from "@/services/transcription/service";
-import { decodeAudioToFloat32 } from "@/media/audio";
-import { createTranscript } from "@/transcript/transcript";
+import { generateTranscript } from "@/transcript/generate";
 import { useTranscriptStore } from "@/transcript/store";
-import {
-	TRANSCRIPTION_MODELS,
-	DEFAULT_TRANSCRIPTION_MODEL,
-} from "@/transcription/models";
 import { insertCaptionChunksAsTextTrack } from "@/subtitles/insert";
 import { parseSubtitleFile } from "@/subtitles/parse";
 import { Spinner } from "@/components/ui/spinner";
@@ -160,52 +152,13 @@ export function Captions() {
 	const handleGenerateTranscript = async () => {
 		dispatch({ type: "start", step: "Extracting audio..." });
 		try {
-			const allTracks = editor.scenes.getActiveScene().tracks;
-			const audioBlob = await extractTimelineAudio({
-				tracks: narrationTrackId
-					? onlyTrack({ tracks: allTracks, trackId: narrationTrackId })
-					: allTracks,
-				mediaAssets: editor.media.getAssets(),
-				totalDuration: editor.timeline.getTotalDuration(),
-			});
-
-			dispatch({ type: "update_step", step: "Preparing audio..." });
-			const { samples } = await decodeAudioToFloat32({
-				audioBlob,
-				sampleRate: DEFAULT_TRANSCRIPTION_SAMPLE_RATE,
-			});
-
-			const useGemini = engine === "gemini" && !!aiBridge();
-			const result = useGemini
-				? {
-						segments: await aiTranscribe({
-							samples,
-							sampleRate: DEFAULT_TRANSCRIPTION_SAMPLE_RATE,
-							language: selectedLanguage,
-							onProgress: (p) =>
-								dispatch({
-									type: "update_step",
-									step: `Transcribing with Gemini ${Math.round(p * 100)}%`,
-								}),
-						}),
-					}
-				: await transcriptionService.transcribe({
-						audioData: samples,
-						language:
-							selectedLanguage === "auto" ? undefined : selectedLanguage,
-						onProgress: handleProgress,
-					});
-
-			// Transcript first: the user fixes the text before any captions
-			// reach the timeline.
-			const modelName =
-				TRANSCRIPTION_MODELS.find((m) => m.id === DEFAULT_TRANSCRIPTION_MODEL)
-					?.name ?? "Whisper";
-			const nextTranscript = createTranscript({
-				segments: result.segments,
+			const nextTranscript = await generateTranscript({
+				editor,
 				language: selectedLanguage,
-				engine: useGemini ? "Gemini (cloud)" : `Local Whisper ${modelName}`,
+				engine: engine === "gemini" ? "gemini" : "local",
 				narrationTrackId,
+				onStep: (step) => dispatch({ type: "update_step", step }),
+				onWhisperProgress: handleProgress,
 			});
 			if (nextTranscript.segments.length === 0) {
 				dispatch({
