@@ -56,6 +56,11 @@ export interface CatalogPack {
 	assetIds?: string[];
 	/** Also bundled with the app. */
 	builtin?: boolean;
+	/** Pack ids installed first (fonts before a text template). */
+	dependencies?: string[];
+	/** The FrameFlow Asset Library server's asset id (favorites, history, installs). */
+	libraryAssetId?: string;
+	libraryType?: string;
 }
 
 export interface AssetCatalog {
@@ -73,6 +78,7 @@ export interface InstalledPack {
 	sizeBytes: number;
 	installedAt: number;
 	previousVersion: string | null;
+	libraryAssetId?: string;
 }
 
 export interface BuiltinPack {
@@ -88,6 +94,8 @@ export interface PackDownload {
 	total: number;
 	version: string;
 	error: string | null;
+	/** e.g. "sign-in", "plan", "device-limit", "bad-hash". */
+	code?: string | null;
 }
 
 export type MissingPacksPolicy = "auto" | "ask" | "never";
@@ -109,6 +117,34 @@ export interface AssetStoreState {
 	installed: Record<string, InstalledPack>;
 	builtin: BuiltinPack[];
 	downloads: Record<string, PackDownload>;
+	/** Asset Library account features; null in older desktop builds. */
+	library?: LibraryAccountState | null;
+}
+
+export interface LibraryAccountState {
+	signedIn: boolean;
+	device: {
+		status: "unregistered" | "registering" | "registered" | "limit" | "error";
+		id: string | null;
+		error: { code: string; limit: number | null; message: string } | null;
+	};
+	/** Favorite pack ids, newest first. */
+	favorites: string[];
+	/** Live catalog updates (server-sent events). */
+	live: "off" | "connecting" | "connected" | "reconnecting";
+}
+
+export interface LibraryDownloadRow {
+	id: string;
+	packId: string | null;
+	title: string | null;
+	type: string | null;
+	version: string | null;
+	status: string | null;
+	bytes: number | null;
+	startedAt: string | null;
+	finishedAt: string | null;
+	thisDevice: boolean;
 }
 
 export interface WorksuiteAssetsBridge {
@@ -124,6 +160,9 @@ export interface WorksuiteAssetsBridge {
 	configure: (settings: Partial<AssetLibrarySettings>) => Promise<AssetStoreState>;
 	updateAll: () => Promise<Array<{ id: string; ok: boolean; error?: string }>>;
 	onChange: (listener: (state: AssetStoreState) => void) => () => void;
+	setFavorite?: (args: { packId: string; on: boolean }) => Promise<AssetStoreState>;
+	history?: (args?: { cursor?: string | null; limit?: number }) => Promise<{ signedIn: boolean; data: LibraryDownloadRow[]; next_cursor: string | null }>;
+	registerDevice?: () => Promise<AssetStoreState>;
 }
 
 /** A pack's state in the library UI. */

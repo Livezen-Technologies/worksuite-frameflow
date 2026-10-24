@@ -64,6 +64,12 @@ export interface DragDropConfig {
 		elementId: string;
 		effectType: string;
 	}) => void;
+	/** A download-center pack: placeholder, install, then the real add (one undo step). */
+	dropPack?: (args: {
+		dragData: Extract<TimelineDragData, { type: "pack" }>;
+		target: DropTarget;
+		trackId: string | null;
+	}) => void;
 }
 
 export interface DragDropConfigRef {
@@ -103,6 +109,14 @@ function elementTypeFromDrag({
 			return "effect";
 		case "media":
 			return dragData.mediaType;
+		case "pack":
+			return dragData.packType === "sounds"
+				? "audio"
+				: dragData.packType === "text-templates"
+					? "text"
+					: dragData.targetElementTypes
+						? "effect"
+						: "graphic";
 	}
 }
 
@@ -114,6 +128,7 @@ function getTargetElementTypesForDrag({
 	if (dragData.type === "effect") return dragData.targetElementTypes;
 	if (dragData.type === "media") return dragData.targetElementTypes;
 	if (dragData.type === "text") return dragData.targetElementTypes;
+	if (dragData.type === "pack") return dragData.targetElementTypes;
 	return undefined;
 }
 
@@ -381,6 +396,13 @@ export class DragDropController {
 			case "media":
 				this.executeMediaDrop({ target, dragData });
 				return;
+			case "pack": {
+				const track = target.isNewTrack
+					? null
+					: orderedTracks({ sceneTracks: this.config.getSceneTracks() })[target.trackIndex];
+				this.config.dropPack?.({ dragData, target, trackId: track?.id ?? null });
+				return;
+			}
 		}
 	}
 

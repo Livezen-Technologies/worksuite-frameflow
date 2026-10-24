@@ -1,5 +1,7 @@
 "use client";
 
+import { useT } from "@/i18n";
+import { DownloadedLabel } from "@/asset-library/components/downloaded-label";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { asFile, isMediaItem, usePackItems } from "@/asset-library/pack-items";
@@ -86,6 +88,7 @@ function Preview({ preset }: { preset: ElementPreset }) {
 /** Elements sidebar: click to add at the playhead on a new layer. */
 export function ElementsView() {
 	const editor = useEditor();
+	const t = useT();
 	const [filter, setFilter] = useState<Filter>("All");
 	const [query, setQuery] = useState("");
 	const downloaded = usePackItems({ types: ["graphics", "stickers"], parse: asFile })
@@ -161,7 +164,7 @@ export function ElementsView() {
 									: "text-muted-foreground hover:bg-accent",
 							)}
 						>
-							{f}
+							{f === "Downloaded" ? <DownloadedLabel /> : f}
 						</button>
 					))}
 				</div>
@@ -179,7 +182,7 @@ export function ElementsView() {
 							<button
 								key={item.id}
 								type="button"
-								title={`Add ${item.name} at the playhead`}
+								title={t("Add {name} at the playhead", { name: item.name })}
 								disabled={adding === item.id}
 								data-element-download={item.id}
 								onClick={() => void addDownloaded(item)}

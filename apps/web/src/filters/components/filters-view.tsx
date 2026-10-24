@@ -1,5 +1,6 @@
 "use client";
 
+import { DownloadedLabel } from "@/asset-library/components/downloaded-label";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Ban } from "lucide-react";
 import { toast } from "sonner";
@@ -133,7 +134,7 @@ export function FiltersView() {
 									: "text-muted-foreground hover:bg-accent",
 							)}
 						>
-							{f}
+							{f === "Downloaded" ? <DownloadedLabel /> : f}
 						</button>
 					))}
 				</div>

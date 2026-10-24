@@ -10,6 +10,7 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const io = require("./asset-pack-io");
+const { createLibraryAccount } = require("./library-account");
 
 const ASSET_BASE = process.env.WSC_ASSET_URL || "https://download.worksuitecloud.com/assets";
 const CHANNELS = ["stable", "beta"];
@@ -45,6 +46,11 @@ function createAssetStore({
 	onChange = () => {},
 	/** Bearer token for Pro packs (Worksuite Cloud sign-in); null when signed out. */
 	getAccessToken = async () => null,
+	/**
+	 * Library account features (library-account.js): download grants with
+	 * X-Device-Id, the installs mirror, favorites. Optional.
+	 */
+	library = null,
 }) {
 	fs.mkdirSync(root, { recursive: true });
 	const file = (...parts) => path.join(root, ...parts);
@@ -78,8 +84,9 @@ function createAssetStore({
 			catalogStatus: { ...catalogStatus },
 			installed: Object.fromEntries(Object.entries(installed.packs).map(([id, entry]) => [id, { ...entry }])),
 			builtin: builtinPacks,
+			library: library?.getState() ?? null,
 			downloads: Object.fromEntries(
-				[...downloads].map(([id, d]) => [id, { status: d.status, received: d.received, total: d.total, version: d.version, error: d.error ?? null }]),
+				[...downloads].map(([id, d]) => [id, { status: d.status, received: d.received, total: d.total, version: d.version, error: d.error ?? null, code: d.code ?? null }]),
 			),
 		};
 	}
@@ -176,9 +183,17 @@ function createAssetStore({
 			have = 0;
 		}
 		if (have < pack.sizeBytes) {
-			const token = pack.plan === "free" ? null : await getAccessToken().catch(() => null);
-			const res = await fetchImpl(packUrl(pack), {
-				headers: { ...(have ? { Range: `bytes=${have}-` } : {}), ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+			// Pro packs: a signed download grant from the library API when signed in
+			// (sent with X-Device-Id); otherwise the feed URL with the bearer token.
+			const grant = pack.plan === "free" || !library ? null : await library.requestGrant(pack);
+			d.grant = grant;
+			const token = pack.plan === "free" || grant ? null : await getAccessToken().catch(() => null);
+			const res = await fetchImpl(grant?.url ?? packUrl(pack), {
+				headers: {
+					...(have ? { Range: `bytes=${have}-` } : {}),
+					...(token ? { Authorization: `Bearer ${token}` } : {}),
+					...(pack.plan === "free" ? {} : (library?.downloadHeaders() ?? {})),
+				},
 				signal: d.controller.signal,
 			});
 			if (res.status === 200 && have) {
@@ -236,6 +251,7 @@ function createAssetStore({
 		const previous = installed.packs[pack.id];
 		installed.packs[pack.id] = {
 			id: pack.id,
+			...(pack.libraryAssetId ? { libraryAssetId: pack.libraryAssetId } : {}),
 			type: pack.type,
 			title: pack.title,
 			version: pack.version,
@@ -244,9 +260,30 @@ function createAssetStore({
 			previousVersion: previous && previous.version !== pack.version ? previous.version : (previous?.previousVersion ?? null),
 		};
 		writeJson(file("installed.json"), installed);
+		void Promise.resolve(library?.mirrorInstall(pack)).catch(() => {});
 	}
 
+	/** Catalog packs `packId` needs first (`dependencies`: pack ids), deepest first, without cycles. */
+	function dependencyOrder(packId, seen = new Set()) {
+		if (seen.has(packId)) return [];
+		seen.add(packId);
+		const pack = findPack(packId);
+		const deps = Array.isArray(pack?.dependencies) ? pack.dependencies.filter((id) => typeof id === "string" && io.PACK_ID.test(id)) : [];
+		return [...deps.flatMap((id) => [...dependencyOrder(id, seen), id])].filter((id, i, all) => all.indexOf(id) === i && id !== packId);
+	}
+
+	/** Installs a pack after any dependencies that aren't installed yet (blueprint §9.2). */
 	async function install(packId) {
+		assertPackId(packId);
+		for (const dep of dependencyOrder(packId)) {
+			if (installed.packs[dep] || builtinPacks.some((b) => b.id === dep)) continue;
+			if (!findPack(dep)) throw new Error(`"${packId}" needs "${dep}", which isn't in the catalog`);
+			await installOne(dep);
+		}
+		return installOne(packId);
+	}
+
+	async function installOne(packId) {
 		assertPackId(packId);
 		const pack = findPack(packId);
 		if (!pack) throw new Error(`Pack "${packId}" isn't in the catalog`);
@@ -264,6 +301,7 @@ function createAssetStore({
 				d.status = "installing";
 				emit();
 				installZip(pack, zip);
+				void Promise.resolve(library?.completeDownload(d.grant, { status: "installed", bytes: pack.sizeBytes })).catch(() => {});
 				downloads.delete(packId);
 				emit();
 				return snapshot();
@@ -274,6 +312,8 @@ function createAssetStore({
 				} else {
 					d.status = "error";
 					d.error = String(error?.message ?? error);
+					d.code = error?.code ?? null;
+					void Promise.resolve(library?.completeDownload(d.grant, { status: "failed" })).catch(() => {});
 				}
 				emit();
 				if (!d.controller.signal.aborted) throw error;
@@ -318,6 +358,7 @@ function createAssetStore({
 		fs.rmSync(file(packId), { recursive: true, force: true });
 		delete installed.packs[packId];
 		writeJson(file("installed.json"), installed);
+		void Promise.resolve(library?.mirrorUninstall(packId)).catch(() => {});
 		emit();
 		return snapshot();
 	}
@@ -424,6 +465,9 @@ function createAssetStore({
 		updatesAvailable,
 		updateAll,
 		resolveAssetUrl,
+		dependencyOrder,
+		/** Re-sends state (library account changes). */
+		notify: emit,
 		/** Test hook: install a zip already on disk (still verified against the catalog). */
 		_installZip: installZip,
 	};
@@ -486,6 +530,7 @@ const BUILTIN_PACKS = [
 ];
 
 let store = null;
+let library = null;
 
 /** Must run before app is ready: lets the page fetch wsc-asset:// with CORS. */
 function registerScheme() {
@@ -498,9 +543,21 @@ function registerScheme() {
 /** Catalog checks while the app runs (Asset Library blueprint §8.2). */
 const SYNC_INTERVAL_MS = 15 * 60 * 1000;
 
-function init({ isOffline, onNetworkChange, getAccessToken } = {}) {
+function init({ isOffline, onNetworkChange, getAccessToken, account } = {}) {
 	const { app, BrowserWindow } = require("electron");
+	let sync = async () => {};
+	library = createLibraryAccount({
+		root: app.getPath("userData"),
+		appVersion: app.getVersion(),
+		getAccessToken: getAccessToken ?? (async () => null),
+		isOffline: isOffline ?? (() => false),
+		getCatalogPacks: () => store?.getState().catalog?.packs ?? [],
+		// Live stream: a published, unpublished or deprecated asset refreshes the catalog now.
+		onCatalogChange: () => void sync(),
+		onChange: () => store?.notify(),
+	});
 	store = createAssetStore({
+		library,
 		root: path.join(app.getPath("userData"), "assets"),
 		appVersion: app.getVersion(),
 		builtinPacks: BUILTIN_PACKS,
@@ -510,7 +567,7 @@ function init({ isOffline, onNetworkChange, getAccessToken } = {}) {
 			for (const win of BrowserWindow.getAllWindows()) win.webContents.send("assets:changed", state);
 		},
 	});
-	const sync = async () => {
+	sync = async () => {
 		if (isOffline?.()) return;
 		await store.refreshCatalog();
 		if (store.getState().settings.autoUpdate) await store.updateAll();
@@ -524,7 +581,21 @@ function init({ isOffline, onNetworkChange, getAccessToken } = {}) {
 	onNetworkChange?.((state) => {
 		if (wasOffline && !state.offline) sync();
 		wasOffline = !!state.offline;
+		library.setOnline(!state.offline);
 	});
+	// Follow the Worksuite Cloud sign-in: register the device, union favorites,
+	// mirror installs and open the live stream.
+	const follow = (accountState) => {
+		const installedPacks = () => {
+			const s = store.getState();
+			return Object.values(s.installed).map((entry) => ({ ...entry, libraryAssetId: entry.libraryAssetId ?? s.catalog?.packs.find((p) => p.id === entry.id)?.libraryAssetId }));
+		};
+		void library.setSignedIn(accountState?.status === "signed-in", { account: accountState?.profile?.id ?? accountState?.profile?.email ?? null, installed: installedPacks() });
+	};
+	if (account) {
+		account.onChange(follow);
+		follow(account.getState());
+	}
 	return store;
 }
 
@@ -556,6 +627,18 @@ function registerIpc(handle) {
 	handle("assets:disk-usage", () => s().diskUsage());
 	handle("assets:configure", (patch) => s().configure(patch && typeof patch === "object" ? patch : {}));
 	handle("assets:update-all", () => s().updateAll());
+	// Library account: ids and plain data only; tokens stay in this process.
+	const lib = () => {
+		if (!library) throw new Error("Asset store isn't ready");
+		return library;
+	};
+	const packIdArg = (packId) => {
+		if (typeof packId !== "string" || !io.PACK_ID.test(packId)) throw new Error("Invalid pack id");
+		return packId;
+	};
+	handle("assets:favorite", (packId, on) => lib().setFavorite(packIdArg(packId), on === true).then(() => s().getState()));
+	handle("assets:history", (args) => lib().history({ cursor: typeof args?.cursor === "string" ? args.cursor : null, limit: Number(args?.limit) || 50 }));
+	handle("assets:register-device", () => lib().registerDevice().then(() => s().getState()));
 }
 
 module.exports = {

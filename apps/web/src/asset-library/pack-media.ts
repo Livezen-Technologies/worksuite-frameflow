@@ -3,7 +3,9 @@ import { animatedImageDuration } from "@/media/animated-image";
 import { processMediaAssets } from "@/media/processing";
 import { defaultStillDuration } from "@/timeline/creation";
 import { buildElementFromMedia } from "@/timeline/element-utils";
-import { mediaTimeFromSeconds } from "@/wasm";
+import { canElementGoOnTrack } from "@/timeline/placement";
+import type { ElementType } from "@/timeline";
+import { mediaTimeFromSeconds, type MediaTime } from "@/wasm";
 import { packItemFile } from "./pack-items";
 import type { PackContentItem } from "./registry";
 
@@ -11,7 +13,19 @@ import type { PackContentItem } from "./registry";
  * Adds a downloaded graphic or sticker to the project's media and to the
  * timeline at the playhead on its own layer (like a GIF from Elements).
  */
-export async function insertPackMedia({ editor, item }: { editor: EditorCore; item: PackContentItem }) {
+export async function insertPackMedia({
+	editor,
+	item,
+	startTime,
+	trackId,
+}: {
+	editor: EditorCore;
+	item: PackContentItem;
+	/** Where it was dropped; the playhead otherwise. */
+	startTime?: MediaTime;
+	/** A track it was dropped on, used when the clip can go there. */
+	trackId?: string | null;
+}) {
 	const project = editor.project.getActive();
 	const file = await packItemFile({ item });
 	const [processed] = await processMediaAssets({ files: [file] });
@@ -27,8 +41,14 @@ export async function insertPackMedia({ editor, item }: { editor: EditorCore; it
 			mediaType: asset.type,
 			name: item.name,
 			duration: seconds ? mediaTimeFromSeconds({ seconds }) : defaultStillDuration(),
-			startTime: editor.playback.getCurrentTime(),
+			startTime: startTime ?? editor.playback.getCurrentTime(),
 		}),
-		placement: { mode: "auto" },
+		placement: placementOn({ editor, trackId, elementType: asset.type }),
 	});
+}
+
+/** On `trackId` when an element of `elementType` can go there; otherwise a free layer. */
+export function placementOn({ editor, trackId, elementType }: { editor: EditorCore; trackId?: string | null; elementType: ElementType }): { mode: "explicit"; trackId: string } | { mode: "auto" } {
+	const track = trackId ? editor.timeline.getTrackById({ trackId }) : null;
+	return track && canElementGoOnTrack({ elementType, trackType: track.type }) ? { mode: "explicit", trackId: track.id } : { mode: "auto" };
 }

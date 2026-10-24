@@ -85,18 +85,22 @@ export function searchPacks({
 	language,
 	statusFilter,
 	state,
+	favorites = [],
 }: {
 	packs: CatalogPack[];
 	query: string;
 	type?: PackType | null;
 	language?: string | null;
-	statusFilter?: "installed" | "updates" | null;
+	statusFilter?: "installed" | "updates" | "favorites" | null;
 	state?: Pick<AssetStoreState, "installed" | "builtin" | "downloads">;
+	/** Favorite pack ids (statusFilter "favorites"). */
+	favorites?: string[];
 }): CatalogPack[] {
 	const words = query.toLocaleLowerCase().split(/\s+/).filter(Boolean);
 	return packs.filter((pack) => {
 		if (type && pack.type !== type) return false;
 		if (language && !pack.languages.includes(language)) return false;
+		if (statusFilter === "favorites" && !favorites.includes(pack.id)) return false;
 		if (statusFilter && state) {
 			const status = packStatus(pack, state);
 			if (statusFilter === "installed" && !["installed", "builtin", "update-available"].includes(status)) return false;

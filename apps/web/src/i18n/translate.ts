@@ -1,6 +1,8 @@
 import type { LocaleCode } from "./locales";
 import { si } from "./messages/si";
 import { ta } from "./messages/ta";
+import { assetLibrarySi } from "./messages/asset-library-si";
+import { assetLibraryTa } from "./messages/asset-library-ta";
 import { ar } from "./messages/ar";
 import { bn } from "./messages/bn";
 import { de } from "./messages/de";
@@ -35,8 +37,9 @@ export const CATALOGS: Record<
 	Exclude<LocaleCode, "en">,
 	Record<string, string>
 > = {
-	si,
-	ta,
+	// The Asset Library strings are Sinhala and Tamil only (other locales show English).
+	si: { ...assetLibrarySi, ...si },
+	ta: { ...assetLibraryTa, ...ta },
 	ar,
 	bn,
 	de,

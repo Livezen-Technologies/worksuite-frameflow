@@ -1,5 +1,6 @@
 "use client";
 
+import { DownloadedLabel } from "@/asset-library/components/downloaded-label";
 import { PacksView } from "@/packs/components/packs-view";
 import { TextLibraryView } from "@/text-library/components/text-library-view";
 import { parseTextTemplate, usePackItems } from "@/asset-library/pack-items";
@@ -199,7 +200,7 @@ function TextTemplatesView() {
 									: "text-muted-foreground hover:bg-accent",
 							)}
 						>
-							{f}
+							{f === "Downloaded" ? <DownloadedLabel /> : f}
 						</button>
 					))}
 				</div>
