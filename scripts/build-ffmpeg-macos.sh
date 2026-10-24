@@ -25,7 +25,10 @@ SVTAV1_VERSION=2.3.0
 WORK="$(mktemp -d)"
 PREFIX="$WORK/prefix"
 mkdir -p "$PREFIX" "$OUT"
-export PKG_CONFIG_PATH="$PREFIX/lib/pkgconfig"
+# Only our own libraries: Homebrew's (X11, xcb…) exist on CI runners but
+# not on users' Macs, so pkg-config must not find them.
+export PKG_CONFIG_LIBDIR="$PREFIX/lib/pkgconfig"
+unset PKG_CONFIG_PATH
 JOBS="$(sysctl -n hw.ncpu)"
 cd "$WORK"
 
@@ -56,7 +59,8 @@ fetch "https://gitlab.com/AOMediaCodec/SVT-AV1/-/archive/v$SVTAV1_VERSION/SVT-AV
 tar -xzf svtav1.tgz
 cmake -S "SVT-AV1-v$SVTAV1_VERSION" -B svtav1-build -G Ninja \
 	-DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$PREFIX" -DCMAKE_INSTALL_LIBDIR=lib \
-	-DBUILD_SHARED_LIBS=OFF -DBUILD_APPS=OFF -DBUILD_TESTING=OFF
+	-DBUILD_SHARED_LIBS=OFF -DBUILD_APPS=OFF -DBUILD_TESTING=OFF \
+	-DCMAKE_POLICY_VERSION_MINIMUM=3.5 # its bundled cpuinfo predates CMake 4
 cmake --build svtav1-build -j"$JOBS"
 cmake --install svtav1-build
 echo "::endgroup::"
@@ -66,15 +70,18 @@ fetch "https://ffmpeg.org/releases/ffmpeg-$FFMPEG_VERSION.tar.xz" ffmpeg.txz
 tar -xJf ffmpeg.txz
 cd "ffmpeg-$FFMPEG_VERSION"
 # No --enable-gpl, --enable-version3 or --enable-nonfree: the result is LGPL 2.1+.
+# --disable-autodetect: nothing is picked up from the build machine; only the
+# libraries named here, plus macOS's own frameworks and zlib, are used.
 ./configure \
 	--prefix="$PREFIX" \
 	--pkg-config-flags=--static \
 	--extra-cflags="-I$PREFIX/include" \
 	--extra-ldflags="-L$PREFIX/lib" \
 	--enable-static --disable-shared \
+	--disable-autodetect \
 	--disable-ffplay --disable-doc --disable-debug \
 	--enable-libmp3lame --enable-libopenh264 --enable-libkvazaar --enable-libsvtav1 \
-	--enable-videotoolbox --enable-audiotoolbox
+	--enable-videotoolbox --enable-audiotoolbox --enable-zlib
 make -j"$JOBS"
 echo "::endgroup::"
 
