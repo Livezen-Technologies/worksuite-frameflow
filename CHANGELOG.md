@@ -9,6 +9,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
+- Pro packs from the Asset Library download with your Worksuite Cloud sign-in. If you're signed out or your plan doesn't include a pack, the download says so instead of failing.
 - Downloaded packs now show up in their panels under **Downloaded**: transitions (click to load, double-click to apply to the selected cut), filters and colour profiles (with the strength slider), effect stacks, text templates, video templates, LUTs (Add puts them in your LUTs), graphics and stickers in Elements (added at the playhead on their own layer), and brand kits (Use loads the colours, fonts and logos, with undo).
 - The Asset Library now works with the FrameFlow Asset Library server (Download Center): graphics and overlays, GIFs and stickers, and brand kits can be installed alongside the existing pack types, and the library checks for newly published assets every 15 minutes and as soon as you're back online, so they appear without restarting.
 - Motion Studio Lottie import: text that changes over time (like a countdown) comes in as one text layer per version, each shown at its time; animated GIFs exported from FrameFlow come back as pictures. GIFs up to 900 frames now stay animated in Lottie exports (long ones use smaller frames).

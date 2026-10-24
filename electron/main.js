@@ -523,7 +523,7 @@ if (!app.requestSingleInstanceLock()) {
 			);
 			account.init();
 			updates.init();
-			assetStore.init({ isOffline: () => network.getState().offline, onNetworkChange: network.onChange });
+			assetStore.init({ isOffline: () => network.getState().offline, onNetworkChange: network.onChange, getAccessToken: account.getAccessToken });
 			return createWindow();
 		})
 		.catch((err) => {

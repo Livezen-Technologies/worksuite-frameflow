@@ -246,3 +246,17 @@ test("catalog accepts the asset library's graphics, stickers and brand-kit packs
 	assert.deepEqual(io.catalogProblems(catalog), []);
 	assert.deepEqual(io.catalogProblems({ ...catalog, packs: [pack("holograms")] }), ["packs[0].type is invalid"]);
 });
+
+test("Pro packs are downloaded with the signed-in user's token; free packs without", async () => {
+	const free = makePack({ id: "free-pack" });
+	const pro = makePack({ id: "pro-pack" });
+	pro.entry.plan = "pro";
+	const { fetchImpl, calls } = server({ packs: [free, pro] });
+	const store = createAssetStore({ root: tmp(), fetchImpl, publicKey: PUB, appVersion: "9.9.9", getAccessToken: async () => "tok-123" });
+	await store.refreshCatalog();
+	await store.install("free-pack");
+	await store.install("pro-pack");
+	const auth = (id) => calls.find((c) => c.url.includes(id)).headers.Authorization;
+	assert.equal(auth("free-pack"), undefined);
+	assert.equal(auth("pro-pack"), "Bearer tok-123");
+});
