@@ -155,14 +155,14 @@ export function StartPanel() {
 					type="button"
 					className={tile}
 					disabled={busy}
-					onClick={() => void start({ intent: { kind: "motion" }, name: "Motion graphics" })}
+					onClick={() => router.push("/motion")}
 					data-start="motion"
 				>
 					<Sparkles className="text-primary size-7 shrink-0" />
 					<span className="flex flex-col gap-1">
-						<span className="text-base font-semibold">Motion graphics</span>
+						<span className="text-base font-semibold">Motion Studio</span>
 						<span className="text-muted-foreground text-sm">
-							Animated titles, lower thirds, subscribe buttons and stickers. Import Lottie and edit colours, words and timing.
+							Design vector animations: shapes, text, paths and pictures on layers, animated with keyframes.
 						</span>
 					</span>
 				</button>
