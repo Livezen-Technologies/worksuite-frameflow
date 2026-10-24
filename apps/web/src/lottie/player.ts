@@ -96,6 +96,18 @@ export function loadLottieJson(source: LottieSource): Promise<LottieJson> {
 	return promise;
 }
 
+/** Forget one imported animation (after Motion Studio updates it). */
+export function forgetUserAnimation(id: string) {
+	const prefix = `user:${id}`;
+	jsonCache.delete(prefix);
+	for (const key of [...instances.keys()])
+		if (key === prefix || key.startsWith(`${prefix}|`)) {
+			ready.get(key)?.animation.destroy();
+			ready.delete(key);
+			instances.delete(key);
+		}
+}
+
 /** Forget cached animations of a pack (after it installs or updates). */
 export function forgetPackAnimations(packId?: string) {
 	for (const key of [...jsonCache.keys()]) if (!packId || key.startsWith(`pack:${packId}@`)) jsonCache.delete(key);

@@ -5,7 +5,7 @@ declare module "gifenc" {
 			index: Uint8Array,
 			width: number,
 			height: number,
-			options?: { palette?: Palette; delay?: number; repeat?: number; transparent?: boolean },
+			options?: { palette?: Palette; delay?: number; repeat?: number; transparent?: boolean; transparentIndex?: number },
 		): void;
 		finish(): void;
 		bytes(): Uint8Array;
@@ -14,7 +14,7 @@ declare module "gifenc" {
 	export function quantize(
 		rgba: Uint8Array | Uint8ClampedArray,
 		maxColors: number,
-		options?: { format?: "rgb565" | "rgb444" | "rgba4444" },
+		options?: { format?: "rgb565" | "rgb444" | "rgba4444"; oneBitAlpha?: boolean | number; clearAlpha?: boolean },
 	): Palette;
 	export function applyPalette(
 		rgba: Uint8Array | Uint8ClampedArray,

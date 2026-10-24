@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, Circle, ImagePlus, PenTool, Redo2, Square, Star, Type, Undo2 } from "lucide-react";
+import { ArrowLeft, Circle, Download, Film, ImagePlus, PenTool, Redo2, Square, Star, Type, Undo2 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -13,6 +13,8 @@ import { MotionCanvas, type Tool } from "./canvas";
 import { LayersPanel } from "./layers-panel";
 import { MotionTimeline } from "./motion-timeline";
 import { PropertiesPanel } from "./properties-panel";
+import { ExportDialog } from "./export-dialog";
+import { publishToVideo } from "../video-link";
 
 function readAsDataUrl(file: File): Promise<string> {
 	return new Promise((resolve, reject) => {
@@ -63,6 +65,8 @@ export function MotionStudio({ projectId }: { projectId: string }) {
 	const [missing, setMissing] = useState(false);
 	const [savedAt, setSavedAt] = useState(0);
 	const [tool, setTool] = useState<Tool>("select");
+	const [exporting, setExporting] = useState(false);
+	const [publishing, setPublishing] = useState(false);
 	const fileRef = useRef<HTMLInputElement>(null);
 
 	useEffect(() => {
@@ -83,7 +87,12 @@ export function MotionStudio({ projectId }: { projectId: string }) {
 		const timer = setTimeout(() => {
 			void saveMotionProject(project).then(() => setSavedAt(project.updatedAt));
 		}, 400);
-		return () => clearTimeout(timer);
+		// Clips in the video editor follow the latest version.
+		const sync = project.usedInVideo ? setTimeout(() => void publishToVideo(project).catch(() => {}), 1200) : null;
+		return () => {
+			clearTimeout(timer);
+			if (sync) clearTimeout(sync);
+		};
 	}, [project, projectId]);
 	useEffect(() => {
 		const flush = () => {
@@ -285,6 +294,30 @@ export function MotionStudio({ projectId }: { projectId: string }) {
 				<span className="text-muted-foreground ml-auto text-[11px]" data-motion-saved={saved}>
 					{saved === "saved" ? "Saved on this device" : "Saving…"}
 				</span>
+				<button
+					type="button"
+					className="hover:bg-accent flex items-center gap-1.5 border px-2 py-1 text-xs disabled:opacity-60"
+					disabled={publishing}
+					data-motion-use-in-video
+					title={project.usedInVideo ? "Linked: clips in your videos update when you change this animation" : "Add to the video editor's Motion tab (My imports)"}
+					onClick={async () => {
+						setPublishing(true);
+						try {
+							if (!project.usedInVideo) useStudio.getState().commit((p) => ({ ...p, usedInVideo: true }));
+							await publishToVideo({ ...project, usedInVideo: true });
+							toast.success("Ready in the video editor", { description: "Motion tab → My imports. Clips update when you edit this animation." });
+						} catch (error) {
+							toast.error("Couldn't send it to the video editor", { description: error instanceof Error ? error.message : String(error) });
+						} finally {
+							setPublishing(false);
+						}
+					}}
+				>
+					<Film className="size-3.5" /> {project.usedInVideo ? "Update in video" : "Use in video"}
+				</button>
+				<button type="button" className="bg-primary text-primary-foreground flex items-center gap-1.5 px-2 py-1 text-xs" onClick={() => setExporting(true)} data-motion-export-open>
+					<Download className="size-3.5" /> Export
+				</button>
 			</header>
 			<div className="flex min-h-0 flex-1">
 				<aside className="w-56 shrink-0 border-r">
@@ -300,6 +333,7 @@ export function MotionStudio({ projectId }: { projectId: string }) {
 			<footer className="h-60 shrink-0 border-t">
 				<MotionTimeline />
 			</footer>
+			{exporting && <ExportDialog project={project} time={useStudio.getState().time} onClose={() => setExporting(false)} />}
 		</div>
 	);
 }

@@ -1,6 +1,10 @@
 "use client";
 
-import { ArrowLeft, Plus, Trash2 } from "lucide-react";
+import { ArrowLeft, FileUp, Plus, Trash2 } from "lucide-react";
+import { toast } from "sonner";
+import { dotLottieText } from "@/lottie/user-library";
+import { parseLottie } from "@/lottie/colors";
+import { lottieToMotion } from "../lottie-convert";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -32,6 +36,21 @@ export function MotionHome() {
 		router.push(`/motion/${project.id}`);
 	};
 
+	const importLottie = async (file: File) => {
+		try {
+			const text = file.name.toLowerCase().endsWith(".lottie") ? dotLottieText(new Uint8Array(await file.arrayBuffer())) : await file.text();
+			const { project, warnings } = lottieToMotion({ json: parseLottie(text), name: file.name.replace(/\.(json|lottie)$/i, "") });
+			if (!project.layers.length) throw new Error(warnings[0] ?? "Nothing in this file could be edited here.");
+			await saveMotionProject(project);
+			if (warnings.length)
+				toast.warning(`Imported ${project.layers.length} layers, with some changes`, { description: warnings.join(" "), duration: 12_000 });
+			else toast.success(`Imported ${project.layers.length} layers`);
+			router.push(`/motion/${project.id}`);
+		} catch (error) {
+			toast.error(`Couldn't import ${file.name}`, { description: error instanceof Error ? error.message : String(error) });
+		}
+	};
+
 	return (
 		<div className="bg-background text-foreground min-h-screen" data-motion-home>
 			<header className="flex items-center gap-3 border-b px-4 py-3">
@@ -44,7 +63,7 @@ export function MotionHome() {
 			<main className="mx-auto flex max-w-6xl flex-col gap-8 p-6">
 				<section>
 					<h2 className="mb-3 text-sm font-semibold">New motion project</h2>
-					<div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+					<div className="grid grid-cols-2 gap-3 md:grid-cols-5">
 						{SIZES.map((size) => (
 							<button
 								key={size.label}
@@ -67,6 +86,23 @@ export function MotionHome() {
 								</span>
 							</button>
 						))}
+						<label className="border-border bg-card hover:border-primary flex cursor-pointer flex-col items-center gap-3 border border-dashed p-4 text-sm" data-motion-import>
+							<span className="flex h-20 items-center justify-center">
+								<FileUp className="text-primary size-8" />
+							</span>
+							<span>Import Lottie</span>
+							<span className="text-muted-foreground text-xs">.json or .lottie, editable layers</span>
+							<input
+								type="file"
+								accept=".json,.lottie,application/json"
+								className="hidden"
+								onChange={(e) => {
+									const file = e.target.files?.[0];
+									e.target.value = "";
+									if (file) void importLottie(file);
+								}}
+							/>
+						</label>
 					</div>
 				</section>
 				<section>

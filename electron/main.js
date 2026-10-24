@@ -175,6 +175,21 @@ function guardWindow(win, origin) {
 				},
 			};
 		}
+		// Motion Studio opened from the editor: another app window.
+		if (url.startsWith(`${origin}/motion`)) {
+			return {
+				action: "allow",
+				overrideBrowserWindowOptions: {
+					width: 1440,
+					height: 900,
+					title: "Motion Studio — Worksuite FrameFlow",
+					backgroundColor: windowBackground(),
+					autoHideMenuBar: true,
+					icon: path.join(__dirname, "build", "icon.png"),
+					webPreferences: { contextIsolation: true, sandbox: true, preload: path.join(__dirname, "preload.js") },
+				},
+			};
+		}
 		shell.openExternal(url);
 		return { action: "deny" };
 	});

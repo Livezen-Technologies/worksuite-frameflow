@@ -92,6 +92,8 @@ export interface MotionProject {
 	groups: LayerGroup[];
 	/** Absent in older projects: loop forwards at normal speed. */
 	playback?: PlaybackSettings;
+	/** Published to the video editor's Motion tab; kept up to date on save. */
+	usedInVideo?: boolean;
 	createdAt: number;
 	updatedAt: number;
 }

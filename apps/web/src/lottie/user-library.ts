@@ -90,6 +90,14 @@ export async function importUserLottie(file: File): Promise<UserLottie> {
 	return entry;
 }
 
+/** Stores (or replaces) an animation under a fixed id, e.g. one published from Motion Studio. */
+export async function saveUserLottie({ id, name, json }: { id: string; name: string; json: LottieJson }): Promise<UserLottie> {
+	const previous = await store().get(id);
+	const entry: UserLottie = { id, name, json, colors: detectColorSlots(json), importedAt: previous?.importedAt ?? Date.now() };
+	await store().set({ key: id, value: entry });
+	return entry;
+}
+
 export function getUserLottie(id: string): Promise<UserLottie | null> {
 	return store().get(id);
 }

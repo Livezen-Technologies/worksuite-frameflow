@@ -28,6 +28,7 @@ import { findPackAsset, type PackIndexAsset, resolvePackVariant } from "../catal
 import { brandColorOverrides, resolveSlotColors, setSlotColor, switchLottieVariant } from "../element";
 import type { LottieColorSlot, LottieElementData, LottieSource } from "../types";
 import { getUserLottie } from "../user-library";
+import { motionProjectIdOf } from "@/motion-studio/video-link";
 import { useMotionEditor } from "../motion-editor/store";
 
 const SPEEDS = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 2, 3];
@@ -120,6 +121,17 @@ export function LottieTab({
 				>
 					Edit motion…
 				</Button>
+				{live.source.kind === "user" && motionProjectIdOf(live.source.id) && (
+					<Button
+						variant="outline"
+						size="sm"
+						className="mt-1.5 w-full"
+						data-open-in-motion-studio
+						onClick={() => window.open(`/motion/${motionProjectIdOf(live.source.kind === "user" ? live.source.id : "")}`, "_blank")}
+					>
+						Open in Motion Studio
+					</Button>
+				)}
 				{(packAsset?.textSlots?.length || packAsset?.imageSlots?.length) ? (
 					<p className="text-muted-foreground mt-1.5 text-xs">Change the words, fonts and pictures (e.g. your channel photo).</p>
 				) : null}
