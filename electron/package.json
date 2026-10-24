@@ -42,6 +42,8 @@
       "cloud-upload.js",
       "cloud-sync.js",
       "updater.js",
+      "asset-store.js",
+      "asset-pack-io.js",
       "capture.js",
       "network.js",
       "upload-queue.js",

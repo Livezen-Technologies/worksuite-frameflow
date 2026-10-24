@@ -16,6 +16,7 @@ const account = require("./account");
 const cloud = require("./cloud-upload");
 const cloudSync = require("./cloud-sync");
 const updates = require("./updater");
+const assetStore = require("./asset-store");
 const projectFolders = require("./project-folders");
 const ai = require("./ai");
 const automation = require("./automation");
@@ -194,6 +195,7 @@ async function createWindow() {
 		origin,
 		allow: [updates.FEED_BASE],
 	});
+	assetStore.handleProtocol({ session: win.webContents.session, origin });
 
 	// Keep the app on its own origin; open everything else in the system browser.
 	guardWindow(win, origin);
@@ -339,6 +341,7 @@ function registerAccountIpc() {
 		}
 	});
 	handle("cloud:cancel", () => cloud.cancelUpload());
+	assetStore.registerIpc(handle);
 	handle("updates:get-state", () => updates.getState());
 	handle("updates:check", () => updates.check());
 	handle("updates:download", () => updates.download());
@@ -416,6 +419,9 @@ function registerAccountIpc() {
 	});
 }
 
+// Installed asset packs are served to the page as wsc-asset://<pack>/<version>/<file>.
+assetStore.registerScheme();
+
 if (!app.requestSingleInstanceLock()) {
 	app.quit();
 } else {
@@ -458,6 +464,7 @@ if (!app.requestSingleInstanceLock()) {
 			);
 			account.init();
 			updates.init();
+			assetStore.init({ isOffline: () => network.getState().offline });
 			return createWindow();
 		})
 		.catch((err) => {

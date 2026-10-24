@@ -1,0 +1,21 @@
+{
+	"id": "worksuite-essentials",
+	"type": "motion",
+	"version": "1.0.0",
+	"title": "Worksuite Essentials",
+	"description": "Lower thirds, calls to action, callouts, reactions, Sri Lankan seasonal graphics, transitions and infographics. Recolourable, 30 fps.",
+	"tags": {
+		"en": ["lower third", "call to action", "callout", "reaction", "transition", "infographic"],
+		"si": ["චලන ග්‍රැෆික්", "සංක්‍රාන්ති"],
+		"ta": ["அசைவூட்டம்", "மாற்றம்"]
+	},
+	"languages": ["en"],
+	"licence": "MIT",
+	"minAppVersion": "1.0.0",
+	"plan": "free",
+	"builtin": true,
+	"source": {
+		"pack": "worksuite-pack",
+		"categories": ["lower-thirds", "call-to-action", "callouts", "reactions", "sri-lanka-seasonal", "transitions", "status-infographics"]
+	}
+}

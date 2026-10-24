@@ -1,0 +1,18 @@
+{
+	"id": "subscribe-buttons",
+	"type": "motion",
+	"version": "1.1.0",
+	"title": "Subscribe buttons",
+	"description": "Animated subscribe, bell and like buttons in English, Sinhala and Tamil, with editable words and a channel picture slot.",
+	"tags": {
+		"en": ["subscribe", "youtube", "bell", "like", "channel"],
+		"si": ["සබ්ස්ක්‍රයිබ්", "නාලිකාව"],
+		"ta": ["சப்ஸ்கிரைப்", "சேனல்"]
+	},
+	"languages": ["en", "si", "ta"],
+	"licence": "MIT",
+	"minAppVersion": "1.0.0",
+	"plan": "free",
+	"builtin": true,
+	"source": { "pack": "worksuite-pack", "categories": ["subscribe-buttons"] }
+}

@@ -9,6 +9,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
+- Asset Library with downloads from the Worksuite download center: browse motion graphics, sounds, transitions, effects, filters, colour profiles, LUTs, fonts and templates by type, search in English, Sinhala or Tamil, and install packs with progress, pause and resume. Packs are checked against a signed catalog and their SHA-256 before they are unpacked, update themselves (optional), and the built-in Worksuite packs show as installed and work offline. Publish packs with an `assets-v*` tag.
 - Sound effects for animations: an original click, pop, bell, whoosh and confetti shimmer are placed on an audio track, timed to the click, pop, bell or burst, when you add a subscribe button or the click, bell, like, mouse-click or confetti animations. Untick “Add sound” in Animations to leave them out; hover previews play sound after you click in the panel, with a mute button.
 - A “YouTube & subscribe” category in Animations: 16 original animated subscribe, bell and like buttons, with words in English, Sinhala and Tamil. Filter the library by language, or switch an added clip's language in its properties without losing its timing or colours.
 - The macOS app now includes FFmpeg (an LGPL-only build made by the new “FFmpeg for macOS” CI workflow), so proxies, HEIC and MKV conversion and the other FFmpeg features work on Mac too, on both Apple Silicon and Intel.
