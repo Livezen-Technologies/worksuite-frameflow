@@ -140,6 +140,8 @@ export function TransitionBar({ element, track, pixelsPerSecond }: { element: Ti
 		const from = clipBefore({ track, clip: element });
 		drag.current = { startX: e.clientX, start: transition, side, max: from ? maxTransitionFor({ from, to: element }) : MAX_TRANSITION_SECONDS };
 		setDragging(true);
+		// Show the cut in the preview so the length change is visible while dragging.
+		editor.playback.seek({ time: element.startTime });
 	};
 	const onMove = (e: React.PointerEvent) => {
 		const d = drag.current;

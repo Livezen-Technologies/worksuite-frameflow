@@ -1,5 +1,7 @@
 "use client";
 
+import { useActionHandler } from "@/actions/use-action-handler";
+import { TIMELINE_ZOOM_BUTTON_FACTOR } from "./interaction";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
 	Delete02Icon,
@@ -211,6 +213,10 @@ export function Timeline() {
 	useEffect(() => {
 		saveScrollPositionRef.current = saveScrollPosition;
 	}, [saveScrollPosition]);
+
+	useActionHandler("timeline-zoom-in", () => setZoomLevel((prev) => prev * TIMELINE_ZOOM_BUTTON_FACTOR), undefined);
+	useActionHandler("timeline-zoom-out", () => setZoomLevel((prev) => prev / TIMELINE_ZOOM_BUTTON_FACTOR), undefined);
+	useActionHandler("timeline-zoom-fit", () => setZoomLevel(minZoomLevel), undefined);
 
 	const minZoomLevelRef = useRef(minZoomLevel);
 	useEffect(() => {

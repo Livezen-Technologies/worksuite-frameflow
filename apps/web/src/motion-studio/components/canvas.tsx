@@ -33,7 +33,8 @@ type Drag =
 	| { kind: "rotate"; id: string; anchor: { x: number; y: number }; startAngle: number; r0: number }
 	| { kind: "pan"; startX: number; startY: number; panX: number; panY: number }
 	| { kind: "point"; id: string; index: number; part: "point" | "in" | "out"; makeHandles: boolean; start: { x: number; y: number } }
-	| { kind: "pen"; id: string; index: number };
+	| { kind: "pen"; id: string; index: number }
+	| { kind: "mpath"; id: string; t: number; start: { x: number; y: number }; ox: number; oy: number };
 
 function union(boxes: Box[]): Box {
 	return {
@@ -91,6 +92,41 @@ function Ruler({ axis, view, size, length }: { axis: "x" | "y"; view: View; size
 				);
 			})}
 		</svg>
+	);
+}
+
+/**
+ * The selected layer's motion path: where its anchor travels over the whole
+ * animation (dashed), with a dot per position keyframe to drag.
+ */
+function MotionPath({ layer, duration, fps, handle }: { layer: Layer; duration: number; fps: number; handle: number }) {
+	const steps = Math.max(2, Math.min(600, Math.round(duration * fps)));
+	const points: string[] = [];
+	for (let i = 0; i <= steps; i++) {
+		const t = (i / steps) * duration;
+		points.push(`${valueAt({ layer, prop: "x", t }).toFixed(1)},${valueAt({ layer, prop: "y", t }).toFixed(1)}`);
+	}
+	const times = [...new Set([...(layer.keyframes.x ?? []), ...(layer.keyframes.y ?? [])].map((k) => k.t))].sort((a, b) => a - b);
+	return (
+		<g data-motion-path>
+			<polyline points={points.join(" ")} fill="none" stroke="#F59E0B" strokeWidth={1.5} strokeDasharray="6 5" vectorEffect="non-scaling-stroke" pointerEvents="none" />
+			{times.map((t) => (
+				<circle
+					key={t}
+					data-handle={`mp:${t}`}
+					cx={valueAt({ layer, prop: "x", t })}
+					cy={valueAt({ layer, prop: "y", t })}
+					r={handle / 1.8}
+					fill="#0f172a"
+					stroke="#F59E0B"
+					strokeWidth={2}
+					vectorEffect="non-scaling-stroke"
+					style={{ cursor: "move" }}
+				>
+					<title>{`${t.toFixed(2)} s: drag to move this position`}</title>
+				</circle>
+			))}
+		</g>
 	);
 }
 
@@ -259,6 +295,14 @@ export function MotionCanvas({ tool, setTool }: { tool: Tool; setTool: (tool: To
 			};
 			return;
 		}
+		if (selected && handle?.startsWith("mp:")) {
+			// A motion-path dot: drag to move the layer's position at that keyframe.
+			const t = Number(handle.slice(3));
+			s.checkpoint();
+			s.setTime(t);
+			drag.current = { kind: "mpath", id: selected.id, t, start: p, ox: valueAt({ layer: selected, prop: "x", t }), oy: valueAt({ layer: selected, prop: "y", t }) };
+			return;
+		}
 		if (selected && (handle === "scale" || handle === "rotate")) {
 			const anchor = { x: valueAt({ layer: selected, prop: "x", t: s.time }), y: valueAt({ layer: selected, prop: "y", t: s.time }) };
 			s.checkpoint();
@@ -330,6 +374,12 @@ export function MotionCanvas({ tool, setTool }: { tool: Tool; setTool: (tool: To
 					return editProp({ layer: editProp({ layer: l, prop: "x", t: s.time, v: o.x + dx }), prop: "y", t: s.time, v: o.y + dy });
 				}),
 			}));
+			return;
+		}
+		if (d.kind === "mpath") {
+			const x = Math.round(d.ox + p.x - d.start.x);
+			const y = Math.round(d.oy + p.y - d.start.y);
+			s.updateLayer({ id: d.id, update: (l) => editProp({ layer: editProp({ layer: l, prop: "x", t: d.t, v: x }), prop: "y", t: d.t, v: y }), preview: true });
 			return;
 		}
 		if (d.kind === "scale") {
@@ -468,6 +518,9 @@ export function MotionCanvas({ tool, setTool }: { tool: Tool; setTool: (tool: To
 						})}
 					</g>
 				)}
+				{single && !single.locked && (single.keyframes.x?.length || single.keyframes.y?.length) ? (
+					<MotionPath layer={single} duration={project.duration} fps={project.fps} handle={handle} />
+				) : null}
 				{guides.map((g) =>
 					g.axis === "x" ? (
 						<line key={`x${g.at}`} x1={g.at} x2={g.at} y1={-10000} y2={10000} stroke="#F43F5E" vectorEffect="non-scaling-stroke" data-guide />

@@ -1,6 +1,7 @@
 "use client";
 
-import { memo } from "react";
+import { memo, useEffect, useState } from "react";
+import { animatedFrameUrls, frameIndexAt, isAnimatedSrc, type FrameUrls } from "../animated-frames";
 import { layerSize, pathD, valueAt, type Layer, type MotionProject } from "../model";
 
 export function layerTransform({ layer, t }: { layer: Layer; t: number }): string {
@@ -12,7 +13,24 @@ export function layerTransform({ layer, t }: { layer: Layer; t: number }): strin
 	return `translate(${x} ${y}) rotate(${r}) scale(${s}) translate(${-layer.anchorX * w} ${-layer.anchorY * h})`;
 }
 
-function Shape({ layer }: { layer: Layer }) {
+/** A picture layer; animated GIF/WebP show the frame for the playhead. */
+function ImageShape({ layer, t }: { layer: Extract<Layer, { kind: "image" }>; t: number }) {
+	const [frames, setFrames] = useState<FrameUrls | null>(null);
+	useEffect(() => {
+		if (!isAnimatedSrc(layer.src)) return;
+		let cancelled = false;
+		void animatedFrameUrls(layer.src).then((f) => {
+			if (!cancelled) setFrames(f);
+		});
+		return () => {
+			cancelled = true;
+		};
+	}, [layer.src]);
+	const href = frames ? (frames.urls[frameIndexAt({ frames, seconds: t })] ?? layer.src) : layer.src;
+	return <image href={href} width={layer.w} height={layer.h} preserveAspectRatio="none" />;
+}
+
+function Shape({ layer, t }: { layer: Layer; t: number }) {
 	switch (layer.kind) {
 		case "rect":
 			return (
@@ -66,7 +84,7 @@ function Shape({ layer }: { layer: Layer }) {
 				</text>
 			);
 		case "image":
-			return <image href={layer.src} width={layer.w} height={layer.h} preserveAspectRatio="none" />;
+			return <ImageShape layer={layer} t={t} />;
 	}
 }
 
@@ -79,7 +97,7 @@ export const StageLayer = memo(function StageLayer({ layer, t }: { layer: Layer;
 			opacity={valueAt({ layer, prop: "opacity", t })}
 			data-motion-layer={layer.id}
 		>
-			<Shape layer={layer} />
+			<Shape layer={layer} t={t} />
 		</g>
 	);
 });
