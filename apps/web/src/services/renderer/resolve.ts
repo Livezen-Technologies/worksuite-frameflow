@@ -65,6 +65,7 @@ import {
 	type ResolvedGraphicNodeState,
 } from "./nodes/graphic-node";
 import { ImageNode, loadImageSource } from "./nodes/image-node";
+import { animatedFrameAt, loadAnimatedImage } from "@/media/animated-image";
 import { StickerNode, loadStickerSource } from "./nodes/sticker-node";
 import {
 	getDriftAsset,
@@ -556,6 +557,31 @@ async function resolveImageNode({
 	node: ImageNode;
 	context: ResolveContext;
 }): Promise<ResolvedVisualSourceNodeState | null> {
+	const animated = await loadAnimatedImage({
+		url: node.params.url,
+		maxSourceSize: node.params.maxSourceSize,
+	});
+	if (animated) {
+		// Animated GIF/WebP: the frame at this clip time, looping.
+		const sampleTime = getTransitionSampleTime({ params: node.params, time: context.time });
+		if (sampleTime === null) return null;
+		const sourceTicks =
+			node.params.trimStart +
+			getSourceTimeAtClipTime({ clipTime: sampleTime - node.params.timeOffset, retime: node.params.retime });
+		const visualState = resolveVisualState({
+			params: node.params,
+			context,
+			sourceWidth: animated.width,
+			sourceHeight: animated.height,
+		});
+		if (!visualState) return null;
+		return {
+			...visualState,
+			source: animatedFrameAt({ image: animated, seconds: sourceTicks / TICKS_PER_SECOND }),
+			sourceWidth: animated.width,
+			sourceHeight: animated.height,
+		};
+	}
 	const source = await loadImageSource({
 		url: node.params.url,
 		maxSourceSize: node.params.maxSourceSize,
