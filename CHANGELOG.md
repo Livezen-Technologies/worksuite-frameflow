@@ -9,6 +9,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
+- Drag GIFs and stickers from Elements → GIFs straight onto the timeline (they get ready while you hover). Dropped animated GIF/WebP files now get a clip at least one loop long instead of the default still length.
 - Motion Studio icons: 25 original icons (heart, stars, arrows, play, bell, thumbs up, chat, pin, lightning, crown and more) you can search and add in any colour as editable vector paths. SVG files you import now become editable shapes (with their fills and strokes) when they're simple shapes; others are still added as a picture.
 - Animated GIFs and WebPs in Motion Studio play in GIF, video and PNG-sequence exports, in step with the animation.
 - Shortcut manager (Ctrl/⌘+/ or the project menu): search actions or keys, click a key to change it, + to add another key for the same action, × to remove one, and ↺ to put an action back to its default. Keys already in use ask before they are moved. Every action is listed, including ones without a key yet. Presets for Premiere Pro, Final Cut Pro and CapCut style keys, and Import/Export of your shortcuts as a file.

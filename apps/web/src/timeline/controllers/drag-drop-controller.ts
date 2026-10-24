@@ -7,6 +7,7 @@ import {
 	toElementDurationTicks,
 } from "@/timeline/creation";
 import { BASE_TIMELINE_PIXELS_PER_SECOND } from "@/timeline/scale";
+import { animatedImageDuration } from "@/media/animated-image";
 import type { FrameRate } from "opencut-wasm";
 import {
 	buildTextElement,
@@ -527,9 +528,13 @@ export class DragDropController {
 					});
 					if (!createdAsset) continue;
 
-					const duration = toElementDurationTicks({
-						seconds: createdAsset.duration,
-					});
+					// Animated GIF/WebP: at least one whole loop, repeated to the default still length.
+					let seconds = createdAsset.duration;
+					if (seconds == null && createdAsset.type === "image" && /image\/(gif|webp)/.test(createdAsset.file.type)) {
+						const loop = await animatedImageDuration(createdAsset.file);
+						if (loop) seconds = Math.max(loop, Math.ceil(5 / loop) * loop);
+					}
+					const duration = toElementDurationTicks({ seconds });
 
 					const sceneTracks = this.config.getSceneTracks();
 					const currentTime = this.config.getCurrentPlayheadTime();
