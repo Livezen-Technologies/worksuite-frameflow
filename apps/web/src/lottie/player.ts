@@ -15,6 +15,7 @@ import {
 	slotText,
 	traceMask,
 } from "./slots";
+import { frameTime, renderAnimatedText } from "@/text-animation/render";
 import type { LottieJson, LottieSlotOverrides, LottieSource } from "./types";
 import { getUserLottie } from "./user-library";
 
@@ -127,6 +128,26 @@ interface Instance {
 	lastUsed: number;
 }
 
+/** An imported animation's text slots and colours, shaped like a pack asset for slot drawing. */
+export async function userAsset(id: string): Promise<PackIndexAsset | null> {
+	const entry = await getUserLottie(id);
+	if (!entry?.textSlots?.length) return null;
+	return {
+		id,
+		name: entry.name,
+		category: "user",
+		path: "",
+		tags: [],
+		durationSec: (entry.json.op - entry.json.ip) / entry.json.fr,
+		loop: false,
+		width: entry.json.w,
+		height: entry.json.h,
+		colors: entry.colors,
+		textSlots: entry.textSlots,
+		files: {},
+	};
+}
+
 const MAX_INSTANCES = 16;
 const instances = new Map<string, Promise<Instance>>();
 const ready = new Map<string, Instance>();
@@ -163,7 +184,7 @@ async function getInstance({
 			const [lottie, json, asset] = await Promise.all([
 				loadLottieRuntime(),
 				loadLottieJson(source),
-				source.kind === "pack" ? findPackAsset(source.assetId, source.pack) : Promise.resolve(null),
+				source.kind === "pack" ? findPackAsset(source.assetId, source.pack) : userAsset(source.id),
 			]);
 			const hide = layersToHide({ textSlots: asset?.textSlots ?? [], imageSlots: asset?.imageSlots ?? [], overrides: slots });
 			const canvas = document.createElement("canvas");
@@ -239,9 +260,11 @@ async function drawSlots({
 	lang,
 	width,
 	height,
+	frameIndex = 0,
 }: {
 	context: Context2D;
 	instance: Instance;
+	frameIndex?: number;
 	slots?: LottieSlotOverrides;
 	colors: Record<string, string>;
 	lang?: string;
@@ -311,6 +334,30 @@ async function drawSlots({
 		const colorSlot = asset.colors.find((c) => c.id === slot.color);
 		const authored = colorSlot?.default.toUpperCase() ?? "#FFFFFF";
 		context.fillStyle = override.color ?? colors[authored] ?? authored;
+		if (override.textAnimation) {
+			// Engine-animated words: same renderer as text clips, timed by the animation frame.
+			const fps = instance.animation.frameRate || 30;
+			renderAnimatedText({
+				ctx: context,
+				text,
+				animation: override.textAnimation,
+				time: frameTime(frameIndex, fps),
+				duration: instance.animation.totalFrames / fps,
+				x: alignedX(box, width2, slot.align) + width2 / 2,
+				y: box.y + box.h / 2,
+				style: {
+					fontFamily: family,
+					fontWeight: weight,
+					fontSize: size,
+					tracking: spacingEm,
+					lineHeight: 1.15,
+					align: slot.align,
+					fill: String(context.fillStyle),
+				},
+			});
+			context.restore();
+			continue;
+		}
 		context.textBaseline = "middle";
 		context.textAlign = "left";
 		context.fillText(text, alignedX(box, width2, slot.align), box.y + box.h / 2);
@@ -382,6 +429,7 @@ export async function drawLottieFrame({
 		lang: source.kind === "pack" ? source.variant : undefined,
 		width: target.width,
 		height: target.height,
+		frameIndex: frame,
 	});
 }
 
