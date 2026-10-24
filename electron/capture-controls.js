@@ -106,6 +106,11 @@ module.exports = {
 		registerShortcuts();
 	},
 
+	/** Sends commands to this window (the recorder window while it's open). */
+	setTarget(window) {
+		editor = window;
+	},
+
 	/** Returns accelerators another app already holds. */
 	setShortcuts(next) {
 		shortcuts = { ...DEFAULT_SHORTCUTS };

@@ -15,9 +15,14 @@ import { formatDuration } from "@/recording/session";
 import { useRecordingSettings } from "@/recording/settings";
 import { deleteSessionData } from "@/recording/storage";
 import { cn } from "@/utils/ui";
+import { findProtected } from "@/recording/privacy";
 import { RECORDER_CHANNEL, type OpenRecordingMessage } from "../handoff";
+import { type Take, thumbnailOf, useRecorderLibrary, useRecorderPrefs } from "../library";
+import { RecorderSettings, RecordingsLibrary } from "./recorder-panels";
 
 type Phase = "setup" | "countdown" | "recording" | "stopping" | "done";
+type View = "record" | "library" | "settings";
+const VIEW_HEIGHT: Record<View, number> = { record: 290, library: 620, settings: 600 };
 
 function modeFor({ screen, camera }: { screen: boolean; camera: boolean }): RecordingMode {
 	if (screen && camera) return "screen-camera";
@@ -54,6 +59,9 @@ function RecorderWindow() {
 	const [level, setLevel] = useState(-90);
 	const [result, setResult] = useState<RecordingResult | null>(null);
 	const recorder = useRef<Recorder | null>(null);
+	const [view, setView] = useState<View>("record");
+	const [take, setTake] = useState<Take | null>(null);
+	const folder = useRecorderPrefs((s) => s.folder);
 	const cameraPreview = useRef<HTMLVideoElement>(null);
 	const desktop = !!window.worksuite?.capture;
 
@@ -128,6 +136,37 @@ function RecorderWindow() {
 		return () => window.clearInterval(timer);
 	}, [phase]);
 
+	useEffect(() => {
+		void window.worksuite?.recorder?.setSize({ width: 900, height: VIEW_HEIGHT[view] });
+	}, [view]);
+
+	// Hold notifications back and pause for private windows during a take (CT-R4).
+	useEffect(() => {
+		if (phase !== "recording") return;
+		const capture = window.worksuite?.capture;
+		if (settings.doNotDisturb) void capture?.doNotDisturb?.(true);
+		let autoPaused = false;
+		const timer = window.setInterval(async () => {
+			const active = recorder.current;
+			if (!active || !capture?.windowNames || !screenOn) return;
+			const hit = findProtected({ windows: await capture.windowNames(), patterns: settings.protectedApps });
+			if (hit && !active.clock.paused) {
+				active.pause();
+				autoPaused = true;
+				setPaused(true);
+				toast.info(`Paused: ${hit} is open`);
+			} else if (!hit && autoPaused && active.clock.paused) {
+				active.resume();
+				autoPaused = false;
+				setPaused(false);
+			}
+		}, 2000);
+		return () => {
+			window.clearInterval(timer);
+			if (settings.doNotDisturb) void capture?.doNotDisturb?.(false);
+		};
+	}, [phase, settings.doNotDisturb, settings.protectedApps, screenOn]);
+
 	const canRecord = screenOn || cameraOn || micOn;
 
 	const begin = async () => {
@@ -172,13 +211,42 @@ function RecorderWindow() {
 		if (!active) return;
 		setPhase("stopping");
 		try {
-			setResult(await active.stop());
+			const finished = await active.stop();
+			setResult(finished);
 			setPhase("done");
+			setTake(await keepInLibrary(finished));
 		} catch (error) {
 			toast.error(error instanceof Error ? error.message : "Couldn't finish the recording");
 			setPhase("setup");
 		} finally {
 			recorder.current = null;
+		}
+	};
+
+	/** Every finished take is saved to the recordings folder and listed in the library (CT-R1). */
+	const keepInLibrary = async (finished: RecordingResult): Promise<Take | null> => {
+		const bridge = window.worksuite?.recorder;
+		const main = finished.files.find((f) => f.role === "screen") ?? finished.files.find((f) => f.role === "camera") ?? finished.files[0];
+		if (!bridge || !main) return null;
+		try {
+			const saved = await bridge.saveTake({ fileName: main.file.name, data: await main.file.arrayBuffer(), folder });
+			const entry: Take = {
+				id: finished.session.id,
+				path: saved.path,
+				name: saved.path.split(/[\\/]/).pop() ?? main.file.name,
+				bytes: main.file.size,
+				duration: finished.session.duration,
+				mode: finished.session.mode,
+				markers: finished.session.markers.length,
+				thumbnail: await thumbnailOf(main.file),
+				createdAt: finished.session.startedAt,
+				session: finished.session,
+			};
+			useRecorderLibrary.getState().add(entry);
+			return entry;
+		} catch (error) {
+			toast.error(`Couldn't save the take to the library: ${error instanceof Error ? error.message : String(error)}`);
+			return null;
 		}
 	};
 
@@ -203,6 +271,7 @@ function RecorderWindow() {
 
 	const finish = (keep: boolean) => {
 		if (result && !keep) void deleteSessionData(result.session.id);
+		setTake(null);
 		setResult(null);
 		setPhase("setup");
 	};
@@ -243,6 +312,29 @@ function RecorderWindow() {
 		finish(true);
 	};
 
+	// Global shortcuts and the floating bar (CT-R3) drive this window while it's open.
+	const handlers = useRef({ begin, stop, togglePause, discard, phase });
+	useEffect(() => {
+		handlers.current = { begin, stop, togglePause, discard, phase };
+	});
+	useEffect(
+		() =>
+			window.worksuite?.capture?.onCommand?.((command) => {
+				const h = handlers.current;
+				if (command === "toggle") {
+					if (h.phase === "setup") void h.begin();
+					else if (h.phase === "recording") void h.stop();
+				} else if (command === "stop" && h.phase === "recording") void h.stop();
+				else if (command === "toggle-pause" && h.phase === "recording") h.togglePause();
+				else if (command === "discard" && h.phase === "recording") h.discard();
+				else if (command === "marker" && h.phase === "recording") {
+					const at = recorder.current?.addMarker();
+					if (at != null) toast.success(`Marker at ${formatDuration(at)}`);
+				}
+			}),
+		[],
+	);
+
 	const busy = phase !== "setup";
 	const areaPx = settings.area
 		? {
@@ -252,8 +344,33 @@ function RecorderWindow() {
 		: null;
 
 	return (
-		<div className="bg-background text-foreground flex min-h-screen select-none flex-col" data-recorder>
-			<div className="flex flex-1 items-stretch gap-3 p-3">
+		<div className="bg-background text-foreground flex h-screen select-none flex-col" data-recorder>
+			<div className="flex shrink-0 items-center gap-1 border-b px-3 py-1">
+				{(
+					[
+						["record", "Record"],
+						["library", "Library"],
+						["settings", "Settings"],
+					] as const
+				).map(([id, label]) => (
+					<button
+						key={id}
+						type="button"
+						disabled={busy && id !== "record"}
+						onClick={() => setView(id)}
+						className={cn("rounded px-2.5 py-0.5 text-xs", view === id ? "bg-secondary font-semibold" : "text-muted-foreground hover:text-foreground disabled:opacity-40")}
+						data-recorder-view={id}
+					>
+						{label}
+					</button>
+				))}
+				<span className="text-muted-foreground ml-auto text-[11px]">
+					{settings.shortcuts.toggle} to start or stop
+				</span>
+			</div>
+			{view === "library" && <RecordingsLibrary />}
+			{view === "settings" && <RecorderSettings />}
+			<div className={cn("flex min-h-0 flex-1 items-stretch gap-3 p-3", view !== "record" && "hidden")}>
 				<Tile
 					on={screenOn}
 					onToggle={setScreenOn}
@@ -440,12 +557,22 @@ function RecorderWindow() {
 					<DialogHeader>
 						<DialogTitle>Recording finished</DialogTitle>
 						<DialogDescription>
-							{formatDuration(result?.session.duration ?? 0)} recorded. Save the video, or open it in the editor to
-							cut, add text and export.
+							{formatDuration(result?.session.duration ?? 0)} recorded{take ? " and kept in your Library" : ""}. Save a copy, or
+							open it in the editor to cut, add text and export.
 						</DialogDescription>
 					</DialogHeader>
 					<DialogFooter className="gap-2 sm:justify-between">
-						<Button variant="ghost" onClick={() => finish(false)} data-recorder-discard>
+						<Button
+							variant="ghost"
+							onClick={() => {
+								if (take) {
+									void window.worksuite?.recorder?.deleteTake(take.path);
+									useRecorderLibrary.getState().remove(take.id);
+								}
+								finish(false);
+							}}
+							data-recorder-discard
+						>
 							Discard
 						</Button>
 						<div className="flex gap-2">

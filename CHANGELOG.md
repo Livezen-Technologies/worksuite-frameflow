@@ -9,6 +9,9 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
+- **Recordings library** in the recorder window: every take is saved to Videos › Worksuite › Recordings and listed with a thumbnail, length, mode and markers, with Edit zooms (opens it in the editor), Quick export to MP4, Show in folder and Delete.
+- **Recorder settings**: quality (1080p 30, 1440p 60, 4K), hardware or software encoder for exports, count-down, save folder with free space shown in hours of recording, and editable global shortcuts that warn when another app already uses the key.
+- While the recorder window is open, the global shortcuts start and stop it, pause it and add markers. During a take it can hold notifications back and pauses on its own while a private app (such as a password manager) is open.
 - **Video downloader redesign**: paste many links at once (or press Ctrl+V anywhere) and each one is checked first, showing its title, length, size and quality choices, or why it can't be downloaded (DRM-protected streams, private links). HLS and DASH streams without DRM can now be saved.
 - Downloader options: quality (best, a specific quality, smallest or audio only), keep the original or convert, and download only part of a video. You confirm you own the video or have permission the first time you download from each site.
 - **Download queue**: 1 to 4 downloads at once, a speed limit, pause and resume (paused downloads continue where they stopped, even after a restart), and a size check when each one finishes.

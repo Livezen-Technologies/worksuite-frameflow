@@ -133,6 +133,13 @@ declare global {
 				open: () => Promise<void>;
 				focusMain: () => Promise<void>;
 				minimize: () => Promise<void>;
+				/** Saves a finished take into the recordings folder (CT-R1). */
+				saveTake: (args: { fileName: string; data: ArrayBuffer; folder?: string | null }) => Promise<{ path: string }>;
+				/** The recordings folder and its free space (CT-R2). */
+				folderInfo: (folder?: string | null) => Promise<{ folder: string; freeBytes: number | null }>;
+				exists: (filePath: string) => Promise<boolean>;
+				deleteTake: (filePath: string) => Promise<boolean>;
+				setSize: (size: { width: number; height: number }) => Promise<void>;
 			};
 		};
 	}

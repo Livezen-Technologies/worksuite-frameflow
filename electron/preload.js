@@ -161,6 +161,11 @@ contextBridge.exposeInMainWorld("worksuite", {
 		open: () => ipcRenderer.invoke("recorder:open"),
 		focusMain: () => ipcRenderer.invoke("recorder:focus-main"),
 		minimize: () => ipcRenderer.invoke("recorder:minimize"),
+		saveTake: (args) => ipcRenderer.invoke("recorder:save-take", args),
+		folderInfo: (folder) => ipcRenderer.invoke("recorder:folder-info", folder),
+		exists: (filePath) => ipcRenderer.invoke("recorder:exists", filePath),
+		deleteTake: (filePath) => ipcRenderer.invoke("recorder:delete-take", filePath),
+		setSize: (size) => ipcRenderer.invoke("recorder:set-size", size),
 	},
 	files: {
 		saveExport: (args) => ipcRenderer.invoke("files:save-export", args),

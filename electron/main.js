@@ -228,8 +228,11 @@ function openRecorder() {
 	});
 	recorderWindow.setContentProtection(true);
 	guardWindow(recorderWindow, appOrigin);
+	// Global shortcuts drive the recorder window while it's open (CT-R3).
+	captureControls.setTarget(recorderWindow);
 	recorderWindow.on("closed", () => {
 		recorderWindow = null;
+		if (mainWindow && !mainWindow.isDestroyed()) captureControls.setTarget(mainWindow);
 	});
 	void recorderWindow.loadURL(`${appOrigin}/recorder`);
 }
@@ -396,6 +399,39 @@ function registerAccountIpc() {
 		return data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength);
 	});
 	handle("recorder:focus-main", () => focusMain());
+	// Recordings library and settings (CT-R1, CT-R2).
+	const recordingsFolder = (folder) => (typeof folder === "string" && path.isAbsolute(folder) ? folder : path.join(app.getPath("videos"), "Worksuite", "Recordings"));
+	handle("recorder:save-take", async ({ fileName, data, folder } = {}) => {
+		const dir = recordingsFolder(folder);
+		await fs.promises.mkdir(dir, { recursive: true });
+		const clean = path.basename(String(fileName)).replace(/[<>:"|?*\x00-\x1f]/g, "_") || "Recording.webm";
+		const ext = path.extname(clean);
+		const stem = clean.slice(0, clean.length - ext.length);
+		let target = path.join(dir, clean);
+		for (let n = 2; fs.existsSync(target); n++) target = path.join(dir, `${stem} (${n})${ext}`);
+		await writeAtomically(target, Buffer.from(data));
+		rememberExport(target);
+		return { path: target };
+	});
+	handle("recorder:folder-info", async (folder) => {
+		const dir = recordingsFolder(folder);
+		await fs.promises.mkdir(dir, { recursive: true }).catch(() => {});
+		const stats = await fs.promises.statfs(dir).catch(() => null);
+		return { folder: dir, freeBytes: stats ? stats.bavail * stats.bsize : null };
+	});
+	handle("recorder:delete-take", async (filePath) => {
+		if (typeof filePath !== "string" || !savedExports.has(filePath)) return false;
+		await fs.promises.rm(filePath, { force: true });
+		return true;
+	});
+	handle("recorder:exists", (filePath) => typeof filePath === "string" && savedExports.has(filePath) && fs.existsSync(filePath));
+	handleFrom("recorder:set-size", (event, { width, height } = {}) => {
+		const win = BrowserWindow.fromWebContents(event.sender);
+		if (!win || win !== recorderWindow) return;
+		const w = Math.max(760, Math.min(1400, Number(width) || 900));
+		const h = Math.max(220, Math.min(1000, Number(height) || 260));
+		win.setSize(w, h, true);
+	});
 	handleFrom("recorder:minimize", (event) => BrowserWindow.fromWebContents(event.sender)?.minimize());
 	handle("capture:sources", () => capture.listSources());
 	handle("capture:choose", (id) => capture.chooseSource(id));
