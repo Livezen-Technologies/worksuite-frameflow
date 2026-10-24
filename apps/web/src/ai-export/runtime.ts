@@ -12,8 +12,9 @@ export function loadOrt(): Promise<typeof Ort> {
 	if (!ortPromise) {
 		ortPromise = (
 			// A runtime file from public/ has no types; it is onnxruntime-web's own bundle.
+			// Resolved at run time from the page URL so no bundler (Next, OpenNext) tries to resolve it.
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
-			import(/* webpackIgnore: true */ /* turbopackIgnore: true */ ORT_URL) as Promise<
+			import(/* webpackIgnore: true */ /* turbopackIgnore: true */ new URL(ORT_URL, location.href).href) as Promise<
 				typeof Ort
 			>
 		).then((ort) => {

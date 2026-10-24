@@ -193,6 +193,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Fixed
 
+- The web app builds for Cloudflare Workers: Next.js 16.1.7 (from 16.1.3) and AI export's runtime loader no longer trip the Workers bundler.
 - Timeline zoom is smoother, and the last thumbnail of a video clip now shows its own frame instead of the poster.
 - After adding an animation from Elements → Animations, its controls and **Edit motion…** show straight away (its sound clips are no longer selected with it). Escape closes the Motion Editor, and Ctrl/Cmd+Z works in it as soon as it opens. The properties panel no longer shows a stray "0" after "elements selected".
 - Video clips on the timeline show a real filmstrip: each thumbnail is the frame at that point of the clip, and they update when you trim, move, zoom or change the speed (they used to repeat one frame). Frames load only for what's on screen.
