@@ -7,6 +7,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+## [1.4.1] - 2026-10-24
+
 ### Changed
 
 - Updates: the Beta channel is now the default, a system notification tells you when a new version is available or ready to install, and update checks fall back to the GitHub release when the download center has no update feed.
