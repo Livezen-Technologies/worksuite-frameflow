@@ -33,6 +33,7 @@ export class SaveManager {
 			}),
 			this.editor.timeline.subscribe(() => {
 				this.markDirty();
+				this.editor.project.scheduleThumbnailRefresh();
 			}),
 		];
 	}

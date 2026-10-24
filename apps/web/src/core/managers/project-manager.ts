@@ -180,7 +180,8 @@ export class ProjectManager {
 				],
 			});
 
-			if (!project.metadata.thumbnail) {
+			// Redrawn on every open, so older black thumbnails get fixed too.
+			if (!project.metadata.cover) {
 				try {
 					const didUpdateThumbnail = await this.updateThumbnailFromTimeline();
 					if (didUpdateThumbnail) {
@@ -729,44 +730,35 @@ export class ProjectManager {
 		return canvas;
 	}
 
+	private thumbnailTimer: ReturnType<typeof setTimeout> | null = null;
+
+	/** Redraws the thumbnail a little after editing stops, so the home screen stays current. */
+	scheduleThumbnailRefresh(): void {
+		if (this.thumbnailTimer) clearTimeout(this.thumbnailTimer);
+		this.thumbnailTimer = setTimeout(() => {
+			this.thumbnailTimer = null;
+			void this.updateThumbnailFromTimeline().catch((error) =>
+				console.error("Failed to refresh project thumbnail:", error),
+			);
+		}, 8000);
+	}
+
 	private async updateThumbnailFromTimeline(): Promise<boolean> {
 		if (!this.active) return false;
 		// A chosen cover is the thumbnail.
 		if (this.active.metadata.cover) return false;
 
-		const tracks = this.editor.scenes.getActiveScene().tracks;
-		const mediaAssets = this.editor.media.getAssets();
+		// The first frame is often black (fade-ins, recordings), so use the
+		// first of a few frames that shows something.
 		const duration = this.editor.timeline.getTotalDuration();
-		const { canvasSize, background } = this.active.settings;
-
-		const scene = buildScene({
-			grade: savedTimelineGrade(this.editor.scenes.getActiveScene().grade),
-			tracks,
-			mediaAssets,
-			duration: duration || 1,
-			canvasSize,
-			background,
-		});
-
-		const renderer = new CanvasRenderer({
-			width: canvasSize.width,
-			height: canvasSize.height,
-			fps: this.active.settings.fps,
-		});
-		// Stills you keep use the original media, not proxies.
-		renderer.useProxies = false;
-
-		const tempCanvas = document.createElement("canvas");
-		tempCanvas.width = canvasSize.width;
-		tempCanvas.height = canvasSize.height;
-
-		await renderer.renderToCanvas({
-			node: scene,
-			time: 0,
-			targetCanvas: tempCanvas,
-		});
-
-		const thumbnailDataUrl = tempCanvas.toDataURL("image/png");
+		const times = [0.1, 0.3, 0.5, 0.75, 0].map((share) => Math.round(duration * share));
+		let canvas: HTMLCanvasElement | null = null;
+		for (const time of times) {
+			canvas = await this.renderFrame({ time, maxSize: 640 });
+			if (!looksBlank(canvas)) break;
+		}
+		if (!canvas) return false;
+		const thumbnailDataUrl = canvas.toDataURL("image/jpeg", 0.85);
 
 		await this.updateThumbnail({ thumbnail: thumbnailDataUrl });
 		return true;
@@ -792,3 +784,19 @@ export class ProjectManager {
 		});
 	}
 }
+
+/** True when a frame is nearly all one dark colour (nothing to recognise it by). */
+function looksBlank(canvas: HTMLCanvasElement): boolean {
+	const ctx = canvas.getContext("2d");
+	if (!ctx) return false;
+	const { data } = ctx.getImageData(0, 0, canvas.width, canvas.height);
+	let bright = 0;
+	let samples = 0;
+	const step = Math.max(4, Math.floor(data.length / 4 / 4000)) * 4;
+	for (let i = 0; i < data.length; i += step) {
+		samples += 1;
+		if (data[i]! + data[i + 1]! + data[i + 2]! > 60) bright += 1;
+	}
+	return bright / Math.max(1, samples) < 0.02;
+}
+
