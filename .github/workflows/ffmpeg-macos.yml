@@ -1,0 +1,72 @@
+name: FFmpeg for macOS
+
+# Builds the LGPL-only FFmpeg the desktop app's media helper ships on macOS
+# (scripts/build-ffmpeg-macos.sh) and publishes it on the "ffmpeg-macos"
+# release, where Desktop Build picks it up. Re-run it to update FFmpeg.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, "claude/**"]
+    paths:
+      - scripts/build-ffmpeg-macos.sh
+      - .github/workflows/ffmpeg-macos.yml
+
+concurrency:
+  group: ffmpeg-macos-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: macOS ${{ matrix.arch }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: arm64
+            os: macos-14
+          - arch: x64
+            os: macos-15-intel
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install build tools
+        run: brew install nasm ninja cmake pkg-config
+
+      - name: Build FFmpeg
+        run: ./scripts/build-ffmpeg-macos.sh "$RUNNER_TEMP/out"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ffmpeg-darwin-${{ matrix.arch }}
+          path: ${{ runner.temp }}/out/ffmpeg-darwin-${{ matrix.arch }}.zip
+          if-no-files-found: error
+
+  publish:
+    name: Publish to the ffmpeg-macos release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: out
+          merge-multiple: true
+
+      - name: Publish
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ffmpeg-macos
+          name: FFmpeg for macOS (LGPL)
+          target_commitish: ${{ github.sha }}
+          prerelease: true
+          make_latest: false
+          body: |
+            LGPL-only FFmpeg for the Worksuite FrameFlow desktop app on macOS, built by
+            `scripts/build-ffmpeg-macos.sh` from commit ${{ github.sha }}. Each zip has the
+            binary, its licence (LGPL 2.1+) and BUILD.txt with the exact sources and configure
+            line. Desktop Build downloads these; nothing to install by hand.
+          files: out/*.zip

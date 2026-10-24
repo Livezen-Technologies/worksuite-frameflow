@@ -6,8 +6,10 @@
 //   node scripts/fetch-ffmpeg.mjs                 this machine
 //   node scripts/fetch-ffmpeg.mjs win32-x64       another target
 //
-// macOS has no LGPL build from the same source: set FFMPEG_DARWIN_URL to
-// a .zip or .tar.* of an LGPL ffmpeg for macOS, or proxies stay off there.
+// macOS has no LGPL build from the same source: the "FFmpeg for macOS"
+// workflow builds one (scripts/build-ffmpeg-macos.sh) and Desktop Build
+// passes it in through FFMPEG_DARWIN_URL / FFMPEG_DARWIN_ARM64_URL, which
+// take a URL or a local .zip / .tar.* path. Without them, proxies stay off.
 import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
@@ -38,11 +40,18 @@ if (fs.existsSync(path.join(outDir, exe)) && !process.env.FFMPEG_REFRESH) {
 }
 
 const work = fs.mkdtempSync(path.join(os.tmpdir(), "ffmpeg-"));
-const archive = path.join(work, path.basename(new URL(url).pathname));
-console.log(`fetch-ffmpeg: downloading ${url}`);
-const res = await fetch(url);
-if (!res.ok) throw new Error(`Download failed: ${res.status}`);
-fs.writeFileSync(archive, Buffer.from(await res.arrayBuffer()));
+// A local archive (CI downloads the macOS build first) or a URL.
+const isLocal = !/^https?:\/\//.test(url);
+const archive = path.join(work, path.basename(isLocal ? url : new URL(url).pathname));
+if (isLocal) {
+	console.log(`fetch-ffmpeg: using ${url}`);
+	fs.copyFileSync(url, archive);
+} else {
+	console.log(`fetch-ffmpeg: downloading ${url}`);
+	const res = await fetch(url);
+	if (!res.ok) throw new Error(`Download failed: ${res.status}`);
+	fs.writeFileSync(archive, Buffer.from(await res.arrayBuffer()));
+}
 
 const extract = path.join(work, "x");
 fs.mkdirSync(extract);

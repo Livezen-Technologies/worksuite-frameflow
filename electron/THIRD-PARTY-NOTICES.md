@@ -21,12 +21,15 @@ each component.
 
 ## FFmpeg (editing proxies)
 
-- Build: FFmpeg LGPL build (no GPL or non-free parts), from
-  https://github.com/BtbN/FFmpeg-Builds; `resources/ffmpeg/BUILD.txt` lists the
-  exact version and configuration
-- Licence: LGPL-3.0; see `resources/ffmpeg/FFMPEG-LICENSE.txt`
-- Source: https://ffmpeg.org/download.html and the build scripts at
-  https://github.com/BtbN/FFmpeg-Builds
+- Build: FFmpeg LGPL build (no GPL or non-free parts). Windows and Linux:
+  from https://github.com/BtbN/FFmpeg-Builds. macOS: built by
+  `scripts/build-ffmpeg-macos.sh` in this repository with lame (LGPL),
+  openh264, kvazaar and SVT-AV1 (BSD) linked statically.
+  `resources/ffmpeg/BUILD.txt` lists the exact version, sources and configuration
+- Licence: LGPL (3.0 for the BtbN builds, 2.1 or later for macOS); see
+  `resources/ffmpeg/FFMPEG-LICENSE.txt`
+- Source: https://ffmpeg.org/download.html, the build scripts at
+  https://github.com/BtbN/FFmpeg-Builds, and `scripts/build-ffmpeg-macos.sh`
 - Where it is: `resources/ffmpeg/ffmpeg` (`ffmpeg.exe` on Windows)
 - To replace it: put your own `ffmpeg` executable in that location. The app runs it as a separate
   program and does not link to it.

@@ -104,12 +104,37 @@ jobs:
         working-directory: electron
         run: npm run prepare-web
 
-      # LGPL FFmpeg for proxies; macOS needs FFMPEG_DARWIN_URL (repo variable) or ships without it.
+      # LGPL FFmpeg for the media helper. macOS: the "FFmpeg for macOS" workflow
+      # publishes builds on the ffmpeg-macos release; repo variables
+      # FFMPEG_DARWIN_URL / FFMPEG_DARWIN_ARM64_URL override them.
+      - name: Download FFmpeg for macOS
+        if: runner.os == 'macOS'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DARWIN_URL: ${{ vars.FFMPEG_DARWIN_URL }}
+          DARWIN_ARM64_URL: ${{ vars.FFMPEG_DARWIN_ARM64_URL }}
+        run: |
+          dir="$RUNNER_TEMP/ffmpeg-macos"
+          if gh release download ffmpeg-macos --repo "$GITHUB_REPOSITORY" --pattern "ffmpeg-darwin-*.zip" --dir "$dir"; then
+            echo "FFMPEG_DARWIN_URL=${DARWIN_URL:-$dir/ffmpeg-darwin-x64.zip}" >> "$GITHUB_ENV"
+            echo "FFMPEG_DARWIN_ARM64_URL=${DARWIN_ARM64_URL:-${DARWIN_URL:-$dir/ffmpeg-darwin-arm64.zip}}" >> "$GITHUB_ENV"
+          else
+            echo "::warning::No ffmpeg-macos release yet: run the 'FFmpeg for macOS' workflow. This build ships without FFmpeg unless the repo variables are set."
+            if [ -n "$DARWIN_URL" ]; then echo "FFMPEG_DARWIN_URL=$DARWIN_URL" >> "$GITHUB_ENV"; fi
+            if [ -n "$DARWIN_ARM64_URL" ]; then echo "FFMPEG_DARWIN_ARM64_URL=$DARWIN_ARM64_URL" >> "$GITHUB_ENV"; fi
+          fi
+
       - name: Fetch FFmpeg for the media helper
         working-directory: electron
-        env:
-          FFMPEG_DARWIN_URL: ${{ vars.FFMPEG_DARWIN_URL }}
-        run: npm run fetch-ffmpeg
+        shell: bash
+        run: |
+          if [ "$RUNNER_OS" = "macOS" ]; then
+            # The DMGs are built for both architectures: fetch both.
+            node scripts/fetch-ffmpeg.mjs darwin-arm64
+            node scripts/fetch-ffmpeg.mjs darwin-x64
+          else
+            npm run fetch-ffmpeg
+          fi
 
       - name: Package installers
         working-directory: electron

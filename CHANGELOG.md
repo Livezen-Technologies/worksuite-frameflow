@@ -9,6 +9,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
+- The macOS app now includes FFmpeg (an LGPL-only build made by the new “FFmpeg for macOS” CI workflow), so proxies, HEIC and MKV conversion and the other FFmpeg features work on Mac too, on both Apple Silicon and Intel.
 - Captions and AI in the automation API, `wve` and MCP: `transcript.get`, `transcript.generate`, `transcript.setText`, `transcript.import`, `transcript.export`, `transcript.translate`, `transcript.cleanUp` and `captions.add`. Scripts and AI agents can now transcribe, fix, translate and caption a video.
 - Automation over gRPC (feature flag): start with `--automation-grpc` (or `WVE_AUTOMATION_GRPC=1`) next to the automation API, and the same methods and events are served on 127.0.0.1:7521 with the same token. The service definition is `automation.proto`.
 - 24 more interface languages: Arabic, Bengali, Chinese (Simplified), Dutch, French, German, Hebrew, Hindi, Indonesian, Italian, Japanese, Korean, Malay, Persian, Polish, Portuguese, Russian, Spanish, Swedish, Thai, Turkish, Ukrainian, Urdu and Vietnamese. Arabic, Hebrew, Persian and Urdu lay the interface out right to left. These are machine translations awaiting review by native speakers, and the language list says so.
