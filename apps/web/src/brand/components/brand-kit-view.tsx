@@ -1,5 +1,6 @@
 "use client";
 
+import { useT } from "@/i18n";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Plus, Stamp, Trash2, Wand2, X } from "lucide-react";
 import { toast } from "sonner";
@@ -418,6 +419,7 @@ function ProjectKitSwitch() {
 function DownloadedBrandKits() {
 	const kits = usePackItems({ types: ["brand-kits"], parse: parseBrandKit });
 	const [busy, setBusy] = useState<string | null>(null);
+	const t = useT();
 	if (kits.length === 0) return null;
 
 	const use = async (pack: PackBrandKit) => {
@@ -450,7 +452,7 @@ function DownloadedBrandKits() {
 	};
 
 	return (
-		<Section title="Downloaded brand kits">
+		<Section title={t("Downloaded brand kits")}>
 			<ul className="m-0 flex list-none flex-col gap-2 p-0" data-brand-downloads>
 				{kits.map(({ value: pack }) => (
 					<li key={pack.id} className="bg-card flex items-center gap-2 rounded-lg border p-2">
@@ -461,7 +463,7 @@ function DownloadedBrandKits() {
 						</span>
 						<span className="min-w-0 flex-1 truncate text-sm">{pack.name}</span>
 						<Button size="sm" variant="outline" className="h-6 px-2 text-[11px]" disabled={busy === pack.id} onClick={() => void use(pack)}>
-							Use
+							{t("Use")}
 						</Button>
 					</li>
 				))}

@@ -59,6 +59,14 @@ export const OVERLAY_CSS = `
 .al-banner.error{background:#e5393518;border-color:#e5393544;color:#ffaaa8}
 .al-settings label{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid #ffffff0a}
 .al-settings select,.al-settings input[type=number]{background:var(--input,#141822);border:1px solid var(--border,#2a3040);color:inherit;border-radius:var(--ui-radius,5px);padding:4px 6px;font:inherit}
+.al-dragging{opacity:.35;pointer-events:none;transition:opacity .15s}
+.al-thumb{position:relative}
+.al-heart{position:absolute;top:6px;right:6px;width:26px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:#0009;color:#ff7a90;font-size:15px;cursor:pointer;line-height:1}
+.al-side .al-heart{position:static;background:#ffffff10}
+.al-heart[aria-pressed=false]{color:#e8eaf0}
+.al-live{font-size:11.5px;color:#7fe3d9;white-space:nowrap}
+.al-hint{font-size:11.5px}
+.al-history{display:flex;flex-direction:column;gap:6px}
 .al-empty{padding:40px;text-align:center;color:var(--muted-foreground,#8b93a7)}
 .al-entry{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;border:1px dashed var(--border,#2a3040);border-radius:var(--ui-radius,5px);font-size:12px;color:var(--muted-foreground,#9aa2b5)}
 

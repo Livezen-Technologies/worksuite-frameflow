@@ -4,6 +4,7 @@ import type { PackIndexAsset } from "@/lottie/catalog";
 import type { LottieElementData } from "@/lottie/types";
 import type { MediaTime } from "@/wasm";
 import type { TextAnimation } from "@/text-animation/types";
+import type { PackType } from "@/asset-library/types";
 
 interface BaseDragData {
 	id: string;
@@ -49,7 +50,22 @@ export interface EffectDragData extends BaseDragData {
 	targetElementTypes: VisualElement["type"][];
 }
 
+/**
+ * A download-center pack (or one item of it) that may not be installed yet:
+ * dropping it adds a placeholder, installs the pack and swaps in the real
+ * clip / effect / LUT / transition (asset-library/apply-pack.ts).
+ */
+export interface PackDragData extends BaseDragData {
+	type: "pack";
+	packId: string;
+	packType: PackType;
+	itemId?: string | null;
+	/** Apply-type packs (LUTs, filters, effects): dropping on one of these applies to it. */
+	targetElementTypes?: VisualElement["type"][];
+}
+
 export type TimelineDragData =
+	| PackDragData
 	| MediaDragData
 	| TextDragData
 	| StickerDragData

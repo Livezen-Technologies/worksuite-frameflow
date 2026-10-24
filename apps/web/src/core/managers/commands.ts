@@ -1,5 +1,6 @@
 import type { EditorCore } from "@/core";
 import type { Command, CommandResult } from "@/commands";
+import { BatchCommand } from "@/commands/batch-command";
 import type { EditorSelectionSnapshot } from "@/selection/editor-selection";
 import { applyRippleAdjustments, computeRippleAdjustments } from "@/ripple";
 import type { SceneTracks } from "@/timeline/types";
@@ -162,6 +163,33 @@ export class CommandManager {
 			previousSelection: this.getSelectionSnapshot(),
 		});
 		this.redoStack = [];
+		this.historyChanged();
+	}
+
+	/** Where the undo history is now; pass it to squash() later. */
+	mark(): number {
+		return this.history.length;
+	}
+
+	/**
+	 * Folds every step taken since `mark` into one undo step (e.g. a pack
+	 * dropped on the timeline: the clip and its media are added by several
+	 * commands once the pack has downloaded, but undo removes them together).
+	 */
+	squash({ mark }: { mark: number }): void {
+		if (mark < 0 || this.history.length - mark <= 1) return;
+		const entries = this.history.splice(mark);
+		const first = entries[0];
+		const last = entries[entries.length - 1];
+		const withTracks = entries.filter((e) => e.tracks);
+		const from = withTracks[0]?.tracks;
+		const to = withTracks[withTracks.length - 1]?.tracks;
+		this.history.push({
+			command: new BatchCommand(entries.map((e) => e.command)),
+			previousSelection: first.previousSelection,
+			selectionOverride: [...entries].reverse().find((e) => e.selectionOverride !== undefined)?.selectionOverride,
+			tracks: from && to && from.sceneId === to.sceneId ? { sceneId: to.sceneId, before: from.before, after: to.after } : (last.tracks ?? null),
+		});
 		this.historyChanged();
 	}
 

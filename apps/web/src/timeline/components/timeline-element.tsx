@@ -4,6 +4,7 @@ import { ZoomLane } from "@/screen-zoom/components/zoom-lane";
 import { useMotionEditor } from "@/lottie/motion-editor/store";
 import { TimelineClipMenuExtras } from "@/clip-actions/components/clip-menus";
 import { TransitionBar, TransitionDropMarker, useTransitionDrop } from "@/transitions/components/timeline-transition";
+import { PackDropRing } from "@/asset-library/components/pack-drop-ring";
 import { createContext, useContext, useLayoutEffect } from "react";
 import { useEditor } from "@/editor/use-editor";
 import { useAssetsPanelStore } from "@/components/editor/panels/assets/assets-panel-store";
@@ -592,6 +593,7 @@ function ElementInner({
 		>
 			{transitionIn && <TransitionBar element={visibleElement} track={track} pixelsPerSecond={pixelsPerSecond} />}
 			<TransitionDropMarker edge={transitionDrop.edge} />
+			<PackDropRing elementId={element.id} />
 			<div
 				className="absolute inset-0 rounded-md"
 				style={

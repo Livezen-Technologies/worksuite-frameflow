@@ -1,5 +1,6 @@
 "use client";
 
+import { DownloadedLabel } from "@/asset-library/components/downloaded-label";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { PanelView } from "@/components/editor/panels/assets/views/base-panel";
@@ -233,7 +234,9 @@ export function TransitionsView() {
 
 				{downloaded.length > 0 && (
 					<div className="flex flex-col gap-1" data-transition-downloads>
-						<span className="text-muted-foreground text-xs">Downloaded</span>
+						<span className="text-muted-foreground text-xs">
+							<DownloadedLabel />
+						</span>
 						<div className="flex flex-wrap gap-1">
 							{downloaded.map(({ value: preset }) => (
 								<button

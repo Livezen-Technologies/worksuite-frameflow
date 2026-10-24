@@ -1,5 +1,6 @@
 "use client";
 
+import { DownloadedLabel } from "@/asset-library/components/downloaded-label";
 import { hdrUnsupportedReason } from "@/effects/hdr-support";
 import { useSphereStore } from "@/vr/store";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -126,7 +127,7 @@ export function EffectsView() {
 									: "bg-popover hover:bg-accent",
 							)}
 						>
-							{name}
+							{name === "Downloaded" ? <DownloadedLabel /> : name}
 						</button>
 					))}
 				</div>

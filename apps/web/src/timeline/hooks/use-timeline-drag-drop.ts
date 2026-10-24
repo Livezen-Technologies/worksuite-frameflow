@@ -1,4 +1,5 @@
 import { useEffect, useReducer, useState, type RefObject } from "react";
+import { addPackItem } from "@/asset-library/apply-pack";
 import { useEditor } from "@/editor/use-editor";
 import { useCommittedRef } from "@/hooks/use-committed-ref";
 import {
@@ -37,6 +38,23 @@ export function useTimelineDragDrop({
 		executeCommand: (command) => editor.command.execute({ command }),
 		insertElement: (args) => editor.timeline.insertElement(args),
 		addClipEffect: (args) => editor.timeline.addClipEffect(args),
+		dropPack: ({ dragData, target, trackId }) => {
+			addPackItem({
+				editor,
+				request: {
+					packId: dragData.packId,
+					packType: dragData.packType,
+					title: dragData.name,
+					itemId: dragData.itemId ?? null,
+					target:
+						dragData.targetElementTypes && target.targetElement
+							? { kind: "clip", ...target.targetElement }
+							: dragData.targetElementTypes || dragData.packType === "transitions"
+								? { kind: "default" }
+								: { kind: "track", trackId, startTime: target.xPosition, trackIndex: target.trackIndex, isNewTrack: target.isNewTrack },
+				},
+			});
+		},
 		applyTextAnimation: ({ trackId, elementId, textAnimation }) =>
 			editor.timeline.updateElements({
 				updates: [{ trackId, elementId, patch: { textAnimation: structuredClone(textAnimation) } }],

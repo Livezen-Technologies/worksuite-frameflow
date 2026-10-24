@@ -2,6 +2,7 @@
 
 import { X } from "lucide-react";
 import { useRef, useState } from "react";
+import { addPackItem } from "@/asset-library/apply-pack";
 import { useAssetsPanelStore } from "@/components/editor/panels/assets/assets-panel-store";
 import { useEditor } from "@/editor/use-editor";
 import type { ImageElement, TimelineElement, TimelineTrack, VideoElement } from "@/timeline";
@@ -13,6 +14,8 @@ import { findClipBefore } from "../windows";
 
 /** Drag payload for a transition dragged from the Transitions panel. */
 export const TRANSITION_DRAG_TYPE = "application/x-frameflow-transition";
+/** A transition pack from the Asset Library that may not be installed yet: `{ packId, title, itemId? }`. */
+export const PACK_TRANSITION_DRAG_TYPE = "application/x-frameflow-pack-transition";
 
 export const MIN_TRANSITION_SECONDS = 0.1;
 export const MAX_TRANSITION_SECONDS = 5;
@@ -60,6 +63,16 @@ function readPayload(data: DataTransfer): ClipTransition | null {
 	}
 }
 
+function readPackPayload(data: DataTransfer): { packId: string; title: string; itemId: string | null } | null {
+	const parsed: unknown = JSON.parse(data.getData(PACK_TRANSITION_DRAG_TYPE));
+	if (!parsed || typeof parsed !== "object") return null;
+	const packId: unknown = Reflect.get(parsed, "packId");
+	const title: unknown = Reflect.get(parsed, "title");
+	const itemId: unknown = Reflect.get(parsed, "itemId");
+	if (typeof packId !== "string") return null;
+	return { packId, title: typeof title === "string" ? title : packId, itemId: typeof itemId === "string" ? itemId : null };
+}
+
 /**
  * Dropping a transition on a clip puts it on the nearer cut: the cut into
  * this clip (left half) or out of it (right half). Returns drag handlers and
@@ -84,7 +97,7 @@ export function useTransitionDrop({ element, track }: { element: TimelineElement
 		const other = preferred === "left" ? "right" : "left";
 		return targetFor(other) ? other : null;
 	};
-	const ours = (e: React.DragEvent) => e.dataTransfer.types.includes(TRANSITION_DRAG_TYPE);
+	const ours = (e: React.DragEvent) => e.dataTransfer.types.includes(TRANSITION_DRAG_TYPE) || e.dataTransfer.types.includes(PACK_TRANSITION_DRAG_TYPE);
 	return {
 		edge,
 		handlers: {
@@ -102,8 +115,25 @@ export function useTransitionDrop({ element, track }: { element: TimelineElement
 				if (!ours(e)) return;
 				const side = sideOf(e);
 				setEdge(null);
-				const payload = readPayload(e.dataTransfer);
 				const target = side ? targetFor(side) : null;
+				if (target && e.dataTransfer.types.includes(PACK_TRANSITION_DRAG_TYPE)) {
+					// Not installed yet (or a whole pack): ring on the cut, install, then apply (one undo step).
+					e.preventDefault();
+					e.stopPropagation();
+					editor.timeline.dragSource.end();
+					try {
+						const pack = readPackPayload(e.dataTransfer);
+						if (!pack) return;
+						addPackItem({
+							editor,
+							request: { packId: pack.packId, packType: "transitions", title: pack.title, itemId: pack.itemId ?? null, target: { kind: "cut", trackId: track.id, elementId: target.to.id, maxSeconds: maxTransitionFor(target) } },
+						});
+					} catch {
+						// Malformed payload: ignore the drop.
+					}
+					return;
+				}
+				const payload = readPayload(e.dataTransfer);
 				if (!payload || !target) return;
 				e.preventDefault();
 				e.stopPropagation();

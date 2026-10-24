@@ -183,6 +183,9 @@ contextBridge.exposeInMainWorld("worksuite", {
 		diskUsage: () => ipcRenderer.invoke("assets:disk-usage"),
 		configure: (settings) => ipcRenderer.invoke("assets:configure", settings),
 		updateAll: () => ipcRenderer.invoke("assets:update-all"),
+		setFavorite: ({ packId, on } = {}) => ipcRenderer.invoke("assets:favorite", String(packId), on === true),
+		history: (args) => ipcRenderer.invoke("assets:history", { cursor: args?.cursor ?? null, limit: Number(args?.limit) || 50 }),
+		registerDevice: () => ipcRenderer.invoke("assets:register-device"),
 		onChange: (listener) => {
 			const handler = (_event, state) => listener(state);
 			ipcRenderer.on("assets:changed", handler);

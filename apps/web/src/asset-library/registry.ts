@@ -66,6 +66,9 @@ export async function registerInstalledPack(pack: Pick<InstalledPack, "id" | "ty
 	unregisterInstalledPack(pack.id, { quiet: true });
 	if (pack.type === "motion") {
 		registerMotionPack({ packId: pack.id, version: pack.version, base, index: index as unknown as PackIndex });
+		// Listed too, so "Download & Add" and drops know the pack's first animation.
+		const assets = ((index as { assets?: Array<{ id: string; name?: string }> }).assets ?? []).filter((a) => typeof a?.id === "string");
+		content.set(pack.id, { type: "motion", items: assets.map((a) => ({ id: `${pack.id}/${a.id}`, name: a.name ?? a.id, url: base, packId: pack.id, raw: a })) });
 		// Placeholders and older versions of this pack redraw from the new files.
 		forgetPackAnimations(pack.id);
 	} else if (pack.type === "sounds") {
@@ -96,6 +99,16 @@ export async function registerInstalledPack(pack: Pick<InstalledPack, "id" | "ty
 	}
 	registered.set(pack.id, pack.version);
 	notify();
+}
+
+/** True once the pack's contents are registered with the panels. */
+export function isPackRegistered(packId: string): boolean {
+	return registered.has(packId);
+}
+
+/** Items of one installed pack. */
+export function packItemsOf(packId: string): PackContentItem[] {
+	return content.get(packId)?.items ?? [];
 }
 
 export function unregisterInstalledPack(packId: string, { quiet = false } = {}) {

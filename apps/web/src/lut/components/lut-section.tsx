@@ -1,5 +1,7 @@
 "use client";
 
+import { useT } from "@/i18n";
+import { DownloadedLabel } from "@/asset-library/components/downloaded-label";
 import { lutOutput, needsHdrWarning } from "../space";
 import { useMemo, useRef, useState } from "react";
 import {
@@ -48,6 +50,7 @@ function openExternal(url: string) {
 /** The Color workspace's LUTs section (SRS WS-11, WS-35–WS-48). */
 export function LutSection() {
 	const editor = useEditor();
+	const t = useT();
 	const colorSpace = useEditor(
 		(e) => e.project.getActiveOrNull()?.settings.colorSpace,
 	);
@@ -299,7 +302,9 @@ export function LutSection() {
 			</div>
 			{downloaded.length > 0 && (
 				<div className="flex flex-col gap-1" data-lut-downloads>
-					<span className="text-muted-foreground text-xs">Downloaded from the Asset Library</span>
+					<span className="text-muted-foreground text-xs">
+						<DownloadedLabel text="Downloaded from the Asset Library" />
+					</span>
 					<div className="flex flex-wrap gap-1">
 						{downloaded.map((item) => {
 							const have = library.luts.some((l) => l.fileName === fileNameOf(item.url));
@@ -308,7 +313,7 @@ export function LutSection() {
 									key={item.id}
 									type="button"
 									disabled={have}
-									title={have ? "Already in your LUTs" : "Add to your LUTs"}
+									title={have ? t("Already in your LUTs") : t("Add to your LUTs")}
 									onClick={() => void addDownloaded(item)}
 									className="bg-card flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs disabled:opacity-60"
 									data-lut-download={item.id}
