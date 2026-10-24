@@ -244,7 +244,24 @@ async function createWindow() {
 	await win.loadURL(`${origin}/projects`);
 }
 
+// Files the app has exported (kept across restarts so Exports can reveal them).
 const savedExports = new Set();
+const exportsFile = () => path.join(app.getPath("userData"), "exports.json");
+function loadSavedExports() {
+	try {
+		for (const p of JSON.parse(fs.readFileSync(exportsFile(), "utf8"))) if (typeof p === "string") savedExports.add(p);
+	} catch {
+		// First run.
+	}
+}
+function rememberExport(filePath) {
+	savedExports.add(filePath);
+	try {
+		fs.writeFileSync(exportsFile(), JSON.stringify([...savedExports].slice(-500)));
+	} catch {
+		// Not fatal: revealing just won't survive a restart.
+	}
+}
 
 function registerAccountIpc() {
 	// Only the editor's own origin may drive the account.
@@ -343,7 +360,7 @@ function registerAccountIpc() {
 			const suffix = String(side.suffix).replace(/[\\/]/g, "");
 			await fs.promises.writeFile(`${base}${suffix}`, String(side.content), "utf8");
 		}
-		savedExports.add(result.filePath);
+		rememberExport(result.filePath);
 		return { saved: true, path: result.filePath };
 	});
 	// Queued exports (EX-14) go straight into Videos/Worksuite, no dialog.
@@ -356,7 +373,7 @@ function registerAccountIpc() {
 		let target = path.join(folder, clean);
 		for (let n = 2; fs.existsSync(target); n++) target = path.join(folder, `${stem} (${n})${ext}`);
 		await writeAtomically(target, Buffer.from(data));
-		savedExports.add(target);
+		rememberExport(target);
 		return { saved: true, path: target };
 	});
 	// Share links (CL-06): only files this session exported can be uploaded.
@@ -439,9 +456,11 @@ function registerAccountIpc() {
 	handle("folders:remove-media", (args) => projectFolders.removeMedia(args ?? {}));
 	handle("folders:show", (args) => projectFolders.show(args ?? {}));
 	handle("folders:move", (args) => projectFolders.move(args ?? {}));
-	// Only files this session exported can be revealed.
+	// Only files the app exported can be revealed. False when it's gone.
 	handle("files:show", (filePath) => {
-		if (savedExports.has(filePath)) shell.showItemInFolder(filePath);
+		if (!savedExports.has(filePath) || !fs.existsSync(filePath)) return false;
+		shell.showItemInFolder(filePath);
+		return true;
 	});
 
 	const broadcast = (channel, payload) => {
@@ -474,6 +493,7 @@ if (!app.requestSingleInstanceLock()) {
 		.whenReady()
 		.then(() => {
 			loadTheme();
+			loadSavedExports();
 			registerAccountIpc();
 			void automation.init();
 			void nativeHelper.init();
