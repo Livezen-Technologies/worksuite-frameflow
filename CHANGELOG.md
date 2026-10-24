@@ -9,6 +9,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
+- Animated GIFs in Motion Studio now follow the playhead on the canvas and stay animated in Lottie exports and in “Use in video” (each frame plays in a looping pre-composition).
 - Drag GIFs and stickers from Elements → GIFs straight onto the timeline (they get ready while you hover). Dropped animated GIF/WebP files now get a clip at least one loop long instead of the default still length.
 - Motion Studio icons: 25 original icons (heart, stars, arrows, play, bell, thumbs up, chat, pin, lightning, crown and more) you can search and add in any colour as editable vector paths. SVG files you import now become editable shapes (with their fills and strokes) when they're simple shapes; others are still added as a picture.
 - Animated GIFs and WebPs in Motion Studio play in GIF, video and PNG-sequence exports, in step with the animation.
@@ -330,6 +331,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Changed
 
+- Dragging a transition's ends on the timeline moves the preview to that cut, so you see the new length as you drag.
 - Timeline zoom is smooth: Ctrl/⌘+scroll zoom no longer stutters on long or zoomed-in video clips (only the thumbnails near the visible area are drawn), and the zoom buttons now glide to the new zoom instead of jumping.
 - New home screen: “Start something new” with large New video project (Ctrl+N), New screen recording (Ctrl+Shift+R) and Motion graphics cards, quick Templates sizes (16:9 YouTube, 9:16 Reels, 1:1 Post), Open existing project and a drop zone, then your recent projects. The sidebar has Home, Recent projects, Templates, Motion graphics and Screen recordings with counts, and search is in the middle of the top bar (Ctrl+K).
 - Corners are slightly rounded (5px) everywhere for a softer, consistent look.

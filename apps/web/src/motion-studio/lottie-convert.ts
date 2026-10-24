@@ -101,7 +101,21 @@ const groupTransform = { ty: "tr", p: { a: 0, k: [0, 0] }, a: { a: 0, k: [0, 0] 
 /** Turns a text layer into a picture: `{ src, w, h }`. Supplied by the caller (needs a canvas). */
 export type RasterizeText = (layer: Extract<Layer, { kind: "text" }>) => Promise<{ src: string; w: number; h: number }>;
 
-export async function motionToLottie({ project, rasterizeText }: { project: MotionProject; rasterizeText: RasterizeText }): Promise<LottieJson> {
+/** Frames of an animated picture as image URLs with start times (seconds), or null for a still. */
+export type AnimatedFrames = (src: string) => Promise<{ frames: Array<{ src: string; start: number }>; duration: number; width: number; height: number } | null>;
+
+const MAX_GIF_FRAMES = 300;
+
+export async function motionToLottie({
+	project,
+	rasterizeText,
+	animatedFrames,
+}: {
+	project: MotionProject;
+	rasterizeText: RasterizeText;
+	/** Keeps animated GIF/WebP layers moving: each frame becomes a picture in a looping pre-composition. */
+	animatedFrames?: AnimatedFrames;
+}): Promise<LottieJson> {
 	const fps = project.fps;
 	const op = Math.max(1, Math.round(project.duration * fps));
 	const assets: Json[] = [];
@@ -111,6 +125,38 @@ export async function motionToLottie({ project, rasterizeText }: { project: Moti
 	// Lottie draws its first layer on top.
 	for (const layer of [...visible].reverse()) {
 		const common = { ddd: 0, ind: ind++, nm: layer.name, sr: 1, ks: transform({ layer, fps }), ao: 0, ip: 0, op, st: 0, bm: 0 };
+		if (layer.kind === "image" && animatedFrames) {
+			const anim = await animatedFrames(layer.src);
+			if (anim && anim.frames.length > 1 && anim.frames.length <= MAX_GIF_FRAMES && anim.duration > 0) {
+				const compId = `comp_${assets.length}`;
+				const loopFrames = Math.max(1, Math.round(anim.duration * fps));
+				const frameLayers = anim.frames.map((f, k) => {
+					const id = `image_${assets.length}`;
+					assets.push({ id, w: anim.width, h: anim.height, u: "", p: f.src, e: 1 });
+					const next = anim.frames[k + 1]?.start ?? anim.duration;
+					const scale = [(layer.w / anim.width) * 100, (layer.h / anim.height) * 100, 100];
+					return {
+						ddd: 0,
+						ind: k + 1,
+						ty: 2,
+						nm: `Frame ${k + 1}`,
+						refId: id,
+						sr: 1,
+						ks: { o: { a: 0, k: 100 }, r: { a: 0, k: 0 }, p: { a: 0, k: [0, 0, 0] }, a: { a: 0, k: [0, 0, 0] }, s: { a: 0, k: scale } },
+						ao: 0,
+						ip: Math.round(f.start * fps),
+						op: Math.max(Math.round(f.start * fps) + 1, Math.round(next * fps)),
+						st: 0,
+						bm: 0,
+					};
+				});
+				assets.push({ id: compId, layers: frameLayers.reverse() });
+				// One pre-composition layer per loop, back to back.
+				for (let start = 0; start < op; start += loopFrames)
+					layers.push({ ...common, ind: ind++, nm: `${layer.name} (loop)`, ty: 0, refId: compId, w: layer.w, h: layer.h, st: start, ip: start, op: Math.min(op, start + loopFrames) });
+				continue;
+			}
+		}
 		if (layer.kind === "image" || layer.kind === "text") {
 			const pic = layer.kind === "image" ? { src: layer.src, w: layer.w, h: layer.h } : await rasterizeText(layer);
 			const id = `image_${assets.length}`;
