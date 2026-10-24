@@ -1246,9 +1246,10 @@ function VideoFilmstrip({
 	const height = Math.round(trackHeight * (typeof window === "undefined" ? 1 : window.devicePixelRatio || 1));
 	return (
 		<div className="pointer-events-none absolute inset-0 overflow-hidden" data-filmstrip>
-			{tiles.map((tile) => (
+			{tiles.map((tile, index) => (
 				<FilmstripTileImage
-					key={`${tile.left}:${tile.sourceTime}`}
+					// By position: tiles persist across zoom steps and keep their frame until the new one is ready.
+					key={index}
 					asset={asset}
 					time={tile.sourceTime}
 					height={height}
@@ -1259,6 +1260,31 @@ function VideoFilmstrip({
 			))}
 		</div>
 	);
+}
+
+/** One IntersectionObserver for every filmstrip tile (tiles in view decode). */
+const tileWatchers = new WeakMap<Element, () => void>();
+let tileObserver: IntersectionObserver | null = null;
+function watchTile({ node, onVisible }: { node: Element; onVisible: () => void }) {
+	tileObserver ??= new IntersectionObserver(
+		(entries) => {
+			for (const entry of entries) {
+				if (!entry.isIntersecting) continue;
+				const callback = tileWatchers.get(entry.target);
+				tileWatchers.delete(entry.target);
+				tileObserver?.unobserve(entry.target);
+				callback?.();
+			}
+		},
+		// The timeline's scroll area clips the rest; decode a little ahead.
+		{ rootMargin: "0px 400px" },
+	);
+	tileWatchers.set(node, onVisible);
+	tileObserver.observe(node);
+	return () => {
+		tileWatchers.delete(node);
+		tileObserver?.unobserve(node);
+	};
 }
 
 function FilmstripTileImage({
@@ -1277,29 +1303,27 @@ function FilmstripTileImage({
 	tileWidth: number;
 }) {
 	const ref = useRef<HTMLDivElement>(null);
-	const [url, setUrl] = useState(() => cachedFilmstripFrame({ assetId: asset.id, time, height }));
+	const cached = cachedFilmstripFrame({ assetId: asset.id, time, height });
+	// The last decoded frame stays up while a new time loads (no blank flash on zoom).
+	const [loaded, setLoaded] = useState<string | null>(null);
 	useEffect(() => {
-		if (url) return;
+		if (cached) return;
 		const node = ref.current;
 		if (!node) return;
 		const controller = new AbortController();
-		// Only tiles in view (the timeline's scroll area clips the rest) decode.
-		const observer = new IntersectionObserver(
-			(entries) => {
-				if (!entries.some((e) => e.isIntersecting)) return;
-				observer.disconnect();
-				void filmstripFrame({ asset, time, height, signal: controller.signal }).then((next) => {
-					if (next && !controller.signal.aborted) setUrl(next);
-				});
-			},
-			{ rootMargin: "0px 400px" },
-		);
-		observer.observe(node);
+		const unwatch = watchTile({
+			node,
+			onVisible: () =>
+				void filmstripFrame({ asset, time, height, signal: controller.signal }).then((url) => {
+					if (url && !controller.signal.aborted) setLoaded(url);
+				}),
+		});
 		return () => {
-			observer.disconnect();
+			unwatch();
 			controller.abort();
 		};
-	}, [asset, time, height, url]);
+	}, [asset, time, height, cached]);
+	const url = cached ?? loaded;
 	return (
 		<div
 			ref={ref}

@@ -166,6 +166,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Fixed
 
+- Timeline zoom is smoother, and the last thumbnail of a video clip now shows its own frame instead of the poster.
 - After adding an animation from Elements → Animations, its controls and **Edit motion…** show straight away (its sound clips are no longer selected with it). Escape closes the Motion Editor, and Ctrl/Cmd+Z works in it as soon as it opens. The properties panel no longer shows a stray "0" after "elements selected".
 - Video clips on the timeline show a real filmstrip: each thumbnail is the frame at that point of the clip, and they update when you trim, move, zoom or change the speed (they used to repeat one frame). Frames load only for what's on screen.
 - The “Tap here” and “Finger tap” animations used a pointing hand that could read as a rude gesture. They are now “Mouse click” (a computer mouse whose left button clicks) and “Cursor click” (a mouse cursor clicking the subscribe button). Projects that used “Tap here” get “Mouse click”.
@@ -310,6 +311,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Changed
 
+- Corners are slightly rounded (5px) everywhere for a softer, consistent look.
 - Square corners across the whole interface: panels, buttons, menus, inputs, chips, the Asset Library, the Motion Editor and timeline clips.
 - The window title bar is dark in dark mode and light in light mode, following the app's theme setting, and remembers it on the next launch.
 - New app icon (frames with a play button and a timeline bar) for the desktop app on macOS, Windows and Linux, and for the browser tab and home-screen icons.

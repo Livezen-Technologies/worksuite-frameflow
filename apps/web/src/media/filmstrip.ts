@@ -117,7 +117,10 @@ async function drain({ decoder, height }: { decoder: Decoder; height: number }) 
 				continue;
 			}
 			try {
-				const frame = await decoder.frameAt(request.time);
+				// The very end of a file sometimes has no frame at that exact time: step back.
+				let frame = await decoder.frameAt(request.time);
+				for (let back = 0.1; !frame && back <= 0.5 && request.time - back >= 0; back += 0.2)
+					frame = await decoder.frameAt(request.time - back);
 				const url = frame ? await encode({ source: frame, height }) : null;
 				if (url) remember({ key: request.key, url });
 				request.resolve(url);
