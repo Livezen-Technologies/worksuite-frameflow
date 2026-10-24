@@ -306,6 +306,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Changed
 
+- New app icon (frames with a play button and a timeline bar) for the desktop app on macOS, Windows and Linux, and for the browser tab and home-screen icons.
 - New dark Worksuite look across the app, matching the "Worksuite Video Editor — Screens" designs. Dark is now the default theme and primary buttons are Worksuite blue.
 - Projects page redesigned: Worksuite Video header with search and account, a sidebar, and a "Recent projects" title bar.
 
