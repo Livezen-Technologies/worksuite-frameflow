@@ -9,6 +9,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
+- Dockable panels: drag a panel's title onto another panel to dock it beside it, above or below, or as a tab; close panels and reopen them from Workspace options → Panels; press ` to maximise the panel under the pointer and again to restore. Switching workspace or Reset panel docking puts panels back.
 - Drag a project tab out of the window to open that project in its own window where you drop it, and drag it onto the main window's project switcher to bring it back.
 - Claude and OpenAI as AI providers: pick one in Settings → AI and add your own key for translation, clean-up and clip suggestions. Cloud transcription still uses Gemini.
 - Undo now survives a restart: reopen a project and Ctrl+Z steps back through your last 50 timeline edits, and redo works too.

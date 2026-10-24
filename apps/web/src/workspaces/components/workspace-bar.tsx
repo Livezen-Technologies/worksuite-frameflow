@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import {
 	DropdownMenu,
+	DropdownMenuCheckboxItem,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuLabel,
@@ -23,6 +24,9 @@ import { Input } from "@/components/ui/input";
 import { isTypableDOMElement } from "@/utils/browser";
 import { cn } from "@/utils/ui";
 import { readCurrentLayout } from "../current";
+import { DOCK_PANELS, findPanel } from "@/dock/layout";
+import { useDockStore } from "@/dock/store";
+import { PANEL_TITLES } from "@/dock/components/dock-slot";
 import { allWorkspaces, useWorkspaceStore } from "../store";
 import { useT } from "@/i18n";
 
@@ -33,6 +37,7 @@ type NameDialog = { mode: "save" } | { mode: "rename"; id: string } | null;
  * or Alt+1…Alt+9, save the current layout, rename, reset and delete.
  */
 export function WorkspaceBar() {
+	const dock = useDockStore();
 	const t = useT();
 	const activeId = useWorkspaceStore((s) => s.activeId);
 	const custom = useWorkspaceStore((s) => s.custom);
@@ -165,6 +170,30 @@ export function WorkspaceBar() {
 							</>
 						)}
 						<DropdownMenuSeparator />
+						<DropdownMenuLabel className="text-muted-foreground text-xs font-normal">
+							Panels (drag a panel&apos;s title to dock it)
+						</DropdownMenuLabel>
+						{DOCK_PANELS.map((id) => {
+							const shown = !!findPanel({ layout: dock.layout, id });
+							return (
+								<DropdownMenuCheckboxItem
+									key={id}
+									checked={shown}
+									onSelect={(e) => e.preventDefault()}
+									onCheckedChange={(on) => (on ? dock.reopen(id) : dock.close(id))}
+									data-panel-toggle={id}
+								>
+									{PANEL_TITLES[id]}
+								</DropdownMenuCheckboxItem>
+							);
+						})}
+						<DropdownMenuItem onClick={() => dock.reset()} data-dock-reset>
+							Reset panel docking
+						</DropdownMenuItem>
+						<DropdownMenuSeparator />
+						<DropdownMenuLabel className="text-muted-foreground text-xs font-normal">
+							` maximises the panel under the pointer
+						</DropdownMenuLabel>
 						<DropdownMenuLabel className="text-muted-foreground text-xs font-normal">
 							Switch with Alt+1 to Alt+{Math.min(workspaces.length, 9)}
 						</DropdownMenuLabel>
