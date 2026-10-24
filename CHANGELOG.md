@@ -7,6 +7,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+## [1.7.3] - 2026-10-24
+
 ### Added
 - Asset Library: Sounds show as a list with a play button, waveform, size, favorite and + Add. A sound that isn't downloaded yet downloads first, then plays.
 
