@@ -7,6 +7,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+## [1.7.6] - 2026-10-24
+
 ### Fixed
 - Asset Library: the Sounds list shows each sound's play button and title again, and the waveforms stay still instead of animating.
 
