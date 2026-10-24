@@ -14,10 +14,20 @@ const { createLibraryAccount } = require("./library-account");
 
 const ASSET_BASE = process.env.WSC_ASSET_URL || "https://frameflow.worksuitecloud.com/library/feed";
 const CHANNELS = ["stable", "beta"];
-/** Public half of the catalog signing key (private half: CI secret ASSET_SIGNING_KEY). */
-const CATALOG_PUBLIC_KEY =
-	process.env.WSC_ASSET_PUBLIC_KEY ||
-	"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAf42Kl/5GTU8PTayweURzXqp6S4BBhkbQv360G+ohOB8=\n-----END PUBLIC KEY-----\n";
+/**
+ * Public halves of the keys allowed to sign the catalog: the FrameFlow
+ * library's feed key (frameflow.worksuitecloud.com/library/feed, confirmed
+ * by the owner) and the download-center key (private half: CI secret
+ * ASSET_SIGNING_KEY). A catalog is trusted when one of them verifies it.
+ * WSC_ASSET_PUBLIC_KEY replaces both.
+ */
+const CATALOG_PUBLIC_KEYS = process.env.WSC_ASSET_PUBLIC_KEY
+	? [process.env.WSC_ASSET_PUBLIC_KEY]
+	: [
+			"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEARzZyqT6NRJ+E2BE//4Ew+tus1X9KZo29plm7VKvCl6k=\n-----END PUBLIC KEY-----\n",
+			"-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAf42Kl/5GTU8PTayweURzXqp6S4BBhkbQv360G+ohOB8=\n-----END PUBLIC KEY-----\n",
+		];
+const CATALOG_PUBLIC_KEY = CATALOG_PUBLIC_KEYS[0];
 const SCHEME = "wsc-asset";
 
 const DEFAULT_SETTINGS = {
@@ -38,7 +48,7 @@ const DEFAULT_SETTINGS = {
 function createAssetStore({
 	root,
 	fetchImpl = (...args) => fetch(...args),
-	publicKey = CATALOG_PUBLIC_KEY,
+	publicKey = CATALOG_PUBLIC_KEYS,
 	assetBase = ASSET_BASE,
 	appVersion = "0.0.0",
 	builtinPacks = [],
@@ -97,12 +107,17 @@ function createAssetStore({
 	const catalogUrl = () => `${assetBase.replace(/\/$/, "")}/${settings.channel}/catalog.json`;
 	const cacheDir = () => file("cache", settings.channel);
 
+	const verified = (text, sig) => (Array.isArray(publicKey) ? publicKey : [publicKey]).some((key) => io.verifyCatalog(text, sig, key));
+
 	function acceptCatalog(text, sig) {
-		if (!io.verifyCatalog(text, sig, publicKey)) throw Object.assign(new Error("The asset catalog's signature isn't valid"), { code: "bad-signature" });
+		if (!verified(text, sig)) throw Object.assign(new Error("The asset catalog's signature isn't valid"), { code: "bad-signature" });
 		const parsed = JSON.parse(text);
-		const problems = io.catalogProblems(parsed);
-		if (problems.length) throw Object.assign(new Error(`The asset catalog is malformed: ${problems[0]}`), { code: "bad-catalog" });
-		return parsed;
+		// A bad list is fatal; a bad pack only drops that pack, so one entry can't hide the library.
+		const fatal = io.catalogProblems({ ...parsed, packs: Array.isArray(parsed?.packs) ? [] : parsed?.packs });
+		if (fatal.length) throw Object.assign(new Error(`The asset catalog is malformed: ${fatal[0]}`), { code: "bad-catalog" });
+		const packs = parsed.packs.filter((pack) => io.catalogProblems({ schema: 1, packs: [pack] }).length === 0);
+		if (packs.length < parsed.packs.length) console.warn(`Asset catalog: skipped ${parsed.packs.length - packs.length} malformed packs`);
+		return { ...parsed, packs };
 	}
 
 	function loadCachedCatalog() {
@@ -123,18 +138,29 @@ function createAssetStore({
 			if (isOffline()) throw Object.assign(new Error("Offline mode is on"), { code: "offline" });
 			const meta = readJson(path.join(cacheDir(), "meta.json"), {});
 			const cached = meta.etag ? loadCachedCatalog() : null;
-			const res = await fetchImpl(catalogUrl(), {
-				cache: "no-store",
-				headers: cached && meta.etag ? { "If-None-Match": meta.etag } : {},
-			});
-			if (res.status === 304 && cached) {
+			// The catalog and its signature are fetched together; a live feed can
+			// rebuild the catalog between two requests, so a mismatched pair is retried.
+			let res = null;
+			let text = "";
+			let sig = "";
+			for (let attempt = 0; attempt < 4; attempt++) {
+				const [catalogRes, sigRes] = await Promise.all([
+					fetchImpl(catalogUrl(), { cache: "no-store", headers: cached && meta.etag && attempt === 0 ? { "If-None-Match": meta.etag } : {} }),
+					fetchImpl(`${catalogUrl()}.sig`, { cache: "no-store" }),
+				]);
+				res = catalogRes;
+				if (res.status === 304 && cached) break;
+				if (!res.ok) throw new Error(`The download center answered ${res.status}`);
+				if (!sigRes.ok) throw Object.assign(new Error("The asset catalog isn't signed"), { code: "bad-signature" });
+				const type = res.headers.get("content-type") ?? "";
+				text = await res.text();
+				sig = await sigRes.text();
+				if (/html/i.test(type) || text.trimStart().startsWith("<")) throw Object.assign(new Error("The download center didn't send a catalog (it sent a web page)"), { code: "bad-catalog" });
+				if (verified(text, sig)) break;
+			}
+			if (res?.status === 304 && cached) {
 				catalog = cached;
 			} else {
-				if (!res.ok) throw new Error(`The download center answered ${res.status}`);
-				const text = await res.text();
-				const sigRes = await fetchImpl(`${catalogUrl()}.sig`, { cache: "no-store" });
-				if (!sigRes.ok) throw Object.assign(new Error("The asset catalog isn't signed"), { code: "bad-signature" });
-				const sig = await sigRes.text();
 				catalog = acceptCatalog(text, sig);
 				fs.mkdirSync(cacheDir(), { recursive: true });
 				fs.writeFileSync(path.join(cacheDir(), "catalog.json"), text);
@@ -644,6 +670,7 @@ function registerIpc(handle) {
 module.exports = {
 	ASSET_BASE,
 	CATALOG_PUBLIC_KEY,
+	CATALOG_PUBLIC_KEYS,
 	SCHEME,
 	BUILTIN_PACKS,
 	createAssetStore,

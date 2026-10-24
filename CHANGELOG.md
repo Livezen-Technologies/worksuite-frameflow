@@ -11,6 +11,10 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 - A **Library feed check** workflow (Actions) that shows what the Asset Library feed returns and whether its signature verifies with the app's key.
 
+### Fixed
+
+- **Asset Library loads the FrameFlow library again** (4,600+ packs). The app now reads the feed at frameflow.worksuitecloud.com/library/feed, trusts the library's signing key, and fetches the catalog together with its signature (retrying when the live feed changes between requests), so the "failed its signature check" error is gone. A malformed pack is skipped instead of hiding the whole library.
+
 ## [1.6.0] - 2026-10-24
 
 ### Added

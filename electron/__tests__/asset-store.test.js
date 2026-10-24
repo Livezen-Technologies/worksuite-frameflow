@@ -127,7 +127,8 @@ test("catalog: verified, cached with ETag, offline falls back to cache", async (
 	assert.equal(state.catalogStatus.state, "ready");
 	assert.equal(state.catalog.packs[0].id, "demo-pack");
 	state = await store.refreshCatalog();
-	assert.match(srv.calls.at(-1).headers["If-None-Match"], /^"[0-9a-f]{8}"$/);
+	// Catalog and signature are fetched together; the catalog request carries the ETag.
+	assert.match(srv.calls.filter((c) => c.url.endsWith("catalog.json")).at(-1).headers["If-None-Match"], /^"[0-9a-f]{8}"$/);
 	offline = true;
 	state = await store.refreshCatalog();
 	assert.equal(state.catalogStatus.stale, true);
@@ -231,7 +232,7 @@ test("built catalog from the repo packs verifies", async () => {
 	const text = fs.readFileSync(path.join(dest, "catalog.json"), "utf8");
 	assert.equal(io.verifyCatalog(text, fs.readFileSync(path.join(dest, "catalog.json.sig"), "utf8"), PUB), true);
 	const ids = catalog.packs.map((p) => p.id).sort();
-	assert.deepEqual(ids, ["subscribe-buttons", "worksuite-essentials", "worksuite-sfx", "worksuite-text-animations", "worksuite-text-animations-studio", "worksuite-text-templates", "worksuite-text-templates-studio"]);
+	assert.deepEqual(ids, ["subscribe-buttons", "worksuite-essentials", "worksuite-sfx", "worksuite-text-animations", "worksuite-text-animations-1000", "worksuite-text-animations-studio", "worksuite-text-templates", "worksuite-text-templates-1000", "worksuite-text-templates-mixed", "worksuite-text-templates-studio", "worksuite-text-video-packs"]);
 	const sub = catalog.packs.find((p) => p.id === "subscribe-buttons");
 	const zip = fs.readFileSync(path.join(dest, sub.files));
 	assert.equal(io.sha256(zip), sub.sha256);
@@ -265,4 +266,29 @@ test("Pro packs are downloaded with the signed-in user's token; free packs witho
 	const auth = (id) => calls.find((c) => c.url.includes(id)).headers.Authorization;
 	assert.equal(auth("free-pack"), undefined);
 	assert.equal(auth("pro-pack"), "Bearer tok-123");
+});
+
+test("catalog: a live feed that rebuilds between requests is retried until the pair matches, and bad packs are skipped", async () => {
+	let n = 0;
+	const good = makePack().entry;
+	const bad = { ...makePack().entry, id: "Bad Id!" };
+	const fetchImpl = async (url) => {
+		// Each request builds a slightly different catalog; the signature is for the build of the same round.
+		const round = Math.floor(n++ / 2);
+		const text = JSON.stringify({ schema: 1, generatedAt: `r${round}`, packs: [good, bad] });
+		if (url.endsWith(".sig")) return new Response(io.signCatalog(round < 2 ? `${text} ` : text, PRIV));
+		return new Response(text, { headers: { "content-type": "application/json" } });
+	};
+	const store = createAssetStore({ root: tmp(), fetchImpl, publicKey: [PUB], appVersion: "1.0.0" });
+	const state = await store.refreshCatalog();
+	assert.equal(state.catalogStatus.state, "ready");
+	assert.deepEqual(state.catalog.packs.map((p) => p.id), ["demo-pack"]);
+});
+
+test("catalog: a web page instead of a catalog says so", async () => {
+	const fetchImpl = async () => new Response("<!doctype html><html></html>", { headers: { "content-type": "text/html" } });
+	const store = createAssetStore({ root: tmp(), fetchImpl, publicKey: PUB });
+	const state = await store.refreshCatalog();
+	assert.equal(state.catalogStatus.state, "error");
+	assert.match(state.catalogStatus.error, /web page/);
 });
