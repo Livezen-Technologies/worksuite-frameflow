@@ -1,0 +1,131 @@
+{
+	"schema": 1,
+	"id": "corp-customers",
+	"kind": "template",
+	"name": {
+		"en": "Customers served",
+		"si": "විශාල ව්‍යාපාරික මාතෘකාව",
+		"ta": "பெரிய நிறுவனத் தலைப்பு"
+	},
+	"category": "corporate",
+	"tags": {
+		"en": [
+			"customers",
+			"served",
+			"corporate",
+			"business",
+			"presentation",
+			"landscape",
+			"16:9",
+			"number counter",
+			"fade",
+			"big"
+		],
+		"si": [
+			"ව්‍යාපාරික",
+			"ඉදිරිපත් කිරීම",
+			"තිරස්",
+			"අංක ගණනය",
+			"ක්‍රමයෙන් පෙනීම",
+			"විශාල"
+		],
+		"ta": [
+			"நிறுவனம்",
+			"விளக்கக்காட்சி",
+			"கிடைமட்ட",
+			"எண் எண்ணிக்கை",
+			"மெல்லத் தோன்றல்",
+			"பெரிய"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "number",
+			"name": "Number",
+			"text": {
+				"en": "12,500",
+				"si": "12,500",
+				"ta": "12,500"
+			},
+			"x": 0.5,
+			"y": 0.42,
+			"size": 0.2,
+			"style": {
+				"fontFamily": "Poppins",
+				"fontWeight": 800,
+				"fill": "#2DD4BF"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "block",
+				"in": {
+					"effect": "number-counter",
+					"duration": 1.6,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "label",
+			"name": "Label",
+			"text": {
+				"en": "Customers served",
+				"si": "සේවය ලැබූ පාරිභෝගිකයන්",
+				"ta": "சேவை பெற்ற வாடிக்கையாளர்கள்"
+			},
+			"x": 0.5,
+			"y": 0.66,
+			"size": 0.056,
+			"style": {
+				"fontFamily": "Poppins",
+				"fontWeight": 400,
+				"fill": "#99F6E4"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "fade",
+					"duration": 0.6,
+					"delay": 0.3,
+					"stagger": 0.05,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

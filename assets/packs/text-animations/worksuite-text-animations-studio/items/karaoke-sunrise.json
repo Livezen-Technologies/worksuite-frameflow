@@ -1,0 +1,63 @@
+{
+	"schema": 1,
+	"id": "karaoke-sunrise",
+	"kind": "animation",
+	"name": {
+		"en": "Karaoke sunrise",
+		"si": "උණුසුම් කැරෝකේ",
+		"ta": "கதகதப்பான கரோக்கே"
+	},
+	"category": "karaoke-captions",
+	"tags": {
+		"en": [
+			"karaoke",
+			"sunrise",
+			"karaoke fill",
+			"words",
+			"karaoke captions",
+			"warm"
+		],
+		"si": [
+			"කැරෝකේ",
+			"වචන",
+			"උණුසුම්"
+		],
+		"ta": [
+			"கரோக்கே",
+			"சொற்கள்",
+			"கதகதப்பான"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "word",
+		"in": {
+			"effect": "karaoke-fill",
+			"duration": 0.35,
+			"delay": 0,
+			"stagger": 0.4,
+			"staggerOrder": "forward",
+			"direction": "right",
+			"easing": "linear",
+			"intensity": 1,
+			"params": {
+				"color": "#FFB000"
+			}
+		}
+	},
+	"previewText": {
+		"en": "Every word lands on the beat",
+		"si": "හැම වචනයක්ම තාලයට එයි",
+		"ta": "ஒவ்வொரு சொல்லும் தாளத்தில் வரும்"
+	},
+	"style": {
+		"fontFamily": "Inter",
+		"fontWeight": 800,
+		"fill": "#FFFFFF",
+		"stroke": {
+			"color": "#000000",
+			"width": 3
+		}
+	},
+	"duration": 4
+}

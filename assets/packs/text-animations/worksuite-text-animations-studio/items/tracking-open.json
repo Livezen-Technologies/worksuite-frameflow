@@ -1,0 +1,53 @@
+{
+	"schema": 1,
+	"id": "tracking-open",
+	"kind": "animation",
+	"name": {
+		"en": "Tracking open",
+		"si": "පුළුල් පරතරය",
+		"ta": "அகலமான இடைவெளி"
+	},
+	"category": "reveals",
+	"tags": {
+		"en": [
+			"tracking",
+			"open",
+			"tracking expand",
+			"letters",
+			"reveals",
+			"wide"
+		],
+		"si": [
+			"පරතරය",
+			"අකුරු",
+			"පුළුල්"
+		],
+		"ta": [
+			"இடைவெளி",
+			"எழுத்துகள்",
+			"அகலமான"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "grapheme",
+		"in": {
+			"effect": "tracking-expand",
+			"duration": 1.4,
+			"delay": 0,
+			"stagger": 0,
+			"staggerOrder": "forward",
+			"direction": "out",
+			"easing": "ease-out-expo",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"style": {
+		"fontFamily": "Bebas Neue",
+		"fontWeight": 400,
+		"fill": "#FFFFFF",
+		"tracking": 0.04
+	},
+	"duration": 3
+}

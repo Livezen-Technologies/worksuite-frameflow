@@ -1,0 +1,67 @@
+{
+	"schema": 1,
+	"id": "boing-out",
+	"kind": "animation",
+	"name": {
+		"en": "Boing in and out",
+		"si": "ද්විත්ව ප්‍රත්‍යාස්ථ",
+		"ta": "இரட்டை மீள்தன்மை"
+	},
+	"category": "elastic",
+	"tags": {
+		"en": [
+			"boing",
+			"in",
+			"and",
+			"out",
+			"elastic",
+			"words",
+			"double",
+			"exit"
+		],
+		"si": [
+			"ප්‍රත්‍යාස්ථ",
+			"වචන",
+			"ද්විත්ව",
+			"ඉවත් වීම"
+		],
+		"ta": [
+			"மீள்தன்மை",
+			"சொற்கள்",
+			"இரட்டை",
+			"வெளியேறல்"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "word",
+		"in": {
+			"effect": "elastic",
+			"duration": 0.9,
+			"delay": 0,
+			"stagger": 0.06,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-out-elastic",
+			"intensity": 1,
+			"params": {}
+		},
+		"out": {
+			"effect": "elastic",
+			"duration": 0.6,
+			"delay": 0,
+			"stagger": 0.05,
+			"staggerOrder": "forward",
+			"direction": "down",
+			"easing": "ease-in-back",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"style": {
+		"fontFamily": "Inter",
+		"fontWeight": 800,
+		"fill": "#FFFFFF"
+	},
+	"duration": 3.5
+}

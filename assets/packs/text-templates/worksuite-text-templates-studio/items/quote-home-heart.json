@@ -1,0 +1,134 @@
+{
+	"schema": 1,
+	"id": "quote-home-heart",
+	"kind": "template",
+	"name": {
+		"en": "Home and heart",
+		"si": "උණුසුම් උපුටනය",
+		"ta": "கதகதப்பான மேற்கோள்"
+	},
+	"category": "quotes",
+	"tags": {
+		"en": [
+			"home",
+			"and",
+			"heart",
+			"quote",
+			"saying",
+			"motivation",
+			"landscape",
+			"16:9",
+			"split reveal",
+			"fade",
+			"warm"
+		],
+		"si": [
+			"උපුටනය",
+			"අභිප්‍රේරණය",
+			"තිරස්",
+			"බෙදී මතුවීම",
+			"ක්‍රමයෙන් පෙනීම",
+			"උණුසුම්"
+		],
+		"ta": [
+			"மேற்கோள்",
+			"ஊக்கம்",
+			"கிடைமட்ட",
+			"பிளந்து தோன்றல்",
+			"மெல்லத் தோன்றல்",
+			"கதகதப்பான"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "quote",
+			"name": "Quote",
+			"text": {
+				"en": "Home is where the heart is.",
+				"si": "හදවත ඇති තැන නිවසයි.",
+				"ta": "இதயம் இருக்கும் இடமே வீடு."
+			},
+			"x": 0.5,
+			"y": 0.45,
+			"size": 0.07,
+			"style": {
+				"fontFamily": "Playfair Display",
+				"fontWeight": 700,
+				"fill": "#FFF4E0",
+				"tracking": 0.02
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "split-reveal",
+					"duration": 0.8,
+					"delay": 0,
+					"stagger": 0.08,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out-expo",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "split-reveal",
+					"duration": 0.5,
+					"delay": 0,
+					"stagger": 0.05,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-expo",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "author",
+			"name": "Author",
+			"text": {
+				"en": "— Sri Lankan saying",
+				"si": "— ශ්‍රී ලාංකේය කියමනක්",
+				"ta": "— இலங்கைப் பழமொழி"
+			},
+			"x": 0.5,
+			"y": 0.68,
+			"size": 0.044,
+			"style": {
+				"fontFamily": "Lora",
+				"fontWeight": 400,
+				"fontStyle": "italic",
+				"fill": "#E6D5B8"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "line",
+				"in": {
+					"effect": "split-reveal",
+					"duration": 0.7,
+					"delay": 0.25,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out-expo",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

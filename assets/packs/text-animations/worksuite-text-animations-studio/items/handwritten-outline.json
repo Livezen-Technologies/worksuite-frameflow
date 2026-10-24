@@ -1,0 +1,54 @@
+{
+	"schema": 1,
+	"id": "handwritten-outline",
+	"kind": "animation",
+	"name": {
+		"en": "Handwritten outline",
+		"si": "අලංකාර රේඛා ඇඳීම",
+		"ta": "நேர்த்தியான கோடு வரைதல்"
+	},
+	"category": "reveals",
+	"tags": {
+		"en": [
+			"handwritten",
+			"outline",
+			"stroke draw",
+			"letters",
+			"reveals",
+			"elegant"
+		],
+		"si": [
+			"රේඛා ඇඳීම",
+			"අකුරු",
+			"අලංකාර"
+		],
+		"ta": [
+			"கோடு வரைதல்",
+			"எழுத்துகள்",
+			"நேர்த்தியான"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "grapheme",
+		"in": {
+			"effect": "stroke-draw",
+			"duration": 1,
+			"delay": 0,
+			"stagger": 0.05,
+			"staggerOrder": "forward",
+			"direction": "right",
+			"easing": "ease-in-out",
+			"intensity": 1,
+			"params": {
+				"color": "#FFD166"
+			}
+		}
+	},
+	"style": {
+		"fontFamily": "Playfair Display",
+		"fontWeight": 700,
+		"fill": "#FFF4E0"
+	},
+	"duration": 3.5
+}

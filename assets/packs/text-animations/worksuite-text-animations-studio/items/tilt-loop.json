@@ -1,0 +1,68 @@
+{
+	"schema": 1,
+	"id": "tilt-loop",
+	"kind": "animation",
+	"name": {
+		"en": "Tilt loop",
+		"si": "නොනවතින ක්‍රමයෙන් පෙනීම",
+		"ta": "தொடர் மெல்லத் தோன்றல்"
+	},
+	"category": "3d-flips",
+	"tags": {
+		"en": [
+			"tilt",
+			"loop",
+			"fade",
+			"3d tilt",
+			"words",
+			"3d flips",
+			"looping"
+		],
+		"si": [
+			"ක්‍රමයෙන් පෙනීම",
+			"ත්‍රිමාණ ඇලවීම",
+			"වචන",
+			"නොනවතින",
+			"ලූප"
+		],
+		"ta": [
+			"மெல்லத் தோன்றல்",
+			"முப்பரிமாண சாய்வு",
+			"சொற்கள்",
+			"தொடர்",
+			"சுழற்சி"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "word",
+		"in": {
+			"effect": "fade",
+			"duration": 0.3,
+			"delay": 0,
+			"stagger": 0.02,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-out",
+			"intensity": 1,
+			"params": {}
+		},
+		"emphasis": {
+			"effect": "3d-tilt",
+			"duration": 2.4,
+			"delay": 0,
+			"stagger": 0.15,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "linear",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"style": {
+		"fontFamily": "Inter",
+		"fontWeight": 800,
+		"fill": "#FFFFFF"
+	},
+	"duration": 4
+}

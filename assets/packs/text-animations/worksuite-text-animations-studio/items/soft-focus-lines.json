@@ -1,0 +1,74 @@
+{
+	"schema": 1,
+	"id": "soft-focus-lines",
+	"kind": "animation",
+	"name": {
+		"en": "Soft focus lines",
+		"si": "සන්සුන් බොඳ",
+		"ta": "அமைதியான மங்கல்"
+	},
+	"category": "blur-focus",
+	"tags": {
+		"en": [
+			"soft",
+			"focus",
+			"lines",
+			"blur in",
+			"fade",
+			"blur focus",
+			"calm",
+			"exit"
+		],
+		"si": [
+			"බොඳ",
+			"ක්‍රමයෙන් පෙනීම",
+			"පේළි",
+			"සන්සුන්",
+			"ඉවත් වීම"
+		],
+		"ta": [
+			"மங்கல்",
+			"மெல்லத் தோன்றல்",
+			"வரிகள்",
+			"அமைதியான",
+			"வெளியேறல்"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "line",
+		"in": {
+			"effect": "blur-in",
+			"duration": 1,
+			"delay": 0,
+			"stagger": 0.25,
+			"staggerOrder": "forward",
+			"direction": "in",
+			"easing": "ease-out",
+			"intensity": 1,
+			"params": {}
+		},
+		"out": {
+			"effect": "fade",
+			"duration": 0.4,
+			"delay": 0,
+			"stagger": 0.02,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-in-cubic",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"previewText": {
+		"en": "First line here\nSecond line follows",
+		"si": "පළමු පේළිය\nදෙවන පේළිය",
+		"ta": "முதல் வரி\nஇரண்டாம் வரி"
+	},
+	"style": {
+		"fontFamily": "Inter",
+		"fontWeight": 600,
+		"fill": "#F1F5F9"
+	},
+	"duration": 3
+}

@@ -1,0 +1,131 @@
+{
+	"schema": 1,
+	"id": "quote-steps-rise",
+	"kind": "template",
+	"name": {
+		"en": "Small steps quote",
+		"si": "සන්සුන් උපුටනය",
+		"ta": "அமைதியான மேற்கோள்"
+	},
+	"category": "quotes",
+	"tags": {
+		"en": [
+			"small",
+			"steps",
+			"quote",
+			"saying",
+			"motivation",
+			"landscape",
+			"16:9",
+			"rise",
+			"fade",
+			"calm"
+		],
+		"si": [
+			"උපුටනය",
+			"අභිප්‍රේරණය",
+			"තිරස්",
+			"නැගීම",
+			"ක්‍රමයෙන් පෙනීම",
+			"සන්සුන්"
+		],
+		"ta": [
+			"மேற்கோள்",
+			"ஊக்கம்",
+			"கிடைமட்ட",
+			"எழுச்சி",
+			"மெல்லத் தோன்றல்",
+			"அமைதியான"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "quote",
+			"name": "Quote",
+			"text": {
+				"en": "Small steps every day.",
+				"si": "හැමදාම කුඩා පියවරක්.",
+				"ta": "தினமும் சிறிய அடிகள்."
+			},
+			"x": 0.5,
+			"y": 0.45,
+			"size": 0.07,
+			"style": {
+				"fontFamily": "DM Serif Display",
+				"fontWeight": 400,
+				"fill": "#F8FAFC"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "rise",
+					"duration": 0.7,
+					"delay": 0,
+					"stagger": 0.08,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "author",
+			"name": "Author",
+			"text": {
+				"en": "— Your name",
+				"si": "— ඔබේ නම",
+				"ta": "— உங்கள் பெயர்"
+			},
+			"x": 0.5,
+			"y": 0.68,
+			"size": 0.044,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 400,
+				"fill": "#A1A1AA"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "fade",
+					"duration": 0.6,
+					"delay": 0.3,
+					"stagger": 0.04,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

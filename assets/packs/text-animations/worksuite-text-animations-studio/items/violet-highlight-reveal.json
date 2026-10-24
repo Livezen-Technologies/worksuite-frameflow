@@ -1,0 +1,55 @@
+{
+	"schema": 1,
+	"id": "violet-highlight-reveal",
+	"kind": "animation",
+	"name": {
+		"en": "Violet highlight reveal",
+		"si": "දීප්තිමත් ඉස්මතු කිරීම",
+		"ta": "பிரகாசமான சிறப்பித்தல்"
+	},
+	"category": "reveals",
+	"tags": {
+		"en": [
+			"violet",
+			"highlight",
+			"reveal",
+			"highlight sweep",
+			"words",
+			"reveals",
+			"bright"
+		],
+		"si": [
+			"ඉස්මතු කිරීම",
+			"වචන",
+			"දීප්තිමත්"
+		],
+		"ta": [
+			"சிறப்பித்தல்",
+			"சொற்கள்",
+			"பிரகாசமான"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "word",
+		"in": {
+			"effect": "highlight-sweep",
+			"duration": 0.6,
+			"delay": 0,
+			"stagger": 0.15,
+			"staggerOrder": "forward",
+			"direction": "right",
+			"easing": "ease-in-out",
+			"intensity": 1,
+			"params": {
+				"color": "#7C3AED"
+			}
+		}
+	},
+	"style": {
+		"fontFamily": "Inter",
+		"fontWeight": 800,
+		"fill": "#FFFFFF"
+	},
+	"duration": 3
+}

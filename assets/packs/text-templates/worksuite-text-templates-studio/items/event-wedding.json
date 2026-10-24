@@ -1,0 +1,133 @@
+{
+	"schema": 1,
+	"id": "event-wedding",
+	"kind": "template",
+	"name": {
+		"en": "Wedding names",
+		"si": "අලංකාර සිදුවීම",
+		"ta": "நேர்த்தியான நிகழ்வு"
+	},
+	"category": "event",
+	"tags": {
+		"en": [
+			"wedding",
+			"names",
+			"event",
+			"invite",
+			"date",
+			"landscape",
+			"16:9",
+			"stroke draw",
+			"fade",
+			"elegant"
+		],
+		"si": [
+			"උත්සවය",
+			"ආරාධනාව",
+			"තිරස්",
+			"රේඛා ඇඳීම",
+			"ක්‍රමයෙන් පෙනීම",
+			"අලංකාර"
+		],
+		"ta": [
+			"நிகழ்வு",
+			"அழைப்பு",
+			"கிடைமட்ட",
+			"கோடு வரைதல்",
+			"மெல்லத் தோன்றல்",
+			"நேர்த்தியான"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "Ishara & Arun",
+				"si": "ඉෂාරා සහ අරුන්",
+				"ta": "இஷாரா & அருண்"
+			},
+			"x": 0.5,
+			"y": 0.44,
+			"size": 0.119,
+			"style": {
+				"fontFamily": "Caveat",
+				"fontWeight": 700,
+				"fill": "#FFFFFF"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "stroke-draw",
+					"duration": 1.4,
+					"delay": 0,
+					"stagger": 0.08,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-in-out",
+					"intensity": 1,
+					"params": {
+						"color": "#C084FC"
+					}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "subtitle",
+			"name": "Subtitle",
+			"text": {
+				"en": "Together forever",
+				"si": "සදාකාලිකව එකට",
+				"ta": "என்றென்றும் ஒன்றாக"
+			},
+			"x": 0.5,
+			"y": 0.6,
+			"size": 0.056,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 500,
+				"fill": "#E9D5FF"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "fade",
+					"duration": 0.6,
+					"delay": 0.8,
+					"stagger": 0.05,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

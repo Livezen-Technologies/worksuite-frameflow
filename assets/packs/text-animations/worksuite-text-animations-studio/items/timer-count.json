@@ -1,0 +1,57 @@
+{
+	"schema": 1,
+	"id": "timer-count",
+	"kind": "animation",
+	"name": {
+		"en": "Timer count",
+		"si": "ඩිජිටල් අංක ගණනය",
+		"ta": "டிஜிட்டல் எண் எண்ணிக்கை"
+	},
+	"category": "counters-numbers",
+	"tags": {
+		"en": [
+			"timer",
+			"count",
+			"number counter",
+			"blocks",
+			"counters numbers",
+			"digital"
+		],
+		"si": [
+			"අංක ගණනය",
+			"සම්පූර්ණ",
+			"ඩිජිටල්"
+		],
+		"ta": [
+			"எண் எண்ணிக்கை",
+			"முழு",
+			"டிஜிட்டல்"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "block",
+		"in": {
+			"effect": "number-counter",
+			"duration": 2,
+			"delay": 0,
+			"stagger": 0,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "linear",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"previewText": {
+		"en": "60",
+		"si": "60",
+		"ta": "60"
+	},
+	"style": {
+		"fontFamily": "Roboto Mono",
+		"fontWeight": 700,
+		"fill": "#E2E8F0"
+	},
+	"duration": 3.5
+}

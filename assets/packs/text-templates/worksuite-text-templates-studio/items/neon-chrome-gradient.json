@@ -1,0 +1,103 @@
+{
+	"schema": 1,
+	"id": "neon-chrome-gradient",
+	"kind": "template",
+	"name": {
+		"en": "Chrome gradient",
+		"si": "රෙට්‍රෝ නියොන් මාතෘකාව",
+		"ta": "ரெட்ரோ நியான் தலைப்பு"
+	},
+	"category": "neon-retro",
+	"tags": {
+		"en": [
+			"chrome",
+			"gradient",
+			"neon",
+			"retro",
+			"80s",
+			"landscape",
+			"16:9",
+			"fade",
+			"gradient sweep"
+		],
+		"si": [
+			"නියොන්",
+			"රෙට්‍රෝ",
+			"තිරස්",
+			"ක්‍රමයෙන් පෙනීම",
+			"වර්ණ ගලායාම"
+		],
+		"ta": [
+			"நியான்",
+			"ரெட்ரோ",
+			"கிடைமட்ட",
+			"மெல்லத் தோன்றல்",
+			"வண்ண ஓட்டம்"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "SINCE 1986",
+				"si": "1986 සිට",
+				"ta": "1986 முதல்"
+			},
+			"x": 0.5,
+			"y": 0.5,
+			"size": 0.13,
+			"style": {
+				"fontFamily": "Orbitron",
+				"fontWeight": 800,
+				"fill": "#2EC4FF",
+				"gradient": [
+					"#2EC4FF",
+					"#FF2E88"
+				]
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "fade",
+					"duration": 0.6,
+					"delay": 0,
+					"stagger": 0.05,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"emphasis": {
+					"effect": "gradient-sweep",
+					"duration": 2.5,
+					"delay": 0,
+					"stagger": 0.1,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "linear",
+					"intensity": 1,
+					"params": {
+						"from": "#FF2E88",
+						"to": "#FFFFFF"
+					}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

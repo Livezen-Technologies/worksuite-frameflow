@@ -1,0 +1,57 @@
+{
+	"schema": 1,
+	"id": "count-price",
+	"kind": "animation",
+	"name": {
+		"en": "Count price",
+		"si": "පැහැදිලි අංක ගණනය",
+		"ta": "தெளிவான எண் எண்ணிக்கை"
+	},
+	"category": "counters-numbers",
+	"tags": {
+		"en": [
+			"count",
+			"price",
+			"number counter",
+			"blocks",
+			"counters numbers",
+			"crisp"
+		],
+		"si": [
+			"අංක ගණනය",
+			"සම්පූර්ණ",
+			"පැහැදිලි"
+		],
+		"ta": [
+			"எண் எண்ணிக்கை",
+			"முழு",
+			"தெளிவான"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "block",
+		"in": {
+			"effect": "number-counter",
+			"duration": 1.4,
+			"delay": 0,
+			"stagger": 0,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-out-cubic",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"previewText": {
+		"en": "Rs. 4,990",
+		"si": "රු. 4,990",
+		"ta": "ரூ. 4,990"
+	},
+	"style": {
+		"fontFamily": "Oswald",
+		"fontWeight": 700,
+		"fill": "#FFFFFF"
+	},
+	"duration": 3
+}

@@ -1,0 +1,50 @@
+{
+	"schema": 1,
+	"id": "centre-pop",
+	"kind": "animation",
+	"name": {
+		"en": "Centre pop",
+		"si": "මැද සිට පොප්",
+		"ta": "நடுவிலிருந்து பாப்"
+	},
+	"category": "pop-bounce",
+	"tags": {
+		"en": [
+			"centre",
+			"pop",
+			"letters",
+			"pop bounce"
+		],
+		"si": [
+			"පොප්",
+			"අකුරු",
+			"මැද සිට"
+		],
+		"ta": [
+			"பாப்",
+			"எழுத்துகள்",
+			"நடுவிலிருந்து"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "grapheme",
+		"in": {
+			"effect": "pop",
+			"duration": 0.4,
+			"delay": 0,
+			"stagger": 0.04,
+			"staggerOrder": "center-out",
+			"direction": "in",
+			"easing": "ease-out-back",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"style": {
+		"fontFamily": "Inter",
+		"fontWeight": 800,
+		"fill": "#FFFFFF"
+	},
+	"duration": 3
+}

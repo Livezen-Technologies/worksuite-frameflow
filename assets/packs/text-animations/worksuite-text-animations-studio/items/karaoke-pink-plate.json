@@ -1,0 +1,66 @@
+{
+	"schema": 1,
+	"id": "karaoke-pink-plate",
+	"kind": "animation",
+	"name": {
+		"en": "Karaoke pink on plate",
+		"si": "දීප්තිමත් කැරෝකේ",
+		"ta": "பிரகாசமான கரோக்கே"
+	},
+	"category": "karaoke-captions",
+	"tags": {
+		"en": [
+			"karaoke",
+			"pink",
+			"on",
+			"plate",
+			"karaoke fill",
+			"words",
+			"karaoke captions",
+			"bright"
+		],
+		"si": [
+			"කැරෝකේ",
+			"වචන",
+			"දීප්තිමත්"
+		],
+		"ta": [
+			"கரோக்கே",
+			"சொற்கள்",
+			"பிரகாசமான"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "word",
+		"in": {
+			"effect": "karaoke-fill",
+			"duration": 0.4,
+			"delay": 0,
+			"stagger": 0.4,
+			"staggerOrder": "forward",
+			"direction": "right",
+			"easing": "linear",
+			"intensity": 1,
+			"params": {
+				"color": "#F472B6"
+			}
+		}
+	},
+	"previewText": {
+		"en": "Every word lands on the beat",
+		"si": "හැම වචනයක්ම තාලයට එයි",
+		"ta": "ஒவ்வொரு சொல்லும் தாளத்தில் வரும்"
+	},
+	"style": {
+		"fontFamily": "Inter",
+		"fontWeight": 800,
+		"fill": "#FFFFFF",
+		"plate": {
+			"color": "#111827",
+			"padding": 0.35,
+			"radius": 0.2
+		}
+	},
+	"duration": 4
+}

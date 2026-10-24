@@ -1,0 +1,57 @@
+{
+	"schema": 1,
+	"id": "flip-x-words",
+	"kind": "animation",
+	"name": {
+		"en": "Flip X words",
+		"si": "සුමට පෙරළීම",
+		"ta": "மிருதுவான புரட்டல்"
+	},
+	"category": "3d-flips",
+	"tags": {
+		"en": [
+			"flip",
+			"words",
+			"flip x",
+			"3d flips",
+			"smooth"
+		],
+		"si": [
+			"පෙරළීම",
+			"වචන",
+			"සුමට"
+		],
+		"ta": [
+			"புரட்டல்",
+			"சொற்கள்",
+			"மிருதுவான"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "word",
+		"in": {
+			"effect": "flip-x",
+			"duration": 0.7,
+			"delay": 0,
+			"stagger": 0.1,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-out-back",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"style": {
+		"fontFamily": "Montserrat",
+		"fontWeight": 800,
+		"fill": "#FFFFFF",
+		"shadow": {
+			"color": "#000000",
+			"blur": 8,
+			"x": 0,
+			"y": 3
+		}
+	},
+	"duration": 3
+}

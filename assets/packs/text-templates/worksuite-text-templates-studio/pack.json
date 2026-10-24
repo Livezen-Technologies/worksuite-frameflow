@@ -1,0 +1,36 @@
+{
+	"id": "worksuite-text-templates-studio",
+	"type": "text-templates",
+	"version": "1.0.0",
+	"title": "Worksuite text templates: Studio",
+	"description": "250 editable text templates — titles, captions, lower thirds, posters, quotes, social formats (16:9, 9:16, 1:1), sales, events, podcasts, tutorials, end screens, Avurudu, Vesak, Thai Pongal and Deepavali greetings — in English, Sinhala and Tamil.",
+	"tags": {
+		"en": [
+			"text",
+			"templates",
+			"titles",
+			"lower thirds",
+			"social",
+			"festive"
+		],
+		"si": [
+			"අකුරු",
+			"සැකිලි",
+			"උත්සව"
+		],
+		"ta": [
+			"உரை",
+			"வார்ப்புருக்கள்",
+			"பண்டிகை"
+		]
+	},
+	"languages": [
+		"en",
+		"si",
+		"ta"
+	],
+	"licence": "MIT",
+	"minAppVersion": "1.0.0",
+	"plan": "free",
+	"builtin": true
+}

@@ -1,0 +1,75 @@
+{
+	"schema": 1,
+	"id": "kinetic-stack",
+	"kind": "animation",
+	"name": {
+		"en": "Kinetic stack",
+		"si": "ප්‍රබල ලිස්සීම",
+		"ta": "வலுவான சறுக்கல்"
+	},
+	"category": "kinetic",
+	"tags": {
+		"en": [
+			"kinetic",
+			"stack",
+			"slide",
+			"float",
+			"lines",
+			"bold",
+			"loop"
+		],
+		"si": [
+			"ලිස්සීම",
+			"පාවීම",
+			"පේළි",
+			"ප්‍රබල",
+			"ලූප"
+		],
+		"ta": [
+			"சறுக்கல்",
+			"மிதத்தல்",
+			"வரிகள்",
+			"வலுவான",
+			"சுழற்சி"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "line",
+		"in": {
+			"effect": "slide",
+			"duration": 0.5,
+			"delay": 0,
+			"stagger": 0.25,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-out-expo",
+			"intensity": 1,
+			"params": {
+				"distance": 2
+			}
+		},
+		"emphasis": {
+			"effect": "float",
+			"duration": 2.4,
+			"delay": 0,
+			"stagger": 0.2,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "linear",
+			"intensity": 0.6,
+			"params": {}
+		}
+	},
+	"previewText": {
+		"en": "First line here\nSecond line follows",
+		"si": "පළමු පේළිය\nදෙවන පේළිය",
+		"ta": "முதல் வரி\nஇரண்டாம் வரி"
+	},
+	"style": {
+		"fontFamily": "Inter",
+		"fontWeight": 800,
+		"fill": "#FFFFFF"
+	},
+	"duration": 4.5
+}

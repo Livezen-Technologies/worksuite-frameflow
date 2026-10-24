@@ -1,0 +1,127 @@
+{
+	"schema": 1,
+	"id": "min-square",
+	"kind": "template",
+	"name": {
+		"en": "Square minimal",
+		"si": "හතරැස් සරල මාතෘකාව",
+		"ta": "சதுர எளிய தலைப்பு"
+	},
+	"category": "minimal",
+	"tags": {
+		"en": [
+			"square",
+			"minimal",
+			"clean",
+			"simple",
+			"1:1",
+			"blur in",
+			"fade"
+		],
+		"si": [
+			"සරල",
+			"පිරිසිදු",
+			"හතරැස්",
+			"බොඳ",
+			"ක්‍රමයෙන් පෙනීම"
+		],
+		"ta": [
+			"எளிமை",
+			"சுத்தம்",
+			"சதுரம்",
+			"மங்கல்",
+			"மெல்லத் தோன்றல்",
+			"சதுர"
+		]
+	},
+	"duration": 4,
+	"aspect": "1:1",
+	"slots": [
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "Morning",
+				"si": "උදෑසන",
+				"ta": "காலை"
+			},
+			"x": 0.5,
+			"y": 0.44,
+			"size": 0.108,
+			"style": {
+				"fontFamily": "DM Serif Display",
+				"fontWeight": 400,
+				"fill": "#F8FAFC"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "blur-in",
+					"duration": 0.9,
+					"delay": 0,
+					"stagger": 0.1,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "blur-in",
+					"duration": 0.5,
+					"delay": 0,
+					"stagger": 0.04,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "ease-in",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "subtitle",
+			"name": "Subtitle",
+			"text": {
+				"en": "Vol. 01",
+				"si": "1 වෙළුම",
+				"ta": "தொகுதி 01"
+			},
+			"x": 0.5,
+			"y": 0.6,
+			"size": 0.056,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 400,
+				"fill": "#A1A1AA"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "blur-in",
+					"duration": 0.8,
+					"delay": 0.35,
+					"stagger": 0.05,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

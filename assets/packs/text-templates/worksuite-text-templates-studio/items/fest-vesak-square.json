@@ -1,0 +1,155 @@
+{
+	"schema": 1,
+	"id": "fest-vesak-square",
+	"kind": "template",
+	"name": {
+		"en": "Vesak square",
+		"si": "හතරැස් සුබ පැතුම",
+		"ta": "சதுர வாழ்த்து"
+	},
+	"category": "festive",
+	"tags": {
+		"en": [
+			"vesak",
+			"square",
+			"festival",
+			"greeting",
+			"sri lanka",
+			"1:1",
+			"fade",
+			"shine",
+			"rise",
+			"lantern",
+			"may"
+		],
+		"si": [
+			"උත්සවය",
+			"සුබ පැතුම්",
+			"හතරැස්",
+			"ක්‍රමයෙන් පෙනීම",
+			"දිලිසීම",
+			"නැගීම",
+			"වෙසක්",
+			"වෙසක් කූඩු"
+		],
+		"ta": [
+			"பண்டிகை",
+			"வாழ்த்து",
+			"சதுரம்",
+			"மெல்லத் தோன்றல்",
+			"பளபளப்பு",
+			"எழுச்சி",
+			"சதுர",
+			"வெசாக்",
+			"விளக்கு"
+		]
+	},
+	"duration": 4,
+	"aspect": "1:1",
+	"background": {
+		"packAsset": "sl-vesak-lantern"
+	},
+	"slots": [
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "Happy Vesak",
+				"si": "සුබ වෙසක්",
+				"ta": "இனிய வெசாக்"
+			},
+			"x": 0.5,
+			"y": 0.44,
+			"size": 0.096,
+			"style": {
+				"fontFamily": "Noto Serif Sinhala",
+				"fontWeight": 700,
+				"fill": "#FFFBEB",
+				"glow": {
+					"color": "#FBBF24",
+					"size": 0.35
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "block",
+				"in": {
+					"effect": "fade",
+					"duration": 0.6,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"emphasis": {
+					"effect": "shine",
+					"duration": 2.4,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-in-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "subtitle",
+			"name": "Subtitle",
+			"text": {
+				"en": "Light and kindness",
+				"si": "ආලෝකය සහ කරුණාව",
+				"ta": "ஒளியும் கருணையும்"
+			},
+			"x": 0.5,
+			"y": 0.6,
+			"size": 0.056,
+			"style": {
+				"fontFamily": "Noto Sans Sinhala",
+				"fontWeight": 400,
+				"fill": "#FDE68A"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "rise",
+					"duration": 0.5,
+					"delay": 0.3,
+					"stagger": 0.05,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

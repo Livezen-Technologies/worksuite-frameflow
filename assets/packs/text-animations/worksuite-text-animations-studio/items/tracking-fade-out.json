@@ -1,0 +1,70 @@
+{
+	"schema": 1,
+	"id": "tracking-fade-out",
+	"kind": "animation",
+	"name": {
+		"en": "Tracking fade out",
+		"si": "පුළුල් පරතරය",
+		"ta": "அகலமான இடைவெளி"
+	},
+	"category": "exits",
+	"tags": {
+		"en": [
+			"tracking",
+			"fade",
+			"out",
+			"tracking expand",
+			"letters",
+			"exits",
+			"wide",
+			"exit"
+		],
+		"si": [
+			"ක්‍රමයෙන් පෙනීම",
+			"පරතරය",
+			"අකුරු",
+			"පුළුල්",
+			"ඉවත් වීම"
+		],
+		"ta": [
+			"மெல்லத் தோன்றல்",
+			"இடைவெளி",
+			"எழுத்துகள்",
+			"அகலமான",
+			"வெளியேறல்"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "grapheme",
+		"in": {
+			"effect": "fade",
+			"duration": 0.3,
+			"delay": 0,
+			"stagger": 0.02,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-out",
+			"intensity": 1,
+			"params": {}
+		},
+		"out": {
+			"effect": "tracking-expand",
+			"duration": 0.9,
+			"delay": 0,
+			"stagger": 0,
+			"staggerOrder": "forward",
+			"direction": "out",
+			"easing": "ease-in-cubic",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"style": {
+		"fontFamily": "Bebas Neue",
+		"fontWeight": 400,
+		"fill": "#FFFFFF",
+		"tracking": 0.04
+	},
+	"duration": 3
+}

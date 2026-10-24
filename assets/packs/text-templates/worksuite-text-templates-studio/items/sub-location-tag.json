@@ -1,0 +1,140 @@
+{
+	"schema": 1,
+	"id": "sub-location-tag",
+	"kind": "template",
+	"name": {
+		"en": "Location tag",
+		"si": "කුඩා උපසිරැසිය",
+		"ta": "சிறிய துணைத் தலைப்பு"
+	},
+	"category": "subtitles",
+	"tags": {
+		"en": [
+			"location",
+			"tag",
+			"subtitle",
+			"caption",
+			"text",
+			"landscape",
+			"16:9",
+			"mask wipe",
+			"fade",
+			"slide",
+			"small"
+		],
+		"si": [
+			"උපසිරැසි",
+			"තිරස්",
+			"පිසදැමීම",
+			"ක්‍රමයෙන් පෙනීම",
+			"ලිස්සීම",
+			"කුඩා"
+		],
+		"ta": [
+			"வசனம்",
+			"கிடைமட்ட",
+			"துடைப்பு",
+			"மெல்லத் தோன்றல்",
+			"சறுக்கல்",
+			"சிறிய"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "tag",
+			"name": "Tag",
+			"text": {
+				"en": "LIVE",
+				"si": "සජීවී",
+				"ta": "நேரலை"
+			},
+			"x": 0.12,
+			"y": 0.1,
+			"size": 0.052,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 800,
+				"fill": "#FFD400",
+				"tracking": 0.06
+			},
+			"animation": {
+				"version": 1,
+				"unit": "block",
+				"in": {
+					"effect": "mask-wipe",
+					"duration": 0.5,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "place",
+			"name": "Place",
+			"text": {
+				"en": "On location in Kandy",
+				"si": "මහනුවර සිට",
+				"ta": "கண்டியிலிருந்து"
+			},
+			"x": 0.24,
+			"y": 0.17,
+			"size": 0.044,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 700,
+				"fill": "#FFFFFF",
+				"plate": {
+					"color": "#111111",
+					"padding": 0.3,
+					"radius": 0.08
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "slide",
+					"duration": 0.5,
+					"delay": 0.2,
+					"stagger": 0.04,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {
+						"distance": 0.8
+					}
+				},
+				"out": {
+					"effect": "slide",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.03,
+					"staggerOrder": "forward",
+					"direction": "left",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

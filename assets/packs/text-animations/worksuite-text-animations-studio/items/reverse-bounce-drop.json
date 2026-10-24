@@ -1,0 +1,57 @@
+{
+	"schema": 1,
+	"id": "reverse-bounce-drop",
+	"kind": "animation",
+	"name": {
+		"en": "Reverse bounce drop",
+		"si": "ආපසු වැටීම",
+		"ta": "தலைகீழ் விழுதல்"
+	},
+	"category": "pop-bounce",
+	"tags": {
+		"en": [
+			"reverse",
+			"bounce",
+			"drop",
+			"words",
+			"pop bounce"
+		],
+		"si": [
+			"වැටීම",
+			"වචන",
+			"ආපසු"
+		],
+		"ta": [
+			"விழுதல்",
+			"சொற்கள்",
+			"தலைகீழ்"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "word",
+		"in": {
+			"effect": "drop",
+			"duration": 0.8,
+			"delay": 0,
+			"stagger": 0.1,
+			"staggerOrder": "reverse",
+			"direction": "down",
+			"easing": "ease-out-bounce",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"style": {
+		"fontFamily": "Montserrat",
+		"fontWeight": 800,
+		"fill": "#FFFFFF",
+		"shadow": {
+			"color": "#000000",
+			"blur": 8,
+			"x": 0,
+			"y": 3
+		}
+	},
+	"duration": 3
+}

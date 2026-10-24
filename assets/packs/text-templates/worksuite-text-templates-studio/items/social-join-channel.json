@@ -1,0 +1,206 @@
+{
+	"schema": 1,
+	"id": "social-join-channel",
+	"kind": "template",
+	"name": {
+		"en": "Join the channel",
+		"si": "දීප්තිමත් සමාජ මාධ්‍ය පෝස්ටුව",
+		"ta": "பிரகாசமான சமூக ஊடகப் பதிவு"
+	},
+	"category": "social",
+	"tags": {
+		"en": [
+			"join",
+			"the",
+			"channel",
+			"social",
+			"post",
+			"reel",
+			"short",
+			"landscape",
+			"16:9",
+			"pop",
+			"pulse",
+			"fade",
+			"bright"
+		],
+		"si": [
+			"සමාජ මාධ්‍ය",
+			"පෝස්ටුව",
+			"තිරස්",
+			"පොප්",
+			"ස්පන්දනය",
+			"ක්‍රමයෙන් පෙනීම",
+			"දීප්තිමත්"
+		],
+		"ta": [
+			"சமூக ஊடகம்",
+			"பதிவு",
+			"கிடைமட்ட",
+			"பாப்",
+			"துடிப்பு",
+			"மெல்லத் தோன்றல்",
+			"பிரகாசமான"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "Join the channel",
+				"si": "චැනලයට එක්වන්න",
+				"ta": "சேனலில் இணையுங்கள்"
+			},
+			"x": 0.5,
+			"y": 0.36,
+			"size": 0.097,
+			"style": {
+				"fontFamily": "Poppins",
+				"fontWeight": 800,
+				"fill": "#FFFFFF"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "block",
+				"in": {
+					"effect": "pop",
+					"duration": 0.5,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "ease-out-back",
+					"intensity": 1,
+					"params": {}
+				},
+				"emphasis": {
+					"effect": "pulse",
+					"duration": 1.2,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "linear",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "subtitle",
+			"name": "Subtitle",
+			"text": {
+				"en": "More videos every week",
+				"si": "සෑම සතියකම තවත් වීඩියෝ",
+				"ta": "வாரந்தோறும் வீடியோக்கள்"
+			},
+			"x": 0.5,
+			"y": 0.52,
+			"size": 0.05,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 500,
+				"fill": "#CBD5E1"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "fade",
+					"duration": 0.5,
+					"delay": 0.3,
+					"stagger": 0.05,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "button",
+			"name": "Button",
+			"text": {
+				"en": "JOIN NOW",
+				"si": "දැන් එක්වන්න",
+				"ta": "இப்போதே இணையுங்கள்"
+			},
+			"x": 0.5,
+			"y": 0.68,
+			"size": 0.05,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 800,
+				"fill": "#FFFFFF",
+				"plate": {
+					"color": "#F97316",
+					"padding": 0.45,
+					"radius": 0.5
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "block",
+				"in": {
+					"effect": "pop",
+					"duration": 0.5,
+					"delay": 0.6,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "ease-out-back",
+					"intensity": 1,
+					"params": {}
+				},
+				"emphasis": {
+					"effect": "pulse",
+					"duration": 1.2,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "linear",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

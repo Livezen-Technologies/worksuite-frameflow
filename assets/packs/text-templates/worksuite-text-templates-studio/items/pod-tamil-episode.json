@@ -1,0 +1,142 @@
+{
+	"schema": 1,
+	"id": "pod-tamil-episode",
+	"kind": "template",
+	"name": {
+		"en": "Tamil episode",
+		"si": "සරල පොඩ්කාස්ට්",
+		"ta": "எளிய பாட்காஸ்ட்"
+	},
+	"category": "podcast",
+	"tags": {
+		"en": [
+			"tamil",
+			"episode",
+			"podcast",
+			"audio",
+			"landscape",
+			"16:9",
+			"tracking expand",
+			"fade",
+			"rise",
+			"simple"
+		],
+		"si": [
+			"පොඩ්කාස්ට්",
+			"කථාංගය",
+			"තිරස්",
+			"පරතරය",
+			"ක්‍රමයෙන් පෙනීම",
+			"නැගීම",
+			"සරල"
+		],
+		"ta": [
+			"பாட்காஸ்ட்",
+			"அத்தியாயம்",
+			"கிடைமட்ட",
+			"இடைவெளி",
+			"மெல்லத் தோன்றல்",
+			"எழுச்சி",
+			"எளிய"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "label",
+			"name": "Label",
+			"text": {
+				"en": "EPISODE 12",
+				"si": "කථාංගය 12",
+				"ta": "அத்தியாயம் 12"
+			},
+			"x": 0.5,
+			"y": 0.34,
+			"size": 0.052,
+			"style": {
+				"fontFamily": "Noto Sans Tamil",
+				"fontWeight": 700,
+				"fill": "#FFFFFF",
+				"plate": {
+					"color": "#15803D",
+					"padding": 0.35,
+					"radius": 0.3
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "grapheme",
+				"in": {
+					"effect": "tracking-expand",
+					"duration": 1,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "out",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "Late Night Talk",
+				"si": "රෑ කතාබහ",
+				"ta": "இரவு உரையாடல்"
+			},
+			"x": 0.5,
+			"y": 0.5,
+			"size": 0.119,
+			"style": {
+				"fontFamily": "Noto Serif Tamil",
+				"fontWeight": 700,
+				"fill": "#FDE047",
+				"stroke": {
+					"color": "#7C2D12",
+					"width": 3
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "rise",
+					"duration": 0.7,
+					"delay": 0.3,
+					"stagger": 0.08,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

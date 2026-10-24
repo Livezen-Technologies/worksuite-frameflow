@@ -1,0 +1,60 @@
+{
+	"schema": 1,
+	"id": "boxed-word-captions",
+	"kind": "animation",
+	"name": {
+		"en": "Boxed word captions",
+		"si": "පැහැදිලි කොටුව",
+		"ta": "தெளிவான பெட்டி"
+	},
+	"category": "karaoke-captions",
+	"tags": {
+		"en": [
+			"boxed",
+			"word",
+			"captions",
+			"box reveal",
+			"words",
+			"karaoke captions",
+			"crisp"
+		],
+		"si": [
+			"කොටුව",
+			"වචන",
+			"පැහැදිලි"
+		],
+		"ta": [
+			"பெட்டி",
+			"சொற்கள்",
+			"தெளிவான"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "word",
+		"in": {
+			"effect": "box-reveal",
+			"duration": 0.4,
+			"delay": 0,
+			"stagger": 0.4,
+			"staggerOrder": "forward",
+			"direction": "right",
+			"easing": "ease-in-out-cubic",
+			"intensity": 1,
+			"params": {
+				"color": "#FFD400"
+			}
+		}
+	},
+	"previewText": {
+		"en": "Follow along with me",
+		"si": "මා සමඟ එක්ව එන්න",
+		"ta": "என்னுடன் தொடருங்கள்"
+	},
+	"style": {
+		"fontFamily": "Inter",
+		"fontWeight": 800,
+		"fill": "#FFFFFF"
+	},
+	"duration": 3
+}

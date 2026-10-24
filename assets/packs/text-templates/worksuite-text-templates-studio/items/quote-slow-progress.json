@@ -1,0 +1,132 @@
+{
+	"schema": 1,
+	"id": "quote-slow-progress",
+	"kind": "template",
+	"name": {
+		"en": "Slow progress",
+		"si": "සෙමින් උපුටනය",
+		"ta": "மெதுவான மேற்கோள்"
+	},
+	"category": "quotes",
+	"tags": {
+		"en": [
+			"slow",
+			"progress",
+			"quote",
+			"saying",
+			"motivation",
+			"landscape",
+			"16:9",
+			"typewriter",
+			"fade"
+		],
+		"si": [
+			"උපුටනය",
+			"අභිප්‍රේරණය",
+			"තිරස්",
+			"යතුරුලියනය",
+			"ක්‍රමයෙන් පෙනීම",
+			"සෙමින්"
+		],
+		"ta": [
+			"மேற்கோள்",
+			"ஊக்கம்",
+			"கிடைமட்ட",
+			"தட்டச்சு",
+			"மெல்லத் தோன்றல்",
+			"மெதுவான"
+		]
+	},
+	"duration": 4.5,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "quote",
+			"name": "Quote",
+			"text": {
+				"en": "Slow progress is still progress.",
+				"si": "සෙමින් වුවත් ඉදිරියට යාම ප්‍රගතියකි.",
+				"ta": "மெதுவான முன்னேற்றமும் முன்னேற்றமே."
+			},
+			"x": 0.5,
+			"y": 0.45,
+			"size": 0.057,
+			"style": {
+				"fontFamily": "Space Mono",
+				"fontWeight": 400,
+				"fill": "#F1F5F9"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "grapheme",
+				"in": {
+					"effect": "typewriter",
+					"duration": 0.05,
+					"delay": 0,
+					"stagger": 0.05,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "linear",
+					"intensity": 1,
+					"params": {
+						"caret": false
+					}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "author",
+			"name": "Author",
+			"text": {
+				"en": "— Your name",
+				"si": "— ඔබේ නම",
+				"ta": "— உங்கள் பெயர்"
+			},
+			"x": 0.5,
+			"y": 0.68,
+			"size": 0.044,
+			"style": {
+				"fontFamily": "Space Mono",
+				"fontWeight": 400,
+				"fill": "#64748B"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "fade",
+					"duration": 0.5,
+					"delay": 0.9,
+					"stagger": 0.05,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

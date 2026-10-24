@@ -1,0 +1,70 @@
+{
+	"schema": 1,
+	"id": "typewriter-delete",
+	"kind": "animation",
+	"name": {
+		"en": "Typewriter delete",
+		"si": "සම්භාව්‍ය යතුරුලියනය",
+		"ta": "கிளாசிக் தட்டச்சு"
+	},
+	"category": "exits",
+	"tags": {
+		"en": [
+			"typewriter",
+			"delete",
+			"fade",
+			"letters",
+			"exits",
+			"classic",
+			"exit"
+		],
+		"si": [
+			"ක්‍රමයෙන් පෙනීම",
+			"යතුරුලියනය",
+			"අකුරු",
+			"සම්භාව්‍ය",
+			"ඉවත් වීම"
+		],
+		"ta": [
+			"மெல்லத் தோன்றல்",
+			"தட்டச்சு",
+			"எழுத்துகள்",
+			"கிளாசிக்",
+			"வெளியேறல்"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "grapheme",
+		"in": {
+			"effect": "fade",
+			"duration": 0.3,
+			"delay": 0,
+			"stagger": 0.02,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-out",
+			"intensity": 1,
+			"params": {}
+		},
+		"out": {
+			"effect": "typewriter",
+			"duration": 0.04,
+			"delay": 0,
+			"stagger": 0.04,
+			"staggerOrder": "reverse",
+			"direction": "right",
+			"easing": "linear",
+			"intensity": 1,
+			"params": {
+				"caret": true
+			}
+		}
+	},
+	"style": {
+		"fontFamily": "Roboto Mono",
+		"fontWeight": 700,
+		"fill": "#E2E8F0"
+	},
+	"duration": 3
+}

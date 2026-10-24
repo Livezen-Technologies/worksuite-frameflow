@@ -1,0 +1,75 @@
+{
+	"schema": 1,
+	"id": "broken-sign",
+	"kind": "animation",
+	"name": {
+		"en": "Broken sign",
+		"si": "රළු නියොන් දැල්වීම",
+		"ta": "கரடுமுரடான நியான் மின்னல்"
+	},
+	"category": "glitch",
+	"tags": {
+		"en": [
+			"broken",
+			"sign",
+			"neon flicker",
+			"letters",
+			"glitch",
+			"rough",
+			"loop"
+		],
+		"si": [
+			"නියොන් දැල්වීම",
+			"අකුරු",
+			"රළු",
+			"ලූප"
+		],
+		"ta": [
+			"நியான் மின்னல்",
+			"எழுத்துகள்",
+			"கரடுமுரடான",
+			"சுழற்சி"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "grapheme",
+		"in": {
+			"effect": "neon-flicker",
+			"duration": 1,
+			"delay": 0,
+			"stagger": 0.06,
+			"staggerOrder": "random(2)",
+			"direction": "in",
+			"easing": "linear",
+			"intensity": 1,
+			"params": {
+				"color": "#FF8A00"
+			}
+		},
+		"emphasis": {
+			"effect": "neon-flicker",
+			"duration": 1.4,
+			"delay": 0,
+			"stagger": 0,
+			"staggerOrder": "forward",
+			"direction": "in",
+			"easing": "linear",
+			"intensity": 1.2,
+			"params": {
+				"rate": 30,
+				"color": "#FF8A00"
+			}
+		}
+	},
+	"style": {
+		"fontFamily": "Righteous",
+		"fontWeight": 400,
+		"fill": "#FFF1D6",
+		"glow": {
+			"color": "#FF8A00",
+			"size": 0.3
+		}
+	},
+	"duration": 4.5
+}

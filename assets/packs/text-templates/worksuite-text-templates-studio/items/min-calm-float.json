@@ -1,0 +1,100 @@
+{
+	"schema": 1,
+	"id": "min-calm-float",
+	"kind": "template",
+	"name": {
+		"en": "Calm float",
+		"si": "සන්සුන් සරල මාතෘකාව",
+		"ta": "அமைதியான எளிய தலைப்பு"
+	},
+	"category": "minimal",
+	"tags": {
+		"en": [
+			"calm",
+			"float",
+			"minimal",
+			"clean",
+			"simple",
+			"landscape",
+			"16:9",
+			"rise",
+			"fade"
+		],
+		"si": [
+			"සරල",
+			"පිරිසිදු",
+			"තිරස්",
+			"නැගීම",
+			"පාවීම",
+			"ක්‍රමයෙන් පෙනීම",
+			"සන්සුන්"
+		],
+		"ta": [
+			"எளிமை",
+			"சுத்தம்",
+			"கிடைமட்ட",
+			"எழுச்சி",
+			"மிதத்தல்",
+			"மெல்லத் தோன்றல்",
+			"அமைதியான"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "Calm",
+				"si": "සන්සුන්",
+				"ta": "அமைதி"
+			},
+			"x": 0.5,
+			"y": 0.5,
+			"size": 0.13,
+			"style": {
+				"fontFamily": "DM Serif Display",
+				"fontWeight": 400,
+				"fill": "#F8FAFC"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "rise",
+					"duration": 0.8,
+					"delay": 0,
+					"stagger": 0.1,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"emphasis": {
+					"effect": "float",
+					"duration": 3,
+					"delay": 0,
+					"stagger": 0.15,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "linear",
+					"intensity": 0.6,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

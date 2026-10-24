@@ -1,0 +1,68 @@
+{
+	"schema": 1,
+	"id": "breathing-stretch",
+	"kind": "animation",
+	"name": {
+		"en": "Breathing stretch",
+		"si": "සන්සුන් ක්‍රමයෙන් පෙනීම",
+		"ta": "அமைதியான மெல்லத் தோன்றல்"
+	},
+	"category": "elastic",
+	"tags": {
+		"en": [
+			"breathing",
+			"stretch",
+			"fade",
+			"blocks",
+			"elastic",
+			"calm",
+			"loop"
+		],
+		"si": [
+			"ක්‍රමයෙන් පෙනීම",
+			"ඇදීම",
+			"සම්පූර්ණ",
+			"සන්සුන්",
+			"ලූප"
+		],
+		"ta": [
+			"மெல்லத் தோன்றல்",
+			"நீட்சி",
+			"முழு",
+			"அமைதியான",
+			"சுழற்சி"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "block",
+		"in": {
+			"effect": "fade",
+			"duration": 0.3,
+			"delay": 0,
+			"stagger": 0.02,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-out",
+			"intensity": 1,
+			"params": {}
+		},
+		"emphasis": {
+			"effect": "stretch",
+			"duration": 2,
+			"delay": 0,
+			"stagger": 0,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "linear",
+			"intensity": 0.6,
+			"params": {}
+		}
+	},
+	"style": {
+		"fontFamily": "Unbounded",
+		"fontWeight": 700,
+		"fill": "#FFFFFF"
+	},
+	"duration": 3.5
+}

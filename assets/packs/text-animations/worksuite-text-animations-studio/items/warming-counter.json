@@ -1,0 +1,72 @@
+{
+	"schema": 1,
+	"id": "warming-counter",
+	"kind": "animation",
+	"name": {
+		"en": "Warming counter",
+		"si": "උණුසුම් අංක ගණනය",
+		"ta": "கதகதப்பான எண் எண்ணிக்கை"
+	},
+	"category": "counters-numbers",
+	"tags": {
+		"en": [
+			"warming",
+			"counter",
+			"number counter",
+			"blocks",
+			"counters numbers",
+			"warm"
+		],
+		"si": [
+			"අංක ගණනය",
+			"සම්පූර්ණ",
+			"උණුසුම්"
+		],
+		"ta": [
+			"எண் எண்ணிக்கை",
+			"முழு",
+			"கதகதப்பான"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "block",
+		"in": {
+			"effect": "number-counter",
+			"duration": 1.8,
+			"delay": 0,
+			"stagger": 0,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-out-cubic",
+			"intensity": 1,
+			"params": {}
+		},
+		"keyframes": {
+			"tracks": {
+				"fill": [
+					{
+						"t": 0,
+						"v": "#2EC4FF"
+					},
+					{
+						"t": 1.8,
+						"v": "#FF5C3B",
+						"easing": "ease-in-out"
+					}
+				]
+			}
+		}
+	},
+	"previewText": {
+		"en": "32°C",
+		"si": "32°C",
+		"ta": "32°C"
+	},
+	"style": {
+		"fontFamily": "Oswald",
+		"fontWeight": 700,
+		"fill": "#FFFFFF"
+	},
+	"duration": 3
+}

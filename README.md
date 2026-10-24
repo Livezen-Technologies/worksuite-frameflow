@@ -172,6 +172,8 @@ A template item is one or more text slots (position and size as shares of the fr
              "x": 0.5, "y": 0.45, "size": 0.12, "style": { "fontWeight": 800, "fill": "#FFFFFF" }, "animation": { … } }] }
 ```
 
+The Studio packs (`worksuite-text-animations-studio`, `worksuite-text-templates-studio`: 250 animations and 250 templates) are generated from hand-designed recipe tables in `scripts/assets/text-content/` (phases in a compact notation, looks, slot layouts, motions and default texts in English, Sinhala and Tamil). Edit the tables, not the item files, and run `node scripts/assets/generate-text-content.mjs` (`--check` fails when the files are out of date). It sizes each template slot so the longest of its three languages fits the frame, and lists every Sinhala and Tamil string in `docs/text-content-review-si-ta.md` for native-speaker review.
+
 Then run `node scripts/assets/text-packs.mjs` (structure) and `bun test src/text-library` in `apps/web` (full check: effect ids, easings, categories, unique ids, schema in sync). `index.json` is generated from these files for the app (`apps/web/scripts/copy-text-packs.mjs`, run by `dev`/`build`) and for the download center (`build-catalog.mjs`, pack types `text-animations` and `text-templates`). Search covers names and tags in all three languages, so give every item Sinhala and Tamil tags.
 
 ### Lottie export of text

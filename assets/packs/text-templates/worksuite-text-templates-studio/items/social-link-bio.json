@@ -1,0 +1,93 @@
+{
+	"schema": 1,
+	"id": "social-link-bio",
+	"kind": "template",
+	"name": {
+		"en": "Link in bio",
+		"si": "සරල සමාජ මාධ්‍ය පෝස්ටුව",
+		"ta": "எளிய சமூக ஊடகப் பதிவு"
+	},
+	"category": "social",
+	"tags": {
+		"en": [
+			"link",
+			"in",
+			"bio",
+			"social",
+			"post",
+			"reel",
+			"short",
+			"vertical",
+			"9:16",
+			"story",
+			"slide",
+			"simple"
+		],
+		"si": [
+			"සමාජ මාධ්‍ය",
+			"පෝස්ටුව",
+			"සිරස්",
+			"ලිස්සීම",
+			"සරල"
+		],
+		"ta": [
+			"சமூக ஊடகம்",
+			"பதிவு",
+			"செங்குத்து",
+			"சறுக்கல்",
+			"எளிய"
+		]
+	},
+	"duration": 4,
+	"aspect": "9:16",
+	"slots": [
+		{
+			"id": "caption",
+			"name": "Caption",
+			"text": {
+				"en": "Link in bio",
+				"si": "සබැඳිය බයෝ එකේ",
+				"ta": "இணைப்பு பயோவில்"
+			},
+			"x": 0.5,
+			"y": 0.72,
+			"size": 0.038,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 700,
+				"fill": "#FFFFFF",
+				"plate": {
+					"color": "#000000",
+					"padding": 0.25,
+					"radius": 0.15
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "slide",
+					"duration": 0.5,
+					"delay": 0,
+					"stagger": 0.06,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "slide",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.04,
+					"staggerOrder": "forward",
+					"direction": "left",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

@@ -1,0 +1,74 @@
+{
+	"schema": 1,
+	"id": "shiny-counter",
+	"kind": "animation",
+	"name": {
+		"en": "Shiny counter",
+		"si": "දීප්තිමත් අංක ගණනය",
+		"ta": "பிரகாசமான எண் எண்ணிக்கை"
+	},
+	"category": "counters-numbers",
+	"tags": {
+		"en": [
+			"shiny",
+			"counter",
+			"number counter",
+			"shine",
+			"blocks",
+			"counters numbers",
+			"bright",
+			"loop"
+		],
+		"si": [
+			"අංක ගණනය",
+			"දිලිසීම",
+			"සම්පූර්ණ",
+			"දීප්තිමත්",
+			"ලූප"
+		],
+		"ta": [
+			"எண் எண்ணிக்கை",
+			"பளபளப்பு",
+			"முழு",
+			"பிரகாசமான",
+			"சுழற்சி"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "block",
+		"in": {
+			"effect": "number-counter",
+			"duration": 1.6,
+			"delay": 0,
+			"stagger": 0,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-out-cubic",
+			"intensity": 1,
+			"params": {}
+		},
+		"emphasis": {
+			"effect": "shine",
+			"duration": 2.2,
+			"delay": 0,
+			"stagger": 0,
+			"staggerOrder": "forward",
+			"direction": "right",
+			"easing": "ease-in-out",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"previewText": {
+		"en": "Rs. 4,990",
+		"si": "රු. 4,990",
+		"ta": "ரூ. 4,990"
+	},
+	"style": {
+		"fontFamily": "Inter",
+		"fontWeight": 800,
+		"fill": "#FFD166"
+	},
+	"duration": 5
+}

@@ -1,0 +1,54 @@
+{
+	"schema": 1,
+	"id": "short-nudge",
+	"kind": "animation",
+	"name": {
+		"en": "Short nudge",
+		"si": "කුඩා ලිස්සීම",
+		"ta": "சிறிய சறுக்கல்"
+	},
+	"category": "slides",
+	"tags": {
+		"en": [
+			"short",
+			"nudge",
+			"slide",
+			"words",
+			"slides",
+			"small"
+		],
+		"si": [
+			"ලිස්සීම",
+			"වචන",
+			"කුඩා"
+		],
+		"ta": [
+			"சறுக்கல்",
+			"சொற்கள்",
+			"சிறிய"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "word",
+		"in": {
+			"effect": "slide",
+			"duration": 0.4,
+			"delay": 0,
+			"stagger": 0.05,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-out-quad",
+			"intensity": 1,
+			"params": {
+				"distance": 0.4
+			}
+		}
+	},
+	"style": {
+		"fontFamily": "Inter",
+		"fontWeight": 600,
+		"fill": "#F1F5F9"
+	},
+	"duration": 3
+}

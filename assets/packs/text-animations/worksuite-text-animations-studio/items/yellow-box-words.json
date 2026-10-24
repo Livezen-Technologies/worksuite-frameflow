@@ -1,0 +1,54 @@
+{
+	"schema": 1,
+	"id": "yellow-box-words",
+	"kind": "animation",
+	"name": {
+		"en": "Yellow box words",
+		"si": "දීප්තිමත් කොටුව",
+		"ta": "பிரகாசமான பெட்டி"
+	},
+	"category": "masks-wipes",
+	"tags": {
+		"en": [
+			"yellow",
+			"box",
+			"words",
+			"box reveal",
+			"masks wipes",
+			"bright"
+		],
+		"si": [
+			"කොටුව",
+			"වචන",
+			"දීප්තිමත්"
+		],
+		"ta": [
+			"பெட்டி",
+			"சொற்கள்",
+			"பிரகாசமான"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "word",
+		"in": {
+			"effect": "box-reveal",
+			"duration": 0.8,
+			"delay": 0,
+			"stagger": 0.15,
+			"staggerOrder": "forward",
+			"direction": "right",
+			"easing": "ease-in-out-cubic",
+			"intensity": 1,
+			"params": {
+				"color": "#FFD400"
+			}
+		}
+	},
+	"style": {
+		"fontFamily": "Inter",
+		"fontWeight": 800,
+		"fill": "#FFFFFF"
+	},
+	"duration": 3
+}

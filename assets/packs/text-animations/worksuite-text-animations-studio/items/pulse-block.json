@@ -1,0 +1,73 @@
+{
+	"schema": 1,
+	"id": "pulse-block",
+	"kind": "animation",
+	"name": {
+		"en": "Pulse block",
+		"si": "සන්සුන් ස්පන්දනය",
+		"ta": "அமைதியான துடிப்பு"
+	},
+	"category": "emphasis-loops",
+	"tags": {
+		"en": [
+			"pulse",
+			"block",
+			"fade",
+			"blocks",
+			"emphasis loops",
+			"calm",
+			"loop"
+		],
+		"si": [
+			"ක්‍රමයෙන් පෙනීම",
+			"ස්පන්දනය",
+			"සම්පූර්ණ",
+			"සන්සුන්",
+			"ලූප"
+		],
+		"ta": [
+			"மெல்லத் தோன்றல்",
+			"துடிப்பு",
+			"முழு",
+			"அமைதியான",
+			"சுழற்சி"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "block",
+		"in": {
+			"effect": "fade",
+			"duration": 0.3,
+			"delay": 0,
+			"stagger": 0.02,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-out",
+			"intensity": 1,
+			"params": {}
+		},
+		"emphasis": {
+			"effect": "pulse",
+			"duration": 1.2,
+			"delay": 0,
+			"stagger": 0,
+			"staggerOrder": "forward",
+			"direction": "in",
+			"easing": "linear",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"style": {
+		"fontFamily": "Inter",
+		"fontWeight": 800,
+		"fill": "#FFFFFF",
+		"plate": {
+			"color": "#111827",
+			"padding": 0.35,
+			"radius": 0.2
+		}
+	},
+	"duration": 3
+}

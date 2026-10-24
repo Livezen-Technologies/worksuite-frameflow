@@ -1,0 +1,62 @@
+{
+	"schema": 1,
+	"id": "scale-up-captions",
+	"kind": "animation",
+	"name": {
+		"en": "Scale-up captions",
+		"si": "ජවසම්පන්න විශාල වීම",
+		"ta": "துடிப்பான பெரிதாதல்"
+	},
+	"category": "karaoke-captions",
+	"tags": {
+		"en": [
+			"scale",
+			"up",
+			"captions",
+			"scale up",
+			"words",
+			"karaoke captions",
+			"energetic"
+		],
+		"si": [
+			"විශාල වීම",
+			"වචන",
+			"ජවසම්පන්න"
+		],
+		"ta": [
+			"பெரிதாதல்",
+			"சொற்கள்",
+			"துடிப்பான"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "word",
+		"in": {
+			"effect": "scale-up",
+			"duration": 0.25,
+			"delay": 0,
+			"stagger": 0.35,
+			"staggerOrder": "forward",
+			"direction": "in",
+			"easing": "ease-out-back",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"previewText": {
+		"en": "Follow along with me",
+		"si": "මා සමඟ එක්ව එන්න",
+		"ta": "என்னுடன் தொடருங்கள்"
+	},
+	"style": {
+		"fontFamily": "Inter",
+		"fontWeight": 800,
+		"fill": "#FFFFFF",
+		"stroke": {
+			"color": "#000000",
+			"width": 3
+		}
+	},
+	"duration": 3
+}

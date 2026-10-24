@@ -1,0 +1,67 @@
+{
+	"schema": 1,
+	"id": "wipe-in-wipe-out",
+	"kind": "animation",
+	"name": {
+		"en": "Wipe in, wipe out",
+		"si": "ද්විත්ව පිසදැමීම",
+		"ta": "இரட்டை துடைப்பு"
+	},
+	"category": "masks-wipes",
+	"tags": {
+		"en": [
+			"wipe",
+			"in",
+			"out",
+			"mask wipe",
+			"words",
+			"masks wipes",
+			"double",
+			"exit"
+		],
+		"si": [
+			"පිසදැමීම",
+			"වචන",
+			"ද්විත්ව",
+			"ඉවත් වීම"
+		],
+		"ta": [
+			"துடைப்பு",
+			"சொற்கள்",
+			"இரட்டை",
+			"வெளியேறல்"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "word",
+		"in": {
+			"effect": "mask-wipe",
+			"duration": 0.6,
+			"delay": 0,
+			"stagger": 0.08,
+			"staggerOrder": "forward",
+			"direction": "right",
+			"easing": "ease-in-out-cubic",
+			"intensity": 1,
+			"params": {}
+		},
+		"out": {
+			"effect": "mask-wipe",
+			"duration": 0.5,
+			"delay": 0,
+			"stagger": 0.06,
+			"staggerOrder": "forward",
+			"direction": "right",
+			"easing": "ease-in-out-cubic",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"style": {
+		"fontFamily": "Inter",
+		"fontWeight": 800,
+		"fill": "#FFFFFF"
+	},
+	"duration": 3
+}

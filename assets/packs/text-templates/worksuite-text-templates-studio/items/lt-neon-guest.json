@@ -1,0 +1,153 @@
+{
+	"schema": 1,
+	"id": "lt-neon-guest",
+	"kind": "template",
+	"name": {
+		"en": "Neon guest",
+		"si": "නියොන් පහළ පටිය",
+		"ta": "நியான் கீழ் பட்டை"
+	},
+	"category": "lower-thirds",
+	"tags": {
+		"en": [
+			"neon",
+			"guest",
+			"lower third",
+			"name",
+			"interview",
+			"landscape",
+			"16:9",
+			"neon flicker",
+			"fade"
+		],
+		"si": [
+			"නම",
+			"සම්මුඛ සාකච්ඡාව",
+			"තිරස්",
+			"නියොන් දැල්වීම",
+			"ක්‍රමයෙන් පෙනීම",
+			"නියොන්"
+		],
+		"ta": [
+			"பெயர்",
+			"நேர்காணல்",
+			"கிடைமட்ட",
+			"நியான் மின்னல்",
+			"மெல்லத் தோன்றல்",
+			"நியான்"
+		]
+	},
+	"duration": 5,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "name",
+			"name": "Name",
+			"text": {
+				"en": "Priya Kumar",
+				"si": "ප්‍රියා කුමාර්",
+				"ta": "பிரியா குமார்"
+			},
+			"x": 0.27,
+			"y": 0.79,
+			"size": 0.059,
+			"style": {
+				"fontFamily": "Audiowide",
+				"fontWeight": 400,
+				"fill": "#E0F7FF",
+				"glow": {
+					"color": "#2EC4FF",
+					"size": 0.45
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "grapheme",
+				"in": {
+					"effect": "neon-flicker",
+					"duration": 0.9,
+					"delay": 0,
+					"stagger": 0.05,
+					"staggerOrder": "random(5)",
+					"direction": "in",
+					"easing": "linear",
+					"intensity": 1,
+					"params": {
+						"color": "#2EC4FF"
+					}
+				},
+				"emphasis": {
+					"effect": "neon-flicker",
+					"duration": 2,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "linear",
+					"intensity": 0.7,
+					"params": {
+						"color": "#2EC4FF"
+					}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "role",
+			"name": "Role",
+			"text": {
+				"en": "Guest",
+				"si": "ආරාධිත අමුත්තා",
+				"ta": "விருந்தினர்"
+			},
+			"x": 0.27,
+			"y": 0.865,
+			"size": 0.043,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 600,
+				"fill": "#7DD3FC",
+				"glow": {
+					"color": "#2EC4FF",
+					"size": 0.2
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "fade",
+					"duration": 0.6,
+					"delay": 0.4,
+					"stagger": 0.05,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

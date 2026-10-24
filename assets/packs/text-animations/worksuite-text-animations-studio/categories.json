@@ -1,0 +1,114 @@
+[
+	{
+		"id": "reveals",
+		"name": {
+			"en": "Reveals",
+			"si": "මතුවීම්",
+			"ta": "வெளிப்பாடுகள்"
+		}
+	},
+	{
+		"id": "slides",
+		"name": {
+			"en": "Slides",
+			"si": "ලිස්සීම්",
+			"ta": "சறுக்கல்கள்"
+		}
+	},
+	{
+		"id": "pop-bounce",
+		"name": {
+			"en": "Pop & bounce",
+			"si": "පොප් සහ පැනීම",
+			"ta": "பாப் & துள்ளல்"
+		}
+	},
+	{
+		"id": "elastic",
+		"name": {
+			"en": "Elastic",
+			"si": "ප්‍රත්‍යාස්ථ",
+			"ta": "மீள்தன்மை"
+		}
+	},
+	{
+		"id": "typewriter-decode",
+		"name": {
+			"en": "Typewriter & decode",
+			"si": "යතුරුලියනය සහ විසඳීම",
+			"ta": "தட்டச்சு & குறிவிலக்கம்"
+		}
+	},
+	{
+		"id": "kinetic",
+		"name": {
+			"en": "Kinetic",
+			"si": "චලන",
+			"ta": "இயக்கம்"
+		}
+	},
+	{
+		"id": "glitch",
+		"name": {
+			"en": "Glitch",
+			"si": "ග්ලිච්",
+			"ta": "கிளிட்ச்"
+		}
+	},
+	{
+		"id": "blur-focus",
+		"name": {
+			"en": "Blur & focus",
+			"si": "බොඳ සහ නාභිගත කිරීම",
+			"ta": "மங்கல் & குவியம்"
+		}
+	},
+	{
+		"id": "masks-wipes",
+		"name": {
+			"en": "Masks & wipes",
+			"si": "ආවරණ සහ පිසීම්",
+			"ta": "மறைப்பு & துடைப்பு"
+		}
+	},
+	{
+		"id": "3d-flips",
+		"name": {
+			"en": "3D & flips",
+			"si": "ත්‍රිමාණ සහ පෙරළීම්",
+			"ta": "முப்பரிமாணம் & புரட்டல்"
+		}
+	},
+	{
+		"id": "emphasis-loops",
+		"name": {
+			"en": "Emphasis loops",
+			"si": "අවධාරණ ලූප",
+			"ta": "வலியுறுத்தும் சுழற்சிகள்"
+		}
+	},
+	{
+		"id": "exits",
+		"name": {
+			"en": "Exits",
+			"si": "ඉවත් වීම්",
+			"ta": "வெளியேற்றங்கள்"
+		}
+	},
+	{
+		"id": "karaoke-captions",
+		"name": {
+			"en": "Karaoke & captions",
+			"si": "කැරෝකේ සහ උපසිරැසි",
+			"ta": "கரோக்கே & வசனங்கள்"
+		}
+	},
+	{
+		"id": "counters-numbers",
+		"name": {
+			"en": "Counters & numbers",
+			"si": "ගණක සහ අංක",
+			"ta": "எண்ணிகள் & எண்கள்"
+		}
+	}
+]

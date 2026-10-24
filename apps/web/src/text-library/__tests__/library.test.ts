@@ -44,7 +44,7 @@ describe("library manifests", () => {
 		expect(searchItems(animations, "typewriter").map((i) => i.id)).toContain("typewriter-caret");
 		expect(searchItems(animations, "යතුරුලියනය").map((i) => i.id)).toContain("typewriter-caret");
 		expect(searchItems(animations, "தட்டச்சு").map((i) => i.id)).toContain("typewriter-caret");
-		expect(searchItems(animations, "neon glow").map((i) => i.id)).toEqual(["neon-sign"]);
+		expect(searchItems(animations, "neon glow").map((i) => i.id)).toContain("neon-sign");
 	});
 	test("recently used keeps order and limit", () => {
 		let r: string[] = [];

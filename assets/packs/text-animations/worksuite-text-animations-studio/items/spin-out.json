@@ -1,0 +1,68 @@
+{
+	"schema": 1,
+	"id": "spin-out",
+	"kind": "animation",
+	"name": {
+		"en": "Spin out",
+		"si": "විනෝදජනක කැරකීම",
+		"ta": "விளையாட்டான சுழல்"
+	},
+	"category": "exits",
+	"tags": {
+		"en": [
+			"spin",
+			"out",
+			"fade",
+			"words",
+			"exits",
+			"playful",
+			"exit"
+		],
+		"si": [
+			"ක්‍රමයෙන් පෙනීම",
+			"කැරකීම",
+			"වචන",
+			"විනෝදජනක",
+			"ඉවත් වීම"
+		],
+		"ta": [
+			"மெல்லத் தோன்றல்",
+			"சுழல்",
+			"சொற்கள்",
+			"விளையாட்டான",
+			"வெளியேறல்"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "word",
+		"in": {
+			"effect": "fade",
+			"duration": 0.3,
+			"delay": 0,
+			"stagger": 0.02,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-out",
+			"intensity": 1,
+			"params": {}
+		},
+		"out": {
+			"effect": "spin",
+			"duration": 0.6,
+			"delay": 0,
+			"stagger": 0.08,
+			"staggerOrder": "forward",
+			"direction": "right",
+			"easing": "ease-in-cubic",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"style": {
+		"fontFamily": "Rubik",
+		"fontWeight": 800,
+		"fill": "#FFFFFF"
+	},
+	"duration": 3
+}

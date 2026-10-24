@@ -1,0 +1,135 @@
+{
+	"schema": 1,
+	"id": "event-countdown",
+	"kind": "template",
+	"name": {
+		"en": "Event countdown",
+		"si": "ජවසම්පන්න සිදුවීම",
+		"ta": "துடிப்பான நிகழ்வு"
+	},
+	"category": "event",
+	"tags": {
+		"en": [
+			"event",
+			"countdown",
+			"invite",
+			"date",
+			"landscape",
+			"16:9",
+			"number counter",
+			"fade",
+			"energetic"
+		],
+		"si": [
+			"උත්සවය",
+			"ආරාධනාව",
+			"තිරස්",
+			"අංක ගණනය",
+			"ක්‍රමයෙන් පෙනීම",
+			"ජවසම්පන්න"
+		],
+		"ta": [
+			"நிகழ்வு",
+			"அழைப்பு",
+			"கிடைமட்ட",
+			"எண் எண்ணிக்கை",
+			"மெல்லத் தோன்றல்",
+			"துடிப்பான"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "number",
+			"name": "Number",
+			"text": {
+				"en": "3",
+				"si": "3",
+				"ta": "3"
+			},
+			"x": 0.5,
+			"y": 0.42,
+			"size": 0.2,
+			"style": {
+				"fontFamily": "Unbounded",
+				"fontWeight": 800,
+				"fill": "#22D3EE",
+				"gradient": [
+					"#22D3EE",
+					"#A855F7",
+					"#F43F5E"
+				]
+			},
+			"animation": {
+				"version": 1,
+				"unit": "block",
+				"in": {
+					"effect": "number-counter",
+					"duration": 1.6,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "label",
+			"name": "Label",
+			"text": {
+				"en": "Days to go",
+				"si": "තව දින",
+				"ta": "நாட்கள் உள்ளன"
+			},
+			"x": 0.5,
+			"y": 0.66,
+			"size": 0.056,
+			"style": {
+				"fontFamily": "Unbounded",
+				"fontWeight": 800,
+				"fill": "#FFFFFF"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "fade",
+					"duration": 0.6,
+					"delay": 0.3,
+					"stagger": 0.05,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

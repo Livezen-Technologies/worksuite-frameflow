@@ -1,0 +1,189 @@
+{
+	"schema": 1,
+	"id": "sale-vertical-promo",
+	"kind": "template",
+	"name": {
+		"en": "Vertical promo",
+		"si": "සිරස් දැන්වීම",
+		"ta": "செங்குத்து விளம்பரம்"
+	},
+	"category": "sales-promo",
+	"tags": {
+		"en": [
+			"vertical",
+			"promo",
+			"sale",
+			"discount",
+			"offer",
+			"9:16",
+			"story",
+			"stamp",
+			"fade"
+		],
+		"si": [
+			"වට්ටම්",
+			"දීමනාව",
+			"සිරස්",
+			"මුද්‍රාව",
+			"ක්‍රමයෙන් පෙනීම"
+		],
+		"ta": [
+			"தள்ளுபடி",
+			"சலுகை",
+			"செங்குத்து",
+			"முத்திரை",
+			"மெல்லத் தோன்றல்"
+		]
+	},
+	"duration": 4,
+	"aspect": "9:16",
+	"slots": [
+		{
+			"id": "label",
+			"name": "Label",
+			"text": {
+				"en": "FLASH SALE",
+				"si": "ක්ෂණික වට්ටම්",
+				"ta": "அதிரடி விற்பனை"
+			},
+			"x": 0.5,
+			"y": 0.3,
+			"size": 0.034,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 900,
+				"fill": "#111111",
+				"plate": {
+					"color": "#FFE14D",
+					"padding": 0.3,
+					"radius": 0.1
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "block",
+				"in": {
+					"effect": "stamp",
+					"duration": 0.35,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "50% OFF",
+				"si": "50% වට්ටම්",
+				"ta": "50% தள்ளுபடி"
+			},
+			"x": 0.5,
+			"y": 0.4,
+			"size": 0.054,
+			"style": {
+				"fontFamily": "Anton",
+				"fontWeight": 400,
+				"fill": "#FFE14D",
+				"gradient": [
+					"#FFE14D",
+					"#FF7A00"
+				],
+				"stroke": {
+					"color": "#7C2D12",
+					"width": 4
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "stamp",
+					"duration": 0.35,
+					"delay": 0.35,
+					"stagger": 0.15,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "subtitle",
+			"name": "Subtitle",
+			"text": {
+				"en": "Ends Sunday",
+				"si": "ඉරිදා අවසන්",
+				"ta": "ஞாயிறு முடிவடையும்"
+			},
+			"x": 0.5,
+			"y": 0.5,
+			"size": 0.033,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 800,
+				"fill": "#FFFFFF",
+				"plate": {
+					"color": "#DC2626",
+					"padding": 0.3,
+					"radius": 0.1
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "fade",
+					"duration": 0.5,
+					"delay": 0.7,
+					"stagger": 0.05,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

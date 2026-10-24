@@ -1,0 +1,68 @@
+{
+	"schema": 1,
+	"id": "drop-out",
+	"kind": "animation",
+	"name": {
+		"en": "Drop out",
+		"si": "බර වැටීම",
+		"ta": "கனமான விழுதல்"
+	},
+	"category": "exits",
+	"tags": {
+		"en": [
+			"drop",
+			"out",
+			"fade",
+			"letters",
+			"exits",
+			"heavy",
+			"exit"
+		],
+		"si": [
+			"ක්‍රමයෙන් පෙනීම",
+			"වැටීම",
+			"අකුරු",
+			"බර",
+			"ඉවත් වීම"
+		],
+		"ta": [
+			"மெல்லத் தோன்றல்",
+			"விழுதல்",
+			"எழுத்துகள்",
+			"கனமான",
+			"வெளியேறல்"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "grapheme",
+		"in": {
+			"effect": "fade",
+			"duration": 0.3,
+			"delay": 0,
+			"stagger": 0.02,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-out",
+			"intensity": 1,
+			"params": {}
+		},
+		"out": {
+			"effect": "drop",
+			"duration": 0.5,
+			"delay": 0,
+			"stagger": 0.03,
+			"staggerOrder": "random(3)",
+			"direction": "down",
+			"easing": "ease-in-quad",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"style": {
+		"fontFamily": "Rubik",
+		"fontWeight": 800,
+		"fill": "#FFFFFF"
+	},
+	"duration": 3
+}

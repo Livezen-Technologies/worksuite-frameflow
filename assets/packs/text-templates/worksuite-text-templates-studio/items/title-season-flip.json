@@ -1,0 +1,144 @@
+{
+	"schema": 1,
+	"id": "title-season-flip",
+	"kind": "template",
+	"name": {
+		"en": "Season flip",
+		"si": "නාට්‍යමය මාතෘකාව",
+		"ta": "பரபரப்பான தலைப்பு"
+	},
+	"category": "titles",
+	"tags": {
+		"en": [
+			"season",
+			"flip",
+			"title",
+			"heading",
+			"intro",
+			"landscape",
+			"16:9",
+			"flip y",
+			"fade",
+			"flip x",
+			"dramatic"
+		],
+		"si": [
+			"මාතෘකාව",
+			"හැඳින්වීම",
+			"තිරස්",
+			"හැරවීම",
+			"ක්‍රමයෙන් පෙනීම",
+			"පෙරළීම",
+			"නාට්‍යමය"
+		],
+		"ta": [
+			"தலைப்பு",
+			"அறிமுகம்",
+			"கிடைமட்ட",
+			"திருப்பல்",
+			"மெல்லத் தோன்றல்",
+			"புரட்டல்",
+			"பரபரப்பான"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "label",
+			"name": "Label",
+			"text": {
+				"en": "NEW EPISODE",
+				"si": "නව කථාංගය",
+				"ta": "புதிய பகுதி"
+			},
+			"x": 0.5,
+			"y": 0.34,
+			"size": 0.052,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 800,
+				"fill": "#0F172A",
+				"plate": {
+					"color": "#FACC15",
+					"padding": 0.35,
+					"radius": 0.12
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "block",
+				"in": {
+					"effect": "flip-y",
+					"duration": 0.6,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "left",
+					"easing": "ease-out-back",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "SEASON 2",
+				"si": "දෙවන වාරය",
+				"ta": "இரண்டாம் பருவம்"
+			},
+			"x": 0.5,
+			"y": 0.5,
+			"size": 0.112,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 800,
+				"fill": "#FFFFFF",
+				"plate": {
+					"color": "#1E3A8A",
+					"padding": 0.35,
+					"radius": 0.12
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "grapheme",
+				"in": {
+					"effect": "flip-x",
+					"duration": 0.6,
+					"delay": 0.3,
+					"stagger": 0.04,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out-back",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "flip-x",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

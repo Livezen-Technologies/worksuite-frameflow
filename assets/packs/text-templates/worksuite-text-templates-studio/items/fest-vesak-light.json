@@ -1,0 +1,143 @@
+{
+	"schema": 1,
+	"id": "fest-vesak-light",
+	"kind": "template",
+	"name": {
+		"en": "Light and kindness",
+		"si": "සන්සුන් සුබ පැතුම",
+		"ta": "அமைதியான வாழ்த்து"
+	},
+	"category": "festive",
+	"tags": {
+		"en": [
+			"light",
+			"and",
+			"kindness",
+			"festival",
+			"greeting",
+			"sri lanka",
+			"landscape",
+			"16:9",
+			"blur in",
+			"fade",
+			"calm",
+			"vesak",
+			"lantern",
+			"may"
+		],
+		"si": [
+			"උත්සවය",
+			"සුබ පැතුම්",
+			"තිරස්",
+			"බොඳ",
+			"ක්‍රමයෙන් පෙනීම",
+			"සන්සුන්",
+			"වෙසක්",
+			"වෙසක් කූඩු"
+		],
+		"ta": [
+			"பண்டிகை",
+			"வாழ்த்து",
+			"கிடைமட்ட",
+			"மங்கல்",
+			"மெல்லத் தோன்றல்",
+			"அமைதியான",
+			"வெசாக்",
+			"விளக்கு"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "Light and kindness",
+				"si": "ආලෝකය සහ කරුණාව",
+				"ta": "ஒளியும் கருணையும்"
+			},
+			"x": 0.5,
+			"y": 0.44,
+			"size": 0.111,
+			"style": {
+				"fontFamily": "Noto Serif Sinhala",
+				"fontWeight": 700,
+				"fill": "#FFFBEB",
+				"glow": {
+					"color": "#FBBF24",
+					"size": 0.35
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "blur-in",
+					"duration": 0.9,
+					"delay": 0,
+					"stagger": 0.1,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "blur-in",
+					"duration": 0.5,
+					"delay": 0,
+					"stagger": 0.04,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "ease-in",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "subtitle",
+			"name": "Subtitle",
+			"text": {
+				"en": "A season of peace",
+				"si": "සාමයේ සමයක්",
+				"ta": "அமைதியின் காலம்"
+			},
+			"x": 0.5,
+			"y": 0.6,
+			"size": 0.056,
+			"style": {
+				"fontFamily": "Noto Sans Sinhala",
+				"fontWeight": 400,
+				"fill": "#FDE68A"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "blur-in",
+					"duration": 0.8,
+					"delay": 0.35,
+					"stagger": 0.05,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

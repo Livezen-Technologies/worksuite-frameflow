@@ -1,0 +1,87 @@
+{
+	"schema": 1,
+	"id": "title-coming-soon-blur",
+	"kind": "template",
+	"name": {
+		"en": "Coming soon blur",
+		"si": "සිහින මාතෘකාව",
+		"ta": "கனவு தலைப்பு"
+	},
+	"category": "titles",
+	"tags": {
+		"en": [
+			"coming",
+			"soon",
+			"blur",
+			"title",
+			"heading",
+			"intro",
+			"landscape",
+			"16:9",
+			"blur in",
+			"dreamy"
+		],
+		"si": [
+			"මාතෘකාව",
+			"හැඳින්වීම",
+			"තිරස්",
+			"බොඳ",
+			"සිහින"
+		],
+		"ta": [
+			"தலைப்பு",
+			"அறிமுகம்",
+			"கிடைமட்ட",
+			"மங்கல்",
+			"கனவு"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "COMING SOON",
+				"si": "ළඟදීම",
+				"ta": "விரைவில்"
+			},
+			"x": 0.5,
+			"y": 0.5,
+			"size": 0.13,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 300,
+				"fill": "#FFFFFF",
+				"tracking": 0.06
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "blur-in",
+					"duration": 0.9,
+					"delay": 0,
+					"stagger": 0.1,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "blur-in",
+					"duration": 0.5,
+					"delay": 0,
+					"stagger": 0.04,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "ease-in",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

@@ -1,0 +1,185 @@
+{
+	"schema": 1,
+	"id": "social-like-share",
+	"kind": "template",
+	"name": {
+		"en": "Like and share",
+		"si": "මිත්‍රශීලී සමාජ මාධ්‍ය පෝස්ටුව",
+		"ta": "நட்பான சமூக ஊடகப் பதிவு"
+	},
+	"category": "social",
+	"tags": {
+		"en": [
+			"like",
+			"and",
+			"share",
+			"social",
+			"post",
+			"reel",
+			"short",
+			"vertical",
+			"9:16",
+			"story",
+			"pop",
+			"rise",
+			"fade",
+			"friendly"
+		],
+		"si": [
+			"සමාජ මාධ්‍ය",
+			"පෝස්ටුව",
+			"සිරස්",
+			"පොප්",
+			"නැගීම",
+			"ක්‍රමයෙන් පෙනීම",
+			"මිත්‍රශීලී"
+		],
+		"ta": [
+			"சமூக ஊடகம்",
+			"பதிவு",
+			"செங்குத்து",
+			"பாப்",
+			"எழுச்சி",
+			"மெல்லத் தோன்றல்",
+			"நட்பான"
+		]
+	},
+	"duration": 4,
+	"aspect": "9:16",
+	"slots": [
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "Like & share",
+				"si": "ලයික් කර බෙදාගන්න",
+				"ta": "லைக் & பகிர்வு"
+			},
+			"x": 0.5,
+			"y": 0.4,
+			"size": 0.041,
+			"style": {
+				"fontFamily": "Poppins",
+				"fontWeight": 800,
+				"fill": "#FFFFFF"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "pop",
+					"duration": 0.45,
+					"delay": 0,
+					"stagger": 0.08,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "ease-out-back",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "pop",
+					"duration": 0.3,
+					"delay": 0,
+					"stagger": 0.04,
+					"staggerOrder": "reverse",
+					"direction": "in",
+					"easing": "ease-in-back",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "subtitle",
+			"name": "Subtitle",
+			"text": {
+				"en": "Tag a friend",
+				"si": "යාළුවෙක් ටැග් කරන්න",
+				"ta": "நண்பரை டேக் செய்க"
+			},
+			"x": 0.5,
+			"y": 0.48,
+			"size": 0.033,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 500,
+				"fill": "#CBD5E1"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "rise",
+					"duration": 0.5,
+					"delay": 0.3,
+					"stagger": 0.05,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "button",
+			"name": "Button",
+			"text": {
+				"en": "Follow for more",
+				"si": "තවත් දේ සඳහා ෆලෝ කරන්න",
+				"ta": "மேலும் பின்தொடருங்கள்"
+			},
+			"x": 0.5,
+			"y": 0.58,
+			"size": 0.027,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 800,
+				"fill": "#FFFFFF",
+				"plate": {
+					"color": "#F97316",
+					"padding": 0.45,
+					"radius": 0.5
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "pop",
+					"duration": 0.45,
+					"delay": 0.6,
+					"stagger": 0.08,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "ease-out-back",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "pop",
+					"duration": 0.3,
+					"delay": 0,
+					"stagger": 0.04,
+					"staggerOrder": "reverse",
+					"direction": "in",
+					"easing": "ease-in-back",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

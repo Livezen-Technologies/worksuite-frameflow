@@ -1,0 +1,55 @@
+{
+	"schema": 1,
+	"id": "pink-box-reveal",
+	"kind": "animation",
+	"name": {
+		"en": "Pink box reveal",
+		"si": "ප්‍රබල කොටුව",
+		"ta": "வலுவான பெட்டி"
+	},
+	"category": "reveals",
+	"tags": {
+		"en": [
+			"pink",
+			"box",
+			"reveal",
+			"box reveal",
+			"lines",
+			"reveals",
+			"bold"
+		],
+		"si": [
+			"කොටුව",
+			"පේළි",
+			"ප්‍රබල"
+		],
+		"ta": [
+			"பெட்டி",
+			"வரிகள்",
+			"வலுவான"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "line",
+		"in": {
+			"effect": "box-reveal",
+			"duration": 0.9,
+			"delay": 0,
+			"stagger": 0.15,
+			"staggerOrder": "forward",
+			"direction": "right",
+			"easing": "ease-in-out-cubic",
+			"intensity": 1,
+			"params": {
+				"color": "#FF5C8A"
+			}
+		}
+	},
+	"style": {
+		"fontFamily": "Inter",
+		"fontWeight": 800,
+		"fill": "#FFFFFF"
+	},
+	"duration": 3
+}

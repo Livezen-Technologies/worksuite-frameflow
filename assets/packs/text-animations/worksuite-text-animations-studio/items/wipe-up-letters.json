@@ -1,0 +1,53 @@
+{
+	"schema": 1,
+	"id": "wipe-up-letters",
+	"kind": "animation",
+	"name": {
+		"en": "Wipe up letters",
+		"si": "පැහැදිලි පිසදැමීම",
+		"ta": "தெளிவான துடைப்பு"
+	},
+	"category": "masks-wipes",
+	"tags": {
+		"en": [
+			"wipe",
+			"up",
+			"letters",
+			"mask wipe",
+			"masks wipes",
+			"crisp"
+		],
+		"si": [
+			"පිසදැමීම",
+			"අකුරු",
+			"පැහැදිලි"
+		],
+		"ta": [
+			"துடைப்பு",
+			"எழுத்துகள்",
+			"தெளிவான"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "grapheme",
+		"in": {
+			"effect": "mask-wipe",
+			"duration": 0.5,
+			"delay": 0,
+			"stagger": 0.03,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-out-cubic",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"style": {
+		"fontFamily": "Bebas Neue",
+		"fontWeight": 400,
+		"fill": "#FFFFFF",
+		"tracking": 0.04
+	},
+	"duration": 3
+}

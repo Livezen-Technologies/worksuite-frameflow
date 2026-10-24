@@ -1,0 +1,52 @@
+{
+	"schema": 1,
+	"id": "zoom-blur-words",
+	"kind": "animation",
+	"name": {
+		"en": "Zoom blur words",
+		"si": "ජවසම්පන්න සූම් බොඳ",
+		"ta": "துடிப்பான ஜூம் மங்கல்"
+	},
+	"category": "blur-focus",
+	"tags": {
+		"en": [
+			"zoom",
+			"blur",
+			"words",
+			"zoom blur",
+			"blur focus",
+			"energetic"
+		],
+		"si": [
+			"සූම් බොඳ",
+			"වචන",
+			"ජවසම්පන්න"
+		],
+		"ta": [
+			"ஜூம் மங்கல்",
+			"சொற்கள்",
+			"துடிப்பான"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "word",
+		"in": {
+			"effect": "zoom-blur",
+			"duration": 0.6,
+			"delay": 0,
+			"stagger": 0.1,
+			"staggerOrder": "forward",
+			"direction": "out",
+			"easing": "ease-out-expo",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"style": {
+		"fontFamily": "Inter",
+		"fontWeight": 800,
+		"fill": "#FFFFFF"
+	},
+	"duration": 3
+}

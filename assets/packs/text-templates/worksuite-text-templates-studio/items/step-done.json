@@ -1,0 +1,96 @@
+{
+	"schema": 1,
+	"id": "step-done",
+	"kind": "template",
+	"name": {
+		"en": "Done check",
+		"si": "විනෝදජනක පියවර",
+		"ta": "விளையாட்டான படி"
+	},
+	"category": "tutorial-steps",
+	"tags": {
+		"en": [
+			"done",
+			"check",
+			"tutorial",
+			"step",
+			"how to",
+			"landscape",
+			"16:9",
+			"elastic",
+			"fade",
+			"playful"
+		],
+		"si": [
+			"පාඩම",
+			"පියවර",
+			"තිරස්",
+			"ප්‍රත්‍යාස්ථ",
+			"ක්‍රමයෙන් පෙනීම",
+			"විනෝදජනක"
+		],
+		"ta": [
+			"பயிற்சி",
+			"படி",
+			"கிடைமட்ட",
+			"மீள்தன்மை",
+			"மெல்லத் தோன்றல்",
+			"விளையாட்டான"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"background": {
+		"packAsset": "co-check-stamp"
+	},
+	"slots": [
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "Done!",
+				"si": "අවසන්!",
+				"ta": "முடிந்தது!"
+			},
+			"x": 0.5,
+			"y": 0.5,
+			"size": 0.13,
+			"style": {
+				"fontFamily": "Poppins",
+				"fontWeight": 700,
+				"fill": "#052E2B",
+				"plate": {
+					"color": "#5EEAD4",
+					"padding": 0.35,
+					"radius": 0.3
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "elastic",
+					"duration": 0.9,
+					"delay": 0,
+					"stagger": 0.06,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-out-elastic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

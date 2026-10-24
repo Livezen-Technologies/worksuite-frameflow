@@ -1,0 +1,51 @@
+{
+	"schema": 1,
+	"id": "random-wipe-letters",
+	"kind": "animation",
+	"name": {
+		"en": "Random wipe letters",
+		"si": "අහඹු පිසදැමීම",
+		"ta": "சீரற்ற துடைப்பு"
+	},
+	"category": "masks-wipes",
+	"tags": {
+		"en": [
+			"random",
+			"wipe",
+			"letters",
+			"mask wipe",
+			"masks wipes"
+		],
+		"si": [
+			"පිසදැමීම",
+			"අකුරු",
+			"අහඹු"
+		],
+		"ta": [
+			"துடைப்பு",
+			"எழுத்துகள்",
+			"சீரற்ற"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "grapheme",
+		"in": {
+			"effect": "mask-wipe",
+			"duration": 0.5,
+			"delay": 0,
+			"stagger": 0.03,
+			"staggerOrder": "random(8)",
+			"direction": "right",
+			"easing": "ease-out-cubic",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"style": {
+		"fontFamily": "Space Grotesk",
+		"fontWeight": 700,
+		"fill": "#FFFFFF"
+	},
+	"duration": 3
+}

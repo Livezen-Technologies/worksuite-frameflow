@@ -1,0 +1,64 @@
+{
+	"schema": 1,
+	"id": "countdown-days",
+	"kind": "animation",
+	"name": {
+		"en": "Countdown days",
+		"si": "හදිසි අංක ගණනය",
+		"ta": "அவசர எண் எண்ணிக்கை"
+	},
+	"category": "counters-numbers",
+	"tags": {
+		"en": [
+			"countdown",
+			"days",
+			"number counter",
+			"blocks",
+			"counters numbers",
+			"urgent"
+		],
+		"si": [
+			"අංක ගණනය",
+			"සම්පූර්ණ",
+			"හදිසි"
+		],
+		"ta": [
+			"எண் எண்ணிக்கை",
+			"முழு",
+			"அவசர"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "block",
+		"in": {
+			"effect": "number-counter",
+			"duration": 1.8,
+			"delay": 0,
+			"stagger": 0,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-out-cubic",
+			"intensity": 1,
+			"params": {
+				"from": 30
+			}
+		}
+	},
+	"previewText": {
+		"en": "3 days left",
+		"si": "තව දින 3යි",
+		"ta": "இன்னும் 3 நாட்கள்"
+	},
+	"style": {
+		"fontFamily": "Poppins",
+		"fontWeight": 700,
+		"fill": "#FFFFFF",
+		"plate": {
+			"color": "#DB2777",
+			"padding": 0.3,
+			"radius": 0.25
+		}
+	},
+	"duration": 3
+}

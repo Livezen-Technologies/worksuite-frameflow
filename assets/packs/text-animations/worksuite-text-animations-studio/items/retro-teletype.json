@@ -1,0 +1,53 @@
+{
+	"schema": 1,
+	"id": "retro-teletype",
+	"kind": "animation",
+	"name": {
+		"en": "Retro teletype",
+		"si": "රෙට්‍රෝ යතුරුලියනය",
+		"ta": "ரெட்ரோ தட்டச்சு"
+	},
+	"category": "typewriter-decode",
+	"tags": {
+		"en": [
+			"retro",
+			"teletype",
+			"typewriter",
+			"letters",
+			"typewriter decode"
+		],
+		"si": [
+			"යතුරුලියනය",
+			"අකුරු",
+			"රෙට්‍රෝ"
+		],
+		"ta": [
+			"தட்டச்சு",
+			"எழுத்துகள்",
+			"ரெட்ரோ"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "grapheme",
+		"in": {
+			"effect": "typewriter",
+			"duration": 0.1,
+			"delay": 0,
+			"stagger": 0.1,
+			"staggerOrder": "forward",
+			"direction": "right",
+			"easing": "step",
+			"intensity": 1,
+			"params": {
+				"caret": true
+			}
+		}
+	},
+	"style": {
+		"fontFamily": "Space Mono",
+		"fontWeight": 700,
+		"fill": "#39FF14"
+	},
+	"duration": 3
+}

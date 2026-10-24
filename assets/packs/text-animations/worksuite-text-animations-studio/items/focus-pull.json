@@ -1,0 +1,52 @@
+{
+	"schema": 1,
+	"id": "focus-pull",
+	"kind": "animation",
+	"name": {
+		"en": "Focus pull",
+		"si": "සිනමා බොඳ",
+		"ta": "சினிமா மங்கல்"
+	},
+	"category": "blur-focus",
+	"tags": {
+		"en": [
+			"focus",
+			"pull",
+			"blur in",
+			"blocks",
+			"blur focus",
+			"cinematic"
+		],
+		"si": [
+			"බොඳ",
+			"සම්පූර්ණ",
+			"සිනමා"
+		],
+		"ta": [
+			"மங்கல்",
+			"முழு",
+			"சினிமா"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "block",
+		"in": {
+			"effect": "blur-in",
+			"duration": 1.4,
+			"delay": 0,
+			"stagger": 0,
+			"staggerOrder": "forward",
+			"direction": "in",
+			"easing": "ease-out-cubic",
+			"intensity": 1.6,
+			"params": {}
+		}
+	},
+	"style": {
+		"fontFamily": "Playfair Display",
+		"fontWeight": 700,
+		"fill": "#FFF4E0"
+	},
+	"duration": 3
+}

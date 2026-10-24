@@ -1,0 +1,144 @@
+{
+	"schema": 1,
+	"id": "step-mistake",
+	"kind": "template",
+	"name": {
+		"en": "Common mistake",
+		"si": "හදිසි පියවර",
+		"ta": "அவசர படி"
+	},
+	"category": "tutorial-steps",
+	"tags": {
+		"en": [
+			"common",
+			"mistake",
+			"tutorial",
+			"step",
+			"how to",
+			"landscape",
+			"16:9",
+			"stamp",
+			"fade",
+			"urgent"
+		],
+		"si": [
+			"පාඩම",
+			"පියවර",
+			"තිරස්",
+			"මුද්‍රාව",
+			"ක්‍රමයෙන් පෙනීම",
+			"හදිසි"
+		],
+		"ta": [
+			"பயிற்சி",
+			"படி",
+			"கிடைமட்ட",
+			"முத்திரை",
+			"மெல்லத் தோன்றல்",
+			"அவசர"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"background": {
+		"packAsset": "co-cross-stamp"
+	},
+	"slots": [
+		{
+			"id": "label",
+			"name": "Label",
+			"text": {
+				"en": "Common mistake",
+				"si": "පොදු වැරැද්ද",
+				"ta": "பொதுவான தவறு"
+			},
+			"x": 0.5,
+			"y": 0.34,
+			"size": 0.052,
+			"style": {
+				"fontFamily": "Montserrat",
+				"fontWeight": 800,
+				"fill": "#B91C1C",
+				"plate": {
+					"color": "#FFFFFF",
+					"padding": 0.35,
+					"radius": 0.05
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "block",
+				"in": {
+					"effect": "stamp",
+					"duration": 0.35,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "Choose a colour",
+				"si": "වර්ණයක් තෝරන්න",
+				"ta": "வண்ணம் தேர்வு"
+			},
+			"x": 0.5,
+			"y": 0.5,
+			"size": 0.119,
+			"style": {
+				"fontFamily": "Montserrat",
+				"fontWeight": 800,
+				"fill": "#FFFFFF",
+				"plate": {
+					"color": "#B91C1C",
+					"padding": 0.35,
+					"radius": 0.05
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "stamp",
+					"duration": 0.35,
+					"delay": 0.35,
+					"stagger": 0.15,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

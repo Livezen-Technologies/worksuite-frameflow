@@ -1,0 +1,142 @@
+{
+	"schema": 1,
+	"id": "event-birthday",
+	"kind": "template",
+	"name": {
+		"en": "Birthday wish",
+		"si": "විනෝදජනක සිදුවීම",
+		"ta": "விளையாட்டான நிகழ்வு"
+	},
+	"category": "event",
+	"tags": {
+		"en": [
+			"birthday",
+			"wish",
+			"event",
+			"invite",
+			"date",
+			"landscape",
+			"16:9",
+			"drop",
+			"fade",
+			"rise",
+			"playful"
+		],
+		"si": [
+			"උත්සවය",
+			"ආරාධනාව",
+			"තිරස්",
+			"වැටීම",
+			"ක්‍රමයෙන් පෙනීම",
+			"නැගීම",
+			"විනෝදජනක"
+		],
+		"ta": [
+			"நிகழ்வு",
+			"அழைப்பு",
+			"கிடைமட்ட",
+			"விழுதல்",
+			"மெல்லத் தோன்றல்",
+			"எழுச்சி",
+			"விளையாட்டான"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"background": {
+		"packAsset": "rx-confetti"
+	},
+	"slots": [
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "Happy Birthday",
+				"si": "සුබ උපන්දිනයක්",
+				"ta": "பிறந்தநாள் வாழ்த்துகள்"
+			},
+			"x": 0.5,
+			"y": 0.44,
+			"size": 0.082,
+			"style": {
+				"fontFamily": "Poppins",
+				"fontWeight": 800,
+				"fill": "#FFFFFF",
+				"plate": {
+					"color": "#DB2777",
+					"padding": 0.3,
+					"radius": 0.25
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "grapheme",
+				"in": {
+					"effect": "drop",
+					"duration": 0.8,
+					"delay": 0,
+					"stagger": 0.04,
+					"staggerOrder": "forward",
+					"direction": "down",
+					"easing": "ease-out-bounce",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "subtitle",
+			"name": "Subtitle",
+			"text": {
+				"en": "Made with love",
+				"si": "ආදරයෙන් නිමවූ",
+				"ta": "அன்புடன் உருவாக்கியது"
+			},
+			"x": 0.5,
+			"y": 0.6,
+			"size": 0.056,
+			"style": {
+				"fontFamily": "Poppins",
+				"fontWeight": 600,
+				"fill": "#FCE7F3"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "rise",
+					"duration": 0.5,
+					"delay": 0.3,
+					"stagger": 0.05,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

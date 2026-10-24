@@ -1,0 +1,75 @@
+{
+	"schema": 1,
+	"id": "cyan-flicker-loop",
+	"kind": "animation",
+	"name": {
+		"en": "Cyan flicker loop",
+		"si": "දිලෙන ක්‍රමයෙන් පෙනීම",
+		"ta": "ஒளிரும் மெல்லத் தோன்றல்"
+	},
+	"category": "glitch",
+	"tags": {
+		"en": [
+			"cyan",
+			"flicker",
+			"loop",
+			"fade",
+			"neon flicker",
+			"words",
+			"glitch",
+			"glowing"
+		],
+		"si": [
+			"ක්‍රමයෙන් පෙනීම",
+			"නියොන් දැල්වීම",
+			"වචන",
+			"දිලෙන",
+			"ලූප"
+		],
+		"ta": [
+			"மெல்லத் தோன்றல்",
+			"நியான் மின்னல்",
+			"சொற்கள்",
+			"ஒளிரும்",
+			"சுழற்சி"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "word",
+		"in": {
+			"effect": "fade",
+			"duration": 0.4,
+			"delay": 0,
+			"stagger": 0.04,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-out",
+			"intensity": 1,
+			"params": {}
+		},
+		"emphasis": {
+			"effect": "neon-flicker",
+			"duration": 2,
+			"delay": 0,
+			"stagger": 0,
+			"staggerOrder": "forward",
+			"direction": "in",
+			"easing": "linear",
+			"intensity": 1,
+			"params": {
+				"color": "#2EC4FF"
+			}
+		}
+	},
+	"style": {
+		"fontFamily": "Inter",
+		"fontWeight": 800,
+		"fill": "#E0F7FF",
+		"glow": {
+			"color": "#2EC4FF",
+			"size": 0.3
+		}
+	},
+	"duration": 4
+}

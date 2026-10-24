@@ -1,0 +1,62 @@
+{
+	"schema": 1,
+	"id": "plate-fade-captions",
+	"kind": "animation",
+	"name": {
+		"en": "Plate fade captions",
+		"si": "සරල ක්‍රමයෙන් පෙනීම",
+		"ta": "எளிய மெல்லத் தோன்றல்"
+	},
+	"category": "karaoke-captions",
+	"tags": {
+		"en": [
+			"plate",
+			"fade",
+			"captions",
+			"words",
+			"karaoke captions",
+			"simple"
+		],
+		"si": [
+			"ක්‍රමයෙන් පෙනීම",
+			"වචන",
+			"සරල"
+		],
+		"ta": [
+			"மெல்லத் தோன்றல்",
+			"சொற்கள்",
+			"எளிய"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "word",
+		"in": {
+			"effect": "fade",
+			"duration": 0.3,
+			"delay": 0,
+			"stagger": 0.3,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-out",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"previewText": {
+		"en": "Say it loud and clear",
+		"si": "හයියෙන් පැහැදිලිව කියන්න",
+		"ta": "உரக்கத் தெளிவாகச் சொல்லுங்கள்"
+	},
+	"style": {
+		"fontFamily": "Inter",
+		"fontWeight": 800,
+		"fill": "#FFFFFF",
+		"plate": {
+			"color": "#111827",
+			"padding": 0.35,
+			"radius": 0.2
+		}
+	},
+	"duration": 3
+}

@@ -1,0 +1,55 @@
+{
+	"schema": 1,
+	"id": "cyan-box-block",
+	"kind": "animation",
+	"name": {
+		"en": "Cyan box block",
+		"si": "සිසිල් කොටුව",
+		"ta": "குளிர்ந்த பெட்டி"
+	},
+	"category": "masks-wipes",
+	"tags": {
+		"en": [
+			"cyan",
+			"box",
+			"block",
+			"box reveal",
+			"blocks",
+			"masks wipes",
+			"cool"
+		],
+		"si": [
+			"කොටුව",
+			"සම්පූර්ණ",
+			"සිසිල්"
+		],
+		"ta": [
+			"பெட்டி",
+			"முழு",
+			"குளிர்ந்த"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "block",
+		"in": {
+			"effect": "box-reveal",
+			"duration": 1,
+			"delay": 0,
+			"stagger": 0,
+			"staggerOrder": "forward",
+			"direction": "right",
+			"easing": "ease-in-out-cubic",
+			"intensity": 1,
+			"params": {
+				"color": "#2EC4FF"
+			}
+		}
+	},
+	"style": {
+		"fontFamily": "Space Grotesk",
+		"fontWeight": 700,
+		"fill": "#FFFFFF"
+	},
+	"duration": 3
+}

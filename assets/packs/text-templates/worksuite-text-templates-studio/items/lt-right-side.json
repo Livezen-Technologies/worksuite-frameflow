@@ -1,0 +1,139 @@
+{
+	"schema": 1,
+	"id": "lt-right-side",
+	"kind": "template",
+	"name": {
+		"en": "Right-side name",
+		"si": "පැති පහළ පටිය",
+		"ta": "பக்க கீழ் பட்டை"
+	},
+	"category": "lower-thirds",
+	"tags": {
+		"en": [
+			"right",
+			"side",
+			"name",
+			"lower third",
+			"interview",
+			"landscape",
+			"16:9",
+			"slide"
+		],
+		"si": [
+			"නම",
+			"සම්මුඛ සාකච්ඡාව",
+			"තිරස්",
+			"ලිස්සීම",
+			"පැති"
+		],
+		"ta": [
+			"பெயர்",
+			"நேர்காணல்",
+			"கிடைமட்ட",
+			"சறுக்கல்",
+			"பக்க"
+		]
+	},
+	"duration": 5,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "name",
+			"name": "Name",
+			"text": {
+				"en": "Kavya Rajan",
+				"si": "කාව්‍යා රාජන්",
+				"ta": "காவ்யா ராஜன்"
+			},
+			"x": 0.73,
+			"y": 0.79,
+			"size": 0.059,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 800,
+				"fill": "#FFFFFF",
+				"plate": {
+					"color": "#1E3A8A",
+					"padding": 0.35,
+					"radius": 0.12
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "slide",
+					"duration": 0.5,
+					"delay": 0,
+					"stagger": 0.06,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "slide",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.04,
+					"staggerOrder": "forward",
+					"direction": "left",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "role",
+			"name": "Role",
+			"text": {
+				"en": "Guest",
+				"si": "ආරාධිත අමුත්තා",
+				"ta": "விருந்தினர்"
+			},
+			"x": 0.73,
+			"y": 0.865,
+			"size": 0.043,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 600,
+				"fill": "#0F172A",
+				"plate": {
+					"color": "#FFFFFF",
+					"padding": 0.35,
+					"radius": 0.12
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "slide",
+					"duration": 0.5,
+					"delay": 0.2,
+					"stagger": 0.04,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {
+						"distance": 0.8
+					}
+				},
+				"out": {
+					"effect": "slide",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.03,
+					"staggerOrder": "forward",
+					"direction": "left",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

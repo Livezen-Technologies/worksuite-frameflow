@@ -1,0 +1,174 @@
+{
+	"schema": 1,
+	"id": "quote-bold-hard-work",
+	"kind": "template",
+	"name": {
+		"en": "Bold hard work",
+		"si": "ප්‍රබල උපුටනය",
+		"ta": "வலுவான மேற்கோள்"
+	},
+	"category": "quotes",
+	"tags": {
+		"en": [
+			"bold",
+			"hard",
+			"work",
+			"quote",
+			"saying",
+			"motivation",
+			"landscape",
+			"16:9",
+			"stamp",
+			"fade"
+		],
+		"si": [
+			"උපුටනය",
+			"අභිප්‍රේරණය",
+			"තිරස්",
+			"මුද්‍රාව",
+			"ක්‍රමයෙන් පෙනීම",
+			"ප්‍රබල"
+		],
+		"ta": [
+			"மேற்கோள்",
+			"ஊக்கம்",
+			"கிடைமட்ட",
+			"முத்திரை",
+			"மெல்லத் தோன்றல்",
+			"வலுவான"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "mark",
+			"name": "Quote mark",
+			"text": {
+				"en": "“",
+				"si": "“",
+				"ta": "“"
+			},
+			"x": 0.5,
+			"y": 0.25,
+			"size": 0.18,
+			"style": {
+				"fontFamily": "Archivo Black",
+				"fontWeight": 400,
+				"fill": "#FDE047"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "stamp",
+					"duration": 0.35,
+					"delay": 0,
+					"stagger": 0.15,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "quote",
+			"name": "Quote",
+			"text": {
+				"en": "Hard work pays off.",
+				"si": "මහන්සියේ ඵල ලැබේ.",
+				"ta": "உழைப்பு வீண்போகாது."
+			},
+			"x": 0.5,
+			"y": 0.5,
+			"size": 0.07,
+			"style": {
+				"fontFamily": "Archivo Black",
+				"fontWeight": 400,
+				"fill": "#FFFFFF"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "stamp",
+					"duration": 0.35,
+					"delay": 0.35,
+					"stagger": 0.15,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "author",
+			"name": "Author",
+			"text": {
+				"en": "— Sri Lankan saying",
+				"si": "— ශ්‍රී ලාංකේය කියමනක්",
+				"ta": "— இலங்கைப் பழமொழி"
+			},
+			"x": 0.5,
+			"y": 0.71,
+			"size": 0.043,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 600,
+				"fill": "#FDE047"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "fade",
+					"duration": 0.5,
+					"delay": 0.7,
+					"stagger": 0.05,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

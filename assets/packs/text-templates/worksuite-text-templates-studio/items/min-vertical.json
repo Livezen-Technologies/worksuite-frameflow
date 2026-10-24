@@ -1,0 +1,129 @@
+{
+	"schema": 1,
+	"id": "min-vertical",
+	"kind": "template",
+	"name": {
+		"en": "Vertical minimal",
+		"si": "සිරස් සරල මාතෘකාව",
+		"ta": "செங்குத்து எளிய தலைப்பு"
+	},
+	"category": "minimal",
+	"tags": {
+		"en": [
+			"vertical",
+			"minimal",
+			"clean",
+			"simple",
+			"9:16",
+			"story",
+			"tracking expand",
+			"fade"
+		],
+		"si": [
+			"සරල",
+			"පිරිසිදු",
+			"සිරස්",
+			"පරතරය",
+			"ක්‍රමයෙන් පෙනීම"
+		],
+		"ta": [
+			"எளிமை",
+			"சுத்தம்",
+			"செங்குத்து",
+			"இடைவெளி",
+			"மெல்லத் தோன்றல்"
+		]
+	},
+	"duration": 4,
+	"aspect": "9:16",
+	"slots": [
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "Breathe",
+				"si": "හුස්ම ගන්න",
+				"ta": "மூச்சு விடுங்கள்"
+			},
+			"x": 0.5,
+			"y": 0.42,
+			"size": 0.037,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 300,
+				"fill": "#FFFFFF",
+				"tracking": 0.06
+			},
+			"animation": {
+				"version": 1,
+				"unit": "grapheme",
+				"in": {
+					"effect": "tracking-expand",
+					"duration": 1.4,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "out",
+					"easing": "ease-out-expo",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "tracking-expand",
+					"duration": 0.6,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "out",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "subtitle",
+			"name": "Subtitle",
+			"text": {
+				"en": "Slow living",
+				"si": "සෙමින් ජීවත් වීම",
+				"ta": "நிதான வாழ்க்கை"
+			},
+			"x": 0.5,
+			"y": 0.52,
+			"size": 0.038,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 400,
+				"fill": "#94A3B8",
+				"tracking": 0.06
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "fade",
+					"duration": 0.7,
+					"delay": 0.5,
+					"stagger": 0.05,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

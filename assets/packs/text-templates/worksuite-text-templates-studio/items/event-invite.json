@@ -1,0 +1,178 @@
+{
+	"schema": 1,
+	"id": "event-invite",
+	"kind": "template",
+	"name": {
+		"en": "Invitation card",
+		"si": "සම්භාව්‍ය සිදුවීම",
+		"ta": "கிளாசிக் நிகழ்வு"
+	},
+	"category": "event",
+	"tags": {
+		"en": [
+			"invitation",
+			"card",
+			"event",
+			"invite",
+			"date",
+			"landscape",
+			"16:9",
+			"tracking expand",
+			"fade",
+			"rise",
+			"classic"
+		],
+		"si": [
+			"උත්සවය",
+			"ආරාධනාව",
+			"තිරස්",
+			"පරතරය",
+			"ක්‍රමයෙන් පෙනීම",
+			"නැගීම",
+			"සම්භාව්‍ය"
+		],
+		"ta": [
+			"நிகழ்வு",
+			"அழைப்பு",
+			"கிடைமட்ட",
+			"இடைவெளி",
+			"மெல்லத் தோன்றல்",
+			"எழுச்சி",
+			"கிளாசிக்"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "label",
+			"name": "Label",
+			"text": {
+				"en": "You're invited",
+				"si": "ඔබට ආරාධනා",
+				"ta": "உங்களுக்கு அழைப்பு"
+			},
+			"x": 0.5,
+			"y": 0.31,
+			"size": 0.046,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 600,
+				"fill": "#F59E0B",
+				"tracking": 0.06
+			},
+			"animation": {
+				"version": 1,
+				"unit": "grapheme",
+				"in": {
+					"effect": "tracking-expand",
+					"duration": 1,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "out",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "MUSIC NIGHT",
+				"si": "සංගීත සන්ධ්‍යාව",
+				"ta": "இசை இரவு"
+			},
+			"x": 0.5,
+			"y": 0.47,
+			"size": 0.119,
+			"style": {
+				"fontFamily": "DM Serif Display",
+				"fontWeight": 400,
+				"fill": "#F8FAFC"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "rise",
+					"duration": 0.7,
+					"delay": 0.3,
+					"stagger": 0.08,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "subtitle",
+			"name": "Subtitle",
+			"text": {
+				"en": "Colombo · 7 PM",
+				"si": "කොළඹ · ප.ව. 7",
+				"ta": "கொழும்பு · மாலை 7"
+			},
+			"x": 0.5,
+			"y": 0.63,
+			"size": 0.05,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 400,
+				"fill": "#A1A1AA"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "fade",
+					"duration": 0.6,
+					"delay": 0.6,
+					"stagger": 0.04,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

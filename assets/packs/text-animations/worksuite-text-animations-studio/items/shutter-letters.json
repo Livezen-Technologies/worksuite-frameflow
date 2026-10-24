@@ -1,0 +1,51 @@
+{
+	"schema": 1,
+	"id": "shutter-letters",
+	"kind": "animation",
+	"name": {
+		"en": "Shutter letters",
+		"si": "පැති පිසදැමීම",
+		"ta": "பக்க துடைப்பு"
+	},
+	"category": "masks-wipes",
+	"tags": {
+		"en": [
+			"shutter",
+			"letters",
+			"mask wipe",
+			"masks wipes",
+			"side"
+		],
+		"si": [
+			"පිසදැමීම",
+			"අකුරු",
+			"පැති"
+		],
+		"ta": [
+			"துடைப்பு",
+			"எழுத்துகள்",
+			"பக்க"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "grapheme",
+		"in": {
+			"effect": "mask-wipe",
+			"duration": 0.5,
+			"delay": 0,
+			"stagger": 0.04,
+			"staggerOrder": "edges-in",
+			"direction": "up",
+			"easing": "ease-out-cubic",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"style": {
+		"fontFamily": "Unbounded",
+		"fontWeight": 700,
+		"fill": "#FFFFFF"
+	},
+	"duration": 3
+}

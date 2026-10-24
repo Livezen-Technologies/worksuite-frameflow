@@ -1,0 +1,193 @@
+{
+	"schema": 1,
+	"id": "fest-vesak-dansal",
+	"kind": "template",
+	"name": {
+		"en": "Dansal notice",
+		"si": "මිත්‍රශීලී සුබ පැතුම",
+		"ta": "நட்பான வாழ்த்து"
+	},
+	"category": "festive",
+	"tags": {
+		"en": [
+			"dansal",
+			"notice",
+			"festival",
+			"greeting",
+			"sri lanka",
+			"landscape",
+			"16:9",
+			"tracking expand",
+			"fade",
+			"rise",
+			"friendly",
+			"vesak",
+			"lantern",
+			"may"
+		],
+		"si": [
+			"උත්සවය",
+			"සුබ පැතුම්",
+			"තිරස්",
+			"පරතරය",
+			"ක්‍රමයෙන් පෙනීම",
+			"නැගීම",
+			"මිත්‍රශීලී",
+			"වෙසක්",
+			"වෙසක් කූඩු"
+		],
+		"ta": [
+			"பண்டிகை",
+			"வாழ்த்து",
+			"கிடைமட்ட",
+			"இடைவெளி",
+			"மெல்லத் தோன்றல்",
+			"எழுச்சி",
+			"நட்பான",
+			"வெசாக்",
+			"விளக்கு"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "label",
+			"name": "Label",
+			"text": {
+				"en": "Happy Vesak",
+				"si": "සුබ වෙසක්",
+				"ta": "இனிய வெசாக்"
+			},
+			"x": 0.5,
+			"y": 0.31,
+			"size": 0.046,
+			"style": {
+				"fontFamily": "Noto Sans Sinhala",
+				"fontWeight": 700,
+				"fill": "#1E3A8A",
+				"plate": {
+					"color": "#FDE68A",
+					"padding": 0.35,
+					"radius": 0.3
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "grapheme",
+				"in": {
+					"effect": "tracking-expand",
+					"duration": 1,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "out",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "Dansal open to all",
+				"si": "සැමට දන්සල විවෘතයි",
+				"ta": "அனைவருக்கும் தன்சல்"
+			},
+			"x": 0.5,
+			"y": 0.47,
+			"size": 0.095,
+			"style": {
+				"fontFamily": "Noto Serif Sinhala",
+				"fontWeight": 700,
+				"fill": "#FFFBEB",
+				"glow": {
+					"color": "#FBBF24",
+					"size": 0.35
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "rise",
+					"duration": 0.7,
+					"delay": 0.3,
+					"stagger": 0.08,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "subtitle",
+			"name": "Subtitle",
+			"text": {
+				"en": "Colombo · 7 PM",
+				"si": "කොළඹ · ප.ව. 7",
+				"ta": "கொழும்பு · மாலை 7"
+			},
+			"x": 0.5,
+			"y": 0.63,
+			"size": 0.05,
+			"style": {
+				"fontFamily": "Noto Sans Sinhala",
+				"fontWeight": 400,
+				"fill": "#FDE68A"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "fade",
+					"duration": 0.6,
+					"delay": 0.6,
+					"stagger": 0.04,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

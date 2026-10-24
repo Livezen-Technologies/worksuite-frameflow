@@ -1,0 +1,141 @@
+{
+	"schema": 1,
+	"id": "sale-new-arrivals",
+	"kind": "template",
+	"name": {
+		"en": "New arrivals",
+		"si": "නැවුම් දැන්වීම",
+		"ta": "புத்தம் புதிய விளம்பரம்"
+	},
+	"category": "sales-promo",
+	"tags": {
+		"en": [
+			"new",
+			"arrivals",
+			"sale",
+			"promo",
+			"discount",
+			"offer",
+			"landscape",
+			"16:9",
+			"slide",
+			"fresh"
+		],
+		"si": [
+			"වට්ටම්",
+			"දීමනාව",
+			"තිරස්",
+			"ලිස්සීම",
+			"නැවුම්"
+		],
+		"ta": [
+			"தள்ளுபடி",
+			"சலுகை",
+			"கிடைமட்ட",
+			"சறுக்கல்",
+			"புத்தம் புதிய"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "NEW ARRIVALS",
+				"si": "නව තොග",
+				"ta": "புதிய வரவுகள்"
+			},
+			"x": 0.5,
+			"y": 0.44,
+			"size": 0.119,
+			"style": {
+				"fontFamily": "Poppins",
+				"fontWeight": 700,
+				"fill": "#052E2B",
+				"plate": {
+					"color": "#5EEAD4",
+					"padding": 0.35,
+					"radius": 0.3
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "slide",
+					"duration": 0.5,
+					"delay": 0,
+					"stagger": 0.06,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "slide",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.04,
+					"staggerOrder": "forward",
+					"direction": "left",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "subtitle",
+			"name": "Subtitle",
+			"text": {
+				"en": "Order today",
+				"si": "අදම ඇණවුම් කරන්න",
+				"ta": "இன்றே ஆர்டர் செய்யுங்கள்"
+			},
+			"x": 0.5,
+			"y": 0.6,
+			"size": 0.056,
+			"style": {
+				"fontFamily": "Poppins",
+				"fontWeight": 500,
+				"fill": "#FFFFFF",
+				"plate": {
+					"color": "#0F766E",
+					"padding": 0.35,
+					"radius": 0.3
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "slide",
+					"duration": 0.5,
+					"delay": 0.2,
+					"stagger": 0.04,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {
+						"distance": 0.8
+					}
+				},
+				"out": {
+					"effect": "slide",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.03,
+					"staggerOrder": "forward",
+					"direction": "left",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

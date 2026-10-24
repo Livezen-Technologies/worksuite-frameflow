@@ -1,0 +1,67 @@
+{
+	"schema": 1,
+	"id": "pulse-words-loop",
+	"kind": "animation",
+	"name": {
+		"en": "Pulse words loop",
+		"si": "ජවසම්පන්න ස්පන්දනය",
+		"ta": "துடிப்பான துடிப்பு"
+	},
+	"category": "emphasis-loops",
+	"tags": {
+		"en": [
+			"pulse",
+			"words",
+			"loop",
+			"fade",
+			"emphasis loops",
+			"energetic"
+		],
+		"si": [
+			"ක්‍රමයෙන් පෙනීම",
+			"ස්පන්දනය",
+			"වචන",
+			"ජවසම්පන්න",
+			"ලූප"
+		],
+		"ta": [
+			"மெல்லத் தோன்றல்",
+			"துடிப்பு",
+			"சொற்கள்",
+			"துடிப்பான",
+			"சுழற்சி"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "word",
+		"in": {
+			"effect": "fade",
+			"duration": 0.3,
+			"delay": 0,
+			"stagger": 0.02,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-out",
+			"intensity": 1,
+			"params": {}
+		},
+		"emphasis": {
+			"effect": "pulse",
+			"duration": 0.9,
+			"delay": 0,
+			"stagger": 0.15,
+			"staggerOrder": "forward",
+			"direction": "in",
+			"easing": "linear",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"style": {
+		"fontFamily": "Inter",
+		"fontWeight": 800,
+		"fill": "#FFFFFF"
+	},
+	"duration": 3
+}

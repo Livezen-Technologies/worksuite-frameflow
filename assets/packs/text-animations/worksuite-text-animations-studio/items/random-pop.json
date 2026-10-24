@@ -1,0 +1,50 @@
+{
+	"schema": 1,
+	"id": "random-pop",
+	"kind": "animation",
+	"name": {
+		"en": "Random pop",
+		"si": "අහඹු පොප්",
+		"ta": "சீரற்ற பாப்"
+	},
+	"category": "pop-bounce",
+	"tags": {
+		"en": [
+			"random",
+			"pop",
+			"letters",
+			"pop bounce"
+		],
+		"si": [
+			"පොප්",
+			"අකුරු",
+			"අහඹු"
+		],
+		"ta": [
+			"பாப்",
+			"எழுத்துகள்",
+			"சீரற்ற"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "grapheme",
+		"in": {
+			"effect": "pop",
+			"duration": 0.4,
+			"delay": 0,
+			"stagger": 0.03,
+			"staggerOrder": "random(9)",
+			"direction": "in",
+			"easing": "ease-out-back",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"style": {
+		"fontFamily": "Inter",
+		"fontWeight": 800,
+		"fill": "#FFFFFF"
+	},
+	"duration": 3
+}

@@ -1,0 +1,185 @@
+{
+	"schema": 1,
+	"id": "social-did-you-know",
+	"kind": "template",
+	"name": {
+		"en": "Did you know",
+		"si": "දීප්තිමත් සමාජ මාධ්‍ය පෝස්ටුව",
+		"ta": "பிரகாசமான சமூக ஊடகப் பதிவு"
+	},
+	"category": "social",
+	"tags": {
+		"en": [
+			"did",
+			"you",
+			"know",
+			"social",
+			"post",
+			"reel",
+			"short",
+			"vertical",
+			"9:16",
+			"story",
+			"tracking expand",
+			"fade",
+			"rise",
+			"bright"
+		],
+		"si": [
+			"සමාජ මාධ්‍ය",
+			"පෝස්ටුව",
+			"සිරස්",
+			"පරතරය",
+			"ක්‍රමයෙන් පෙනීම",
+			"නැගීම",
+			"දීප්තිමත්"
+		],
+		"ta": [
+			"சமூக ஊடகம்",
+			"பதிவு",
+			"செங்குத்து",
+			"இடைவெளி",
+			"மெல்லத் தோன்றல்",
+			"எழுச்சி",
+			"பிரகாசமான"
+		]
+	},
+	"duration": 4,
+	"aspect": "9:16",
+	"slots": [
+		{
+			"id": "label",
+			"name": "Label",
+			"text": {
+				"en": "QUICK TIP",
+				"si": "ඉක්මන් ඉඟිය",
+				"ta": "விரைவுக் குறிப்பு"
+			},
+			"x": 0.5,
+			"y": 0.3,
+			"size": 0.034,
+			"style": {
+				"fontFamily": "Rubik",
+				"fontWeight": 800,
+				"fill": "#111827",
+				"plate": {
+					"color": "#FACC15",
+					"padding": 0.35,
+					"radius": 0.2
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "grapheme",
+				"in": {
+					"effect": "tracking-expand",
+					"duration": 1,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "out",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "Did you know?",
+				"si": "ඔබ දන්නවාද?",
+				"ta": "தெரியுமா?"
+			},
+			"x": 0.5,
+			"y": 0.4,
+			"size": 0.06,
+			"style": {
+				"fontFamily": "Rubik",
+				"fontWeight": 700,
+				"fill": "#FFFFFF"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "rise",
+					"duration": 0.7,
+					"delay": 0.3,
+					"stagger": 0.08,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "subtitle",
+			"name": "Subtitle",
+			"text": {
+				"en": "3 tips you need",
+				"si": "ඔබට අවශ්‍ය උපදෙස් 3ක්",
+				"ta": "3 முக்கிய குறிப்புகள்"
+			},
+			"x": 0.5,
+			"y": 0.5,
+			"size": 0.029,
+			"style": {
+				"fontFamily": "Rubik",
+				"fontWeight": 400,
+				"fill": "#E2E8F0"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "fade",
+					"duration": 0.6,
+					"delay": 0.6,
+					"stagger": 0.04,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

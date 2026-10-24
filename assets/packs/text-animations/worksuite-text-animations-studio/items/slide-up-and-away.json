@@ -1,0 +1,67 @@
+{
+	"schema": 1,
+	"id": "slide-up-and-away",
+	"kind": "animation",
+	"name": {
+		"en": "Slide up and away",
+		"si": "සැහැල්ලු ලිස්සීම",
+		"ta": "இலகுவான சறுக்கல்"
+	},
+	"category": "slides",
+	"tags": {
+		"en": [
+			"slide",
+			"up",
+			"and",
+			"away",
+			"words",
+			"slides",
+			"light",
+			"exit"
+		],
+		"si": [
+			"ලිස්සීම",
+			"වචන",
+			"සැහැල්ලු",
+			"ඉවත් වීම"
+		],
+		"ta": [
+			"சறுக்கல்",
+			"சொற்கள்",
+			"இலகுவான",
+			"வெளியேறல்"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "word",
+		"in": {
+			"effect": "slide",
+			"duration": 0.5,
+			"delay": 0,
+			"stagger": 0.06,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-out-cubic",
+			"intensity": 1,
+			"params": {}
+		},
+		"out": {
+			"effect": "slide",
+			"duration": 0.45,
+			"delay": 0,
+			"stagger": 0.05,
+			"staggerOrder": "forward",
+			"direction": "down",
+			"easing": "ease-in-cubic",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"style": {
+		"fontFamily": "Inter",
+		"fontWeight": 800,
+		"fill": "#FFFFFF"
+	},
+	"duration": 3
+}

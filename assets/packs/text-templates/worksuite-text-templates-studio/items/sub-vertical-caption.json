@@ -1,0 +1,86 @@
+{
+	"schema": 1,
+	"id": "sub-vertical-caption",
+	"kind": "template",
+	"name": {
+		"en": "Vertical caption",
+		"si": "සිරස් උපසිරැසිය",
+		"ta": "செங்குத்து துணைத் தலைப்பு"
+	},
+	"category": "subtitles",
+	"tags": {
+		"en": [
+			"vertical",
+			"caption",
+			"subtitle",
+			"text",
+			"9:16",
+			"story",
+			"pop",
+			"fade"
+		],
+		"si": [
+			"උපසිරැසි",
+			"සිරස්",
+			"පොප්",
+			"ක්‍රමයෙන් පෙනීම"
+		],
+		"ta": [
+			"வசனம்",
+			"செங்குத்து",
+			"பாப்",
+			"மெல்லத் தோன்றல்"
+		]
+	},
+	"duration": 4,
+	"aspect": "9:16",
+	"slots": [
+		{
+			"id": "caption",
+			"name": "Caption",
+			"text": {
+				"en": "Wait for the end",
+				"si": "අවසානය තෙක් ඉන්න",
+				"ta": "இறுதி வரை காத்திருங்கள்"
+			},
+			"x": 0.5,
+			"y": 0.72,
+			"size": 0.026,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 800,
+				"fill": "#FFFFFF",
+				"stroke": {
+					"color": "#000000",
+					"width": 5
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "pop",
+					"duration": 0.25,
+					"delay": 0,
+					"stagger": 0.3,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "ease-out-back",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

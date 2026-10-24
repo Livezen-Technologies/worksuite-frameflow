@@ -1,0 +1,51 @@
+{
+	"schema": 1,
+	"id": "swing-in-words",
+	"kind": "animation",
+	"name": {
+		"en": "Swing in words",
+		"si": "විනෝදජනක පැද්දීම",
+		"ta": "விளையாட்டான ஊசலாட்டம்"
+	},
+	"category": "elastic",
+	"tags": {
+		"en": [
+			"swing",
+			"in",
+			"words",
+			"elastic",
+			"playful"
+		],
+		"si": [
+			"පැද්දීම",
+			"වචන",
+			"විනෝදජනක"
+		],
+		"ta": [
+			"ஊசலாட்டம்",
+			"சொற்கள்",
+			"விளையாட்டான"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "word",
+		"in": {
+			"effect": "swing",
+			"duration": 0.9,
+			"delay": 0,
+			"stagger": 0.08,
+			"staggerOrder": "forward",
+			"direction": "down",
+			"easing": "ease-out-elastic",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"style": {
+		"fontFamily": "Rubik",
+		"fontWeight": 800,
+		"fill": "#FFFFFF"
+	},
+	"duration": 3
+}

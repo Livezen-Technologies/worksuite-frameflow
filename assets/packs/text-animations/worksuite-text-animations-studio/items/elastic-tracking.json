@@ -1,0 +1,67 @@
+{
+	"schema": 1,
+	"id": "elastic-tracking",
+	"kind": "animation",
+	"name": {
+		"en": "Elastic tracking",
+		"si": "පුළුල් ක්‍රමයෙන් පෙනීම",
+		"ta": "அகலமான மெல்லத் தோன்றல்"
+	},
+	"category": "elastic",
+	"tags": {
+		"en": [
+			"elastic",
+			"tracking",
+			"fade",
+			"letters",
+			"wide"
+		],
+		"si": [
+			"ක්‍රමයෙන් පෙනීම",
+			"අකුරු",
+			"පුළුල්"
+		],
+		"ta": [
+			"மெல்லத் தோன்றல்",
+			"எழுத்துகள்",
+			"அகலமான"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "grapheme",
+		"in": {
+			"effect": "fade",
+			"duration": 0.4,
+			"delay": 0,
+			"stagger": 0,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-out",
+			"intensity": 1,
+			"params": {}
+		},
+		"keyframes": {
+			"tracks": {
+				"tracking": [
+					{
+						"t": 0,
+						"v": 0.6,
+						"easing": "ease-out-elastic"
+					},
+					{
+						"t": 1.4,
+						"v": 0
+					}
+				]
+			}
+		}
+	},
+	"style": {
+		"fontFamily": "Bebas Neue",
+		"fontWeight": 400,
+		"fill": "#FFFFFF",
+		"tracking": 0.04
+	},
+	"duration": 3
+}

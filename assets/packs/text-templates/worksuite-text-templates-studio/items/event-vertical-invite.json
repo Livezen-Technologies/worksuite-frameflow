@@ -1,0 +1,185 @@
+{
+	"schema": 1,
+	"id": "event-vertical-invite",
+	"kind": "template",
+	"name": {
+		"en": "Vertical invite",
+		"si": "සිරස් සිදුවීම",
+		"ta": "செங்குத்து நிகழ்வு"
+	},
+	"category": "event",
+	"tags": {
+		"en": [
+			"vertical",
+			"invite",
+			"event",
+			"date",
+			"9:16",
+			"story",
+			"fade"
+		],
+		"si": [
+			"උත්සවය",
+			"ආරාධනාව",
+			"සිරස්",
+			"ක්‍රමයෙන් පෙනීම"
+		],
+		"ta": [
+			"நிகழ்வு",
+			"அழைப்பு",
+			"செங்குத்து",
+			"மெல்லத் தோன்றல்"
+		]
+	},
+	"duration": 5,
+	"aspect": "9:16",
+	"slots": [
+		{
+			"id": "label",
+			"name": "Label",
+			"text": {
+				"en": "You're invited",
+				"si": "ඔබට ආරාධනා",
+				"ta": "உங்களுக்கு அழைப்பு"
+			},
+			"x": 0.5,
+			"y": 0.3,
+			"size": 0.031,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 600,
+				"fill": "#C9A86A",
+				"tracking": 0.06
+			},
+			"animation": {
+				"version": 1,
+				"unit": "grapheme",
+				"in": {
+					"effect": "fade",
+					"duration": 0.8,
+					"delay": 0,
+					"stagger": 0.03,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "GRAND OPENING",
+				"si": "විවෘත කිරීම",
+				"ta": "திறப்பு விழா"
+			},
+			"x": 0.5,
+			"y": 0.4,
+			"size": 0.048,
+			"style": {
+				"fontFamily": "Playfair Display",
+				"fontWeight": 700,
+				"fill": "#FFF4E0",
+				"tracking": 0.02
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "fade",
+					"duration": 1,
+					"delay": 0.4,
+					"stagger": 0.12,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.8,
+					"delay": 0,
+					"stagger": 0.05,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in",
+					"intensity": 1,
+					"params": {}
+				},
+				"keyframes": {
+					"tracks": {
+						"scale": [
+							{
+								"t": 0,
+								"v": 1.08,
+								"easing": "ease-out-cubic"
+							},
+							{
+								"t": 4,
+								"v": 1
+							}
+						]
+					}
+				}
+			}
+		},
+		{
+			"id": "subtitle",
+			"name": "Subtitle",
+			"text": {
+				"en": "SAT 12 DEC · 7 PM",
+				"si": "දෙසැ. 12 සෙනසුරාදා · ප.ව. 7",
+				"ta": "டிச. 12 சனி · மாலை 7"
+			},
+			"x": 0.5,
+			"y": 0.5,
+			"size": 0.03,
+			"style": {
+				"fontFamily": "Lora",
+				"fontWeight": 400,
+				"fontStyle": "italic",
+				"fill": "#E6D5B8"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "fade",
+					"duration": 1,
+					"delay": 0.8,
+					"stagger": 0.08,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

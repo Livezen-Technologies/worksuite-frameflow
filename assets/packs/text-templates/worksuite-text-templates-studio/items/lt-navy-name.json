@@ -1,0 +1,140 @@
+{
+	"schema": 1,
+	"id": "lt-navy-name",
+	"kind": "template",
+	"name": {
+		"en": "Navy name bar",
+		"si": "වෘත්තීය පහළ පටිය",
+		"ta": "தொழில்முறை கீழ் பட்டை"
+	},
+	"category": "lower-thirds",
+	"tags": {
+		"en": [
+			"navy",
+			"name",
+			"bar",
+			"lower third",
+			"interview",
+			"landscape",
+			"16:9",
+			"slide",
+			"pro"
+		],
+		"si": [
+			"නම",
+			"සම්මුඛ සාකච්ඡාව",
+			"තිරස්",
+			"ලිස්සීම",
+			"වෘත්තීය"
+		],
+		"ta": [
+			"பெயர்",
+			"நேர்காணல்",
+			"கிடைமட்ட",
+			"சறுக்கல்",
+			"தொழில்முறை"
+		]
+	},
+	"duration": 5,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "name",
+			"name": "Name",
+			"text": {
+				"en": "Nimal Perera",
+				"si": "නිමල් පෙරේරා",
+				"ta": "நிமல் பெரேரா"
+			},
+			"x": 0.27,
+			"y": 0.79,
+			"size": 0.059,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 800,
+				"fill": "#FFFFFF",
+				"plate": {
+					"color": "#1E3A8A",
+					"padding": 0.35,
+					"radius": 0.12
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "slide",
+					"duration": 0.5,
+					"delay": 0,
+					"stagger": 0.06,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "slide",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.04,
+					"staggerOrder": "forward",
+					"direction": "left",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "role",
+			"name": "Role",
+			"text": {
+				"en": "Director",
+				"si": "අධ්‍යක්ෂ",
+				"ta": "இயக்குநர்"
+			},
+			"x": 0.27,
+			"y": 0.865,
+			"size": 0.043,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 600,
+				"fill": "#0F172A",
+				"plate": {
+					"color": "#FFFFFF",
+					"padding": 0.35,
+					"radius": 0.12
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "slide",
+					"duration": 0.5,
+					"delay": 0.2,
+					"stagger": 0.04,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {
+						"distance": 0.8
+					}
+				},
+				"out": {
+					"effect": "slide",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.03,
+					"staggerOrder": "forward",
+					"direction": "left",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

@@ -1,0 +1,67 @@
+{
+	"schema": 1,
+	"id": "flip-in-flip-out",
+	"kind": "animation",
+	"name": {
+		"en": "Flip in, flip out",
+		"si": "ද්විත්ව පෙරළීම",
+		"ta": "இரட்டை புரட்டல்"
+	},
+	"category": "3d-flips",
+	"tags": {
+		"en": [
+			"flip",
+			"in",
+			"out",
+			"flip x",
+			"words",
+			"3d flips",
+			"double",
+			"exit"
+		],
+		"si": [
+			"පෙරළීම",
+			"වචන",
+			"ද්විත්ව",
+			"ඉවත් වීම"
+		],
+		"ta": [
+			"புரட்டல்",
+			"சொற்கள்",
+			"இரட்டை",
+			"வெளியேறல்"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "word",
+		"in": {
+			"effect": "flip-x",
+			"duration": 0.6,
+			"delay": 0,
+			"stagger": 0.08,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-out-back",
+			"intensity": 1,
+			"params": {}
+		},
+		"out": {
+			"effect": "flip-x",
+			"duration": 0.45,
+			"delay": 0,
+			"stagger": 0.05,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-in-back",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"style": {
+		"fontFamily": "Inter",
+		"fontWeight": 800,
+		"fill": "#FFFFFF"
+	},
+	"duration": 3
+}

@@ -1,0 +1,55 @@
+{
+	"schema": 1,
+	"id": "word-by-word-typing",
+	"kind": "animation",
+	"name": {
+		"en": "Word-by-word typing",
+		"si": "සුමට යතුරුලියනය",
+		"ta": "மிருதுவான தட்டச்சு"
+	},
+	"category": "typewriter-decode",
+	"tags": {
+		"en": [
+			"word",
+			"by",
+			"typing",
+			"typewriter",
+			"words",
+			"typewriter decode",
+			"smooth"
+		],
+		"si": [
+			"යතුරුලියනය",
+			"වචන",
+			"සුමට"
+		],
+		"ta": [
+			"தட்டச்சு",
+			"சொற்கள்",
+			"மிருதுவான"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "word",
+		"in": {
+			"effect": "typewriter",
+			"duration": 0.3,
+			"delay": 0,
+			"stagger": 0.2,
+			"staggerOrder": "forward",
+			"direction": "right",
+			"easing": "linear",
+			"intensity": 1,
+			"params": {
+				"caret": false
+			}
+		}
+	},
+	"style": {
+		"fontFamily": "Inter",
+		"fontWeight": 600,
+		"fill": "#F1F5F9"
+	},
+	"duration": 3
+}

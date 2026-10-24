@@ -1,0 +1,58 @@
+{
+	"schema": 1,
+	"id": "hard-cut-words",
+	"kind": "animation",
+	"name": {
+		"en": "Hard cut words",
+		"si": "තියුණු ක්‍රමයෙන් පෙනීම",
+		"ta": "கூர்மையான மெல்லத் தோன்றல்"
+	},
+	"category": "kinetic",
+	"tags": {
+		"en": [
+			"hard",
+			"cut",
+			"words",
+			"fade",
+			"kinetic",
+			"sharp"
+		],
+		"si": [
+			"ක්‍රමයෙන් පෙනීම",
+			"වචන",
+			"තියුණු"
+		],
+		"ta": [
+			"மெல்லத் தோன்றல்",
+			"சொற்கள்",
+			"கூர்மையான"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "word",
+		"in": {
+			"effect": "fade",
+			"duration": 0.01,
+			"delay": 0,
+			"stagger": 0.25,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "step",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"previewText": {
+		"en": "MAKE IT LOUD",
+		"si": "හඬ නඟමු",
+		"ta": "உரக்கச் சொல்லுங்கள்"
+	},
+	"style": {
+		"fontFamily": "Bebas Neue",
+		"fontWeight": 400,
+		"fill": "#FFFFFF",
+		"tracking": 0.04
+	},
+	"duration": 3
+}

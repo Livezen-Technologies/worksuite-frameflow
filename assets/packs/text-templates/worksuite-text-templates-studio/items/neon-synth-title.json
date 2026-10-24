@@ -1,0 +1,151 @@
+{
+	"schema": 1,
+	"id": "neon-synth-title",
+	"kind": "template",
+	"name": {
+		"en": "Synth title",
+		"si": "විදුලි නියොන් මාතෘකාව",
+		"ta": "மின் நியான் தலைப்பு"
+	},
+	"category": "neon-retro",
+	"tags": {
+		"en": [
+			"synth",
+			"title",
+			"neon",
+			"retro",
+			"80s",
+			"landscape",
+			"16:9",
+			"glitch",
+			"rgb split",
+			"fade",
+			"electric"
+		],
+		"si": [
+			"නියොන්",
+			"රෙට්‍රෝ",
+			"තිරස්",
+			"ග්ලිච්",
+			"වර්ණ බෙදීම",
+			"ක්‍රමයෙන් පෙනීම",
+			"විදුලි"
+		],
+		"ta": [
+			"நியான்",
+			"ரெட்ரோ",
+			"கிடைமட்ட",
+			"கிளிட்ச்",
+			"வண்ணப் பிளவு",
+			"மெல்லத் தோன்றல்",
+			"மின்"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "NIGHT DRIVE",
+				"si": "රාත්‍රී ගමන",
+				"ta": "இரவுப் பயணம்"
+			},
+			"x": 0.5,
+			"y": 0.44,
+			"size": 0.119,
+			"style": {
+				"fontFamily": "Orbitron",
+				"fontWeight": 800,
+				"fill": "#2EC4FF",
+				"gradient": [
+					"#2EC4FF",
+					"#FF2E88"
+				]
+			},
+			"animation": {
+				"version": 1,
+				"unit": "grapheme",
+				"in": {
+					"effect": "glitch",
+					"duration": 0.6,
+					"delay": 0,
+					"stagger": 0.03,
+					"staggerOrder": "random(4)",
+					"direction": "right",
+					"easing": "linear",
+					"intensity": 1,
+					"params": {
+						"rate": 20
+					}
+				},
+				"emphasis": {
+					"effect": "glitch",
+					"duration": 2.2,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "linear",
+					"intensity": 0.5,
+					"params": {}
+				},
+				"out": {
+					"effect": "glitch",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "linear",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "subtitle",
+			"name": "Subtitle",
+			"text": {
+				"en": "SINCE 1986",
+				"si": "1986 සිට",
+				"ta": "1986 முதல்"
+			},
+			"x": 0.5,
+			"y": 0.6,
+			"size": 0.056,
+			"style": {
+				"fontFamily": "Orbitron",
+				"fontWeight": 500,
+				"fill": "#E0E7FF"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "rgb-split",
+					"duration": 0.5,
+					"delay": 0.3,
+					"stagger": 0.03,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

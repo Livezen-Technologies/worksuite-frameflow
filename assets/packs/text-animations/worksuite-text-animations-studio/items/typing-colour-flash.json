@@ -1,0 +1,70 @@
+{
+	"schema": 1,
+	"id": "typing-colour-flash",
+	"kind": "animation",
+	"name": {
+		"en": "Typing colour flash",
+		"si": "දීප්තිමත් යතුරුලියනය",
+		"ta": "பிரகாசமான தட்டச்சு"
+	},
+	"category": "typewriter-decode",
+	"tags": {
+		"en": [
+			"typing",
+			"colour",
+			"flash",
+			"typewriter",
+			"letters",
+			"typewriter decode",
+			"bright"
+		],
+		"si": [
+			"යතුරුලියනය",
+			"අකුරු",
+			"දීප්තිමත්"
+		],
+		"ta": [
+			"தட்டச்சு",
+			"எழுத்துகள்",
+			"பிரகாசமான"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "grapheme",
+		"in": {
+			"effect": "typewriter",
+			"duration": 0.05,
+			"delay": 0,
+			"stagger": 0.05,
+			"staggerOrder": "forward",
+			"direction": "right",
+			"easing": "linear",
+			"intensity": 1,
+			"params": {
+				"caret": false
+			}
+		},
+		"keyframes": {
+			"stagger": 0.05,
+			"tracks": {
+				"fill": [
+					{
+						"t": 0,
+						"v": "#FFD166"
+					},
+					{
+						"t": 0.25,
+						"v": "#FFFFFF"
+					}
+				]
+			}
+		}
+	},
+	"style": {
+		"fontFamily": "Inter",
+		"fontWeight": 800,
+		"fill": "#FFFFFF"
+	},
+	"duration": 3
+}

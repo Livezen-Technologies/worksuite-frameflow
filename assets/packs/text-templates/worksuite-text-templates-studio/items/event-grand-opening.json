@@ -1,0 +1,198 @@
+{
+	"schema": 1,
+	"id": "event-grand-opening",
+	"kind": "template",
+	"name": {
+		"en": "Grand opening",
+		"si": "උත්කර්ෂවත් සිදුවීම",
+		"ta": "பிரமாண்ட நிகழ்வு"
+	},
+	"category": "event",
+	"tags": {
+		"en": [
+			"grand",
+			"opening",
+			"event",
+			"invite",
+			"date",
+			"landscape",
+			"16:9",
+			"fade",
+			"shine",
+			"rise"
+		],
+		"si": [
+			"උත්සවය",
+			"ආරාධනාව",
+			"තිරස්",
+			"ක්‍රමයෙන් පෙනීම",
+			"දිලිසීම",
+			"නැගීම",
+			"උත්කර්ෂවත්"
+		],
+		"ta": [
+			"நிகழ்வு",
+			"அழைப்பு",
+			"கிடைமட்ட",
+			"மெல்லத் தோன்றல்",
+			"பளபளப்பு",
+			"எழுச்சி",
+			"பிரமாண்ட"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"background": {
+		"packAsset": "rx-confetti"
+	},
+	"slots": [
+		{
+			"id": "label",
+			"name": "Label",
+			"text": {
+				"en": "You're invited",
+				"si": "ඔබට ආරාධනා",
+				"ta": "உங்களுக்கு அழைப்பு"
+			},
+			"x": 0.5,
+			"y": 0.31,
+			"size": 0.046,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 700,
+				"fill": "#FFFFFF",
+				"tracking": 0.06
+			},
+			"animation": {
+				"version": 1,
+				"unit": "block",
+				"in": {
+					"effect": "fade",
+					"duration": 0.5,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "GRAND OPENING",
+				"si": "විවෘත කිරීම",
+				"ta": "திறப்பு விழா"
+			},
+			"x": 0.5,
+			"y": 0.47,
+			"size": 0.119,
+			"style": {
+				"fontFamily": "Bebas Neue",
+				"fontWeight": 400,
+				"fill": "#FFD166",
+				"tracking": 0.03,
+				"shadow": {
+					"color": "#000000",
+					"blur": 16,
+					"x": 0,
+					"y": 4
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "block",
+				"in": {
+					"effect": "fade",
+					"duration": 0.6,
+					"delay": 0.3,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"emphasis": {
+					"effect": "shine",
+					"duration": 2.4,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-in-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "subtitle",
+			"name": "Subtitle",
+			"text": {
+				"en": "SAT 12 DEC · 7 PM",
+				"si": "දෙසැ. 12 සෙනසුරාදා · ප.ව. 7",
+				"ta": "டிச. 12 சனி · மாலை 7"
+			},
+			"x": 0.5,
+			"y": 0.63,
+			"size": 0.05,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 600,
+				"fill": "#FFFFFF"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "rise",
+					"duration": 0.5,
+					"delay": 0.6,
+					"stagger": 0.05,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

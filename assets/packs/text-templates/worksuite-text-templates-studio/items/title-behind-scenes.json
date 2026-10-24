@@ -1,0 +1,133 @@
+{
+	"schema": 1,
+	"id": "title-behind-scenes",
+	"kind": "template",
+	"name": {
+		"en": "Behind the scenes",
+		"si": "නවීන මාතෘකාව",
+		"ta": "நவீன தலைப்பு"
+	},
+	"category": "titles",
+	"tags": {
+		"en": [
+			"behind",
+			"the",
+			"scenes",
+			"title",
+			"heading",
+			"intro",
+			"landscape",
+			"16:9",
+			"scramble",
+			"fade",
+			"modern"
+		],
+		"si": [
+			"මාතෘකාව",
+			"හැඳින්වීම",
+			"තිරස්",
+			"අකුරු මිශ්‍රණය",
+			"ක්‍රමයෙන් පෙනීම",
+			"නවීන"
+		],
+		"ta": [
+			"தலைப்பு",
+			"அறிமுகம்",
+			"கிடைமட்ட",
+			"எழுத்துக் குழப்பம்",
+			"மெல்லத் தோன்றல்",
+			"நவீன"
+		]
+	},
+	"duration": 4.5,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "label",
+			"name": "Label",
+			"text": {
+				"en": "EXCLUSIVE",
+				"si": "විශේෂ",
+				"ta": "பிரத்தியேகம்"
+			},
+			"x": 0.5,
+			"y": 0.34,
+			"size": 0.052,
+			"style": {
+				"fontFamily": "Space Mono",
+				"fontWeight": 700,
+				"fill": "#22D3EE",
+				"tracking": 0.06
+			},
+			"animation": {
+				"version": 1,
+				"unit": "grapheme",
+				"in": {
+					"effect": "scramble",
+					"duration": 0.6,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "linear",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "BEHIND THE SCENES",
+				"si": "තිරය පිටුපස",
+				"ta": "திரைக்குப் பின்னால்"
+			},
+			"x": 0.5,
+			"y": 0.5,
+			"size": 0.105,
+			"style": {
+				"fontFamily": "Space Grotesk",
+				"fontWeight": 700,
+				"fill": "#FFFFFF"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "grapheme",
+				"in": {
+					"effect": "scramble",
+					"duration": 0.9,
+					"delay": 0.4,
+					"stagger": 0.03,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "linear",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

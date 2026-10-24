@@ -1,0 +1,66 @@
+{
+	"schema": 1,
+	"id": "page-turn",
+	"kind": "animation",
+	"name": {
+		"en": "Page turn",
+		"si": "අලංකාර ත්‍රිමාණ ඇලවීම",
+		"ta": "நேர்த்தியான முப்பரிமாண சாய்வு"
+	},
+	"category": "3d-flips",
+	"tags": {
+		"en": [
+			"page",
+			"turn",
+			"3d tilt",
+			"words",
+			"3d flips",
+			"elegant",
+			"exit"
+		],
+		"si": [
+			"ත්‍රිමාණ ඇලවීම",
+			"වචන",
+			"අලංකාර",
+			"ඉවත් වීම"
+		],
+		"ta": [
+			"முப்பரிமாண சாய்வு",
+			"சொற்கள்",
+			"நேர்த்தியான",
+			"வெளியேறல்"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "word",
+		"in": {
+			"effect": "3d-tilt",
+			"duration": 0.8,
+			"delay": 0,
+			"stagger": 0.1,
+			"staggerOrder": "forward",
+			"direction": "left",
+			"easing": "ease-out-cubic",
+			"intensity": 1,
+			"params": {}
+		},
+		"out": {
+			"effect": "3d-tilt",
+			"duration": 0.6,
+			"delay": 0,
+			"stagger": 0.06,
+			"staggerOrder": "forward",
+			"direction": "right",
+			"easing": "ease-in-cubic",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"style": {
+		"fontFamily": "Playfair Display",
+		"fontWeight": 700,
+		"fill": "#FFF4E0"
+	},
+	"duration": 3
+}

@@ -1,0 +1,89 @@
+{
+	"schema": 1,
+	"id": "title-game-day-zoom",
+	"kind": "template",
+	"name": {
+		"en": "Game day zoom",
+		"si": "ක්‍රීඩා මාතෘකාව",
+		"ta": "விளையாட்டு தலைப்பு"
+	},
+	"category": "titles",
+	"tags": {
+		"en": [
+			"game",
+			"day",
+			"zoom",
+			"title",
+			"heading",
+			"intro",
+			"landscape",
+			"16:9",
+			"scale down",
+			"fade",
+			"sporty"
+		],
+		"si": [
+			"මාතෘකාව",
+			"හැඳින්වීම",
+			"තිරස්",
+			"කුඩා වීම",
+			"ක්‍රමයෙන් පෙනීම",
+			"ක්‍රීඩා"
+		],
+		"ta": [
+			"தலைப்பு",
+			"அறிமுகம்",
+			"கிடைமட்ட",
+			"சிறிதாதல்",
+			"மெல்லத் தோன்றல்",
+			"விளையாட்டு"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "GAME DAY",
+				"si": "තරඟ දිනය",
+				"ta": "போட்டி நாள்"
+			},
+			"x": 0.5,
+			"y": 0.5,
+			"size": 0.13,
+			"style": {
+				"fontFamily": "Anton",
+				"fontWeight": 400,
+				"fill": "#FFFFFF"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "scale-down",
+					"duration": 0.45,
+					"delay": 0,
+					"stagger": 0.2,
+					"staggerOrder": "forward",
+					"direction": "out",
+					"easing": "ease-out-expo",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

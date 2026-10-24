@@ -1,0 +1,81 @@
+{
+	"schema": 1,
+	"id": "slow-reveal-drift",
+	"kind": "animation",
+	"name": {
+		"en": "Slow reveal drift",
+		"si": "සෙමින් ක්‍රමයෙන් පෙනීම",
+		"ta": "மெதுவான மெல்லத் தோன்றல்"
+	},
+	"category": "reveals",
+	"tags": {
+		"en": [
+			"slow",
+			"reveal",
+			"drift",
+			"fade",
+			"lines",
+			"reveals",
+			"exit"
+		],
+		"si": [
+			"ක්‍රමයෙන් පෙනීම",
+			"පේළි",
+			"සෙමින්",
+			"ඉවත් වීම"
+		],
+		"ta": [
+			"மெல்லத் தோன்றல்",
+			"வரிகள்",
+			"மெதுவான",
+			"வெளியேறல்"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "line",
+		"in": {
+			"effect": "fade",
+			"duration": 1.4,
+			"delay": 0,
+			"stagger": 0.3,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-in-out",
+			"intensity": 1,
+			"params": {}
+		},
+		"out": {
+			"effect": "fade",
+			"duration": 0.4,
+			"delay": 0,
+			"stagger": 0.02,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-in-cubic",
+			"intensity": 1,
+			"params": {}
+		},
+		"keyframes": {
+			"tracks": {
+				"scale": [
+					{
+						"t": 0,
+						"v": 1.06,
+						"easing": "ease-out-cubic"
+					},
+					{
+						"t": 3,
+						"v": 1
+					}
+				]
+			}
+		}
+	},
+	"style": {
+		"fontFamily": "Playfair Display",
+		"fontWeight": 700,
+		"fill": "#FFF4E0"
+	},
+	"duration": 3
+}

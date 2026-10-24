@@ -1,0 +1,57 @@
+{
+	"schema": 1,
+	"id": "count-up-big",
+	"kind": "animation",
+	"name": {
+		"en": "Count up big",
+		"si": "විශාල අංක ගණනය",
+		"ta": "பெரிய எண் எண்ணிக்கை"
+	},
+	"category": "counters-numbers",
+	"tags": {
+		"en": [
+			"count",
+			"up",
+			"big",
+			"number counter",
+			"blocks",
+			"counters numbers"
+		],
+		"si": [
+			"අංක ගණනය",
+			"සම්පූර්ණ",
+			"විශාල"
+		],
+		"ta": [
+			"எண் எண்ணிக்கை",
+			"முழு",
+			"பெரிய"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "block",
+		"in": {
+			"effect": "number-counter",
+			"duration": 1.6,
+			"delay": 0,
+			"stagger": 0,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-out-cubic",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"previewText": {
+		"en": "1,250,000",
+		"si": "1,250,000",
+		"ta": "1,250,000"
+	},
+	"style": {
+		"fontFamily": "Oswald",
+		"fontWeight": 700,
+		"fill": "#FFFFFF"
+	},
+	"duration": 3
+}

@@ -1,0 +1,91 @@
+{
+	"schema": 1,
+	"id": "sub-karaoke-gold",
+	"kind": "template",
+	"name": {
+		"en": "Golden karaoke",
+		"si": "රන්වන් උපසිරැසිය",
+		"ta": "தங்க துணைத் தலைப்பு"
+	},
+	"category": "subtitles",
+	"tags": {
+		"en": [
+			"golden",
+			"karaoke",
+			"subtitle",
+			"caption",
+			"text",
+			"landscape",
+			"16:9",
+			"karaoke fill",
+			"fade"
+		],
+		"si": [
+			"උපසිරැසි",
+			"තිරස්",
+			"කැරෝකේ",
+			"ක්‍රමයෙන් පෙනීම",
+			"රන්වන්"
+		],
+		"ta": [
+			"வசனம்",
+			"கிடைமட்ட",
+			"கரோக்கே",
+			"மெல்லத் தோன்றல்",
+			"தங்க"
+		]
+	},
+	"duration": 5,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "caption",
+			"name": "Caption",
+			"text": {
+				"en": "The best is yet to come",
+				"si": "හොඳම දේ තවම ඉදිරියේ",
+				"ta": "சிறந்தது இனிமேல்தான்"
+			},
+			"x": 0.5,
+			"y": 0.86,
+			"size": 0.054,
+			"style": {
+				"fontFamily": "Inter",
+				"fontWeight": 800,
+				"fill": "#FFFFFF",
+				"stroke": {
+					"color": "#000000",
+					"width": 5
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "karaoke-fill",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.4,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "linear",
+					"intensity": 1,
+					"params": {
+						"color": "#FFE14D"
+					}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

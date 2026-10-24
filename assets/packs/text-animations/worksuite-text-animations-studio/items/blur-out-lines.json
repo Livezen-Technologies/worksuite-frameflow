@@ -1,0 +1,74 @@
+{
+	"schema": 1,
+	"id": "blur-out-lines",
+	"kind": "animation",
+	"name": {
+		"en": "Blur out lines",
+		"si": "සිහින බොඳ",
+		"ta": "கனவு மங்கல்"
+	},
+	"category": "exits",
+	"tags": {
+		"en": [
+			"blur",
+			"out",
+			"lines",
+			"fade",
+			"blur in",
+			"exits",
+			"dreamy",
+			"exit"
+		],
+		"si": [
+			"ක්‍රමයෙන් පෙනීම",
+			"බොඳ",
+			"පේළි",
+			"සිහින",
+			"ඉවත් වීම"
+		],
+		"ta": [
+			"மெல்லத் தோன்றல்",
+			"மங்கல்",
+			"வரிகள்",
+			"கனவு",
+			"வெளியேறல்"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "line",
+		"in": {
+			"effect": "fade",
+			"duration": 0.3,
+			"delay": 0,
+			"stagger": 0.02,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-out",
+			"intensity": 1,
+			"params": {}
+		},
+		"out": {
+			"effect": "blur-in",
+			"duration": 0.8,
+			"delay": 0,
+			"stagger": 0.15,
+			"staggerOrder": "forward",
+			"direction": "in",
+			"easing": "ease-in",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"previewText": {
+		"en": "First line here\nSecond line follows",
+		"si": "පළමු පේළිය\nදෙවන පේළිය",
+		"ta": "முதல் வரி\nஇரண்டாம் வரி"
+	},
+	"style": {
+		"fontFamily": "Playfair Display",
+		"fontWeight": 700,
+		"fill": "#FFF4E0"
+	},
+	"duration": 3
+}

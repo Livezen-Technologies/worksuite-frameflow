@@ -1,0 +1,92 @@
+{
+	"schema": 1,
+	"id": "kp-spin-create",
+	"kind": "template",
+	"name": {
+		"en": "Spinning create",
+		"si": "විනෝදජනක චලන පෝස්ටරය",
+		"ta": "விளையாட்டான இயக்க சுவரொட்டி"
+	},
+	"category": "kinetic-posters",
+	"tags": {
+		"en": [
+			"spinning",
+			"create",
+			"kinetic",
+			"poster",
+			"typography",
+			"landscape",
+			"16:9",
+			"spin",
+			"fade",
+			"playful"
+		],
+		"si": [
+			"චලන",
+			"පෝස්ටරය",
+			"තිරස්",
+			"කැරකීම",
+			"ක්‍රමයෙන් පෙනීම",
+			"විනෝදජනක"
+		],
+		"ta": [
+			"இயக்கம்",
+			"சுவரொட்டி",
+			"கிடைமட்ட",
+			"சுழல்",
+			"மெல்லத் தோன்றல்",
+			"விளையாட்டான"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "CREATE",
+				"si": "නිර්මාණය කරන්න",
+				"ta": "உருவாக்குங்கள்"
+			},
+			"x": 0.5,
+			"y": 0.5,
+			"size": 0.129,
+			"style": {
+				"fontFamily": "Archivo Black",
+				"fontWeight": 400,
+				"fill": "#D9F99D",
+				"stroke": {
+					"color": "#000000",
+					"width": 4
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "grapheme",
+				"in": {
+					"effect": "spin",
+					"duration": 0.8,
+					"delay": 0,
+					"stagger": 0.04,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

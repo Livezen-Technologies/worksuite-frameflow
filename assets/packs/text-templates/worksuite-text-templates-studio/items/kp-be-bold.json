@@ -1,0 +1,87 @@
+{
+	"schema": 1,
+	"id": "kp-be-bold",
+	"kind": "template",
+	"name": {
+		"en": "Be bold",
+		"si": "ප්‍රබල චලන පෝස්ටරය",
+		"ta": "வலுவான இயக்க சுவரொட்டி"
+	},
+	"category": "kinetic-posters",
+	"tags": {
+		"en": [
+			"be",
+			"bold",
+			"kinetic",
+			"poster",
+			"typography",
+			"landscape",
+			"16:9",
+			"elastic",
+			"fade"
+		],
+		"si": [
+			"චලන",
+			"පෝස්ටරය",
+			"තිරස්",
+			"ප්‍රත්‍යාස්ථ",
+			"ක්‍රමයෙන් පෙනීම",
+			"ප්‍රබල"
+		],
+		"ta": [
+			"இயக்கம்",
+			"சுவரொட்டி",
+			"கிடைமட்ட",
+			"மீள்தன்மை",
+			"மெல்லத் தோன்றல்",
+			"வலுவான"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "BE BOLD",
+				"si": "නිර්භීත වන්න",
+				"ta": "துணிச்சலாக இருங்கள்"
+			},
+			"x": 0.5,
+			"y": 0.5,
+			"size": 0.096,
+			"style": {
+				"fontFamily": "Anton",
+				"fontWeight": 400,
+				"fill": "#FFFFFF"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "elastic",
+					"duration": 0.9,
+					"delay": 0,
+					"stagger": 0.06,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-out-elastic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

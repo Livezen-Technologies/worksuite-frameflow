@@ -1,0 +1,108 @@
+{
+	"schema": 1,
+	"id": "event-fireworks",
+	"kind": "template",
+	"name": {
+		"en": "Fireworks night",
+		"si": "උත්සව සිදුවීම",
+		"ta": "பண்டிகை நிகழ்வு"
+	},
+	"category": "event",
+	"tags": {
+		"en": [
+			"fireworks",
+			"night",
+			"event",
+			"invite",
+			"date",
+			"landscape",
+			"16:9",
+			"fade",
+			"shine",
+			"festive"
+		],
+		"si": [
+			"උත්සවය",
+			"ආරාධනාව",
+			"තිරස්",
+			"ක්‍රමයෙන් පෙනීම",
+			"දිලිසීම",
+			"උත්සව"
+		],
+		"ta": [
+			"நிகழ்வு",
+			"அழைப்பு",
+			"கிடைமட்ட",
+			"மெல்லத் தோன்றல்",
+			"பளபளப்பு",
+			"பண்டிகை"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"background": {
+		"packAsset": "rx-fireworks"
+	},
+	"slots": [
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "MUSIC NIGHT",
+				"si": "සංගීත සන්ධ්‍යාව",
+				"ta": "இசை இரவு"
+			},
+			"x": 0.5,
+			"y": 0.5,
+			"size": 0.13,
+			"style": {
+				"fontFamily": "Abhaya Libre",
+				"fontWeight": 800,
+				"fill": "#FCD34D",
+				"shadow": {
+					"color": "#000000",
+					"blur": 12,
+					"x": 0,
+					"y": 3
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "block",
+				"in": {
+					"effect": "fade",
+					"duration": 0.6,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"emphasis": {
+					"effect": "shine",
+					"duration": 2.4,
+					"delay": 0,
+					"stagger": 0,
+					"staggerOrder": "forward",
+					"direction": "right",
+					"easing": "ease-in-out",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

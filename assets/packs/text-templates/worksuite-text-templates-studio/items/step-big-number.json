@@ -1,0 +1,127 @@
+{
+	"schema": 1,
+	"id": "step-big-number",
+	"kind": "template",
+	"name": {
+		"en": "Big step number",
+		"si": "විශාල පියවර",
+		"ta": "பெரிய படி"
+	},
+	"category": "tutorial-steps",
+	"tags": {
+		"en": [
+			"big",
+			"step",
+			"number",
+			"tutorial",
+			"how to",
+			"landscape",
+			"16:9",
+			"pop"
+		],
+		"si": [
+			"පාඩම",
+			"පියවර",
+			"තිරස්",
+			"පොප්",
+			"විශාල"
+		],
+		"ta": [
+			"பயிற்சி",
+			"படி",
+			"கிடைமட்ட",
+			"பாப்",
+			"பெரிய"
+		]
+	},
+	"duration": 4,
+	"aspect": "16:9",
+	"slots": [
+		{
+			"id": "number",
+			"name": "Number",
+			"text": {
+				"en": "1",
+				"si": "1",
+				"ta": "1"
+			},
+			"x": 0.5,
+			"y": 0.33,
+			"size": 0.2,
+			"style": {
+				"fontFamily": "Rubik",
+				"fontWeight": 800,
+				"fill": "#FACC15"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "pop",
+					"duration": 0.45,
+					"delay": 0,
+					"stagger": 0.08,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "ease-out-back",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "pop",
+					"duration": 0.3,
+					"delay": 0,
+					"stagger": 0.04,
+					"staggerOrder": "reverse",
+					"direction": "in",
+					"easing": "ease-in-back",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "Add your photo",
+				"si": "ඡායාරූපය එක් කරන්න",
+				"ta": "படம் சேர்க்கவும்"
+			},
+			"x": 0.5,
+			"y": 0.62,
+			"size": 0.086,
+			"style": {
+				"fontFamily": "Rubik",
+				"fontWeight": 700,
+				"fill": "#FFFFFF"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "pop",
+					"duration": 0.45,
+					"delay": 0.3,
+					"stagger": 0.08,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "ease-out-back",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "pop",
+					"duration": 0.3,
+					"delay": 0,
+					"stagger": 0.04,
+					"staggerOrder": "reverse",
+					"direction": "in",
+					"easing": "ease-in-back",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

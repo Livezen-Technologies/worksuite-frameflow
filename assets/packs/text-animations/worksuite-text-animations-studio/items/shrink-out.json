@@ -1,0 +1,69 @@
+{
+	"schema": 1,
+	"id": "shrink-out",
+	"kind": "animation",
+	"name": {
+		"en": "Shrink out",
+		"si": "කුඩා විශාල වීම",
+		"ta": "சிறிய பெரிதாதல்"
+	},
+	"category": "exits",
+	"tags": {
+		"en": [
+			"shrink",
+			"out",
+			"fade",
+			"scale up",
+			"words",
+			"exits",
+			"small",
+			"exit"
+		],
+		"si": [
+			"ක්‍රමයෙන් පෙනීම",
+			"විශාල වීම",
+			"වචන",
+			"කුඩා",
+			"ඉවත් වීම"
+		],
+		"ta": [
+			"மெல்லத் தோன்றல்",
+			"பெரிதாதல்",
+			"சொற்கள்",
+			"சிறிய",
+			"வெளியேறல்"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "word",
+		"in": {
+			"effect": "fade",
+			"duration": 0.3,
+			"delay": 0,
+			"stagger": 0.02,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-out",
+			"intensity": 1,
+			"params": {}
+		},
+		"out": {
+			"effect": "scale-up",
+			"duration": 0.5,
+			"delay": 0,
+			"stagger": 0.06,
+			"staggerOrder": "forward",
+			"direction": "in",
+			"easing": "ease-in-cubic",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"style": {
+		"fontFamily": "Inter",
+		"fontWeight": 800,
+		"fill": "#FFFFFF"
+	},
+	"duration": 3
+}

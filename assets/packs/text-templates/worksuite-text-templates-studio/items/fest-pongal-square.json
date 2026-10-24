@@ -1,0 +1,142 @@
+{
+	"schema": 1,
+	"id": "fest-pongal-square",
+	"kind": "template",
+	"name": {
+		"en": "Pongal square",
+		"si": "හතරැස් සුබ පැතුම",
+		"ta": "சதுர வாழ்த்து"
+	},
+	"category": "festive",
+	"tags": {
+		"en": [
+			"pongal",
+			"square",
+			"festival",
+			"greeting",
+			"sri lanka",
+			"1:1",
+			"pop",
+			"rise",
+			"fade",
+			"thai pongal",
+			"harvest"
+		],
+		"si": [
+			"උත්සවය",
+			"සුබ පැතුම්",
+			"හතරැස්",
+			"පොප්",
+			"නැගීම",
+			"ක්‍රමයෙන් පෙනීම",
+			"තෛපොංගල්",
+			"අස්වැන්න"
+		],
+		"ta": [
+			"பண்டிகை",
+			"வாழ்த்து",
+			"சதுரம்",
+			"பாப்",
+			"எழுச்சி",
+			"மெல்லத் தோன்றல்",
+			"சதுர",
+			"தைப்பொங்கல்",
+			"பொங்கல்",
+			"அறுவடை"
+		]
+	},
+	"duration": 4,
+	"aspect": "1:1",
+	"slots": [
+		{
+			"id": "title",
+			"name": "Title",
+			"text": {
+				"en": "Happy Thai Pongal",
+				"si": "සුබ තෛපොංගල්",
+				"ta": "இனிய பொங்கல்"
+			},
+			"x": 0.5,
+			"y": 0.44,
+			"size": 0.082,
+			"style": {
+				"fontFamily": "Noto Serif Tamil",
+				"fontWeight": 700,
+				"fill": "#FDE047",
+				"stroke": {
+					"color": "#7C2D12",
+					"width": 3
+				}
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "pop",
+					"duration": 0.45,
+					"delay": 0,
+					"stagger": 0.08,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "ease-out-back",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "pop",
+					"duration": 0.3,
+					"delay": 0,
+					"stagger": 0.04,
+					"staggerOrder": "reverse",
+					"direction": "in",
+					"easing": "ease-in-back",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "subtitle",
+			"name": "Subtitle",
+			"text": {
+				"en": "From our family to yours",
+				"si": "අපේ පවුලෙන් ඔබේ පවුලට",
+				"ta": "எங்கள் குடும்ப வாழ்த்து"
+			},
+			"x": 0.5,
+			"y": 0.6,
+			"size": 0.047,
+			"style": {
+				"fontFamily": "Noto Sans Tamil",
+				"fontWeight": 500,
+				"fill": "#ECFCCB"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "rise",
+					"duration": 0.5,
+					"delay": 0.3,
+					"stagger": 0.05,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}

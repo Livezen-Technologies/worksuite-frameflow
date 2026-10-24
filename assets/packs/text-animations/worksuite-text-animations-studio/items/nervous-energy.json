@@ -1,0 +1,71 @@
+{
+	"schema": 1,
+	"id": "nervous-energy",
+	"kind": "animation",
+	"name": {
+		"en": "Nervous energy",
+		"si": "විදුලි ක්‍රමයෙන් පෙනීම",
+		"ta": "மின் மெல்லத் தோன்றல்"
+	},
+	"category": "kinetic",
+	"tags": {
+		"en": [
+			"nervous",
+			"energy",
+			"fade",
+			"jitter",
+			"letters",
+			"kinetic",
+			"electric",
+			"loop"
+		],
+		"si": [
+			"ක්‍රමයෙන් පෙනීම",
+			"වෙව්ලීම",
+			"අකුරු",
+			"විදුලි",
+			"ලූප"
+		],
+		"ta": [
+			"மெல்லத் தோன்றல்",
+			"நடுக்கம்",
+			"எழுத்துகள்",
+			"மின்",
+			"சுழற்சி"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "grapheme",
+		"in": {
+			"effect": "fade",
+			"duration": 0.3,
+			"delay": 0,
+			"stagger": 0.02,
+			"staggerOrder": "forward",
+			"direction": "up",
+			"easing": "ease-out",
+			"intensity": 1,
+			"params": {}
+		},
+		"emphasis": {
+			"effect": "jitter",
+			"duration": 1,
+			"delay": 0,
+			"stagger": 0,
+			"staggerOrder": "forward",
+			"direction": "right",
+			"easing": "linear",
+			"intensity": 0.8,
+			"params": {
+				"rate": 14
+			}
+		}
+	},
+	"style": {
+		"fontFamily": "Space Grotesk",
+		"fontWeight": 700,
+		"fill": "#FFFFFF"
+	},
+	"duration": 3
+}

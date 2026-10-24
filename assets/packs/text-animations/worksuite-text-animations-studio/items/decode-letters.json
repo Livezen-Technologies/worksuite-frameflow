@@ -1,0 +1,51 @@
+{
+	"schema": 1,
+	"id": "decode-letters",
+	"kind": "animation",
+	"name": {
+		"en": "Decode letters",
+		"si": "ඩිජිටල් අකුරු මිශ්‍රණය",
+		"ta": "டிஜிட்டல் எழுத்துக் குழப்பம்"
+	},
+	"category": "typewriter-decode",
+	"tags": {
+		"en": [
+			"decode",
+			"letters",
+			"scramble",
+			"typewriter decode",
+			"digital"
+		],
+		"si": [
+			"අකුරු මිශ්‍රණය",
+			"අකුරු",
+			"ඩිජිටල්"
+		],
+		"ta": [
+			"எழுத்துக் குழப்பம்",
+			"எழுத்துகள்",
+			"டிஜிட்டல்"
+		]
+	},
+	"animation": {
+		"version": 1,
+		"unit": "grapheme",
+		"in": {
+			"effect": "scramble",
+			"duration": 0.8,
+			"delay": 0,
+			"stagger": 0.04,
+			"staggerOrder": "forward",
+			"direction": "right",
+			"easing": "linear",
+			"intensity": 1,
+			"params": {}
+		}
+	},
+	"style": {
+		"fontFamily": "Space Grotesk",
+		"fontWeight": 700,
+		"fill": "#FFFFFF"
+	},
+	"duration": 3
+}

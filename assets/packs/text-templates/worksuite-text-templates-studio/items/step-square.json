@@ -1,0 +1,130 @@
+{
+	"schema": 1,
+	"id": "step-square",
+	"kind": "template",
+	"name": {
+		"en": "Square step",
+		"si": "හතරැස් පියවර",
+		"ta": "சதுர படி"
+	},
+	"category": "tutorial-steps",
+	"tags": {
+		"en": [
+			"square",
+			"step",
+			"tutorial",
+			"how to",
+			"1:1",
+			"pop",
+			"rise",
+			"fade"
+		],
+		"si": [
+			"පාඩම",
+			"පියවර",
+			"හතරැස්",
+			"පොප්",
+			"නැගීම",
+			"ක්‍රමයෙන් පෙනීම"
+		],
+		"ta": [
+			"பயிற்சி",
+			"படி",
+			"சதுரம்",
+			"பாப்",
+			"எழுச்சி",
+			"மெல்லத் தோன்றல்",
+			"சதுர"
+		]
+	},
+	"duration": 4,
+	"aspect": "1:1",
+	"slots": [
+		{
+			"id": "number",
+			"name": "Number",
+			"text": {
+				"en": "3",
+				"si": "3",
+				"ta": "3"
+			},
+			"x": 0.5,
+			"y": 0.42,
+			"size": 0.2,
+			"style": {
+				"fontFamily": "Rubik",
+				"fontWeight": 800,
+				"fill": "#FACC15"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "pop",
+					"duration": 0.45,
+					"delay": 0,
+					"stagger": 0.08,
+					"staggerOrder": "forward",
+					"direction": "in",
+					"easing": "ease-out-back",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "pop",
+					"duration": 0.3,
+					"delay": 0,
+					"stagger": 0.04,
+					"staggerOrder": "reverse",
+					"direction": "in",
+					"easing": "ease-in-back",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		},
+		{
+			"id": "label",
+			"name": "Label",
+			"text": {
+				"en": "Save and export",
+				"si": "සුරකින්න, අපනයනය කරන්න",
+				"ta": "சேமித்து ஏற்றுமதி செய்யவும்"
+			},
+			"x": 0.5,
+			"y": 0.64,
+			"size": 0.04,
+			"style": {
+				"fontFamily": "Rubik",
+				"fontWeight": 400,
+				"fill": "#E2E8F0"
+			},
+			"animation": {
+				"version": 1,
+				"unit": "word",
+				"in": {
+					"effect": "rise",
+					"duration": 0.5,
+					"delay": 0.3,
+					"stagger": 0.05,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-out-cubic",
+					"intensity": 1,
+					"params": {}
+				},
+				"out": {
+					"effect": "fade",
+					"duration": 0.4,
+					"delay": 0,
+					"stagger": 0.02,
+					"staggerOrder": "forward",
+					"direction": "up",
+					"easing": "ease-in-cubic",
+					"intensity": 1,
+					"params": {}
+				}
+			}
+		}
+	]
+}
