@@ -9,6 +9,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
+- **Duck music under voice** in the Music & Audio Editor (Smart edits): pick the music and voice tracks, depth and release, and the music dips whenever someone speaks, using volume keyframes you can still adjust. Remove ducking takes them off again.
+- **Remove filler words** (Smart edits): cuts um, uh, er, hmm and the Sinhala and Tamil fillers (the list is editable) out of the whole timeline using the transcript's word timings, in one undo step.
 - **Google Drive, Dropbox and OneDrive links** in the video downloader: paste a link to a file shared with "Anyone with the link" and it downloads directly. Private files and folders are refused with an explanation.
 - **Save subtitles**: when a page or stream publishes subtitles, the downloader can save them next to the video as .srt files (one per language).
 - **Transcribe after download**: tick "Transcribe with Whisper" and pick Sinhala, Tamil, English or Detect; the video opens in the editor and its transcript is made on this computer.

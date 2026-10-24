@@ -40,6 +40,7 @@ import { EQ_PRESETS } from "../eq-presets";
 import { useStudioStore } from "../store";
 import { CleanupTab, DynamicsTab, ParametricEq } from "./fx-panels";
 import { ExportTargetsDialog, LoudnessCard } from "./loudness-export";
+import { SmartEditsDialog } from "./smart-edits-dialog";
 import { VoiceOverDialog } from "./voice-over";
 
 type AudioClip = AudioElement | VideoElement;
@@ -60,7 +61,7 @@ export function AudioStudio() {
 	const selected = useEditor((e) => e.selection.getSelectedElements());
 	const [tab, setTab] = useState<InspectorTab>("process");
 	const fileInput = useRef<HTMLInputElement>(null);
-	const [dialog, setDialog] = useState<"voice" | "export" | null>(null);
+	const [dialog, setDialog] = useState<"voice" | "export" | "smart" | null>(null);
 
 	const audioTracks = tracks.audio;
 	const clip = selectedAudioClip({ selected, tracks: [tracks.main, ...tracks.overlay, ...tracks.audio] });
@@ -191,7 +192,10 @@ export function AudioStudio() {
 						<Button size="sm" variant="ghost" disabled={!clip} onClick={() => setTab("process")}>
 							<Wand2 className="size-3.5" /> Process tools
 						</Button>
-						<Button size="sm" variant="ghost" className="ml-auto" onClick={() => setDialog("voice")} data-studio-voiceover-open>
+						<Button size="sm" variant="ghost" className="ml-auto" onClick={() => setDialog("smart")} data-studio-smart-open>
+							<Wand2 className="size-3.5" /> Smart edits
+						</Button>
+						<Button size="sm" variant="ghost" onClick={() => setDialog("voice")} data-studio-voiceover-open>
 							<Mic className="size-3.5" /> Voice-over
 						</Button>
 						<Button size="sm" variant="ghost" onClick={() => setDialog("export")} data-studio-export-open>
@@ -265,6 +269,7 @@ export function AudioStudio() {
 				</aside>
 			</div>
 			<Transport />
+			<SmartEditsDialog open={dialog === "smart"} onOpenChange={(o) => setDialog(o ? "smart" : null)} />
 			<VoiceOverDialog open={dialog === "voice"} onOpenChange={(o) => setDialog(o ? "voice" : null)} />
 			<ExportTargetsDialog open={dialog === "export"} onOpenChange={(o) => setDialog(o ? "export" : null)} />
 		</div>
