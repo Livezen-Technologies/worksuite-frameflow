@@ -483,7 +483,7 @@ function registerAccountIpc() {
 		const result = await account.signIn({ signup });
 		// Sign-up still works on the web when the sign-in service is down.
 		if (!result.ok && signup && /reach|unreachable/i.test(result.error ?? "")) {
-			shell.openExternal("https://worksuitecloud.com/signup");
+			shell.openExternal("https://account.worksuitecloud.com/auth/signin/");
 			return { ok: false, error: "Opened Worksuite sign-up in your browser. Sign in here once your account is ready." };
 		}
 		if (result.ok) {

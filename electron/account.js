@@ -10,10 +10,10 @@ const http = require("node:http");
 const path = require("node:path");
 
 const CONFIG = {
-	issuer: process.env.WSC_ISSUER || "https://accounts.worksuitecloud.com",
+	issuer: process.env.WSC_ISSUER || "https://account.worksuitecloud.com/oauth",
 	clientId: process.env.WSC_CLIENT_ID || "worksuite-frameflow",
 	apiBase: process.env.WSC_API_BASE || "https://api.worksuitecloud.com",
-	manageUrl: process.env.WSC_MANAGE_URL || "https://worksuitecloud.com/account",
+	manageUrl: process.env.WSC_MANAGE_URL || "https://account.worksuitecloud.com/account/",
 	scope: "openid profile email offline_access wve.projects wve.assets",
 };
 const SIGN_IN_TIMEOUT_MS = 10 * 60 * 1000;

@@ -268,14 +268,6 @@ function AboutSection() {
 					>
 						Source code
 					</a>
-					<a
-						href="https://github.com/opencut-app/opencut-classic"
-						target="_blank"
-						rel="noreferrer"
-						className="text-primary hover:underline"
-					>
-						OpenCut
-					</a>
 				</div>
 			</Section>
 		</>
