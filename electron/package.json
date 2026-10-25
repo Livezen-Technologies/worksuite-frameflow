@@ -65,6 +65,7 @@
       "frame/**",
       "recording-frame.js",
       "recording-tray.js",
+      "thumb-cache.js",
       "input-hook.js",
       "recording-overlay.js",
       "project-windows.js",

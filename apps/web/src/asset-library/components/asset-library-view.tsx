@@ -79,6 +79,15 @@ function resolveUrl(url: string | null, base?: string): string | null {
 }
 
 /**
+ * In the desktop app, pictures go through the on-disk thumbnail cache
+ * (electron/thumb-cache.js): downloaded once, then instant and offline.
+ */
+function cachedImage(url: string): string {
+	if (typeof window === "undefined" || !window.worksuite || !/^https?:\/\//i.test(url)) return url;
+	return `ffthumb://img/?u=${encodeURIComponent(url)}`;
+}
+
+/**
  * The full-screen Asset Library: tabs per pack type, search in English,
  * Sinhala or Tamil, language and status filters, pack details with
  * install progress, and download settings.
@@ -769,7 +778,7 @@ function StillImage({ src }: { src: string }) {
 			c.getContext("2d")?.drawImage(img, 0, 0);
 		};
 		img.onerror = () => !cancelled && setFailed(true);
-		img.src = src;
+		img.src = cachedImage(src);
 		return () => {
 			cancelled = true;
 		};
@@ -788,7 +797,18 @@ function PackThumb({ src, pack, large = false }: { src: string | null; pack: Cat
 	const [failed, setFailed] = useState(false);
 	if (src && !failed && pack.type === "sounds") return <StillImage src={src} />;
 	if (src && !failed) {
-		return <img src={src} alt="" draggable={false} loading={large ? "eager" : "lazy"} decoding="async" onError={() => setFailed(true)} />;
+		return (
+			<img
+				src={cachedImage(src)}
+				alt=""
+				draggable={false}
+				loading={large ? "eager" : "lazy"}
+				decoding="async"
+				className="al-fade"
+				onLoad={(e) => e.currentTarget.classList.add("in")}
+				onError={() => setFailed(true)}
+			/>
+		);
 	}
 	if (pack.type === "fonts" || pack.type === "text-templates" || pack.type === "text-animations") {
 		const script = pack.languages.find((l) => SAMPLE[l]) ?? ((pack.tags.en ?? []).includes("sinhala") ? "si" : (pack.tags.en ?? []).includes("tamil") ? "ta" : null);

@@ -7,6 +7,9 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+### Changed
+- Asset Library: pack pictures are cached on disk (up to 400 MB, oldest dropped first), so each one downloads only once and then shows instantly, even offline. Pictures fade in as they load.
+
 ## [1.7.6] - 2026-10-24
 
 ### Fixed

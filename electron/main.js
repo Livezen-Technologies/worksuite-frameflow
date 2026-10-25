@@ -6,6 +6,9 @@ const cursorLog = require("./cursor-log");
 const recordingOverlay = require("./recording-overlay");
 const recordingFrame = require("./recording-frame");
 const recordingTray = require("./recording-tray");
+const thumbCache = require("./thumb-cache");
+
+thumbCache.registerScheme();
 const captureControls = require("./capture-controls");
 const privacy = require("./privacy");
 const network = require("./network");
@@ -664,6 +667,7 @@ if (!app.requestSingleInstanceLock()) {
 	app
 		.whenReady()
 		.then(() => {
+			thumbCache.setup();
 			loadTheme();
 			loadSavedExports();
 			registerAccountIpc();
