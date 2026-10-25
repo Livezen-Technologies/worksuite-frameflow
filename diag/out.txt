@@ -1,0 +1,857 @@
+catalog keys ["schema","channel","generatedAt","packs"] packs 11377
+types {"transitions":381,"text-templates":3522,"sounds":2481,"motion":1724,"filters":276,"luts":1000,"fonts":993,"video-templates":1000}
+
+=== PACK {"id":"additive-dissolve-1-tr-01-05","type":"transitions","version":"1.0.1","title":"Additive dissolve 1","description":"Fades & dissolves transition from the Worksuite set, as FrameFlow's cross-dissolve engine. 1.3s, back easing.","tags":{"en":["fades-and-dissolves","transition","cross-dissolve","worksuite","fades & dissolves"],"si":[],"ta":[]},"languages":["en"],"sizeBytes":109378,"sha256":"e76e5e7c67821711e92e70d9077e13a9745036f13c71c50c21d3f718d27502b3","licence":"royalty_free","minAppVersion":"1.0.0","thumbnailUrl":"packs/additive-dissolve-1-tr-01-05-1.0.1.webp","previewUrl":"packs/additive-dissolve-1-tr-01-05-1.0.1.webp","files":"packs/additive-dissolve-1-tr-01-05-1.0.1.zip","plan":"free","assetCount":1,"assetIds":["additive-dissolve-1-tr-01-05"],"libraryAssetId":"01a16e50-e80f-7c6c-ac4f-bc7cf106802c","libraryType":"transition","dependencies":[]}
+thumb packs/additive-dissolve-1-tr-01-05-1.0.1.webp -> https://frameflow.worksuitecloud.com/library/feed/stable/packs/additive-dissolve-1-tr-01-05-1.0.1.webp 200 image/webp
+thumb packs/additive-dissolve-1-tr-01-05-1.0.1.webp -> https://frameflow.worksuitecloud.com/library/feed/stable/packs/additive-dissolve-1-tr-01-05-1.0.1.webp 200 image/webp
+zip https://frameflow.worksuitecloud.com/library/feed/stable/packs/additive-dissolve-1-tr-01-05-1.0.1.zip 200
+entries ["pack.json:493","index.json:381","manifest.json:731","licence.txt:51","additive-dissolve-1-tr-01-05/additive-dissolve-1-tr-01-05.ffx:219","additive-dissolve-1-tr-01-05/thumbnail.webp:108010"]
+FILE pack.json {
+	"id": "additive-dissolve-1-tr-01-05",
+	"type": "transitions",
+	"version": "1.0.1",
+	"title": "Additive dissolve 1",
+	"description": "Fades & dissolves transition from the Worksuite set, as FrameFlow's cross-dissolve engine. 1.3s, back easing.",
+	"tags": {
+		"en": [
+			"fades-and-dissolves",
+			"transition",
+			"cross-dissolve",
+			"worksuite",
+			"glitch"
+		],
+		"si": [],
+		"ta": []
+	},
+	"languages": [
+		"en"
+	],
+	"licence": "royalty_free",
+	"minAppVersion": "1.0.0",
+	"plan": "free"
+}
+
+FILE index.json {
+	"schema": 1,
+	"name": "Additive dissolve 1",
+	"items": [
+		{
+			"id": "additive-dissolve-1-tr-01-05",
+			"name": "Additive dissolve 1",
+			"file": "additive-dissolve-1-tr-01-05/additive-dissolve-1-tr-01-05.ffx",
+			"type": "transition",
+			"thumbnail": "additive-dissolve-1-tr-01-05/thumbnail.webp",
+			"render_engine": "cross-dissolve",
+			"default_duration_ms": 1300
+		}
+	]
+}
+
+FILE manifest.json {
+	"schema": "frameflow.asset/1",
+	"id": "01a16e50-e80f-7c6c-ac4f-bc7cf106802c",
+	"slug": "additive-dissolve-1-tr-01-05",
+	"type": "transition",
+	"version": "1.0.1",
+	"min_app_version": "1.0.0",
+	"entry": "additive-dissolve-1-tr-01-05/additive-dissolve-1-tr-01-05.ffx",
+	"files": [
+		{
+			"path": "additive-dissolve-1-tr-01-05/additive-dissolve-1-tr-01-05.ffx",
+			"sha256": "0822e383b6a350034d64342518420476afed7a24d95be04ad8ffc7a668d3b9cd",
+			"size": 219
+		},
+		{
+			"path": "additive-dissolve-1-tr-01-05/thumbnail.webp",
+			"sha256": "9a0abb23e26598a8ecb623d8f8922fd2f7e6cfd515cb58c3da56b8329f403bb4",
+			"size": 108010
+		}
+	],
+	"dependencies": [],
+	"params": [],
+	"licence": {
+		"tier": "free",
+		"terms": "royalty_free"
+	}
+}
+
+
+=== PACK {"id":"additive-dissolve-10-tr-01-50","type":"transitions","version":"1.0.1","title":"Additive dissolve 10","description":"Fades & dissolves transition from the Worksuite set, as FrameFlow's cross-dissolve engine. 0.4s, linear easing.","tags":{"en":["fades-and-dissolves","transition","cross-dissolve","worksuite","fades & dissolves"],"si":[],"ta":[]},"languages":["en"],"sizeBytes":109070,"sha256":"710c3ba137902980486bf0727264d6d9892d07f352ca4cb380c4326361e553c2","licence":"royalty_free","minAppVersion":"1.0.0","thumbnailUrl":"packs/additive-dissolve-10-tr-01-50-1.0.1.webp","previewUrl":"packs/additive-dissolve-10-tr-01-50-1.0.1.webp","files":"packs/additive-dissolve-10-tr-01-50-1.0.1.zip","plan":"free","assetCount":1,"assetIds":["additive-dissolve-10-tr-01-50"],"libraryAssetId":"01a16e50-ffcd-7ade-96e4-8f3ef7b9c1cf","libraryType":"transition","dependencies":[]}
+thumb packs/additive-dissolve-10-tr-01-50-1.0.1.webp -> https://frameflow.worksuitecloud.com/library/feed/stable/packs/additive-dissolve-10-tr-01-50-1.0.1.webp 200 image/webp
+thumb packs/additive-dissolve-10-tr-01-50-1.0.1.webp -> https://frameflow.worksuitecloud.com/library/feed/stable/packs/additive-dissolve-10-tr-01-50-1.0.1.webp 200 image/webp
+zip https://frameflow.worksuitecloud.com/library/feed/stable/packs/additive-dissolve-10-tr-01-50-1.0.1.zip 200
+entries ["pack.json:497","index.json:386","manifest.json:737","licence.txt:52","additive-dissolve-10-tr-01-50/additive-dissolve-10-tr-01-50.ffx:222","additive-dissolve-10-tr-01-50/thumbnail.webp:107794"]
+FILE pack.json {
+	"id": "additive-dissolve-10-tr-01-50",
+	"type": "transitions",
+	"version": "1.0.1",
+	"title": "Additive dissolve 10",
+	"description": "Fades & dissolves transition from the Worksuite set, as FrameFlow's cross-dissolve engine. 0.4s, linear easing.",
+	"tags": {
+		"en": [
+			"fades-and-dissolves",
+			"transition",
+			"cross-dissolve",
+			"worksuite",
+			"glitch"
+		],
+		"si": [],
+		"ta": []
+	},
+	"languages": [
+		"en"
+	],
+	"licence": "royalty_free",
+	"minAppVersion": "1.0.0",
+	"plan": "free"
+}
+
+FILE index.json {
+	"schema": 1,
+	"name": "Additive dissolve 10",
+	"items": [
+		{
+			"id": "additive-dissolve-10-tr-01-50",
+			"name": "Additive dissolve 10",
+			"file": "additive-dissolve-10-tr-01-50/additive-dissolve-10-tr-01-50.ffx",
+			"type": "transition",
+			"thumbnail": "additive-dissolve-10-tr-01-50/thumbnail.webp",
+			"render_engine": "cross-dissolve",
+			"default_duration_ms": 400
+		}
+	]
+}
+
+FILE manifest.json {
+	"schema": "frameflow.asset/1",
+	"id": "01a16e50-ffcd-7ade-96e4-8f3ef7b9c1cf",
+	"slug": "additive-dissolve-10-tr-01-50",
+	"type": "transition",
+	"version": "1.0.1",
+	"min_app_version": "1.0.0",
+	"entry": "additive-dissolve-10-tr-01-50/additive-dissolve-10-tr-01-50.ffx",
+	"files": [
+		{
+			"path": "additive-dissolve-10-tr-01-50/additive-dissolve-10-tr-01-50.ffx",
+			"sha256": "b796a00dc89b9366e9c0d929deef8e6f3c0137fc02099f9d22d7e978adecc546",
+			"size": 222
+		},
+		{
+			"path": "additive-dissolve-10-tr-01-50/thumbnail.webp",
+			"sha256": "8bd55a0682acf11e40604062234245f420f0eb312710383774a3993ca0a928c0",
+			"size": 107794
+		}
+	],
+	"dependencies": [],
+	"params": [],
+	"licence": {
+		"tier": "free",
+		"terms": "royalty_free"
+	}
+}
+
+
+=== PACK {"id":"additive-dissolve-1-tr-01-05","type":"transitions","version":"1.0.1","title":"Additive dissolve 1","description":"Fades & dissolves transition from the Worksuite set, as FrameFlow's cross-dissolve engine. 1.3s, back easing.","tags":{"en":["fades-and-dissolves","transition","cross-dissolve","worksuite","fades & dissolves"],"si":[],"ta":[]},"languages":["en"],"sizeBytes":109378,"sha256":"e76e5e7c67821711e92e70d9077e13a9745036f13c71c50c21d3f718d27502b3","licence":"royalty_free","minAppVersion":"1.0.0","thumbnailUrl":"packs/additive-dissolve-1-tr-01-05-1.0.1.webp","previewUrl":"packs/additive-dissolve-1-tr-01-05-1.0.1.webp","files":"packs/additive-dissolve-1-tr-01-05-1.0.1.zip","plan":"free","assetCount":1,"assetIds":["additive-dissolve-1-tr-01-05"],"libraryAssetId":"01a16e50-e80f-7c6c-ac4f-bc7cf106802c","libraryType":"transition","dependencies":[]}
+thumb packs/additive-dissolve-1-tr-01-05-1.0.1.webp -> https://frameflow.worksuitecloud.com/library/feed/stable/packs/additive-dissolve-1-tr-01-05-1.0.1.webp 200 image/webp
+thumb packs/additive-dissolve-1-tr-01-05-1.0.1.webp -> https://frameflow.worksuitecloud.com/library/feed/stable/packs/additive-dissolve-1-tr-01-05-1.0.1.webp 200 image/webp
+zip https://frameflow.worksuitecloud.com/library/feed/stable/packs/additive-dissolve-1-tr-01-05-1.0.1.zip 200
+entries ["pack.json:493","index.json:381","manifest.json:731","licence.txt:51","additive-dissolve-1-tr-01-05/additive-dissolve-1-tr-01-05.ffx:219","additive-dissolve-1-tr-01-05/thumbnail.webp:108010"]
+FILE pack.json {
+	"id": "additive-dissolve-1-tr-01-05",
+	"type": "transitions",
+	"version": "1.0.1",
+	"title": "Additive dissolve 1",
+	"description": "Fades & dissolves transition from the Worksuite set, as FrameFlow's cross-dissolve engine. 1.3s, back easing.",
+	"tags": {
+		"en": [
+			"fades-and-dissolves",
+			"transition",
+			"cross-dissolve",
+			"worksuite",
+			"glitch"
+		],
+		"si": [],
+		"ta": []
+	},
+	"languages": [
+		"en"
+	],
+	"licence": "royalty_free",
+	"minAppVersion": "1.0.0",
+	"plan": "free"
+}
+
+FILE index.json {
+	"schema": 1,
+	"name": "Additive dissolve 1",
+	"items": [
+		{
+			"id": "additive-dissolve-1-tr-01-05",
+			"name": "Additive dissolve 1",
+			"file": "additive-dissolve-1-tr-01-05/additive-dissolve-1-tr-01-05.ffx",
+			"type": "transition",
+			"thumbnail": "additive-dissolve-1-tr-01-05/thumbnail.webp",
+			"render_engine": "cross-dissolve",
+			"default_duration_ms": 1300
+		}
+	]
+}
+
+FILE manifest.json {
+	"schema": "frameflow.asset/1",
+	"id": "01a16e50-e80f-7c6c-ac4f-bc7cf106802c",
+	"slug": "additive-dissolve-1-tr-01-05",
+	"type": "transition",
+	"version": "1.0.1",
+	"min_app_version": "1.0.0",
+	"entry": "additive-dissolve-1-tr-01-05/additive-dissolve-1-tr-01-05.ffx",
+	"files": [
+		{
+			"path": "additive-dissolve-1-tr-01-05/additive-dissolve-1-tr-01-05.ffx",
+			"sha256": "0822e383b6a350034d64342518420476afed7a24d95be04ad8ffc7a668d3b9cd",
+			"size": 219
+		},
+		{
+			"path": "additive-dissolve-1-tr-01-05/thumbnail.webp",
+			"sha256": "9a0abb23e26598a8ecb623d8f8922fd2f7e6cfd515cb58c3da56b8329f403bb4",
+			"size": 108010
+		}
+	],
+	"dependencies": [],
+	"params": [],
+	"licence": {
+		"tier": "free",
+		"terms": "royalty_free"
+	}
+}
+
+
+=== PACK {"id":"boxed-caption-sub-boxed-caption","type":"text-templates","version":"1.0.1","title":"Boxed caption","description":"subtitles text template from the Worksuite set. 1 text slot, 16:9, 4s. Sinhala and Tamil wording included.","tags":{"en":["boxed","caption","subtitle","text","landscape","16-9","pop","fade","clean","text-template","worksuite","subtitles"],"si":[],"ta":[]},"languages":["en"],"sizeBytes":10404,"sha256":"68c3d3ddaee2b134de56389b9e7505de5f479f17618a5354690340d3d1f469b2","licence":"royalty_free","minAppVersion":"1.0.0","thumbnailUrl":"packs/boxed-caption-sub-boxed-caption-1.0.1.webp","previewUrl":"packs/boxed-caption-sub-boxed-caption-1.0.1.webp","files":"packs/boxed-caption-sub-boxed-caption-1.0.1.zip","plan":"free","assetCount":1,"assetIds":["boxed-caption-sub-boxed-caption"],"libraryAssetId":"01a16e57-0f1b-76e1-a440-5a1f34e8de09","libraryType":"text_template","dependencies":[]}
+thumb packs/boxed-caption-sub-boxed-caption-1.0.1.webp -> https://frameflow.worksuitecloud.com/library/feed/stable/packs/boxed-caption-sub-boxed-caption-1.0.1.webp 200 image/webp
+thumb packs/boxed-caption-sub-boxed-caption-1.0.1.webp -> https://frameflow.worksuitecloud.com/library/feed/stable/packs/boxed-caption-sub-boxed-caption-1.0.1.webp 200 image/webp
+zip https://frameflow.worksuitecloud.com/library/feed/stable/packs/boxed-caption-sub-boxed-caption-1.0.1.zip 200
+entries ["pack.json:561","index.json:1445","manifest.json:754","licence.txt:45","boxed-caption-sub-boxed-caption/boxed-caption-sub-boxed-caption.json:1939","boxed-caption-sub-boxed-caption/thumbnail.webp:11242"]
+FILE pack.json {
+	"id": "boxed-caption-sub-boxed-caption",
+	"type": "text-templates",
+	"version": "1.0.1",
+	"title": "Boxed caption",
+	"description": "subtitles text template from the Worksuite set. 1 text slot, 16:9, 4s. Sinhala and Tamil wording included.",
+	"tags": {
+		"en": [
+			"boxed",
+			"caption",
+			"subtitle",
+			"text",
+			"landscape",
+			"16-9",
+			"pop",
+			"fade",
+			"clean",
+			"text-template",
+			"worksuite",
+			"subtitles"
+		],
+		"si": [],
+		"ta": []
+	},
+	"languages": [
+		"en"
+	],
+	"licence": "royalty_free",
+	"minAppVersion": "1.0.0",
+	"plan": "free"
+}
+
+FILE index.json {
+	"schema": 1,
+	"name": "Boxed caption",
+	"items": [
+		{
+			"id": "boxed-caption-sub-boxed-caption",
+			"name": "Boxed caption",
+			"file": "boxed-caption-sub-boxed-caption/boxed-caption-sub-boxed-caption.json",
+			"type": "text_template",
+			"thumbnail": "boxed-caption-sub-boxed-caption/thumbnail.webp",
+			"placeholders": [
+				{
+					"id": "caption",
+					"name": "Caption",
+					"text": {
+						"en": "Stay with us",
+						"si": "අප සමඟ රැඳී සිටින්න",
+						"ta": "எங்களுடன் இருங்கள்"
+					},
+					"x": 0.5,
+					"y": 0.86,
+					"size": 0.054,
+					"style": {
+						"fontFamily": "Inter",
+						"fontWeight": 700,
+						"fill": "#FFFFFF",
+						"plate": {
+							"color": "#000000",
+							"padding": 0.25,
+							"radius": 0.15
+						}
+					},
+					"animation": {
+						"version": 1,
+						"unit": "word",
+						"in": {
+							"effect": "pop",
+							"duration": 0.25,
+							"delay": 0,
+							"stagger": 0.3,
+							"staggerOrder": "forward",
+							"direction": "in",
+							"easing": "ease-out-back",
+							"intensity": 1,
+							"params": []
+						},
+						"out": {
+							"effect": "fade",
+							"duration": 0.4,
+							"delay": 0,
+							"stagger": 0.02,
+							"staggerOrder": "forward",
+							"direction": "up",
+							"easing": "ease-in-cubic",
+							"intensity": 1,
+							"params": []
+						}
+					}
+				}
+			],
+			"font_refs": [
+				"Inter"
+			]
+		}
+	]
+}
+
+FILE manifest.json {
+	"schema": "frameflow.asset/1",
+	"id": "01a16e57-0f1b-76e1-a440-5a1f34e8de09",
+	"slug": "boxed-caption-sub-boxed-caption",
+	"type": "text_template",
+	"version": "1.0.1",
+	"min_app_version": "1.0.0",
+	"entry": "boxed-caption-sub-boxed-caption/boxed-caption-sub-boxed-caption.json",
+	"files": [
+		{
+			"path": "boxed-caption-sub-boxed-caption/boxed-caption-sub-boxed-caption.json",
+			"sha256": "ef2fc4a507913567ee817d990838543255c0ce6f3c96a54c6a3e26996ff7943c",
+			"size": 1939
+		},
+		{
+			"path": "boxed-caption-sub-boxed-caption/thumbnail.webp",
+			"sha256": "816e27c9568599ba678170b32c3710247af1b0bc7c9adc6da0c2937f36d529d6",
+			"size": 11242
+		}
+	],
+	"dependencies": [],
+	"params": [],
+	"licence": {
+		"tier": "free",
+		"terms": "royalty_free"
+	}
+}
+
+FILE boxed-caption-sub-boxed-caption/boxed-caption-sub-boxed-caption.json {
+ "schema": 1,
+ "params": {
+  "content": "Stay with us",
+  "aspect": "16:9",
+  "duration": 4,
+  "category": "subtitles",
+  "kind": "template"
+ },
+ "placeholders": [
+  {
+   "id": "caption",
+   "name": "Caption",
+   "text": {
+    "en": "Stay with us",
+    "si": "අප සමඟ රැඳී සිටින්න",
+    "ta": "எங்களுடன் இருங்கள்"
+   },
+   "x": 0.5,
+   "y": 0.86,
+   "size": 0.054,
+   "style": {
+    "fontFamily": "Inter",
+    "fontWeight": 700,
+    "fill": "#FFFFFF",
+    "plate": {
+     "color": "#000000",
+     "padding": 0.25,
+     "radius": 0.15
+    }
+   },
+   "animation": {
+    "version": 1,
+    "unit": "word",
+    "in": {
+     "effect": "pop",
+     "duration": 0.25,
+     "delay": 0,
+     "stagger": 0.3,
+     "staggerOrder": "forward",
+     "direction": "in",
+     "easing": "ease-out-back",
+     "intensity": 1,
+     "params": {}
+    },
+    "out": {
+     "effect": "fade",
+     "duration": 0.4,
+     "delay": 0,
+     "stagger": 0.02,
+     "staggerOrder": "forward",
+     "direction": "up",
+     "easing": "ease-in-cubic",
+     "intensity": 1,
+     "params": {}
+    }
+   }
+  }
+ ],
+ "font_refs": [
+  "Inter"
+ ],
+ "source": {
+  "set": "Worksuite text templates",
+  "id": "sub-boxed-caption",
+  "name": {
+   "en": "Boxed caption",
+   "si": "පිරිසිදු උපසිරැසිය",
+   "ta": "சுத்தமான துணைத் தலைப்பு"
+  },
+  "tags": {
+   "en": [
+    "boxed",
+    "caption",
+    "subtitle",
+    "text",
+    "landscape",
+    "16:9",
+    "pop",
+    "fade",
+    "clean"
+   ],
+   "si": [
+    "උපසිරැසි",
+    "තිරස්",
+    "පොප්",
+    "ක්‍රමයෙන් පෙනීම",
+    "පිරිසිදු"
+   ],
+   "ta": [
+    "வசனம்",
+    "கிடைமட்ட",
+    "பாப்",
+    "மெல்லத் தோன்றல்",
+    "சுத்தமான"
+   ]
+  }
+ }
+}
+
+=== PACK {"id":"agenda-corp-agenda","type":"text-templates","version":"1.0.1","title":"Agenda","description":"corporate text template from the Worksuite set. 2 text slots, 16:9, 4s. Sinhala and Tamil wording included.","tags":{"en":["agenda","corporate","business","presentation","landscape","16-9","mask-wipe","fade","slide","simple","text-template","worksuite"],"si":[],"ta":[]},"languages":["en"],"sizeBytes":35546,"sha256":"18b23d00cd126cdd5622178d2ef9ad99f56c3207c602dc8818ac6632396ec344","licence":"royalty_free","minAppVersion":"1.0.0","thumbnailUrl":"packs/agenda-corp-agenda-1.0.1.webp","previewUrl":"packs/agenda-corp-agenda-1.0.1.webp","files":"packs/agenda-corp-agenda-1.0.1.zip","plan":"free","assetCount":1,"assetIds":["agenda-corp-agenda"],"libraryAssetId":"01a16e56-1a64-7e13-b1fe-87e84dcde03d","libraryType":"text_template","dependencies":[]}
+thumb packs/agenda-corp-agenda-1.0.1.webp -> https://frameflow.worksuitecloud.com/library/feed/stable/packs/agenda-corp-agenda-1.0.1.webp 200 image/webp
+thumb packs/agenda-corp-agenda-1.0.1.webp -> https://frameflow.worksuitecloud.com/library/feed/stable/packs/agenda-corp-agenda-1.0.1.webp 200 image/webp
+zip https://frameflow.worksuitecloud.com/library/feed/stable/packs/agenda-corp-agenda-1.0.1.zip 200
+entries ["pack.json:556","index.json:2322","manifest.json:676","licence.txt:38","agenda-corp-agenda/agenda-corp-agenda.json:2983","agenda-corp-agenda/thumbnail.webp:45008"]
+FILE pack.json {
+	"id": "agenda-corp-agenda",
+	"type": "text-templates",
+	"version": "1.0.1",
+	"title": "Agenda",
+	"description": "corporate text template from the Worksuite set. 2 text slots, 16:9, 4s. Sinhala and Tamil wording included.",
+	"tags": {
+		"en": [
+			"agenda",
+			"corporate",
+			"business",
+			"presentation",
+			"landscape",
+			"16-9",
+			"mask-wipe",
+			"fade",
+			"slide",
+			"simple",
+			"text-template",
+			"worksuite"
+		],
+		"si": [],
+		"ta": []
+	},
+	"languages": [
+		"en"
+	],
+	"licence": "royalty_free",
+	"minAppVersion": "1.0.0",
+	"plan": "free"
+}
+
+FILE index.json {
+	"schema": 1,
+	"name": "Agenda",
+	"items": [
+		{
+			"id": "agenda-corp-agenda",
+			"name": "Agenda",
+			"file": "agenda-corp-agenda/agenda-corp-agenda.json",
+			"type": "text_template",
+			"thumbnail": "agenda-corp-agenda/thumbnail.webp",
+			"placeholders": [
+				{
+					"id": "label",
+					"name": "Label",
+					"text": {
+						"en": "AGENDA",
+						"si": "න්‍යාය පත්‍රය",
+						"ta": "நிகழ்ச்சி நிரல்"
+					},
+					"x": 0.5,
+					"y": 0.34,
+					"size": 0.052,
+					"style": {
+						"fontFamily": "Montserrat",
+						"fontWeight": 700,
+						"fill": "#FFFFFF",
+						"plate": {
+							"color": "#2563EB",
+							"padding": 0.35,
+							"radius": 0.1
+						}
+					},
+					"animation": {
+						"version": 1,
+						"unit": "block",
+						"in": {
+							"effect": "mask-wipe",
+							"duration": 0.5,
+							"delay": 0,
+							"stagger": 0,
+							"staggerOrder": "forward",
+							"direction": "right",
+							"easing": "ease-out-cubic",
+							"intensity": 1,
+							"params": []
+						},
+						"out": {
+							"effect": "fade",
+							"duration": 0.4,
+							"delay": 0,
+							"stagger": 0.02,
+							"staggerOrder": "forward",
+							"direction": "up",
+							"easing": "ease-in-cubic",
+							"intensity": 1,
+							"params": []
+						}
+					}
+				},
+				{
+					"id": "title",
+					"name": "Title",
+					"text": {
+						"en": "Key numbers",
+						"si": "ප්‍රධාන සංඛ්‍යා",
+						"ta": "முக்கிய எண்கள்"
+					},
+					"x": 0.5,
+					"y": 0.5,
+					"size": 0.119,
+					"style": {
+						"fontFamily": "Montserrat",
+						"fontWeight": 800,
+						"fill": "#FFFFFF"
+					},
+					"animation": {
+						"version": 1,
+						"unit": "word",
+						"in": {
+							"effect": "slide",
+							"duration": 0.5,
+							"delay": 0.2,
+							"stagger": 0.06,
+							"staggerOrder": "forward",
+							"direction": "right",
+							"easing": "ease-out-cubic",
+							"intensity": 1,
+							"params": []
+						},
+						"out": {
+							"effect": "slide",
+							"duration": 0.4,
+							"delay": 0,
+							"stagger": 0.04,
+							"staggerOrder": "forward",
+							"direction": "left",
+							"easing": "ease-in-cubic",
+							"intensity": 1,
+							"params": []
+						}
+					}
+				}
+			],
+			"font_refs": [
+				"Montserrat"
+			]
+		}
+	]
+}
+
+FILE manifest.json {
+	"schema": "frameflow.asset/1",
+	"id": "01a16e56-1a64-7e13-b1fe-87e84dcde03d",
+	"slug": "agenda-corp-agenda",
+	"type": "text_template",
+	"version": "1.0.1",
+	"min_app_version": "1.0.0",
+	"entry": "agenda-corp-agenda/agenda-corp-agenda.json",
+	"files": [
+		{
+			"path": "agenda-corp-agenda/agenda-corp-agenda.json",
+			"sha256": "68db7730380a1793d60e4ee6e662bd05317f2f333ec54c48c2b5c2f120f37eaf",
+			"size": 2983
+		},
+		{
+			"path": "agenda-corp-agenda/thumbnail.webp",
+			"sha256": "3bc87e4ad7e56748bc8dcfb398873a32009dba1dbd5c98cc6064868934b4696d",
+			"size": 45008
+		}
+	],
+	"dependencies": [],
+	"params": [],
+	"licence": {
+		"tier": "free",
+		"terms": "royalty_free"
+	}
+}
+
+FILE agenda-corp-agenda/agenda-corp-agenda.json {
+ "schema": 1,
+ "params": {
+  "content": "AGENDA",
+  "aspect": "16:9",
+  "duration": 4,
+  "category": "corporate",
+  "kind": "template"
+ },
+ "placeholders": [
+  {
+   "id": "label",
+   "name": "Label",
+   "text": {
+    "en": "AGENDA",
+    "si": "න්‍යාය පත්‍රය",
+    "ta": "நிகழ்ச்சி நிரல்"
+   },
+   "x": 0.5,
+   "y": 0.34,
+   "size": 0.052,
+   "style": {
+    "fontFamily": "Montserrat",
+    "fontWeight": 700,
+    "fill": "#FFFFFF",
+    "plate": {
+     "color": "#2563EB",
+     "padding": 0.35,
+     "radius": 0.1
+    }
+   },
+   "animation": {
+    "version": 1,
+    "unit": "block",
+    "in": {
+     "effect": "mask-wipe",
+     "duration": 0.5,
+     "delay": 0,
+     "stagger": 0,
+     "staggerOrder": "forward",
+     "direction": "right",
+     "easing": "ease-out-cubic",
+     "intensity": 1,
+     "params": {}
+    },
+    "out": {
+     "effect": "fade",
+     "duration": 0.4,
+     "delay": 0,
+     "stagger": 0.02,
+     "staggerOrder": "forward",
+     "direction": "up",
+     "easing": "ease-in-cubic",
+     "intensity": 1,
+     "params": {}
+    }
+   }
+  },
+  {
+   "id": "title",
+   "name": "Title",
+   "text": {
+    "en": "Key numbers",
+    "si": "ප්‍රධාන සංඛ්‍යා",
+    "ta": "முக்கிய எண்கள்"
+   },
+   "x": 0.5,
+   "y": 0.5,
+   "size": 0.119,
+   "style": {
+    "fontFamily": "Montserrat",
+    "fontWeight": 800,
+    "fill": "#FFFFFF"
+   },
+   "animation": {
+    "version": 1,
+    "unit": "word",
+    "in": {
+     "effect": "slide",
+     "duration": 0.5,
+     "delay": 0.2,
+     "stagger": 0.06,
+     "staggerOrder": "forward",
+     "direction": "right",
+     "easing": "ease-out-cubic",
+     "intensity": 1,
+     "params": {}
+    },
+    "out": {
+     "effect": "slide",
+     "duration": 0.4,
+     "delay": 0,
+     "stagger": 0.04,
+     "staggerOrder": "forward",
+     "direction": "left",
+     "easing": "ease-in-cubic",
+     "intensity": 1,
+     "params": {}
+    }
+   }
+  }
+ ],
+ "font_refs": [
+  "Montserrat"
+ ],
+ "source": {
+  "set": "Worksuite text templates",
+  "id": "corp-agenda",
+  "name": {
+   "en": "Agenda",
+   "si": "සරල ව්‍යාපාරික මාතෘකාව",
+   "ta": "எளிய நிறுவனத் தலைப்பு"
+  },
+  "tags": {
+   "en": [
+    "agenda",
+    "corporate",
+    "business",
+    "presentation",
+    "landscape",
+    "16:9",
+    "mask wipe",
+    "fade",
+    "slide",
+    "simple"
+   ],
+   "si": [
+    "ව්‍යාපාරික",
+    "ඉදිරිපත් කිරීම",
+    "තිරස්",
+    "පිසදැමීම",
+    "ක්‍රමයෙන් පෙනීම",
+    "ලිස්සීම",
+    "සරල"
+   ],
+   "ta": [
+    "நிறுவனம்",
+    "விளக்கக்காட்சி",
+    "கிடைமட்ட",
+    "துடைப்பு",
+    "மெல்லத்
+
+=== PACK {"id":"vt-captions-and-that-is-the-secret-captions-004","type":"video-templates","version":"1.0.0","title":"Captions · And that is the secret","description":"Captions template from the Worksuite set. 1:1, 4s, 1 text slot over an animated background. Sinhala and Tamil wording included.","tags":{"en":["captions","video-template","1-1","worksuite","caption","fade-words"],"si":[],"ta":[]},"languages":["en"],"sizeBytes":13157,"sha256":"f559ab28a3fe0bef17e28c9922efa6eb5eaa8e16845233325d6491d9a8fa111b","licence":"royalty_free","minAppVersion":"1.0.0","thumbnailUrl":"packs/vt-captions-and-that-is-the-secret-captions-004-1.0.0.webp","previewUrl":"packs/vt-captions-and-that-is-the-secret-captions-004-1.0.0.webp","files":"packs/vt-captions-and-that-is-the-secret-captions-004-1.0.0.zip","plan":"free","assetCount":1,"assetIds":["vt-captions-and-that-is-the-secret-captions-004"],"libraryAssetId":"01a171ac-bf64-7b20-8191-e6e55531410e","libraryType":"video_template","dependencies":[]}
+thumb packs/vt-captions-and-that-is-the-secret-captions-004-1.0.0.webp -> https://frameflow.worksuitecloud.com/library/feed/stable/packs/vt-captions-and-that-is-the-secret-captions-004-1.0.0.webp 200 image/webp
+thumb packs/vt-captions-and-that-is-the-secret-captions-004-1.0.0.webp -> https://frameflow.worksuitecloud.com/library/feed/stable/packs/vt-captions-and-that-is-the-secret-captions-004-1.0.0.webp 200 image/webp
+zip https://frameflow.worksuitecloud.com/library/feed/stable/packs/vt-captions-and-that-is-the-secret-captions-004-1.0.0.zip 200
+entries ["pack.json:549","index.json:474","manifest.json:863","licence.txt:66","vt-captions-and-that-is-the-secret-captions-004/vt-captions-and-that-is-the-secret-captions-004.fftemplate:1877","vt-captions-and-that-is-the-secret-captions-004/thumbnail.webp:13774"]
+FILE pack.json {
+	"id": "vt-captions-and-that-is-the-secret-captions-004",
+	"type": "video-templates",
+	"version": "1.0.0",
+	"title": "Captions · And that is the secret",
+	"description": "Captions template from the Worksuite set. 1:1, 4s, 1 text slot over an animated background. Sinhala and Tamil wording included.",
+	"tags": {
+		"en": [
+			"captions",
+			"video-template",
+			"1-1",
+			"worksuite",
+			"caption",
+			"fade-words"
+		],
+		"si": [],
+		"ta": []
+	},
+	"languages": [
+		"en"
+	],
+	"licence": "royalty_free",
+	"minAppVersion": "1.0.0",
+	"plan": "free"
+}
+
+FILE index.json {
+	"schema": 1,
+	"name": "Captions · And that is the secret",
+	"items": [
+		{
+			"id": "vt-captions-and-that-is-the-secret-captions-004",
+			"name": "Captions · And that is the secret",
+			"file": "vt-captions-and-that-is-the-secret-captions-004/vt-captions-and-that-is-the-secret-captions-004.fftemplate",
+			"type": "video_template",
+			"thumbnail": "vt-captions-and-that-is-the-secret-captions-004/thumbnail.webp",
+			"scenes": 0,
+			"total_duration_ms": 4000
+		}
+	]
+}
+
+FILE manifest.json {
+	"schema": "frameflow.asset/1",
+	"id": "01a171ac-bf64-7b20-8191-e6e55531410e",
+	"slug": "vt-captions-and-that-is-the-secret-captions-004",
+	"type": "video_template",
+	"version": "1.0.0",
+	"min_app_version": "1.0.0",
+	"entry": "vt-captions-and-that-is-the-secret-captions-004/vt-captions-and-that-is-the-secret-captions-004.fftemplate",
+	"files": [
+		{
+			"path": "vt-captions-and-that-is-the-secret-captions-004/vt-captions-and-that-is-the-secret-captions-004.fftemplate",
+			"sha256": "8710edcedf7e7045234bff9d910e5594d3ce6f50b140b22108aa2684c23a7708",
+			"size": 1877
+		},
+		{
+			"path": "vt-captions-and-that-is-the-secret-captions-004/thumbnail.webp",
+			"sha256": "3a30649a08958aa5a31145a15ae80bf22ac0b9193a32a503a6bf0290d87f4ec2",
+			"size": 13774
+		}
+	],
+	"dependencies": [],
+	"params": [],
+	"licence": {
+		"tier": "free",
+		"terms": "royalty_free"
+	}
+}
+
+tt thumb agenda-corp-agenda packs/agenda-corp-agenda-1.0.1.webp packs/agenda-corp-agenda-1.0.1.webp
+tt thumb annual-report-corp-annual-report packs/annual-report-corp-annual-report-1.0.1.webp packs/annual-report-corp-annual-report-1.0.1.webp
+tt thumb auspicious-times-card-fest-avurudu-times packs/auspicious-times-card-fest-avurudu-times-1.0.1.webp packs/auspicious-times-card-fest-avurudu-times-1.0.1.webp
+tt thumb be-bold-kp-be-bold packs/be-bold-kp-be-bold-1.0.1.webp packs/be-bold-kp-be-bold-1.0.1.webp
+tt thumb before-and-after-social-before-after packs/before-and-after-social-before-after-1.0.1.webp packs/before-and-after-social-before-after-1.0.1.webp
