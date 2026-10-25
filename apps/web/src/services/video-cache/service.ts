@@ -13,6 +13,7 @@ import {
 	transferFromColorSpace,
 } from "@/hdr/settings";
 import { effectPreviewService } from "@/services/renderer/effect-preview";
+import { maxOpenDecoders } from "@/export/performance";
 
 interface VideoSinkData {
 	input: Input;
@@ -40,6 +41,10 @@ export class VideoCache {
 	private initPromises = new Map<string, Promise<void>>();
 	private frameChain = new Map<string, Promise<unknown>>();
 	private seekGenerations = new Map<string, number>();
+	/** When each decoder was last asked for a frame (for closing the oldest). */
+	private lastUsed = new Map<string, number>();
+	/** Decoders asked for a frame within this many ms count as in use. */
+	private static readonly IN_USE_MS = 1500;
 
 	async getFrameAt({
 		mediaId,
@@ -50,7 +55,9 @@ export class VideoCache {
 		file: File;
 		time: number;
 	}): Promise<WrappedCanvas | null> {
+		this.lastUsed.set(mediaId, performance.now());
 		await this.ensureSink({ mediaId, file });
+		this.evictIdle({ keep: mediaId });
 
 		const sinkData = this.sinks.get(mediaId);
 		if (!sinkData) return null;
@@ -334,6 +341,25 @@ export class VideoCache {
 		}
 	}
 
+	/**
+	 * Keeps open decoders within the memory budget: each one holds full-size
+	 * frames, and a timeline with many source files used to keep them all
+	 * open for good. The least recently used idle ones are closed; they
+	 * reopen on demand.
+	 */
+	private evictIdle({ keep }: { keep: string }) {
+		const limit = maxOpenDecoders();
+		if (this.sinks.size <= limit) return;
+		const now = performance.now();
+		const idle = [...this.sinks.keys()]
+			.filter((id) => id !== keep && now - (this.lastUsed.get(id) ?? 0) > VideoCache.IN_USE_MS)
+			.sort((a, b) => (this.lastUsed.get(a) ?? 0) - (this.lastUsed.get(b) ?? 0));
+		for (const id of idle) {
+			if (this.sinks.size <= limit) break;
+			this.clearVideo({ mediaId: id });
+		}
+	}
+
 	clearVideo({ mediaId }: { mediaId: string }): void {
 		const sinkData = this.sinks.get(mediaId);
 		if (sinkData) {
@@ -348,6 +374,7 @@ export class VideoCache {
 		this.initPromises.delete(mediaId);
 		this.frameChain.delete(mediaId);
 		this.seekGenerations.delete(mediaId);
+		this.lastUsed.delete(mediaId);
 	}
 
 	clearAll(): void {

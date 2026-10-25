@@ -263,12 +263,18 @@ async function resolveAudioBufferForAsset({
 	asset,
 	audioContext,
 	maxChannels = MAX_AUDIO_CHANNELS,
+	range,
+	onStart,
 }: {
 	asset: MediaAsset;
 	audioContext: AudioContext;
 	maxChannels?: number;
+	/** Seconds of the source to decode; the whole file when omitted. */
+	range?: { start: number; end: number };
+	/** Source time (seconds) the returned buffer starts at. */
+	onStart?: (seconds: number) => void;
 }): Promise<AudioBuffer | null> {
-	if (asset.type === "audio") {
+	if (asset.type === "audio" && !range) {
 		try {
 			const arrayBuffer = await asset.file.arrayBuffer();
 			return await audioContext.decodeAudioData(arrayBuffer.slice(0));
@@ -292,8 +298,15 @@ async function resolveAudioBufferForAsset({
 
 		const chunks: AudioBuffer[] = [];
 		let totalSamples = 0;
+		let first = true;
 
-		for await (const { buffer } of sink.buffers(0)) {
+		for await (const { buffer, timestamp } of range
+			? sink.buffers(Math.max(0, range.start), range.end)
+			: sink.buffers(0)) {
+			if (first) {
+				onStart?.(timestamp);
+				first = false;
+			}
 			chunks.push(buffer);
 			totalSamples += buffer.length;
 		}
@@ -659,20 +672,16 @@ export async function createTimelineAudioBuffer({
 }): Promise<AudioBuffer | null> {
 	const context = audioContext ?? createAudioContext({ sampleRate });
 
-	const audioElements = await collectAudioElements({
-		tracks,
-		mediaAssets,
-		audioContext: context,
-		maxChannels: sphere ? AMBISONIC_CHANNELS : MAX_AUDIO_CHANNELS,
-	});
+	const maxChannels = sphere ? AMBISONIC_CHANNELS : MAX_AUDIO_CHANNELS;
+	const candidates = collectAudibleCandidates({ tracks, mediaAssets }).filter(
+		({ element }) => !isElementMuted({ element }),
+	);
+	if (candidates.length === 0) return null;
 
-	if (audioElements.length === 0) return null;
-
+	// The mix is ambisonic only when a clip carries ambisonic sound (VR-21).
 	const ambisonic =
 		sphere &&
-		audioElements.some(
-			(e) => !e.muted && e.buffer.numberOfChannels === AMBISONIC_CHANNELS,
-		);
+		(await hasAmbisonicSource({ candidates, mediaAssets }));
 	const outputChannels = ambisonic ? AMBISONIC_CHANNELS : 2;
 	const durationSeconds = duration / TICKS_PER_SECOND;
 	const outputLength = Math.ceil(durationSeconds * sampleRate);
@@ -682,8 +691,17 @@ export async function createTimelineAudioBuffer({
 		sampleRate,
 	);
 
-	for (const element of audioElements) {
-		if (element.muted) continue;
+	// One clip at a time, decoding only the part of its source it plays,
+	// then mixed in and dropped: memory stays at about one clip's audio
+	// instead of every clip's whole source file at once.
+	for (const candidate of candidates) {
+		const element = await collectExportElement({
+			candidate,
+			mediaAssets,
+			audioContext: context,
+			maxChannels,
+		});
+		if (!element || element.muted) continue;
 
 		const pitchSemitones = getElementPitch({ element: element.timelineElement });
 		const fx = getElementFx({ element: element.timelineElement });
@@ -965,4 +983,102 @@ function mixAudioChannels({
 				gain;
 		}
 	}
+}
+
+/** Whether any of these clips has 4-channel ambisonic sound (checked from the file header, not decoded). */
+async function hasAmbisonicSource({
+	candidates,
+	mediaAssets,
+}: {
+	candidates: AudibleElementCandidate[];
+	mediaAssets: MediaAsset[];
+}): Promise<boolean> {
+	const mediaMap = new Map(mediaAssets.map((a) => [a.id, a]));
+	const checked = new Set<string>();
+	for (const { element } of candidates) {
+		if (!hasMediaId(element) || checked.has(element.mediaId)) continue;
+		checked.add(element.mediaId);
+		const asset = mediaMap.get(element.mediaId);
+		if (!asset) continue;
+		const input = new Input({ source: new BlobSource(asset.file), formats: ALL_FORMATS });
+		try {
+			const track = await input.getPrimaryAudioTrack();
+			if (track?.numberOfChannels === AMBISONIC_CHANNELS) return true;
+		} catch {
+			// Unreadable header: treat as ordinary sound.
+		} finally {
+			input.dispose();
+		}
+	}
+	return false;
+}
+
+/** Seconds of decoded audio kept either side of a clip's range. */
+const RANGE_MARGIN_SECONDS = 0.5;
+
+/**
+ * One clip's audio for the export mix: only the source range it plays
+ * (plus a small margin), with trimStart made relative to that range.
+ */
+async function collectExportElement({
+	candidate,
+	mediaAssets,
+	audioContext,
+	maxChannels,
+}: {
+	candidate: AudibleElementCandidate;
+	mediaAssets: MediaAsset[];
+	audioContext: AudioContext;
+	maxChannels: number;
+}): Promise<CollectedAudioElement | null> {
+	const { element, mediaAsset } = candidate;
+	if (element.type !== "audio" && element.type !== "video") return null;
+	const retime = element.retime;
+	const durationSec = element.duration / TICKS_PER_SECOND;
+	const trimStartSec = element.trimStart / TICKS_PER_SECOND;
+	const spanSec = getSourceTimeAtClipTime({ clipTime: durationSec, retime, duration: durationSec });
+	const range = {
+		start: Math.max(0, trimStartSec - RANGE_MARGIN_SECONDS),
+		end: trimStartSec + spanSec + RANGE_MARGIN_SECONDS,
+	};
+	let bufferStart = 0;
+	let buffer: AudioBuffer | null = null;
+	const asset =
+		element.type === "video"
+			? mediaAsset
+			: element.sourceType === "upload"
+				? (mediaAssets.find((a) => a.id === element.mediaId) ?? null)
+				: null;
+	if (asset) {
+		if (element.type === "video" && !mediaSupportsAudio({ media: asset })) return null;
+		buffer = await resolveAudioBufferForAsset({
+			asset,
+			audioContext,
+			maxChannels,
+			range,
+			onStart: (seconds) => {
+				bufferStart = seconds;
+			},
+		});
+		// Some audio files can't be read in pieces; decode them whole instead.
+		if (!buffer && asset.type === "audio") {
+			bufferStart = 0;
+			buffer = await resolveAudioBufferForAsset({ asset, audioContext, maxChannels });
+		}
+	} else if (element.type === "audio") {
+		const mediaMap = new Map(mediaAssets.map((a) => [a.id, a]));
+		buffer = await resolveAudioBufferForElement({ element, mediaMap, audioContext, maxChannels });
+	}
+	if (!buffer) return null;
+	return {
+		timelineElement: element,
+		buffer,
+		startTime: element.startTime / TICKS_PER_SECOND,
+		duration: durationSec,
+		trimStart: trimStartSec - bufferStart,
+		trimEnd: element.trimEnd / TICKS_PER_SECOND,
+		volume: resolveEffectiveAudioGain({ element, trackMuted: false, localTime: 0 }),
+		muted: isElementMuted({ element }),
+		retime,
+	};
 }

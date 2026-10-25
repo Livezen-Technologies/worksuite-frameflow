@@ -19,6 +19,9 @@ import { useSphereStore } from "@/vr/store";
 import { formatTimecode } from "opencut-wasm";
 import { frameRateToFloat } from "@/fps/utils";
 import { downloadBlob } from "@/utils/browser";
+import { renderCache } from "@/render-cache/service";
+import { videoCache } from "@/services/video-cache/service";
+import { startExportDiagnostics, useExportPerformance } from "@/export/performance";
 import {
 	audioBufferToWav,
 	masterBridge,
@@ -211,6 +214,12 @@ export class RendererManager {
 			ai,
 		} = options;
 		let aiStages: Awaited<ReturnType<typeof loadAiStages>> = {};
+		const diagnostics = startExportDiagnostics();
+		// Background rendering for smooth playback competes for the same
+		// decoders and memory; stop it, and close preview decoders so export
+		// starts from a clean slate (they reopen on demand).
+		if (useExportPerformance.getState().backgroundRender === "pause") renderCache.cancel();
+		videoCache.clearAll();
 		const bridge: MasterExportBridge | null = master ? masterBridge() : null;
 		if (master && !bridge)
 			return { success: false, error: "ProRes and FFV1 need the desktop app." };
@@ -352,6 +361,9 @@ export class RendererManager {
 				clearInterval(cancelInterval);
 				aiStages.upscaler?.release();
 				aiStages.interpolator?.release();
+				// Release every decoder the export opened.
+				videoCache.clearAll();
+				diagnostics.finish();
 			}
 		} catch (error) {
 			console.error("Export failed:", error);

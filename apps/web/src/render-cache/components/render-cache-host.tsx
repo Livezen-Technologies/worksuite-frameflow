@@ -1,5 +1,7 @@
 "use client";
 
+import { useExportPerformance } from "@/export/performance";
+
 import { useEffect } from "react";
 import { EditorCore } from "@/core";
 import { renderCache } from "../service";
@@ -32,6 +34,12 @@ export function RenderCacheHost() {
 				if (mode !== "auto" || !active) return;
 				// Never compete with playback or an edit in progress.
 				if (editor.playback.getIsPlaying() || editor.playback.getIsScrubbing())
+					return changed();
+				// Nor with an export (Export › Performance › Background preview).
+				if (
+					editor.project.getExportState().isExporting &&
+					useExportPerformance.getState().backgroundRender === "pause"
+				)
 					return changed();
 				void renderCache.renderStale({ editor });
 			}, IDLE_MS);

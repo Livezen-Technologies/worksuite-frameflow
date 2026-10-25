@@ -225,9 +225,15 @@ export class ProjectManager {
 	}
 
 	async export({ options }: { options: ExportOptions }): Promise<ExportResult> {
+		// One export at a time: two at once doubles the memory and decoders.
+		if (this.exportState.isExporting) {
+			return { success: false, error: "An export is already running." };
+		}
 		this.exportCancelRequested = false;
 		this.exportState = { isExporting: true, progress: 0, result: null };
 		this.notify();
+		// Saved first, so nothing is lost if the export runs the system out of memory.
+		await this.saveCurrentProject();
 
 		const result = await this.editor.renderer.exportProject({
 			options,

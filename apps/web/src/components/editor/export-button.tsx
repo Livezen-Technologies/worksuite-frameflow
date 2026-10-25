@@ -11,6 +11,7 @@ import {
 import { createTimelineAudioBuffer } from "@/media/audio";
 import { DEFAULT_GIF_OPTIONS, estimateGifBytes, type GifOptions } from "@/export/gif";
 import { GifOptionsRows } from "@/export/components/gif-options";
+import { useExportPerformance } from "@/export/performance";
 import {
 	audioBufferToWav,
 	MASTER_CODECS,
@@ -1188,6 +1189,7 @@ function ExportDialog({ onClose }: { onClose: () => void }) {
 										Include audio
 									</CheckRow>
 								</Row>
+								<ExportPerformanceRows />
 							</>
 						)}
 						{cover && (
@@ -1358,4 +1360,35 @@ function selectedSpan({ editor }: { editor: EditorCore }): { start: number; leng
 	const start = Math.min(...found.map((f) => f.element.startTime));
 	const end = Math.max(...found.map((f) => f.element.startTime + f.element.duration));
 	return { start: start / TICKS_PER_SECOND, length: (end - start) / TICKS_PER_SECOND };
+}
+
+/** Export › Performance: memory budget and background rendering. */
+function ExportPerformanceRows() {
+	const { memory, backgroundRender, set } = useExportPerformance();
+	return (
+		<>
+			<Row label="Memory use">
+				{(
+					[
+						["low", "Low"],
+						["balanced", "Balanced"],
+						["performance", "Performance"],
+					] as const
+				).map(([value, label]) => (
+					<Pill key={value} active={memory === value} onClick={() => set({ memory: value })}>
+						{label}
+					</Pill>
+				))}
+			</Row>
+			<Row label="Background preview">
+				<CheckRow
+					id="export-pause-background"
+					checked={backgroundRender === "pause"}
+					onChange={(pause) => set({ backgroundRender: pause ? "pause" : "continue" })}
+				>
+					Pause smooth-playback rendering while exporting
+				</CheckRow>
+			</Row>
+		</>
+	);
 }

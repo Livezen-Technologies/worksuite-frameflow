@@ -9,6 +9,7 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
+- Export › Memory use (Low / Balanced / Performance) and an option to keep background preview rendering going during an export.
 - Speed ramping without splitting: a speed curve now keeps the clip in one piece. Draw it in Speed › Curve or right on the timeline (toolbar › Speed curves, or right-click a clip › Speed curve). Drag points up/down for speed (0.1–10×) and sideways for timing. Double-click adds a point or edits one exactly. Right-click switches between smooth, linear and hold, or deletes a point. Shift-drag gives fine control, points snap to the playhead, K adds a point and Delete removes one.
 - New speed presets (Smooth Accel, Smooth Decel, Slow–Fast–Slow, Fast–Slow–Fast, Cinematic) and your own saved presets, plus copy and paste of curves between clips.
 - Speed curves play the same in preview and export, audio stays in sync, and "keep pitch" works through a ramp. Splitting a curved clip keeps each part's speeds. Clips made with the old split-up curve can be converted to one clip.
@@ -18,6 +19,9 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Fixed
 
+- Exporting no longer runs the computer out of memory. Exporting audio used to decode each clip's whole source file at once, so a timeline with many cuts from one long video could use 10 GB or more. Now each clip decodes only the part it plays, one at a time.
+- Video decoders are capped (3, 6 or 12 by memory setting) and released before and after each export. Preview audio and image caches are capped too, so memory no longer grows the longer you edit.
+- The project is saved before exporting. Only one export runs at a time, and background smooth-playback rendering pauses during an export.
 - Transitions now show in the preview on the part that plays before the cut. Before, the preview could replay an older saved render without the transition.
 
 ## [1.7.14] - 2026-10-25

@@ -42,6 +42,7 @@ export class AudioManager {
 	private queuedSources = new Set<AudioBufferSourceNode>();
 	private preparedClipBuffers = new Map<string, Promise<AudioBuffer | null>>();
 	private decodedBuffers = new Map<string, Promise<AudioBuffer | null>>();
+	private preparedKeyByClip = new Map<string, string>();
 	private playbackSessionId = 0;
 	private lastIsPlaying = false;
 	private lastVolume = 1;
@@ -68,6 +69,7 @@ export class AudioManager {
 		this.disposeSinks();
 		this.preparedClipBuffers.clear();
 		this.decodedBuffers.clear();
+		this.preparedKeyByClip.clear();
 		if (this.audioContext) {
 			void this.audioContext.close();
 			this.audioContext = null;
@@ -115,6 +117,7 @@ export class AudioManager {
 		this.disposeSinks();
 		this.preparedClipBuffers.clear();
 		this.decodedBuffers.clear();
+		this.preparedKeyByClip.clear();
 
 		if (!this.editor.playback.getIsPlaying()) return;
 
@@ -608,7 +611,12 @@ export class AudioManager {
 			});
 		})();
 
+		// An edit to the clip makes a new key; drop its older renders.
+		const previousKey = this.preparedKeyByClip.get(clip.id);
+		if (previousKey && previousKey !== cacheKey) this.preparedClipBuffers.delete(previousKey);
+		this.preparedKeyByClip.set(clip.id, cacheKey);
 		this.preparedClipBuffers.set(cacheKey, promise);
+		trimOldest({ map: this.preparedClipBuffers, limit: MAX_PREPARED_CLIPS });
 		return promise;
 	}
 
@@ -624,6 +632,8 @@ export class AudioManager {
 
 		const promise = this.decodeClipBuffer({ clip });
 		this.decodedBuffers.set(clip.sourceKey, promise);
+		// Whole source files: keep only the few most recent in memory.
+		trimOldest({ map: this.decodedBuffers, limit: MAX_DECODED_SOURCES });
 		return promise;
 	}
 
@@ -739,5 +749,18 @@ export class AudioManager {
 			console.warn("Failed to initialize audio sink:", error);
 			return null;
 		}
+	}
+}
+
+/** Whole decoded source files kept for preview audio. */
+const MAX_DECODED_SOURCES = 4;
+/** Clip-length renders (speed, pitch, effects) kept for preview audio. */
+const MAX_PREPARED_CLIPS = 32;
+
+/** Drops the oldest entries (insertion order) past `limit`. */
+function trimOldest<K, V>({ map, limit }: { map: Map<K, V>; limit: number }) {
+	for (const key of map.keys()) {
+		if (map.size <= limit) break;
+		map.delete(key);
 	}
 }

@@ -1,3 +1,4 @@
+import { maxCachedImages } from "@/export/performance";
 import {
 	VisualNode,
 	type ResolvedVisualSourceNodeState,
@@ -27,7 +28,12 @@ export function loadImageSource({
 	const cacheKey = `${url}::${maxSourceSize ?? "full"}`;
 
 	const cached = imageSourceCache.get(cacheKey);
-	if (cached) return cached;
+	if (cached) {
+		// Most recently used last, so the oldest go first.
+		imageSourceCache.delete(cacheKey);
+		imageSourceCache.set(cacheKey, cached);
+		return cached;
+	}
 
 	const promise = (async (): Promise<CachedImageSource> => {
 		const image = new Image();
@@ -65,6 +71,14 @@ export function loadImageSource({
 	})();
 
 	imageSourceCache.set(cacheKey, promise);
+	// Decoded images stay in memory; keep only the most recent ones.
+	const limit = maxCachedImages();
+	for (const key of imageSourceCache.keys()) {
+		if (imageSourceCache.size <= limit) break;
+		imageSourceCache.delete(key);
+	}
+	// A failed load isn't kept, so it can be tried again.
+	promise.catch(() => imageSourceCache.delete(cacheKey));
 	return promise;
 }
 
