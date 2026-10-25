@@ -66,3 +66,19 @@ for (const url of ["https://huggingface.co/Xenova/modnet/resolve/main/onnx/model
 		console.log(`ERR ${url} ${error.cause?.code ?? error.message}`);
 	}
 }
+
+// Sinhala Whisper: the AI Studio package page and the model's files.
+for (const url of [
+	"https://aistudio.livezentech.com/engine/packages/1",
+	"https://aistudio.livezentech.com/api/engine/packages/1",
+	"https://aistudio.livezentech.com/engine/api/packages/1",
+	"https://huggingface.co/api/models/SinhaSpeech/whisper-small-sinhala-run11",
+]) {
+	try {
+		const r = await fetch(url);
+		const text = await r.text();
+		console.log(`${r.status} ${r.headers.get("content-type")} ${url}\n${text.replace(/\s+/g, " ").slice(0, 3000)}`);
+	} catch (error) {
+		console.log(`ERR ${url} ${error.cause?.code ?? error.message}`);
+	}
+}
