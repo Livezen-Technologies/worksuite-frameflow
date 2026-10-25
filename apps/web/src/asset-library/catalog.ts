@@ -47,6 +47,54 @@ export const STATUS_LABELS: Record<PackStatus, string> = {
 	"not-installed": "Get",
 };
 
+// ---------- feed URLs ----------
+
+const DEFAULT_FEED = "https://frameflow.worksuitecloud.com/library/feed";
+
+/** Where a channel's catalog.json lives; catalog paths (thumbnails, files) are relative to it. */
+export function catalogBaseUrl(channel: string, feed: string = process.env.NEXT_PUBLIC_WSC_ASSET_URL ?? DEFAULT_FEED): string {
+	return `${feed.replace(/\/$/, "")}/${channel}/`;
+}
+
+/**
+ * Resolves a catalog URL ("packs/x-1.0.0.webp") against the catalog
+ * location. Without a base a relative path would resolve against the app's
+ * own page and 404 (the broken thumbnails in Templates); then it's null.
+ */
+export function resolveCatalogUrl(url: string | null | undefined, base?: string | null): string | null {
+	if (!url) return null;
+	if (/^(https?|data|blob|wsc-asset|ffthumb):/i.test(url)) return url;
+	if (!base) return null;
+	try {
+		return new URL(url, base).toString();
+	} catch {
+		return null;
+	}
+}
+
+/**
+ * In the desktop app, pictures go through the on-disk thumbnail cache
+ * (electron/thumb-cache.js): downloaded once, then instant and offline.
+ */
+export function cachedImage(url: string): string {
+	if (typeof window === "undefined" || !window.worksuite || !/^https?:\/\//i.test(url)) return url;
+	return `ffthumb://img/?u=${encodeURIComponent(url)}`;
+}
+
+/** What a template card shows: its picture, a live drawing of the template, or a styled placeholder — never a broken image. */
+export function templateCardVisual({ thumb, imageFailed, canDraw }: { thumb: string | null; imageFailed: boolean; canDraw: boolean }): "image" | "live" | "placeholder" {
+	if (thumb && !imageFailed) return "image";
+	return canDraw ? "live" : "placeholder";
+}
+
+/** Aspect and length from a library description ("… 1:1, 4s, 1 text slot …"). */
+export function packTemplateFacts(pack: Pick<CatalogPack, "description" | "tags">): { aspect: string | null; seconds: number | null } {
+	const text = pack.description ?? "";
+	const aspect = /\b(16:9|9:16|1:1|4:5)\b/.exec(text)?.[1] ?? ((pack.tags?.en ?? []).find((t) => /^(16-9|9-16|1-1|4-5)$/.test(t))?.replace("-", ":") ?? null);
+	const s = /\b(\d+(?:\.\d+)?)\s?s\b/.exec(text);
+	return { aspect, seconds: s ? Number(s[1]) : null };
+}
+
 /** Packs to show: the catalog, plus built-in packs when the catalog can't be reached. */
 export function libraryPacks(state: Pick<AssetStoreState, "catalog" | "builtin">): CatalogPack[] {
 	const packs = [...(state.catalog?.packs ?? [])];

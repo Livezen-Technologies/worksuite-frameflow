@@ -3,6 +3,8 @@ import { si } from "./messages/si";
 import { ta } from "./messages/ta";
 import { assetLibrarySi } from "./messages/asset-library-si";
 import { assetLibraryTa } from "./messages/asset-library-ta";
+import { templatesSi } from "./messages/templates-si";
+import { templatesTa } from "./messages/templates-ta";
 import { ar } from "./messages/ar";
 import { bn } from "./messages/bn";
 import { de } from "./messages/de";
@@ -38,8 +40,8 @@ export const CATALOGS: Record<
 	Record<string, string>
 > = {
 	// The Asset Library strings are Sinhala and Tamil only (other locales show English).
-	si: { ...assetLibrarySi, ...si },
-	ta: { ...assetLibraryTa, ...ta },
+	si: { ...templatesSi, ...assetLibrarySi, ...si },
+	ta: { ...templatesTa, ...assetLibraryTa, ...ta },
 	ar,
 	bn,
 	de,

@@ -3,6 +3,8 @@ import type { ParamValues } from "@/params";
 import { TEMPLATE_CATEGORIES, type ProjectTemplate, type TemplateAspect, type TemplateLayer } from "@/templates/project-templates";
 import { TRANSITIONS } from "@/transitions/definitions";
 import type { ClipTransition } from "@/transitions/types";
+import { isBackdrop } from "@/text-library/backdrop";
+import type { TemplateSlot } from "@/text-library/manifest";
 import { onPackContentChange, packContent, type PackContentItem } from "./registry";
 import { PACK_TYPES, type PackType } from "./types";
 
@@ -36,6 +38,24 @@ export function loadPackJson({ url, fetcher = fetch }: { url: string; fetcher?: 
 	return pending;
 }
 
+/**
+ * Where an item's JSON lives. Library packs list every item with metadata
+ * next to `file` (`type`, `thumbnail`, `render_engine`, `default_duration_ms`…),
+ * so extra keys don't make an item inline: when the item names a file and its
+ * URL is that file, the file is the item. Text packs keep items inline in
+ * index.json (their URL is the pack base), so those stay inline.
+ */
+export function itemJsonSource(item: Pick<PackContentItem, "url" | "raw">): "file" | "inline" {
+	const file = item.raw?.file;
+	if (typeof file === "string" && file && item.url.endsWith(file)) return "file";
+	return item.raw && Object.keys(item.raw).some((k) => k !== "id" && k !== "name" && k !== "file") ? "inline" : "file";
+}
+
+/** Parsed JSON of an item: its own file, or inline in index.json. */
+export async function itemJson(item: PackContentItem, load: (url: string) => Promise<unknown> = (url) => loadPackJson({ url })): Promise<unknown> {
+	return itemJsonSource(item) === "inline" ? item.raw : load(item.url);
+}
+
 export interface LoadedPackItem<T> {
 	item: PackContentItem;
 	value: T;
@@ -61,7 +81,7 @@ export function usePackItems<T>({ types, parse }: { types: PackType[]; parse: Pa
 			const loaded = await Promise.all(
 				wanted.flatMap((t) => packContent(t)).map(async (item) => {
 					try {
-						const raw = parse === asFile ? null : await loadPackJson({ url: item.url });
+						const raw = parse === asFile ? null : await itemJson(item);
 						const value = parse({ raw, item });
 						return value ? { item, value } : null;
 					} catch {
@@ -105,14 +125,17 @@ export interface PackTransition {
 export const parseTransition: PackItemParser<PackTransition> = ({ raw, item }) => {
 	if (!isObject(raw)) return null;
 	const v = isObject(raw.value) ? raw.value : raw;
-	const type = TRANSITIONS.find((t) => t.type === v.type)?.type;
+	// Library items also name the engine in index.json (`render_engine`).
+	const meta = item.raw ?? {};
+	const type = TRANSITIONS.find((t) => t.type === v.type)?.type ?? TRANSITIONS.find((t) => t.type === raw.render_engine || t.type === meta.render_engine)?.type;
 	if (!type) return null;
+	const metaMs = typeof meta.default_duration_ms === "number" ? meta.default_duration_ms / 1000 : undefined;
 	return {
 		id: item.id,
 		name: nameOf({ raw, item }),
 		value: {
 			type,
-			duration: typeof v.duration === "number" && v.duration > 0 ? Math.min(v.duration, 5) : 0.8,
+			duration: typeof v.duration === "number" && v.duration > 0 ? Math.min(v.duration, 5) : metaMs && metaMs > 0 ? Math.min(metaMs, 5) : 0.8,
 			easing: oneOf({ value: v.easing, options: ["linear", "ease-in", "ease-out", "ease-in-out"], fallback: "ease-in-out" }),
 			direction: oneOf({ value: v.direction, options: ["left", "right", "up", "down"], fallback: "left" }),
 			alignment: oneOf({ value: v.alignment, options: ["center", "start", "end"], fallback: "center" }),
@@ -183,9 +206,102 @@ function isTemplateLayer(l: unknown): l is TemplateLayer {
 
 const ASPECT_LABELS: TemplateAspect["label"][] = ["16:9", "9:16", "1:1", "4:5"];
 
+const LIBRARY_CATEGORIES: Array<[RegExp, ProjectTemplate["category"]]> = [
+	[/intro|opener|title/i, "Intro"],
+	[/slide|travel|memories|photo/i, "Slideshow"],
+	[/sinhala|avurudu|vesak|poson|සිංහල/i, "සිංහල"],
+	[/business|corporate|agenda|report/i, "Business"],
+	[/promo|sale|product|offer/i, "Promo"],
+	[/caption|social|reel|story|quote/i, "Social"],
+];
+
+/**
+ * A library video template (.fftemplate: `background` + `text` layers with
+ * x/y as shares of the frame, sizes as shares of its height and wording in
+ * en/si/ta) as a ProjectTemplate. The backdrop becomes a full-frame shape,
+ * each text a title; the original slots are kept for the live preview.
+ */
+function fromLibraryTemplate({ raw, item }: { raw: Record<string, unknown>; item: PackContentItem }): ProjectTemplate | null {
+	const aspect = raw.aspect;
+	if (!isObject(aspect) || typeof aspect.width !== "number" || typeof aspect.height !== "number" || aspect.width <= 0 || aspect.height <= 0) return null;
+	const source = isObject(raw.source) ? raw.source : {};
+	const total = typeof raw.duration === "number" && raw.duration > 0 ? raw.duration : 4;
+	const layers: TemplateLayer[] = [];
+	const slots: TemplateSlot[] = [];
+	let bg: NonNullable<ProjectTemplate["preview"]>["bg"];
+	const timing = (l: Record<string, unknown>) => {
+		const start = typeof l.start === "number" && l.start >= 0 ? l.start : 0;
+		const duration = typeof l.duration === "number" && l.duration > 0 ? l.duration : total - start;
+		return { start, duration: Math.max(0.1, duration) };
+	};
+	for (const l of raw.layers as unknown[]) {
+		if (!isObject(l)) continue;
+		if (l.kind === "background" && isBackdrop(l.background)) {
+			bg = l.background;
+			layers.push({ kind: "shape", definitionId: "rectangle", fill: l.background.c[0] ?? "#000000", width: 1, height: 1, ...timing(l) });
+		} else if (l.kind === "text" && isObject(l.text) && typeof l.text.en === "string") {
+			const style = isObject(l.style) ? l.style : {};
+			const x = typeof l.x === "number" ? l.x : 0.5;
+			const y = typeof l.y === "number" ? l.y : 0.5;
+			const size = typeof l.size === "number" && l.size > 0 ? l.size : 0.06;
+			const { start, duration } = timing(l);
+			slots.push({
+				id: typeof l.id === "string" ? l.id : `t${slots.length}`,
+				name: typeof l.name === "string" ? l.name : "Text",
+				text: l.text as TemplateSlot["text"],
+				x,
+				y,
+				size,
+				style: style as TemplateSlot["style"],
+				...(isObject(l.animation) ? { animation: l.animation as unknown as TemplateSlot["animation"] } : {}),
+				start,
+				end: Math.max(0, total - start - duration),
+			});
+			layers.push({
+				kind: "text",
+				content: l.text.en,
+				start,
+				duration,
+				x: x - 0.5,
+				y: y - 0.5,
+				style: {
+					fontFamily: typeof style.fontFamily === "string" ? style.fontFamily.split(",")[0]!.trim() : "Inter",
+					// Shares of the frame height → the editor's text size (≈ 34 for a 1080p title).
+					fontSize: Math.round(size * 420),
+					color: typeof style.fill === "string" ? style.fill : "#FFFFFF",
+					"animation.in": "fade",
+					"animation.inDuration": 0.4,
+				},
+			});
+		} else if (isTemplateLayer(l)) layers.push(l);
+	}
+	if (!layers.some((l) => l.kind !== "shape") && !slots.length) return null;
+	const ratio = aspect.width / aspect.height;
+	const label: TemplateAspect["label"] = typeof source.aspect === "string" && (ASPECT_LABELS as string[]).includes(source.aspect) ? (source.aspect as TemplateAspect["label"]) : ratio > 1.2 ? "16:9" : ratio < 0.7 ? "9:16" : ratio < 0.9 ? "4:5" : "1:1";
+	const cat = `${typeof source.category === "string" ? source.category : ""} ${item.name}`;
+	const name = isObject(source.name) && typeof source.name.en === "string" ? source.name.en : nameOf({ raw, item });
+	return {
+		id: item.id,
+		name,
+		category: LIBRARY_CATEGORIES.find(([re]) => re.test(cat))?.[1] ?? "Promo",
+		aspect: { label, width: aspect.width, height: aspect.height },
+		description: typeof raw.description === "string" ? raw.description : typeof source.anim === "string" ? `${source.anim} · ${typeof source.set === "string" ? source.set : "Worksuite"}` : "",
+		palette: bg ? [bg.c[0] ?? "#4C8DFF", bg.c[1] ?? bg.c[0] ?? "#0F172A"] : ["#4C8DFF", "#0F172A"],
+		layers,
+		preview: { ...(bg ? { bg } : {}), slots, duration: total },
+	};
+}
+
+const isLibraryTemplate = (raw: Record<string, unknown>) =>
+	Array.isArray(raw.layers) && raw.layers.some((l) => isObject(l) && (l.kind === "background" || (l.kind === "text" && isObject(l.text))));
+
 /** A video (project) template from a pack, with every layer checked. */
 export const parseProjectTemplate: PackItemParser<ProjectTemplate> = ({ raw, item }) => {
 	if (!isObject(raw) || !Array.isArray(raw.layers) || raw.layers.length === 0) return null;
+	if (isLibraryTemplate(raw)) {
+		const template = fromLibraryTemplate({ raw, item });
+		return template && { ...template, source: { kind: "pack", packId: item.packId, packTitle: item.packTitle ?? item.packId } };
+	}
 	const layers = raw.layers.filter(isTemplateLayer);
 	if (layers.length !== raw.layers.length) return null;
 	const aspect = raw.aspect;
@@ -201,6 +317,7 @@ export const parseProjectTemplate: PackItemParser<ProjectTemplate> = ({ raw, ite
 		description: typeof raw.description === "string" ? raw.description : "",
 		palette: typeof a === "string" && typeof b === "string" ? [a, b] : ["#4C8DFF", "#0F172A"],
 		layers,
+		source: { kind: "pack", packId: item.packId, packTitle: item.packTitle ?? item.packId },
 	};
 };
 

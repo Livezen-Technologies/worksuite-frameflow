@@ -16,11 +16,11 @@ import { buildGraphicElement, buildLibraryAudioElement, buildTextElement, isVisu
 import { findClipBefore } from "@/transitions/windows";
 import { generateUUID } from "@/utils/id";
 import { mediaTime, mediaTimeFromSeconds, roundMediaTime, TICKS_PER_SECOND } from "@/wasm";
-import { effectStackParser, loadPackJson, packItemFile, parseFilter, parseTextTemplate, parseTransition } from "./pack-items";
+import { effectStackParser, itemJson, packItemFile, parseFilter, parseTextTemplate, parseTransition } from "./pack-items";
 import { insertPackMedia, placementOn } from "./pack-media";
-import { type PackDropRequest, type PackDropTarget, type PlaceholderRef, finishedPlaceholders, runPackDrop } from "./pack-drop";
+import { cutTarget, type PackDropRequest, type PackDropTarget, type PlaceholderRef, finishedPlaceholders, runPackDrop } from "./pack-drop";
 import { placeholderLottieData } from "./placeholders";
-import { isPackRegistered, onPackContentChange, packItemsOf, packSounds, syncInstalledPacks, type PackContentItem } from "./registry";
+import { isPackRegistered, onPackContentChange, packSounds, pickItem, syncInstalledPacks, type PackContentItem } from "./registry";
 import { assetsBridge, useAssetLibrary } from "./store";
 import type { PackType } from "./types";
 
@@ -52,17 +52,12 @@ function clipTargets({ editor, target }: { editor: EditorCore; target: PackDropT
 	return editor.timeline.getElementsWithTracks({ elements: refs }).flatMap(({ track, element }) => (isVisualElement(element) ? [{ track, element }] : []));
 }
 
-/** Parsed JSON of an item: inline in index.json, or its own file. */
-async function itemJson(item: PackContentItem): Promise<unknown> {
-	if (item.raw && Object.keys(item.raw).some((k) => k !== "id" && k !== "name" && k !== "file")) return item.raw;
-	return loadPackJson({ url: item.url });
-}
-
 const isCut = (e: TimelineElement): e is Extract<TimelineElement, { type: "video" | "image" }> => e.type === "video" || e.type === "image";
 
 /** The cut nearest the playhead on the main track: the clip after it. */
 function nearestCut(editor: EditorCore): { trackId: string; element: Extract<TimelineElement, { type: "video" | "image" }>; maxSeconds: number } | null {
-	const track = editor.scenes.getActiveScene().tracks.main;
+	const track = editor.scenes.getActiveSceneOrNull()?.tracks.main;
+	if (!track) return null;
 	const clips = track.elements.filter(isCut);
 	const now = editor.playback.getCurrentTime();
 	let best: { element: (typeof clips)[number]; before: (typeof clips)[number]; d: number } | null = null;
@@ -77,8 +72,15 @@ function nearestCut(editor: EditorCore): { trackId: string; element: Extract<Tim
 	return { trackId: track.id, element: best.element, maxSeconds: max };
 }
 
+/** An item that can't be used: an error the drop shows, never a silent no-op. */
+function unreadable(item: PackContentItem): never {
+	throw new Error(t("{name} couldn't be read from its pack.", { name: item.name }));
+}
+
 /**
- * Adds or applies one item of an installed pack. Runs through the normal
+ * Adds or applies one item of an installed pack. True when something was
+ * added; false when it only installed (a toast has said why/what next);
+ * throws when the item can't be used. Runs through the normal
  * timeline commands; the caller squashes them into one undo step.
  */
 export async function performPackAdd({
@@ -100,7 +102,7 @@ export async function performPackAdd({
 		case "motion": {
 			const assetId = String((item.raw as { id?: string }).id ?? item.id.split("/").pop());
 			const asset = await findPackAsset(assetId, { id: item.packId, version });
-			if (!asset) return false;
+			if (!asset) unreadable(item);
 			addPackAnimation({ editor, asset, startTime });
 			return true;
 		}
@@ -110,7 +112,7 @@ export async function performPackAdd({
 			return true;
 		case "sounds": {
 			const sound = packSounds().find((s) => s.packId === item.packId && (s.id === item.id || item.packId === item.id)) ?? packSounds().find((s) => s.packId === item.packId);
-			if (!sound) return false;
+			if (!sound) unreadable(item);
 			let seconds = 1;
 			try {
 				const audio = new Audio(sound.url);
@@ -129,7 +131,7 @@ export async function performPackAdd({
 		}
 		case "text-templates": {
 			const template = parseTextTemplate({ raw: await itemJson(item), item });
-			if (!template) return false;
+			if (!template) unreadable(item);
 			editor.timeline.insertElement({
 				element: buildTextElement({ raw: { name: template.name, params: template.params }, startTime }),
 				placement: placementOn({ editor, trackId, elementType: "text" }),
@@ -138,16 +140,11 @@ export async function performPackAdd({
 		}
 		case "transitions": {
 			const transition = parseTransition({ raw: await itemJson(item), item });
-			if (!transition) return false;
-			const cut =
-				target.kind === "cut"
-					? { trackId: target.trackId, elementId: target.elementId, maxSeconds: target.maxSeconds }
-					: (() => {
-							const near = nearestCut(editor);
-							return near ? { trackId: near.trackId, elementId: near.element.id, maxSeconds: near.maxSeconds } : null;
-						})();
+			if (!transition) unreadable(item);
+			const cut = cutTarget({ target, nearest: () => nearestCut(editor) });
 			if (!cut) {
-				toast.info(t("Put two clips next to each other to add a transition between them."));
+				// Installed all the same: say so and where it goes.
+				toast.success(t("Installed — drop it on a cut"), { description: t("Put two clips next to each other, then drag {name} onto the cut between them (it's also under Downloaded in Transitions).", { name: item.name }) });
 				return false;
 			}
 			editor.timeline.updateElements({
@@ -161,13 +158,13 @@ export async function performPackAdd({
 		case "luts": {
 			const targets = clipTargets({ editor, target });
 			if (targets.length === 0) {
-				toast.info(t("Select a video or photo clip, then try again."));
+				toast.info(t("Installed — select a video or photo clip, then click Add again."));
 				return false;
 			}
 			if (packType === "luts") {
 				const { added } = await importLutFiles([await packItemFile({ item })]);
 				const lut = added[0];
-				if (!lut) return false;
+				if (!lut) unreadable(item);
 				editor.timeline.updateElements({
 					updates: targets.map(({ track, element }) => ({
 						trackId: track.id,
@@ -179,7 +176,7 @@ export async function performPackAdd({
 			}
 			if (packType === "effects") {
 				const stack = parseEffectStack({ raw: await itemJson(item), item });
-				if (!stack) return false;
+				if (!stack) unreadable(item);
 				for (const { track, element } of targets)
 					for (const effect of stack.effects) {
 						const effectId = editor.timeline.addClipEffect({ trackId: track.id, elementId: element.id, effectType: effect.type });
@@ -188,7 +185,7 @@ export async function performPackAdd({
 				return true;
 			}
 			const filter = parseFilter({ raw: await itemJson(item), item });
-			if (!filter) return false;
+			if (!filter) unreadable(item);
 			editor.timeline.updateElements({
 				updates: targets.map(({ track, element }) => ({
 					trackId: track.id,
@@ -273,15 +270,16 @@ function whenRegistered({ packId, timeoutMs = 20_000 }: { packId: string; timeou
 			resolve();
 		});
 		const installed = useAssetLibrary.getState().state?.installed;
-		if (installed) void syncInstalledPacks(installed);
+		if (installed)
+			void syncInstalledPacks(installed).then((failed) => {
+				if (!failed.includes(packId)) return;
+				clearTimeout(timer);
+				off();
+				reject(new Error(t("The pack installed but couldn't be read.")));
+			});
 	});
 }
 
-function pickItem({ packId, itemId }: { packId: string; itemId?: string | null }): PackContentItem | null {
-	const items = packItemsOf(packId);
-	if (itemId) return items.find((i) => i.id === itemId || i.id === `${packId}/${itemId}`) ?? null;
-	return items[0] ?? (packSounds().some((s) => s.packId === packId) ? { id: packId, name: packId, url: "", packId, raw: {} } : null);
-}
 
 const installedVersion = (packId: string) => useAssetLibrary.getState().state?.installed[packId]?.version ?? "builtin";
 
@@ -296,7 +294,13 @@ export function addPackItem({ editor, request }: { editor: EditorCore; request: 
 	const perform = async () => {
 		const item = pickItem({ packId: request.packId, itemId: request.itemId });
 		if (!item) throw new Error(t("{name} has nothing to add here.", { name: request.title }));
-		await performPackAdd({ editor, packType: request.packType, item, target: request.target, version: installedVersion(request.packId) });
+		if (!editor.scenes.getActiveSceneOrNull()) {
+			toast.success(request.packType === "transitions" ? t("Installed — drop it on a cut") : t("{name} is installed", { name: request.title }), { description: t("Open a project to use it; it's under Downloaded in its panel.") });
+			return false;
+		}
+		const added = await performPackAdd({ editor, packType: request.packType, item, target: request.target, version: installedVersion(request.packId) });
+		if (added) toast.success(t("Added {name}", { name: request.title }));
+		return added;
 	};
 	const installedNow = isPackRegistered(request.packId);
 	if (!installedNow && !bridge) {
@@ -310,8 +314,13 @@ export function addPackItem({ editor, request }: { editor: EditorCore; request: 
 			removePlaceholder: (ref) => removeDropPlaceholder({ editor, ref }),
 			install: async () => {
 				if (installedNow) return true;
+				if (!editor.scenes.getActiveSceneOrNull()) toast.info(t("Downloading {name}…", { name: request.title }), { description: t("Open a project to add it; it will be under Downloaded in its panel.") });
 				const state = await bridge?.install(request.packId);
-				if (!state?.installed[request.packId]) return false;
+				if (!state?.installed[request.packId]) {
+					const d = state?.downloads[request.packId];
+					if (d?.status === "error") throw Object.assign(new Error(d.error ?? t("Download failed")), { code: d.code });
+					return false;
+				}
 				useAssetLibrary.setState({ state });
 				await whenRegistered({ packId: request.packId });
 				return true;
@@ -319,6 +328,7 @@ export function addPackItem({ editor, request }: { editor: EditorCore; request: 
 			cancelInstall: () => void bridge?.cancel(request.packId).catch(() => {}),
 			history: { mark: () => editor.command.mark(), squash: (args) => editor.command.squash(args) },
 			perform,
+			onCancelled: () => toast.info(t("{name} didn't finish downloading", { name: request.title }), { description: t("The download was paused or stopped. Resume it in the Asset Library.") }),
 			onError: (error) => {
 				const code = typeof error === "object" && error && "code" in error ? error.code : null;
 				const message = error instanceof Error ? error.message : String(error);

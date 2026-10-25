@@ -1,18 +1,21 @@
 "use client";
 
-import { Check, CloudDownload, Search, Sparkles } from "lucide-react";
+import { Search, Sparkles } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import type { AssetStoreState, CatalogPack } from "@/asset-library/types";
 import { parseProjectTemplate, usePackItems } from "@/asset-library/pack-items";
 import { Button } from "@/components/ui/button";
 import { useEditor } from "@/editor/use-editor";
 import { loadFonts } from "@/fonts/google-fonts";
-import { formatBytes, LibraryPageShell } from "@/library/components/page-shell";
+import { LibraryPageShell } from "@/library/components/page-shell";
+import { catalogBaseUrl } from "@/asset-library/catalog";
 import { useStartIntent } from "@/start/intent";
 import { cn } from "@/utils/ui";
 import { PROJECT_TEMPLATE_FONTS, PROJECT_TEMPLATES, type ProjectTemplate, TEMPLATE_CATEGORIES, templateDuration, templateSlots } from "../project-templates";
+import { useMyProjectTemplates } from "../my-templates";
+import { OnlineTemplateCard } from "./online-template-card";
 import { PREVIEW_CSS, TemplateCard } from "./templates-view";
 
 const ASPECT_FILTERS = [
@@ -50,6 +53,7 @@ export function TemplateGallery() {
 	const [busy, setBusy] = useState(false);
 	const downloaded = usePackItems({ types: ["video-templates"], parse: parseProjectTemplate });
 	const store = useAssetStore();
+	const mine = useMyProjectTemplates((s) => s.templates);
 
 	useEffect(() => {
 		loadFonts({ families: PROJECT_TEMPLATE_FONTS }).catch(() => {});
@@ -57,8 +61,8 @@ export function TemplateGallery() {
 
 	const templates = useMemo(() => {
 		const seen = new Set<string>();
-		return [...PROJECT_TEMPLATES, ...downloaded.map((d) => d.value)].filter((t) => !seen.has(t.id) && seen.add(t.id));
-	}, [downloaded]);
+		return [...PROJECT_TEMPLATES, ...downloaded.map((d) => d.value), ...mine].filter((t) => !seen.has(t.id) && seen.add(t.id));
+	}, [downloaded, mine]);
 	const q = query.trim().toLowerCase();
 	const visible = templates.filter(
 		(t) =>
@@ -75,6 +79,19 @@ export function TemplateGallery() {
 			(!q || `${p.title} ${p.description}`.toLowerCase().includes(q)),
 	);
 	const selected = templates.find((t) => t.id === selectedId) ?? null;
+	const catalogBase = store ? catalogBaseUrl(store.settings.channel) : null;
+	// ~1,000 packs: render in pages of 60 as the list scrolls (each card also draws lazily).
+	const [shown, setShown] = useState(60);
+	const moreRef = useRef<HTMLDivElement>(null);
+	useEffect(() => {
+		const el = moreRef.current;
+		if (!el || typeof IntersectionObserver === "undefined") return;
+		const observer = new IntersectionObserver((entries) => {
+			if (entries.some((e) => e.isIntersecting)) setShown((n) => n + 60);
+		}, { rootMargin: "600px" });
+		observer.observe(el);
+		return () => observer.disconnect();
+	});
 
 	const open = async (template: ProjectTemplate) => {
 		setBusy(true);
@@ -178,36 +195,12 @@ export function TemplateGallery() {
 						</div>
 						{online.length > 0 && (
 							<div className="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-5">
-								{online.slice(0, 120).map((p) => {
-									const dl = store.downloads[p.id];
-									const pct = dl?.total ? Math.round((dl.received / dl.total) * 100) : 0;
-									return (
-										<div key={p.id} className="flex flex-col gap-1.5" data-template-pack={p.id}>
-											<div className="relative flex h-36 items-center justify-center overflow-hidden rounded-xl bg-[#0b0d12] ring-1 ring-white/5">
-												{p.thumbnailUrl ? (
-													// eslint-disable-next-line @next/next/no-img-element -- catalog thumbnail
-													<img src={p.thumbnailUrl} alt="" className="size-full object-cover" loading="lazy" />
-												) : (
-													<CloudDownload className="text-muted-foreground size-8" />
-												)}
-												{dl && (dl.status === "downloading" || dl.status === "installing") && (
-													<div className="absolute inset-x-0 bottom-0 h-1 bg-white/10">
-														<div className="bg-primary h-full" style={{ width: `${pct}%` }} />
-													</div>
-												)}
-											</div>
-											<div className="flex items-center gap-2">
-												<span className="min-w-0 flex-1 truncate text-xs">{p.title}</span>
-												<Button size="sm" variant="secondary" className="h-7 px-2 text-xs" disabled={!!dl && dl.status !== "error"} onClick={() => install(p)}>
-													{dl?.status === "installing" ? <Check className="size-3.5" /> : <CloudDownload className="size-3.5" />}
-													{dl && dl.status !== "error" ? `${pct}%` : formatBytes(p.sizeBytes)}
-												</Button>
-											</div>
-										</div>
-									);
-								})}
+								{online.slice(0, shown).map((p) => (
+									<OnlineTemplateCard key={p.id} pack={p} base={catalogBase} download={store.downloads[p.id]} onInstall={() => install(p)} />
+								))}
 							</div>
 						)}
+						{online.length > shown && <div ref={moreRef} className="h-8" aria-hidden data-template-more />}
 					</section>
 				)}
 			</div>

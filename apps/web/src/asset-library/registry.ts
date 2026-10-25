@@ -29,6 +29,8 @@ export interface PackContentItem {
 	/** URL of the item's main file. */
 	url: string;
 	packId: string;
+	/** Title of the pack it came from (Downloaded lists show it). */
+	packTitle?: string;
 	raw: Record<string, unknown>;
 }
 
@@ -88,13 +90,13 @@ export async function registerInstalledPack(pack: Pick<InstalledPack, "id" | "ty
 		const list = (index.items as Array<{ id: string; name?: { en?: string } }>) ?? [];
 		content.set(pack.id, {
 			type: pack.type,
-			items: list.map((item) => ({ id: `${pack.id}/${item.id}`, name: item.name?.en ?? item.id, url: base, packId: pack.id, raw: item })),
+			items: list.map((item) => ({ id: `${pack.id}/${item.id}`, name: item.name?.en ?? item.id, url: base, packId: pack.id, packTitle: pack.title, raw: item })),
 		});
 	} else {
 		const list = (index.items as Array<{ id: string; name?: string; file: string }>) ?? [];
 		content.set(pack.id, {
 			type: pack.type,
-			items: list.map((item) => ({ id: `${pack.id}/${item.id}`, name: item.name ?? item.id, url: `${base}/${item.file}`, packId: pack.id, raw: item })),
+			items: list.map((item) => ({ id: `${pack.id}/${item.id}`, name: item.name ?? item.id, url: `${base}/${item.file}`, packId: pack.id, packTitle: pack.title, raw: item })),
 		});
 	}
 	registered.set(pack.id, pack.version);
@@ -133,4 +135,14 @@ export async function syncInstalledPacks(installed: Record<string, InstalledPack
 		}
 	}
 	return failed;
+}
+
+/**
+ * The item a drop or "Download & Add" uses: `itemId` (bare or `pack/item`),
+ * else the pack's first item; a sounds pack counts as its own item.
+ */
+export function pickItem({ packId, itemId }: { packId: string; itemId?: string | null }): PackContentItem | null {
+	const items = packItemsOf(packId);
+	if (itemId) return items.find((i) => i.id === itemId || i.id === `${packId}/${itemId}`) ?? null;
+	return items[0] ?? (packSounds().some((s) => s.packId === packId) ? { id: packId, name: packId, url: "", packId, raw: {} } : null);
 }
