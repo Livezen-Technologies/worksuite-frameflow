@@ -29,7 +29,7 @@ const log = (...a) => out.push(a.map((x) => (typeof x === "string" ? x : JSON.st
       if (!r.ok) { log(await r.text().then((t) => t.slice(0, 300))); continue; }
       const entries = io.readZip(Buffer.from(await r.arrayBuffer()));
       log("entries", entries.map((e) => e.name + ":" + e.data.length));
-      for (const e of entries.filter((e) => /\.json$/.test(e.name)).slice(0, 4)) log("FILE", e.name, e.data.toString("utf8").slice(0, 2500));
+      for (const e of entries.filter((e) => /\.(ffx|fftemplate)$/.test(e.name)).slice(0, 2)) log("FILE", e.name, e.data.toString("utf8").slice(0, 6000));
     } catch (e) { log("zip err", String(e)); }
   }
   // thumbnails of the first 10 text-templates packs
