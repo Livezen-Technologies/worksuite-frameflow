@@ -7,6 +7,9 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+### Changed
+- Media panel: the empty import area fills the panel at any size, with a dashed outline, "Drop files here or click to import", the supported formats, a highlight while you drag files over it, and a progress bar while importing.
+
 ## [1.7.11] - 2026-10-25
 
 ### Added

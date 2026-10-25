@@ -235,8 +235,7 @@ export function MediaView() {
 						onImport={openFilePicker}
 					/>
 				}
-				className={cn(isDragOver && "bg-accent/30")}
-				contentClassName="h-full"
+				contentClassName="flex h-full flex-col pb-2"
 				{...dragProps}
 			>
 				{cloudReady && (
@@ -268,6 +267,7 @@ export function MediaView() {
 				) : isDragOver || filteredMediaItems.length === 0 ? (
 					<MediaDragOverlay
 						isVisible={true}
+						isDragging={isDragOver}
 						isProcessing={isProcessing}
 						progress={progress}
 						onClick={openFilePicker}
