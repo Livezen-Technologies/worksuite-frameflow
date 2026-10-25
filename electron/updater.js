@@ -10,6 +10,7 @@
 // download center instead; .deb installs are updated the same way.
 const { app, shell, BrowserWindow, Notification } = require("electron");
 const fs = require("node:fs");
+const macUpdater = require("./mac-updater");
 const path = require("node:path");
 
 const FEED_BASE = process.env.WSC_UPDATE_URL || "https://download.worksuitecloud.com/frameflow";
@@ -34,8 +35,13 @@ function canSelfInstall() {
 	if (!app.isPackaged) return false;
 	if (process.platform === "win32") return true;
 	if (process.platform === "linux") return !!process.env.APPIMAGE;
+	if (process.platform === "darwin") return macUpdater.canUpdate();
 	return false;
 }
+
+/** macOS: our own updater (mac-updater.js) instead of Squirrel.Mac. */
+const macMode = () => process.platform === "darwin" && state.selfInstall;
+let feedYml = "";
 
 let updater = null;
 let timer = null;
@@ -144,6 +150,7 @@ async function downloadCenterVersion() {
 		const res = await fetch(`${feedUrl()}/${feedFileName()}`, { cache: "no-store" });
 		if (!res.ok) return null;
 		const text = await res.text();
+		feedYml = text;
 		return /^version:\s*['"]?([^'"\s]+)/m.exec(text)?.[1] ?? null;
 	} catch {
 		return null;
@@ -168,9 +175,10 @@ async function check() {
 		setState({ status: "unsupported", error: "Updates work in the installed app only." });
 		return state;
 	}
-	if (!state.selfInstall) {
+	if (!state.selfInstall || macMode()) {
 		try {
 			await checkFeedOnly();
+			if (macMode() && state.status === "available" && state.auto) void download();
 		} catch (error) {
 			setState({ status: "error", error: String(error?.message ?? error).split("\n")[0] });
 		}
@@ -189,6 +197,17 @@ async function check() {
 }
 
 async function download() {
+	if (macMode()) {
+		if (state.status === "downloading" || state.status === "ready") return state;
+		try {
+			setState({ status: "downloading", progress: 0 });
+			await macUpdater.prepare({ feedBase: feedUrl(), yml: feedYml, onProgress: (progress) => setState({ status: "downloading", progress }) });
+			setState({ status: "ready", progress: 1 });
+		} catch (error) {
+			setState({ status: "error", error: String(error?.message ?? error).split("\n")[0] });
+		}
+		return state;
+	}
 	if (!state.selfInstall) {
 		// macOS ad-hoc builds and .deb: get the new installer from the download center.
 		await shell.openExternal(`${DOWNLOAD_PAGE}?channel=${state.channel}`);
@@ -204,7 +223,9 @@ async function download() {
 }
 
 function install() {
-	if (state.status === "ready" && updater) updater.quitAndInstall(false, true);
+	if (state.status !== "ready") return;
+	if (macMode()) macUpdater.installAndRestart();
+	else if (updater) updater.quitAndInstall(false, true);
 }
 
 function configure({ channel, auto } = {}) {
