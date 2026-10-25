@@ -14,6 +14,75 @@ export interface AnimationPreset {
 	textOnly?: boolean;
 	/** Only for video and picture clips (masks and blur aren't drawn on text). */
 	clipOnly?: boolean;
+	/** Gallery group (Slide, Zoom & spin, …); hand-made presets are "Classic". */
+	group?: string;
+}
+
+/*
+ * Generated presets. Each is a recipe in its value, so it renders the same
+ * in the preview, the editor and the export without a lookup table:
+ *   g:<dx>:<dy>:<scale>:<rotate>:<ease>   edge (In/Out) motion
+ *   l:<shape>:<amount>:<speed>           loop (Combo)
+ * dx/dy are travel units, scale the starting size, rotate degrees.
+ */
+const DIRS: Array<[string, number, number]> = [
+	["↑", 0, 1],
+	["↓", 0, -1],
+	["←", 1, 0],
+	["→", -1, 0],
+	["↖", 0.7, 0.7],
+	["↗", -0.7, 0.7],
+	["↙", 0.7, -0.7],
+	["↘", -0.7, -0.7],
+];
+const DISTANCES: Array<[string, number]> = [["Short", 0.3], ["", 0.8], ["Far", 1.6]];
+const EASES: Array<[string, string]> = [["smooth", ""], ["back", "Overshoot"], ["bounce", "Bounce"], ["elastic", "Elastic"]];
+const ZOOMS: Array<[string, number]> = [["From tiny", 0.2], ["Grow", 0.6], ["Shrink", 1.4], ["From huge", 2.5]];
+const TURNS: Array<[string, number]> = [["", 0], ["Tilt", 20], ["Tilt back", -20], ["Half turn", 180], ["Half turn back", -180], ["Full turn", 360], ["Full turn back", -360]];
+const ROLLS: Array<[string, number]> = [["Roll", 20], ["Spin", 180], ["Whirl", 360]];
+
+function edgePresets(entering: boolean): AnimationPreset[] {
+	const verb = entering ? "In" : "Out";
+	const list: AnimationPreset[] = [];
+	for (const [arrow, dx, dy] of DIRS)
+		for (const [distName, dist] of DISTANCES)
+			for (const [ease, easeName] of EASES)
+				list.push({
+					value: `g:${dx * dist}:${dy * dist}:1:0:${ease}`,
+					label: [`Slide ${verb} ${arrow}`, distName, easeName].filter(Boolean).join(" · "),
+					group: "Slide",
+				});
+	for (const [zoomName, scale] of ZOOMS)
+		for (const [turnName, rotate] of TURNS)
+			list.push({ value: `g:0:0:${scale}:${rotate}:${rotate ? "smooth" : "back"}`, label: [zoomName, turnName].filter(Boolean).join(" · "), group: "Zoom & spin" });
+	for (const [arrow, dx, dy] of DIRS)
+		for (const [rollName, rotate] of ROLLS)
+			list.push({ value: `g:${dx * 0.8}:${dy * 0.8}:0.8:${rotate * (dx < 0 ? -1 : 1)}:smooth`, label: `${rollName} ${verb} ${arrow}`, group: "Roll" });
+	return list;
+}
+
+const LOOPS: Array<[string, string]> = [
+	["pulse", "Pulse"],
+	["float", "Float"],
+	["sway", "Sway"],
+	["shake", "Shake"],
+	["orbit", "Orbit"],
+	["zigzag", "Zigzag"],
+	["jelly", "Jelly"],
+	["tilt", "Tilt"],
+	["hop", "Hop"],
+	["glow", "Fade pulse"],
+];
+const AMOUNTS: Array<[string, number]> = [["Soft", 0.5], ["", 1], ["Strong", 2]];
+const SPEEDS: Array<[string, number]> = [["Slow", 0.5], ["", 1], ["Fast", 2]];
+
+function loopPresets(): AnimationPreset[] {
+	const list: AnimationPreset[] = [];
+	for (const [shape, name] of LOOPS)
+		for (const [amountName, amount] of AMOUNTS)
+			for (const [speedName, speed] of SPEEDS)
+				list.push({ value: `l:${shape}:${amount}:${speed}`, label: [name, amountName, speedName].filter(Boolean).join(" · "), group: "Loops" });
+	return list;
 }
 
 export const IN_ANIMATIONS: AnimationPreset[] = [
@@ -43,6 +112,7 @@ export const IN_ANIMATIONS: AnimationPreset[] = [
 	{ value: "twist", label: "Twist" },
 	{ value: "flash", label: "Flash Cuts" },
 	{ value: "swing-in", label: "Swing In" },
+	...edgePresets(true),
 ];
 
 export const OUT_ANIMATIONS: AnimationPreset[] = [
@@ -69,6 +139,7 @@ export const OUT_ANIMATIONS: AnimationPreset[] = [
 	{ value: "twist", label: "Twist" },
 	{ value: "flash", label: "Flash Cuts" },
 	{ value: "drop", label: "Fall" },
+	...edgePresets(false),
 ];
 
 export const COMBO_ANIMATIONS: AnimationPreset[] = [
@@ -89,6 +160,7 @@ export const COMBO_ANIMATIONS: AnimationPreset[] = [
 	{ value: "drift", label: "Drift" },
 	{ value: "dream", label: "Dream Blur", clipOnly: true },
 	{ value: "spotlight", label: "Spotlight", clipOnly: true },
+	...loopPresets(),
 ];
 
 /** Caption animations: the text appears word by word or line by line. */
@@ -216,6 +288,75 @@ function easeOutBounce(t: number) {
 	return n1 * (t - 2.625 / d1) ** 2 + 0.984375;
 }
 
+function easeOutElastic(t: number) {
+	if (t <= 0 || t >= 1) return t <= 0 ? 0 : 1;
+	return 2 ** (-10 * t) * Math.sin((t * 10 - 0.75) * ((2 * Math.PI) / 3)) + 1;
+}
+
+const EASE_FN: Record<string, (t: number) => number> = {
+	smooth: easeOutCubic,
+	back: easeOutBack,
+	bounce: easeOutBounce,
+	elastic: easeOutElastic,
+};
+
+/** A generated edge recipe (g:dx:dy:scale:rotate:ease). */
+function applyRecipe({ state, type, t, entering }: { state: AnimationState; type: string; t: number; entering: boolean }) {
+	const [, dx, dy, scale, rotate, ease] = type.split(":");
+	// Leaving mirrors entering: it starts settled and moves back out.
+	const k = (entering ? (EASE_FN[ease] ?? easeOutCubic) : easeOutCubic)(t);
+	const away = 1 - k;
+	const s0 = Number(scale) || 1;
+	state.opacity *= clamp01(t * 2.5);
+	state.offsetX += (entering ? 1 : -1) * (Number(dx) || 0) * away;
+	state.offsetY += (entering ? 1 : -1) * (Number(dy) || 0) * away;
+	state.scale *= Math.max(0.01, s0 + (1 - s0) * k);
+	state.rotate += (entering ? -1 : 1) * (Number(rotate) || 0) * away;
+}
+
+/** A generated loop recipe (l:shape:amount:speed). */
+function applyLoop({ state, type, seconds, speed }: { state: AnimationState; type: string; seconds: number; speed: number }) {
+	const [, shape, amountRaw, speedRaw] = type.split(":");
+	const a = Number(amountRaw) || 1;
+	const phase = seconds * speed * (Number(speedRaw) || 1) * Math.PI * 2;
+	switch (shape) {
+		case "pulse":
+			state.scale *= 1 + 0.05 * a * Math.sin(phase);
+			break;
+		case "float":
+			state.offsetY += 0.05 * a * Math.sin(phase * 0.5);
+			break;
+		case "sway":
+			state.offsetX += 0.05 * a * Math.sin(phase * 0.5);
+			break;
+		case "shake":
+			state.offsetX += 0.02 * a * Math.sin(phase * 3.1);
+			state.offsetY += 0.015 * a * Math.sin(phase * 4.3 + 1);
+			break;
+		case "orbit":
+			state.offsetX += 0.04 * a * Math.cos(phase * 0.5);
+			state.offsetY += 0.04 * a * Math.sin(phase * 0.5);
+			break;
+		case "zigzag":
+			state.offsetX += 0.04 * a * ((2 / Math.PI) * Math.asin(Math.sin(phase * 0.5)));
+			state.offsetY += 0.02 * a * Math.sin(phase);
+			break;
+		case "jelly":
+			state.scale *= 1 + 0.04 * a * Math.sin(phase) * Math.sin(phase * 0.5);
+			state.rotate += 2 * a * Math.sin(phase * 1.5);
+			break;
+		case "tilt":
+			state.rotate += 5 * a * Math.sin(phase * 0.5);
+			break;
+		case "hop":
+			state.offsetY -= 0.05 * a * Math.abs(Math.sin(phase * 0.5));
+			break;
+		case "glow":
+			state.opacity *= 1 - 0.2 * a * (0.5 + 0.5 * Math.sin(phase * 0.5));
+			break;
+	}
+}
+
 function num({
 	params,
 	key,
@@ -246,6 +387,10 @@ function applyEdge({
 	t: number;
 	entering: boolean;
 }) {
+	if (type.startsWith("g:")) {
+		applyRecipe({ state, type, t, entering });
+		return;
+	}
 	const eased = easeOutCubic(t);
 	const away = 1 - eased;
 	switch (type) {
@@ -388,6 +533,10 @@ function applyCombo({
 	progress: number;
 	speed: number;
 }) {
+	if (type.startsWith("l:")) {
+		applyLoop({ state, type, seconds, speed });
+		return;
+	}
 	const phase = seconds * speed * Math.PI * 2;
 	switch (type) {
 		case "pulse":

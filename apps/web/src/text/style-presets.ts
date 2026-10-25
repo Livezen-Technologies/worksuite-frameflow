@@ -30,6 +30,41 @@ const style = ({
 	params: ParamValues;
 }): TextStylePreset => ({ id, name, params: { ...clean, ...params } });
 
+/** Colours × treatments: 25 × 12 = 300 generated looks (Presets › Styles). */
+export const STYLE_COLOURS: Array<[string, string]> = [
+	["White", "#FFFFFF"], ["Snow", "#F1F5F9"], ["Black", "#0B0B0F"], ["Yellow", "#FFD60A"], ["Gold", "#F4B400"],
+	["Orange", "#FF7A1A"], ["Coral", "#FF6B6B"], ["Red", "#E11D48"], ["Pink", "#FF4FA3"], ["Magenta", "#D946EF"],
+	["Purple", "#8B5CF6"], ["Indigo", "#6366F1"], ["Blue", "#3B82F6"], ["Sky", "#38BDF8"], ["Cyan", "#22D3EE"],
+	["Teal", "#14B8A6"], ["Mint", "#5EEAD4"], ["Green", "#22C55E"], ["Lime", "#A3E635"], ["Olive", "#A3A23A"],
+	["Sand", "#E7D3A8"], ["Brown", "#8B5A2B"], ["Slate", "#64748B"], ["Silver", "#CBD5E1"], ["Navy", "#1E3A8A"],
+];
+
+/** Picks black or white, whichever reads better on `hex`. */
+function ink(hex: string): string {
+	const n = Number.parseInt(hex.slice(1), 16);
+	const lum = 0.299 * ((n >> 16) & 255) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255);
+	return lum > 150 ? "#111111" : "#FFFFFF";
+}
+
+const TREATMENTS: Array<[string, string, (c: string) => ParamValues]> = [
+	["shadow", "shadow", (c) => ({ color: c, "shadow.enabled": true, "shadow.color": "#000000", "shadow.blur": 10, "shadow.offsetX": 0, "shadow.offsetY": 4 })],
+	["outline", "outline", (c) => ({ color: c, "stroke.enabled": true, "stroke.color": ink(c) === "#111111" ? "#000000" : "#FFFFFF", "stroke.width": 7 })],
+	["thick", "thick outline", (c) => ({ color: c, "stroke.enabled": true, "stroke.color": "#000000", "stroke.width": 16 })],
+	["glow", "glow", (c) => ({ color: "#FFFFFF", "glow.enabled": true, "glow.color": c, "glow.size": 40 })],
+	["neon", "neon", (c) => ({ color: c, "glow.enabled": true, "glow.color": c, "glow.size": 60, "stroke.enabled": true, "stroke.color": "#FFFFFF", "stroke.width": 2 })],
+	["plate", "box", (c) => ({ color: ink(c), "background.enabled": true, "background.color": c, "background.cornerRadius": 4, "background.paddingX": 18, "background.paddingY": 8 })],
+	["pill", "pill", (c) => ({ color: ink(c), "background.enabled": true, "background.color": c, "background.cornerRadius": 60, "background.paddingX": 26, "background.paddingY": 10 })],
+	["frame", "on dark", (c) => ({ color: c, "background.enabled": true, "background.color": "#0B0B0FCC", "background.cornerRadius": 8, "background.paddingX": 18, "background.paddingY": 8 })],
+	["soft", "soft", (c) => ({ color: c, fontWeight: "normal", "shadow.enabled": true, "shadow.color": "#00000099", "shadow.blur": 24, "shadow.offsetX": 0, "shadow.offsetY": 8 })],
+	["pop", "pop shadow", (c) => ({ color: c, "stroke.enabled": true, "stroke.color": "#000000", "stroke.width": 6, "shadow.enabled": true, "shadow.color": "#000000", "shadow.blur": 0, "shadow.offsetX": 6, "shadow.offsetY": 6 })],
+	["italic", "italic", (c) => ({ color: c, fontStyle: "italic", "shadow.enabled": true, "shadow.color": "#000000", "shadow.blur": 6, "shadow.offsetX": 2, "shadow.offsetY": 3 })],
+	["underline", "underline", (c) => ({ color: c, textDecoration: "underline", "shadow.enabled": true, "shadow.color": "#000000", "shadow.blur": 6, "shadow.offsetX": 0, "shadow.offsetY": 2 })],
+];
+
+const GENERATED_STYLES: TextStylePreset[] = TREATMENTS.flatMap(([tid, tname, make]) =>
+	STYLE_COLOURS.map(([cname, hex]) => style({ id: `gen-${tid}-${cname.toLowerCase()}`, name: `${cname} ${tname}`, params: make(hex) })),
+);
+
 export const TEXT_STYLE_PRESETS: TextStylePreset[] = [
 	style({
 		id: "white-bold",
@@ -229,6 +264,8 @@ export const TEXT_STYLE_PRESETS: TextStylePreset[] = [
 ];
 
 /** CSS for a preview tile approximating a style. */
+TEXT_STYLE_PRESETS.push(...GENERATED_STYLES);
+
 export function presetPreviewStyle(
 	params: ParamValues,
 ): Record<string, string> {

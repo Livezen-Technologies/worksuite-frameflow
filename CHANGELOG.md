@@ -7,6 +7,10 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+### Added
+- 386 more In, Out and Loop animations for clips and text: slides in 8 directions at 3 distances with smooth, overshoot, bounce or elastic easing, zoom and spin combinations, rolls, and 90 loop variations. The Animation panel has search and group filters, and each animation plays when you rest the mouse on it.
+- 300 more text styles (25 colours × 12 looks such as outline, glow, neon, box, pill and pop shadow) and 300 more text templates in English and Sinhala, with search and filters in Text › Presets.
+
 ## [1.7.8] - 2026-10-25
 
 ### Changed

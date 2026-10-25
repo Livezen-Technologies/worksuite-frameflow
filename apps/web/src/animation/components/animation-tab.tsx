@@ -151,6 +151,8 @@ export function AnimationTab({
 	const editor = useEditor();
 	const [mode, setMode] = useState<Mode>("in");
 	const [dragValue, setDragValue] = useState<number | null>(null);
+	const [group, setGroup] = useState("All");
+	const [query, setQuery] = useState("");
 	const params: ParamValues = element.params;
 	const isText = element.type === "text";
 	const current = MODES.find((m) => m.id === mode) ?? MODES[0];
@@ -209,9 +211,42 @@ export function AnimationTab({
 					</button>
 				))}
 			</div>
-			<div className="grid grid-cols-3 gap-x-2.5 gap-y-3">
+			{(() => {
+				const groups = ["All", ...new Set(current.presets.map((p) => p.group ?? "Classic"))];
+				return groups.length > 2 ? (
+					<div className="flex flex-col gap-2" data-animation-filters>
+						<input
+							type="search"
+							value={query}
+							onChange={(e) => setQuery(e.target.value)}
+							placeholder={`Search ${current.presets.length} animations`}
+							className="border-input bg-background h-8 rounded-md border px-2 text-xs"
+							aria-label="Search animations"
+						/>
+						<div className="flex flex-wrap gap-1">
+							{groups.map((g) => (
+								<button
+									key={g}
+									type="button"
+									onClick={() => setGroup(g)}
+									aria-pressed={group === g}
+									className={cn(
+										"h-6 rounded-md border px-2 text-xs transition-colors",
+										group === g ? "bg-primary text-primary-foreground border-primary" : "text-muted-foreground hover:bg-accent border-border",
+									)}
+								>
+									{g}
+								</button>
+							))}
+						</div>
+					</div>
+				) : null;
+			})()}
+			<div className="grid grid-cols-[repeat(auto-fill,minmax(88px,1fr))] gap-x-2.5 gap-y-3">
 				{current.presets
 					.filter((preset) => (isText ? !preset.clipOnly : !preset.textOnly))
+					.filter((preset) => preset.value === "none" || group === "All" || (preset.group ?? "Classic") === group || preset.value === selected)
+					.filter((preset) => !query.trim() || preset.value === "none" || preset.label.toLowerCase().includes(query.trim().toLowerCase()))
 					.map((preset) => (
 						<PresetTile
 							key={preset.value}

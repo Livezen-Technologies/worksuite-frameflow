@@ -237,6 +237,74 @@ export const TEXT_TEMPLATES: TextTemplate[] = [
 	},
 ];
 
+/*
+ * Generated templates: 25 sample texts × 12 looks = 300 (Presets › Templates).
+ * Each picks its font for the text's script and an In animation.
+ */
+const SAMPLES: Array<{ text: string; cat: TextTemplateCategory; si?: boolean; size: number }> = [
+	{ text: "BIG ANNOUNCEMENT", cat: "Titles", size: 20 },
+	{ text: "Chapter One", cat: "Titles", size: 18 },
+	{ text: "THE END", cat: "Titles", size: 24 },
+	{ text: "Coming Soon", cat: "Titles", size: 20 },
+	{ text: "Breaking News", cat: "Titles", size: 18 },
+	{ text: "Top 5 Tips", cat: "Titles", size: 20 },
+	{ text: "Behind the Scenes", cat: "Titles", size: 16 },
+	{ text: "Nimal Perera\nProducer", cat: "Lower thirds", size: 10 },
+	{ text: "Live from Colombo", cat: "Lower thirds", size: 10 },
+	{ text: "Guest Speaker", cat: "Lower thirds", size: 10 },
+	{ text: "@yourhandle", cat: "Social", size: 12 },
+	{ text: "SUBSCRIBE", cat: "Social", size: 16 },
+	{ text: "Link in bio", cat: "Social", size: 12 },
+	{ text: "Like & Share", cat: "Social", size: 14 },
+	{ text: "SALE 50% OFF", cat: "Social", size: 20 },
+	{ text: "New Video!", cat: "Social", size: 18 },
+	{ text: "Wait for it…", cat: "Social", size: 16 },
+	{ text: "සුබ උපන්දිනයක්", cat: "සිංහල", si: true, size: 18 },
+	{ text: "සුබ අලුත් අවුරුද්දක්", cat: "සිංහල", si: true, size: 16 },
+	{ text: "ස්තූතියි", cat: "සිංහල", si: true, size: 22 },
+	{ text: "අලුත් වීඩියෝව", cat: "සිංහල", si: true, size: 18 },
+	{ text: "සබ්ස්ක්‍රයිබ් කරන්න", cat: "සිංහල", si: true, size: 14 },
+	{ text: "විශේෂ දීමනාව", cat: "සිංහල", si: true, size: 18 },
+	{ text: "ආයුබෝවන්", cat: "සිංහල", si: true, size: 22 },
+	{ text: "ප්‍රවෘත්ති", cat: "සිංහල", si: true, size: 20 },
+];
+
+const LOOKS: Array<{ name: string; font: string; anim: string; params: ParamValues }> = [
+	{ name: "Bold", font: "Inter", anim: "pop", params: { color: "#FFFFFF", fontWeight: "bold", "shadow.enabled": true, "shadow.color": "#000000", "shadow.blur": 12, "shadow.offsetY": 5 } },
+	{ name: "Poster", font: "Bebas Neue", anim: "g:0:0.8:1:0:back", params: { color: "#FFD60A", fontWeight: "bold", letterSpacing: 2 } },
+	{ name: "Neon", font: "Inter", anim: "fade", params: { color: "#E9FBFF", fontWeight: "bold", "glow.enabled": true, "glow.color": "#2EC4FF", "glow.size": 40 } },
+	{ name: "Pink neon", font: "Inter", anim: "flash", params: { color: "#FFF0FA", fontWeight: "bold", "glow.enabled": true, "glow.color": "#FF4FA3", "glow.size": 45 } },
+	{ name: "Box", font: "Inter", anim: "g:0.8:0:1:0:smooth", params: { color: "#FFFFFF", fontWeight: "bold", "background.enabled": true, "background.color": "#4F46E5", "background.cornerRadius": 6, "background.paddingX": 20, "background.paddingY": 10 } },
+	{ name: "Highlight", font: "Inter", anim: "wipe-right", params: { color: "#111111", fontWeight: "bold", "background.enabled": true, "background.color": "#FFD60A", "background.cornerRadius": 2, "background.paddingX": 16, "background.paddingY": 6 } },
+	{ name: "Outline", font: "Inter", anim: "zoom-in", params: { color: "#FFFFFF", fontWeight: "bold", "stroke.enabled": true, "stroke.color": "#000000", "stroke.width": 12 } },
+	{ name: "Comic", font: "Bebas Neue", anim: "bounce", params: { color: "#FFE14D", fontWeight: "bold", "stroke.enabled": true, "stroke.color": "#000000", "stroke.width": 8, "shadow.enabled": true, "shadow.color": "#000000", "shadow.blur": 0, "shadow.offsetX": 6, "shadow.offsetY": 6 } },
+	{ name: "Elegant", font: "Abhaya Libre", anim: "fade", params: { color: "#F5E6C8", fontWeight: "normal", fontStyle: "italic", "shadow.enabled": true, "shadow.color": "#00000099", "shadow.blur": 18, "shadow.offsetY": 6 } },
+	{ name: "Script", font: "Pacifico", anim: "g:0:0:0.6:-20:smooth", params: { color: "#FFFFFF", fontWeight: "normal", "shadow.enabled": true, "shadow.color": "#000000", "shadow.blur": 10, "shadow.offsetY": 4 } },
+	{ name: "Red pill", font: "Inter", anim: "g:0:0:0.2:0:back", params: { color: "#FFFFFF", fontWeight: "bold", "background.enabled": true, "background.color": "#E11D48", "background.cornerRadius": 60, "background.paddingX": 26, "background.paddingY": 10 } },
+	{ name: "Glass", font: "Inter", anim: "g:0:0.3:1:0:smooth", params: { color: "#FFFFFF", fontWeight: "bold", "background.enabled": true, "background.color": "#FFFFFF26", "background.cornerRadius": 14, "background.paddingX": 22, "background.paddingY": 10, "stroke.enabled": false } },
+];
+
+for (const look of LOOKS)
+	for (const sample of SAMPLES) {
+		const sinhala = !!sample.si;
+		const font = sinhala ? (look.font === "Abhaya Libre" ? "Abhaya Libre" : "Noto Sans Sinhala") : look.font;
+		TEXT_TEMPLATES.push({
+			id: `gen-${look.name.toLowerCase().replace(/\s+/g, "-")}-${SAMPLES.indexOf(sample)}`,
+			name: `${look.name} · ${sample.text.split("\n")[0]}`,
+			categories: look.anim === "none" ? [sample.cat] : [sample.cat, "Animated"],
+			params: {
+				...off,
+				content: sample.text,
+				fontFamily: font,
+				fontSize: sample.size,
+				textAlign: "center",
+				...look.params,
+				"animation.in": look.anim,
+				"animation.inDuration": 0.6,
+			},
+		});
+	}
+
 /** Fonts the templates use, so the gallery can load them up front. */
 export const TEMPLATE_FONTS = [
 	...new Set(

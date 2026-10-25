@@ -39,7 +39,7 @@ import type { ParamValues } from "@/params";
 import type { TextElement } from "@/timeline";
 import { cn } from "@/utils/ui";
 import { presetPreviewStyle, TEXT_STYLE_PRESETS } from "../style-presets";
-import { TEMPLATE_STYLE_KEYS, TEXT_TEMPLATES } from "../templates";
+import { TEMPLATE_STYLE_KEYS, TEXT_TEMPLATE_CATEGORIES, TEXT_TEMPLATES } from "../templates";
 
 const FONT_SIZES = [6, 8, 10, 12, 15, 18, 22, 28, 36, 48, 64];
 const TRANSFORM_KEYS = [
@@ -773,6 +773,21 @@ export function TextPresetsTab({
 }) {
 	const [tab, setTab] = useState<"styles" | "templates">("styles");
 	const [scope, setScope] = useState<StyleScope>("one");
+	const [query, setQuery] = useState("");
+	const [chip, setChip] = useState("All");
+	const q = query.trim().toLowerCase();
+	// Styles group by treatment ("Yellow outline" → outline); templates by category.
+	const styleKind = (name: string) => name.split(" ").slice(1).join(" ") || "Classic";
+	const chips =
+		tab === "styles"
+			? ["All", ...new Set(TEXT_STYLE_PRESETS.filter((p) => p.id.startsWith("gen-")).map((p) => styleKind(p.name)))]
+			: ["All", ...TEXT_TEMPLATE_CATEGORIES];
+	const styles = TEXT_STYLE_PRESETS.filter(
+		(p) => (chip === "All" || (p.id.startsWith("gen-") && styleKind(p.name) === chip)) && (!q || p.name.toLowerCase().includes(q)),
+	);
+	const templates = TEXT_TEMPLATES.filter(
+		(t) => (chip === "All" || t.categories.some((c) => c === chip)) && (!q || `${t.name} ${String(t.params.content ?? "")}`.toLowerCase().includes(q)),
+	);
 	const { style: write } = useTextWriter({ element, trackId, scope });
 	const keys = new Set(TEMPLATE_STYLE_KEYS);
 
@@ -788,7 +803,10 @@ export function TextPresetsTab({
 					<button
 						key={value}
 						type="button"
-						onClick={() => setTab(value)}
+						onClick={() => {
+							setTab(value);
+							setChip("All");
+						}}
 						className={cn(
 							"rounded-lg py-1.5 text-sm",
 							tab === value
@@ -800,7 +818,31 @@ export function TextPresetsTab({
 					</button>
 				))}
 			</div>
-			<div className="grid grid-cols-3 gap-2">
+			<input
+				type="search"
+				value={query}
+				onChange={(e) => setQuery(e.target.value)}
+				placeholder={tab === "styles" ? `Search ${TEXT_STYLE_PRESETS.length} styles` : `Search ${TEXT_TEMPLATES.length} templates`}
+				className="border-input bg-background h-8 rounded-md border px-2 text-xs"
+				aria-label="Search presets"
+			/>
+			<div className="flex flex-wrap gap-1" data-text-preset-chips>
+				{chips.map((c) => (
+					<button
+						key={c}
+						type="button"
+						onClick={() => setChip(c)}
+						aria-pressed={chip === c}
+						className={cn(
+							"h-6 rounded-md border px-2 text-xs capitalize transition-colors",
+							chip === c ? "bg-primary text-primary-foreground border-primary" : "text-muted-foreground hover:bg-accent border-border",
+						)}
+					>
+						{c}
+					</button>
+				))}
+			</div>
+			<div className="grid grid-cols-[repeat(auto-fill,minmax(84px,1fr))] gap-2">
 				<button
 					type="button"
 					title="No style"
@@ -810,7 +852,7 @@ export function TextPresetsTab({
 					<Ban className="text-muted-foreground size-6" />
 				</button>
 				{tab === "styles"
-					? TEXT_STYLE_PRESETS.map((preset) => (
+					? styles.map((preset) => (
 							<button
 								key={preset.id}
 								type="button"
@@ -822,7 +864,7 @@ export function TextPresetsTab({
 								<span style={presetPreviewStyle(preset.params)}>BROWN</span>
 							</button>
 						))
-					: TEXT_TEMPLATES.map((template) => (
+					: templates.map((template) => (
 							<button
 								key={template.id}
 								type="button"
