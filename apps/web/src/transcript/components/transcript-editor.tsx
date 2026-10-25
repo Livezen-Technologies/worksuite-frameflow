@@ -24,11 +24,18 @@ import {
 	mergeWithNext,
 	replaceAll,
 	setAllVerified,
+	setSegmentSpeaker,
 	splitSegment,
 	toggleVerified,
 	updateSegmentText,
 } from "../transcript";
 import type { Transcript, TranscriptSegment } from "../types";
+import { regenerateSegment } from "../generate";
+import { transcriptionService } from "@/services/transcription/service";
+import { TranscriptionSettings } from "./transcription-settings";
+
+/** Lines below this are flagged for a second look. */
+const LOW_CONFIDENCE = 0.6;
 
 const EXPORT_FORMATS: TranscriptExportFormat[] = ["srt", "vtt", "txt", "json"];
 const SINHALA_STACK = "Inter, 'Noto Sans Sinhala', sans-serif";
@@ -74,6 +81,10 @@ export function TranscriptEditor() {
 	);
 	const setTranscript = useTranscriptStore((s) => s.setTranscript);
 	const closeEditor = useTranscriptStore((s) => s.closeEditor);
+	const live = useTranscriptStore((s) =>
+		s.live && s.live.projectId === s.openProjectId ? s.live : null,
+	);
+	const [regenerating, setRegenerating] = useState<string | null>(null);
 	const [find, setFind] = useState("");
 	const [replace, setReplace] = useState("");
 	const [isBuilding, setIsBuilding] = useState(false);
@@ -121,6 +132,44 @@ export function TranscriptEditor() {
 			return;
 		}
 		update(next);
+	};
+
+	const speakers = [
+		...new Set(
+			transcript.segments.map((s) => s.speaker).filter((s): s is string => !!s),
+		),
+	];
+	const lowCount = transcript.segments.filter(
+		(s) => (s.confidence ?? 1) < LOW_CONFIDENCE,
+	).length;
+
+	const handleRegenerate = async (segment: TranscriptSegment) => {
+		setRegenerating(segment.id);
+		try {
+			const next = await regenerateSegment({
+				editor,
+				transcript,
+				id: segment.id,
+			});
+			// Keep edits made to other lines while this one was running.
+			const latest =
+				useTranscriptStore.getState().byProject[openProjectId] ?? transcript;
+			const fresh = next.segments.filter(
+				(s) => !transcript.segments.some((old) => old.id === s.id),
+			);
+			const index = latest.segments.findIndex((s) => s.id === segment.id);
+			if (index < 0) return;
+			const segments = [...latest.segments];
+			segments.splice(index, 1, ...fresh);
+			update({ ...latest, segments });
+			toast.success("Line transcribed again");
+		} catch (error) {
+			toast.error(
+				error instanceof Error ? error.message : "Couldn't transcribe that line",
+			);
+		} finally {
+			setRegenerating(null);
+		}
 	};
 
 	const handleExport = (format: TranscriptExportFormat) => {
@@ -245,6 +294,20 @@ export function TranscriptEditor() {
 				</Button>
 			</header>
 
+			{live && (
+				<div
+					role="status"
+					className="bg-secondary/40 flex shrink-0 items-center gap-3 border-b px-4 py-2"
+				>
+					<span className="bg-primary size-2 animate-pulse rounded-full" aria-hidden="true" />
+					<span className="flex-1">{live.step}</span>
+					<span className="text-muted-foreground">Lines appear as they&apos;re found.</span>
+					<Button variant="outline" size="sm" onClick={() => transcriptionService.cancel()}>
+						Cancel
+					</Button>
+				</div>
+			)}
+
 			<div className="flex min-h-0 flex-1 overflow-hidden max-md:flex-col">
 				<aside className="bg-sidebar flex min-w-0 shrink-0 basis-[280px] flex-col gap-4 overflow-auto border-r p-4 max-md:max-h-56 max-md:basis-auto max-md:border-r-0 max-md:border-b">
 					<TranscriptAiTools transcript={transcript} onChange={update} />
@@ -262,8 +325,17 @@ export function TranscriptEditor() {
 											(l) => l.code === transcript.language,
 										)?.name ?? transcript.language)}
 							</span>
+							{lowCount > 0 && (
+								<>
+									<br />
+									<span className="text-amber-500">
+										{lowCount} line{lowCount === 1 ? "" : "s"} to check
+									</span>
+								</>
+							)}
 						</p>
 					</section>
+					<TranscriptionSettings />
 					<section className="flex flex-col gap-2">
 						<h2 className="m-0 text-sm font-semibold">Import / export</h2>
 						<p className="text-muted-foreground m-0 leading-relaxed">
@@ -350,6 +422,13 @@ export function TranscriptEditor() {
 						</Button>
 					</div>
 
+					<datalist id="transcript-speakers">
+						{["Speaker 1", "Speaker 2", ...speakers]
+							.filter((v, i, a) => a.indexOf(v) === i)
+							.map((name) => (
+								<option key={name} value={name} />
+							))}
+					</datalist>
 					<ol className="m-0 flex min-h-0 flex-1 list-none flex-col gap-2 overflow-auto p-3">
 						{transcript.segments.map((segment, index) => (
 							<li
@@ -378,6 +457,40 @@ export function TranscriptEditor() {
 									>
 										{SCRIPT_LANGUAGE_LABELS[segment.lang]}
 									</span>
+									{segment.confidence !== undefined && (
+										<span
+											className={cn(
+												"w-fit rounded px-1.5 py-0.5 text-[11px] tabular-nums",
+												segment.confidence < LOW_CONFIDENCE
+													? "bg-amber-500/15 text-amber-500"
+													: "bg-popover text-muted-foreground",
+											)}
+											title="Confidence, from checks on speaking rate, repeats and script. Low lines are worth a second listen."
+										>
+											{segment.confidence < LOW_CONFIDENCE ? "Check · " : ""}
+											{Math.round(segment.confidence * 100)}%
+										</span>
+									)}
+									<label htmlFor={`spk-${segment.id}`} className="sr-only">
+										Speaker for segment {index + 1}
+									</label>
+									<input
+										id={`spk-${segment.id}`}
+										list="transcript-speakers"
+										placeholder="Speaker"
+										defaultValue={segment.speaker ?? ""}
+										onBlur={(event) => {
+											if (event.target.value.trim() === (segment.speaker ?? "")) return;
+											update(
+												setSegmentSpeaker({
+													transcript,
+													id: segment.id,
+													speaker: event.target.value,
+												}),
+											);
+										}}
+										className="bg-input w-full rounded border px-1.5 py-0.5 text-[11px]"
+									/>
 								</div>
 								<label htmlFor={`seg-${segment.id}`} className="sr-only">
 									Segment {index + 1} text
@@ -418,6 +531,15 @@ export function TranscriptEditor() {
 										onClick={() => handleSplit(segment)}
 									>
 										Split at cursor
+									</Button>
+									<Button
+										variant="ghost"
+										size="sm"
+										disabled={regenerating !== null || live !== null}
+										onClick={() => void handleRegenerate(segment)}
+										title="Transcribe this line again from its audio"
+									>
+										{regenerating === segment.id ? "Transcribing…" : "Regenerate"}
 									</Button>
 									<Button
 										variant="ghost"

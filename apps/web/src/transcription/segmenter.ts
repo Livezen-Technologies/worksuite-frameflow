@@ -163,3 +163,41 @@ export function looksHallucinated({ text, seconds }: { text: string; seconds: nu
 	const distinct = new Set(chars).size;
 	return chars.length > 30 && distinct / chars.length < 0.08;
 }
+
+/** Share of letters that are Sinhala (0–1); 0 when there are no letters. */
+export function sinhalaShare(text: string): number {
+	const letters = text.match(/\p{L}|\p{M}/gu) ?? [];
+	if (!letters.length) return 0;
+	return letters.filter((c) => /[඀-෿]/.test(c)).length / letters.length;
+}
+
+/**
+ * How far to trust a line, 0–1. Whisper in the browser gives no token
+ * probabilities, so this is built from checks on the text itself: a normal
+ * speaking rate, how much the clean-up had to remove, repeated words, and
+ * whether the script matches the language asked for.
+ */
+export function estimateConfidence({
+	raw,
+	text,
+	seconds,
+	language,
+}: {
+	raw: string;
+	text: string;
+	seconds: number;
+	language?: string;
+}): number {
+	const chars = text.replace(/\s/g, "").length;
+	if (!chars) return 0;
+	let score = 1;
+	const rate = seconds > 0 ? chars / seconds : 10;
+	if (rate > 25) score -= Math.min(0.5, (rate - 25) / 30);
+	if (rate < 2) score -= Math.min(0.4, (2 - rate) / 4);
+	const rawChars = raw.replace(/\s/g, "").length;
+	if (rawChars > chars) score -= Math.min(0.4, (rawChars - chars) / rawChars);
+	const words = text.toLowerCase().split(/\s+/).filter(Boolean);
+	if (words.length >= 6 && new Set(words).size / words.length < 0.5) score -= 0.25;
+	if (language === "si" && sinhalaShare(text) < 0.3) score -= 0.3;
+	return Math.round(Math.max(0, Math.min(1, score)) * 100) / 100;
+}

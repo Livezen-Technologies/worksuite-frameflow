@@ -15,12 +15,16 @@ function makeSegment({
 	text,
 	verified = false,
 	words,
+	confidence,
+	speaker,
 }: {
 	start: number;
 	end: number;
 	text: string;
 	verified?: boolean;
 	words?: TimedWord[];
+	confidence?: number;
+	speaker?: string;
 }): TranscriptSegment {
 	const clean = text.replace(/\s+/g, " ").trim();
 	return {
@@ -31,6 +35,8 @@ function makeSegment({
 		lang: detectScriptLanguage(clean),
 		verified,
 		...(words?.length ? { words } : {}),
+		...(confidence !== undefined ? { confidence } : {}),
+		...(speaker ? { speaker } : {}),
 	};
 }
 
@@ -52,7 +58,7 @@ export function createTranscript({
 		narrationTrackId,
 		createdAt: Date.now(),
 		segments: segments
-			.map((segment) => makeSegment(segment))
+			.map(({ piece: _piece, ...segment }) => makeSegment(segment))
 			.filter((segment) => segment.text.length > 0)
 			.sort((a, b) => a.start - b.start),
 	};
@@ -175,8 +181,8 @@ export function splitSegment({
 	segments.splice(
 		index,
 		1,
-		makeSegment({ start: segment.start, end: middle, text: left }),
-		makeSegment({ start: middle, end: segment.end, text: right }),
+		makeSegment({ start: segment.start, end: middle, text: left, speaker: segment.speaker }),
+		makeSegment({ start: middle, end: segment.end, text: right, speaker: segment.speaker }),
 	);
 	return { ...transcript, segments };
 }
@@ -201,6 +207,7 @@ export function mergeWithNext({
 			end: next.end,
 			text: `${current.text} ${next.text}`,
 			verified: current.verified && next.verified,
+			speaker: current.speaker,
 		}),
 	);
 	return { ...transcript, segments };
@@ -305,4 +312,43 @@ export function cutTranscriptRange({
 			: [];
 	});
 	return { ...transcript, segments };
+}
+
+export function setSegmentSpeaker({
+	transcript,
+	id,
+	speaker,
+}: {
+	transcript: Transcript;
+	id: string;
+	speaker: string;
+}): Transcript {
+	const name = speaker.trim();
+	return mapSegment({
+		transcript,
+		id,
+		fn: ({ speaker: _old, ...segment }) => (name ? { ...segment, speaker: name } : segment),
+	});
+}
+
+/** Puts freshly transcribed lines in place of one line (regenerate). */
+export function replaceSegment({
+	transcript,
+	id,
+	segments,
+}: {
+	transcript: Transcript;
+	id: string;
+	segments: TranscriptionSegment[];
+}): Transcript {
+	const index = transcript.segments.findIndex((segment) => segment.id === id);
+	if (index < 0) return transcript;
+	const old = transcript.segments[index];
+	const fresh = segments
+		.map(({ piece: _piece, ...segment }) => makeSegment({ ...segment, speaker: old.speaker }))
+		.filter((segment) => segment.text.length > 0);
+	if (!fresh.length) return transcript;
+	const next = [...transcript.segments];
+	next.splice(index, 1, ...fresh);
+	return { ...transcript, segments: next };
 }

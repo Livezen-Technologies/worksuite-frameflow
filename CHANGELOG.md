@@ -7,6 +7,12 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+### Added
+
+- Transcripts fill in line by line while transcribing, with a Cancel button. Lines found before cancelling are kept.
+- Transcription settings: piece length (5–15 s), model choice, and a mixed Sinhala/English mode that re-checks unsure pieces in English.
+- Each transcript line shows a confidence score, and low ones are flagged "Check". You can also add a speaker name, which goes into SRT and VTT exports, or transcribe a single line again with Regenerate.
+
 ### Fixed
 
 - Transitions now show in the preview on the part that plays before the cut. Before, the preview could replay an older saved render without the transition.

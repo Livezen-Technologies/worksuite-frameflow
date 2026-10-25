@@ -155,9 +155,10 @@ describe("render cache segments", () => {
 
 test("a transition into the next clip changes the segment before the cut", () => {
 	const tps = 120_000;
-	const clip = (id: string, start: number, extra = {}) => ({
+	const clip = ({ id, start, extra = {} }: { id: string; start: number; extra?: object }) => ({
 		id, type: "video", startTime: start * tps, duration: 5 * tps, ...extra,
 	});
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
 	const tracks = (withTransition: boolean) => ({
 		overlay: [],
 		audio: [],
@@ -165,11 +166,12 @@ test("a transition into the next clip changes the segment before the cut", () =>
 			id: "main",
 			type: "video",
 			elements: [
-				clip("a", 0),
-				clip("b", 5, withTransition ? { transitionIn: { type: "circle", duration: 1, easing: "linear", direction: "left", alignment: "center" } } : {}),
+				clip({ id: "a", start: 0 }),
+				clip({ id: "b", start: 5, extra: withTransition ? { transitionIn: { type: "circle", duration: 1, easing: "linear", direction: "left", alignment: "center" } } : {} }),
 			],
 		},
 	}) as unknown as Parameters<typeof segmentFingerprint>[0]["tracks"];
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
 	const settings = { canvasSize: { width: 1920, height: 1080 }, background: { type: "color", color: "#000" }, fps: 30 } as unknown as Parameters<typeof segmentFingerprint>[0]["settings"];
 	const at = (t: boolean) => segmentFingerprint({ tracks: tracks(t), settings, startTicks: 4 * tps, endTicks: 4.9 * tps });
 	expect(at(true)).not.toBe(at(false));

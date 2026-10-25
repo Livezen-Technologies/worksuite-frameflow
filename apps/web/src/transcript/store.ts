@@ -12,6 +12,9 @@ interface TranscriptStore {
 	openProjectId: string | null;
 	setTranscript: (args: { projectId: string; transcript: Transcript }) => void;
 	removeTranscript: (args: { projectId: string }) => void;
+	/** A transcription running now: lines appear as they're found. */
+	live: { projectId: string; step: string } | null;
+	setLive: (live: { projectId: string; step: string } | null) => void;
 	openEditor: (args: { projectId: string }) => void;
 	closeEditor: () => void;
 }
@@ -21,6 +24,8 @@ export const useTranscriptStore = create<TranscriptStore>()(
 		(set) => ({
 			byProject: {},
 			openProjectId: null,
+			live: null,
+			setLive: (live) => set({ live }),
 			setTranscript: ({ projectId, transcript }) => {
 				// Corrected translations go into translation memory (AI-37).
 				useTranslationMemory.getState().remember({ projectId, transcript });

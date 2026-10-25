@@ -8,6 +8,10 @@ export interface TranscriptionSegment {
 	end: number;
 	/** Word timings when the engine gives them (AI-46). */
 	words?: { text: string; start: number; end: number }[];
+	/** 0–1, from checks on the text (see estimateConfidence). */
+	confidence?: number;
+	/** The piece of audio (seconds) this line came from. */
+	piece?: { start: number; end: number };
 }
 
 export interface TranscriptionResult {

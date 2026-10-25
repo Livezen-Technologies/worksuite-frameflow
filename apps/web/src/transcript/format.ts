@@ -34,7 +34,7 @@ export function transcriptToSrt(transcript: Transcript): string {
 	return transcript.segments
 		.map(
 			(segment, index) =>
-				`${index + 1}\n${formatTimestamp({ seconds: segment.start, separator: "," })} --> ${formatTimestamp({ seconds: segment.end, separator: "," })}\n${segment.text}\n`,
+				`${index + 1}\n${formatTimestamp({ seconds: segment.start, separator: "," })} --> ${formatTimestamp({ seconds: segment.end, separator: "," })}\n${segment.speaker ? `${segment.speaker}: ` : ""}${segment.text}\n`,
 		)
 		.join("\n");
 }
@@ -43,7 +43,7 @@ export function transcriptToVtt(transcript: Transcript): string {
 	const body = transcript.segments
 		.map(
 			(segment) =>
-				`${formatTimestamp({ seconds: segment.start, separator: "." })} --> ${formatTimestamp({ seconds: segment.end, separator: "." })}\n${segment.text}\n`,
+				`${formatTimestamp({ seconds: segment.start, separator: "." })} --> ${formatTimestamp({ seconds: segment.end, separator: "." })}\n${segment.speaker ? `<v ${segment.speaker.replace(/[<>&]/g, "")}>` : ""}${segment.text}\n`,
 		)
 		.join("\n");
 	return `WEBVTT\n\n${body}`;

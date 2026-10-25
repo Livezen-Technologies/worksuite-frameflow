@@ -151,6 +151,8 @@ export function Captions() {
 
 	const handleGenerateTranscript = async () => {
 		dispatch({ type: "start", step: "Extracting audio..." });
+		const transcriptStore = useTranscriptStore.getState();
+		let opened = false;
 		try {
 			const nextTranscript = await generateTranscript({
 				editor,
@@ -158,7 +160,19 @@ export function Captions() {
 				engine: engine === "gemini" ? "gemini" : "local",
 				narrationTrackId,
 				onStep: (step) => dispatch({ type: "update_step", step }),
-				onWhisperProgress: handleProgress,
+				onWhisperProgress: (progress) => {
+					handleProgress(progress);
+					if (progress.message) transcriptStore.setLive({ projectId, step: progress.message });
+				},
+				// Lines show in the editor as each piece of audio is done.
+				onPartial: (partial) => {
+					if (!partial.segments.length) return;
+					setTranscript({ projectId, transcript: partial });
+					if (!opened) {
+						opened = true;
+						openTranscriptEditor({ projectId });
+					}
+				},
 			});
 			if (nextTranscript.segments.length === 0) {
 				dispatch({
@@ -180,6 +194,8 @@ export function Captions() {
 						? error.message
 						: "An unexpected error occurred",
 			});
+		} finally {
+			transcriptStore.setLive(null);
 		}
 	};
 

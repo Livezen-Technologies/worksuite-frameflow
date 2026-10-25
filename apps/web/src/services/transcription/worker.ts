@@ -6,11 +6,11 @@ import {
 } from "@huggingface/transformers";
 import type { TranscriptionSegment } from "@/transcription/types";
 import { groupWords } from "@/captions/words";
-import { SAMPLE_RATE, cleanText, looksHallucinated, planChunks, speechRegions } from "@/transcription/segmenter";
+import { SAMPLE_RATE, cleanText, estimateConfidence, looksHallucinated, planChunks, speechRegions } from "@/transcription/segmenter";
 
 export type WorkerMessage =
 	| { type: "init"; modelId: string; remoteHosts: string[] }
-	| { type: "transcribe"; audio: Float32Array; language: string }
+	| { type: "transcribe"; audio: Float32Array; language: string; chunkSeconds?: number; offset?: number }
 	| { type: "cancel" };
 
 export type WorkerResponse =
@@ -44,6 +44,8 @@ self.onmessage = async (event: MessageEvent<WorkerMessage>) => {
 			await handleTranscribe({
 				audio: message.audio,
 				language: message.language,
+				chunkSeconds: message.chunkSeconds ?? 10,
+				offset: message.offset ?? 0,
 			});
 			break;
 		case "cancel":
@@ -139,9 +141,14 @@ async function loadPipeline({ modelId }: { modelId: string }): Promise<unknown> 
 async function handleTranscribe({
 	audio,
 	language,
+	chunkSeconds,
+	offset,
 }: {
 	audio: Float32Array;
 	language: string;
+	chunkSeconds: number;
+	/** Seconds added to every time (when `audio` is part of a longer track). */
+	offset: number;
 }) {
 	if (!transcriber) {
 		self.postMessage({
@@ -156,7 +163,8 @@ async function handleTranscribe({
 	try {
 		// Short pieces cut at pauses (see transcription/segmenter.ts), each
 		// transcribed on its own so timestamps come from its place in the audio.
-		const chunks = planChunks({ audio, regions: speechRegions({ audio }) });
+		const target = Math.min(15, Math.max(5, chunkSeconds));
+		const chunks = planChunks({ audio, regions: speechRegions({ audio }), target, min: Math.min(5, target), max: Math.max(15, target) });
 		const lang = language === "auto" ? undefined : language;
 		// Word timings are reliable for English; for Sinhala Whisper's
 		// alignment drifts, so keep honest phrase-level timestamps there.
@@ -189,10 +197,23 @@ async function handleTranscribe({
 			const pieceText = cleanText(result.text ?? "");
 			if (pieceText && !looksHallucinated({ text: pieceText, seconds: length })) {
 				texts.push(pieceText);
-				if (words && timed.length) segments.push(...groupWords({ words: timed }));
-				else if (timed.length > 1) segments.push(...timed.map((t) => ({ ...t, end: Math.max(t.end, t.start + 0.2) })));
+				const confidence = estimateConfidence({ raw: result.text ?? "", text: pieceText, seconds: length, language: lang });
+				const piece = { start: chunk.start + offset, end: chunk.end + offset };
+				let lines: TranscriptionSegment[];
+				if (words && timed.length) lines = groupWords({ words: timed });
+				else if (timed.length > 1) lines = timed.map((t) => ({ ...t, end: Math.max(t.end, t.start + 0.2) }));
 				// One phrase: it spans the speech it came from.
-				else segments.push({ text: pieceText, start: chunk.start, end: chunk.end });
+				else lines = [{ text: pieceText, start: chunk.start, end: chunk.end }];
+				segments.push(
+					...lines.map((line) => ({
+						...line,
+						start: line.start + offset,
+						end: line.end + offset,
+						...(line.words ? { words: line.words.map((w) => ({ ...w, start: w.start + offset, end: w.end + offset })) } : {}),
+						confidence,
+						piece,
+					})),
+				);
 			}
 			self.postMessage({
 				type: "transcribe-partial",

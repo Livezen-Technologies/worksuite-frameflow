@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { SAMPLE_RATE, cleanText, looksHallucinated, planChunks, speechRegions } from "../segmenter";
+import { SAMPLE_RATE, cleanText, looksHallucinated, planChunks, speechRegions, estimateConfidence, sinhalaShare } from "../segmenter";
 
 /** Tone bursts (speech) separated by near-silence. */
 function synth(parts: Array<[seconds: number, loud: boolean]>): Float32Array {
@@ -45,4 +45,12 @@ describe("segmenter", () => {
 		expect(looksHallucinated({ text: "ම්ම්ම්ම්ම්ම්ම්ම්ම්ම්ම්ම්ම්ම්ම්ම්ම්ම්ම්ම්ම්ම්ම්ම්", seconds: 5 })).toBe(true);
 		expect(looksHallucinated({ text: "ඔයා කැමතිම social media app එක මොකක්ද?", seconds: 3 })).toBe(false);
 	});
+});
+
+test("confidence drops for repeats, wrong script and odd speaking rate", () => {
+	expect(estimateConfidence({ raw: "hello there my friend", text: "hello there my friend", seconds: 1.5 })).toBe(1);
+	expect(estimateConfidence({ raw: "a a a a a a a a", text: "a", seconds: 3 })).toBeLessThan(0.7);
+	expect(estimateConfidence({ raw: "hello", text: "hello", seconds: 1, language: "si" })).toBeLessThan(0.8);
+	expect(sinhalaShare("මම ගෙදර යනවා")).toBe(1);
+	expect(sinhalaShare("hello")).toBe(0);
 });

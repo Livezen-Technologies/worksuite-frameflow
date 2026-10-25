@@ -11,6 +11,8 @@ import { TRANSCRIPTION_LANGUAGES } from "@/transcription/supported-languages";
 import type { TranscriptionLanguage } from "@/transcription/types";
 import { generateTranscript } from "../generate";
 import { useTranscriptStore } from "../store";
+import { transcriptionService } from "@/services/transcription/service";
+import { TranscriptionSettings } from "./transcription-settings";
 
 /** Transcript › start: pick the spoken language and the track, then Transcribe (CapCut-style). */
 export function TranscribeCard() {
@@ -18,6 +20,7 @@ export function TranscribeCard() {
 	const projectId = useEditor((e) => e.project.getActive().metadata.id);
 	const tracks = useEditor((e) => e.scenes.getActiveScene().tracks);
 	const setTranscript = useTranscriptStore((s) => s.setTranscript);
+	const setLive = useTranscriptStore((s) => s.setLive);
 	const sources = useMemo(() => narrationSources(tracks), [tracks]);
 	const [language, setLanguage] = useState<TranscriptionLanguage>("auto");
 	const [track, setTrack] = useState<string>("all");
@@ -26,15 +29,20 @@ export function TranscribeCard() {
 
 	const transcribe = async () => {
 		setStep("Preparing…");
+		const show = (text: string) => {
+			setStep(text);
+			setLive({ projectId, step: text });
+		};
 		try {
 			const transcript = await generateTranscript({
 				editor,
 				language,
 				engine: "local",
 				narrationTrackId: trackId,
-				onStep: setStep,
+				onStep: show,
 				onWhisperProgress: (p) =>
-					setStep(p.status === "loading-model" ? `Loading model ${Math.round(p.progress)}%` : "Transcribing…"),
+					show(p.status === "loading-model" ? `Loading model ${Math.round(p.progress)}%` : (p.message ?? "Transcribing…")),
+				onPartial: (partial) => setTranscript({ projectId, transcript: partial }),
 			});
 			if (transcript.segments.length === 0) toast.error("No speech was found on that track");
 			else setTranscript({ projectId, transcript });
@@ -42,6 +50,7 @@ export function TranscribeCard() {
 			toast.error(error instanceof Error ? error.message : "Couldn't transcribe");
 		} finally {
 			setStep(null);
+			setLive(null);
 		}
 	};
 
@@ -87,9 +96,22 @@ export function TranscribeCard() {
 					</SelectContent>
 				</Select>
 			</div>
-			<Button onClick={() => void transcribe()} disabled={step !== null} data-transcribe-start>
-				{step ?? "Transcribe"}
-			</Button>
+			<details className="text-xs">
+				<summary className="text-muted-foreground cursor-pointer">Transcription settings</summary>
+				<div className="pt-3">
+					<TranscriptionSettings />
+				</div>
+			</details>
+			<div className="flex gap-2">
+				<Button className="flex-1" onClick={() => void transcribe()} disabled={step !== null} data-transcribe-start>
+					{step ?? "Transcribe"}
+				</Button>
+				{step !== null && (
+					<Button variant="outline" onClick={() => transcriptionService.cancel()}>
+						Cancel
+					</Button>
+				)}
+			</div>
 		</div>
 	);
 }

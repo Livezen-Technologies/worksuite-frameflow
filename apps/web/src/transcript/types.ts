@@ -10,6 +10,10 @@ export interface TranscriptSegment {
 	text: string;
 	lang: ScriptLanguage;
 	verified: boolean;
+	/** 0–1 from checks on the text; low lines are flagged for review. */
+	confidence?: number;
+	/** Who is speaking, set by hand (e.g. "Speaker 1"). */
+	speaker?: string;
 	/** Word timings in timeline seconds (AI-46); re-aligned if the text changes. */
 	words?: TimedWord[];
 	/** Set by AI translation: what it was translated from and to (AI-37). */

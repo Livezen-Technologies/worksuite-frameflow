@@ -1,5 +1,6 @@
 import { WHISPER_HOSTS } from "@/models/portal";
 import { ensureReleaseModel } from "@/transcription/release-model";
+import { SAMPLE_RATE, sinhalaShare } from "@/transcription/segmenter";
 import type {
 	TranscriptionLanguage,
 	TranscriptionResult,
@@ -25,12 +26,21 @@ class TranscriptionService {
 		audioData,
 		language = "auto",
 		modelId = DEFAULT_TRANSCRIPTION_MODEL,
+		chunkSeconds = 10,
+		offset = 0,
+		mixedSinhalaEnglish = false,
 		onProgress,
 		onSegments,
 	}: {
 		audioData: Float32Array;
 		language?: TranscriptionLanguage;
 		modelId?: TranscriptionModelId;
+		/** Target length of each piece of audio, 5–15 s. */
+		chunkSeconds?: number;
+		/** Seconds added to every time, when `audioData` is part of a longer track. */
+		offset?: number;
+		/** Sinhala only: re-run pieces that came back mostly non-Sinhala or unsure with `modelId` in English. */
+		mixedSinhalaEnglish?: boolean;
 		onProgress?: ProgressCallback;
 		/** Lines so far, as each short piece of audio is transcribed. */
 		onSegments?: (segments: TranscriptionResult["segments"]) => void;
@@ -43,7 +53,59 @@ class TranscriptionService {
 			if (preferred === modelId) throw error;
 			await this.ensureWorker({ modelId, onProgress });
 		}
+		const usedSpecific = this.currentModelId !== modelId;
 
+		const result = await this.run({ audioData, language, chunkSeconds, offset, onProgress, onSegments });
+		if (!(mixedSinhalaEnglish && language === "si" && usedSpecific)) return result;
+
+		// Mixed Sinhala/English: pieces the Sinhala model wasn't sure of, or
+		// that came back mostly in Latin letters, get a second try in English.
+		const pieces = new Map<string, { start: number; end: number; confidence: number }>();
+		for (const segment of result.segments) {
+			if (!segment.piece) continue;
+			const unsure = (segment.confidence ?? 1) < 0.6 || sinhalaShare(segment.text) < 0.5;
+			if (!unsure) continue;
+			const key = `${segment.piece.start}:${segment.piece.end}`;
+			pieces.set(key, { ...segment.piece, confidence: Math.min(pieces.get(key)?.confidence ?? 1, segment.confidence ?? 1) });
+		}
+		if (!pieces.size) return result;
+		await this.ensureWorker({ modelId, onProgress });
+		let segments = result.segments;
+		let done = 0;
+		for (const piece of pieces.values()) {
+			const from = Math.max(0, Math.floor((piece.start - offset) * SAMPLE_RATE));
+			const to = Math.min(audioData.length, Math.ceil((piece.end - offset) * SAMPLE_RATE));
+			const english = await this.run({ audioData: audioData.slice(from, to), language: "en", chunkSeconds: 15, offset: piece.start });
+			const englishConfidence = Math.min(...english.segments.map((s) => s.confidence ?? 0), 1);
+			if (english.segments.length && englishConfidence > piece.confidence) {
+				segments = [
+					...segments.filter((s) => !(s.piece && s.piece.start === piece.start && s.piece.end === piece.end)),
+					...english.segments.map((s) => ({ ...s, piece: { start: piece.start, end: piece.end } })),
+				].sort((x, y) => x.start - y.start);
+				onSegments?.(segments);
+			}
+			done++;
+			onProgress?.({ status: "transcribing", progress: Math.round((done / pieces.size) * 100), message: `Checking English words… ${done}/${pieces.size}` });
+		}
+		return { ...result, segments, text: segments.map((s) => s.text).join(" ") };
+	}
+
+	/** One pass of the loaded model over `audioData`. */
+	private run({
+		audioData,
+		language,
+		chunkSeconds,
+		offset,
+		onProgress,
+		onSegments,
+	}: {
+		audioData: Float32Array;
+		language: TranscriptionLanguage;
+		chunkSeconds: number;
+		offset: number;
+		onProgress?: ProgressCallback;
+		onSegments?: (segments: TranscriptionResult["segments"]) => void;
+	}): Promise<TranscriptionResult> {
 		return new Promise((resolve, reject) => {
 			if (!this.worker) {
 				reject(new Error("Worker not initialized"));
@@ -98,6 +160,8 @@ class TranscriptionService {
 				type: "transcribe",
 				audio: audioData,
 				language,
+				chunkSeconds,
+				offset,
 			} satisfies WorkerMessage);
 		});
 	}
