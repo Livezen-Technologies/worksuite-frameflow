@@ -7,6 +7,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+## [1.7.15] - 2026-10-25
+
 ### Added
 
 - Export › Memory use (Low / Balanced / Performance) and an option to keep background preview rendering going during an export.
