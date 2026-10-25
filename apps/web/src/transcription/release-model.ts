@@ -29,8 +29,8 @@ export async function ensureReleaseModel({
 		.split("\n")
 		.map((f) => f.trim())
 		.filter((f) => f && f !== "files.txt");
-	// Only the q4 weights the engine loads, plus every small config file.
-	const wanted = files.filter((f) => !f.endsWith(".onnx") || /_q4\.onnx$/.test(f));
+	// Only the q4 encoder and merged decoder the engine loads, plus the small config files.
+	const wanted = files.filter((f) => !f.endsWith(".onnx") || /^onnx__(encoder_model|decoder_model_merged)_q4\.onnx$/.test(f));
 	const cache = await caches.open(CACHE);
 	let done = 0;
 	for (const file of wanted) {
