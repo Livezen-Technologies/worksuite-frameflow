@@ -7,6 +7,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+## [1.7.13] - 2026-10-25
+
 ### Changed
 - Sign in and Create Worksuite account use the Worksuite account service at account.worksuitecloud.com.
 - Settings › About no longer links to OpenCut.
