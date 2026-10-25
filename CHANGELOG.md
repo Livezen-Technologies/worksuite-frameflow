@@ -7,6 +7,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+## [1.7.11] - 2026-10-25
+
 ### Added
 - macOS updates install inside the app: FrameFlow downloads the new version in the background, checks it, and replaces itself when you restart, with no trip to the download center. It needs FrameFlow to be in a folder you can write to, such as Applications, not run from the disk image.
 
