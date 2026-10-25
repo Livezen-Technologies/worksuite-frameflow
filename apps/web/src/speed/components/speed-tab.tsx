@@ -69,7 +69,7 @@ export function SpeedTab({
 	element: AudioElement | VideoElement;
 	trackId: string;
 }) {
-	const hasCurve = !!readCurve(element);
+	const hasCurve = !!readCurve(element) || !!element.retime?.curve?.length;
 	const [mode, setMode] = useState<"normal" | "curve">(
 		hasCurve ? "curve" : "normal",
 	);
@@ -104,7 +104,7 @@ export function SpeedTab({
 				</div>
 			) : hasCurve ? (
 				<p className="text-muted-foreground m-0 p-4 text-xs leading-relaxed">
-					This clip has a speed curve. Choose None under Curve to go back to one
+					This clip has a speed curve. Choose Normal under Curve to go back to one
 					speed.
 				</p>
 			) : (
@@ -179,7 +179,7 @@ function NormalSpeed({
 							suffix="x"
 							scrubRanges={[
 								{ from: 0.01, to: 1, pixelsPerUnit: 160 },
-								{ from: 1, to: 5, pixelsPerUnit: 48 },
+								{ from: 1, to: 10, pixelsPerUnit: 48 },
 							]}
 							scrubClamp={{ min: MIN_RETIME_RATE, max: MAX_RETIME_RATE }}
 							onFocus={() => {
@@ -195,7 +195,7 @@ function NormalSpeed({
 							}
 							isDefault={rate === DEFAULT_RETIME_RATE}
 						/>
-						{/* 0.1x–5x on a log scale, so 1x sits near the middle like CapCut. */}
+						{/* 0.1x–10x on a log scale, so 1x sits near the middle like CapCut. */}
 						<Slider
 							className="mt-3"
 							min={0}
@@ -262,7 +262,7 @@ function NormalSpeed({
 }
 
 const SLIDER_MIN = 0.1;
-const SLIDER_MAX = 5;
+const SLIDER_MAX = 10;
 
 function speedToSlider(rate: number): number {
 	const clamped = Math.min(SLIDER_MAX, Math.max(SLIDER_MIN, rate));

@@ -58,7 +58,7 @@ function buildResampledBuffer({
 		for (let i = 0; i < outputLength; i++) {
 			const clipTime = i / targetSampleRate;
 			const sourceTime =
-				trimStart + getSourceTimeAtClipTime({ clipTime, retime });
+				trimStart + getSourceTimeAtClipTime({ clipTime, retime, duration: clipDuration });
 			outputData[i] = sampleLinear({
 				channelData: sourceData,
 				position: sourceTime * sourceBuffer.sampleRate,
@@ -188,6 +188,17 @@ async function renderStretched({
 }): Promise<AudioBuffer> {
 	const targetSampleRate = audioContext.sampleRate;
 	const rate = clampRetimeRate({ rate: retime?.rate ?? 1 });
+	if (retime?.curve?.length && (maintainPitch || pitchSemitones !== 0)) {
+		return buildCurvePitchPreservedBuffer({
+			audioContext,
+			sourceBuffer,
+			trimStart,
+			clipDuration,
+			retime,
+			targetSampleRate,
+			pitchSemitones,
+		});
+	}
 	const usePitchPreservation =
 		shouldMaintainPitch({ rate, maintainPitch }) &&
 		Math.abs(rate - 1) > RATE_EPSILON;
@@ -211,4 +222,69 @@ async function renderStretched({
 		targetSampleRate,
 		retime,
 	});
+}
+
+/** Clip seconds per block when keeping pitch through a speed curve. */
+const CURVE_BLOCK_SECONDS = 0.25;
+const CURVE_FADE_SECONDS = 0.02;
+
+/**
+ * Keeps pitch through a speed curve: the clip is stretched in short blocks,
+ * each at its own steady speed, and the blocks are cross-faded together.
+ */
+async function buildCurvePitchPreservedBuffer({
+	audioContext,
+	sourceBuffer,
+	trimStart,
+	clipDuration,
+	retime,
+	targetSampleRate,
+	pitchSemitones,
+}: {
+	audioContext: BaseAudioContext;
+	sourceBuffer: AudioBuffer;
+	trimStart: number;
+	clipDuration: number;
+	retime: RetimeConfig;
+	targetSampleRate: number;
+	pitchSemitones: number;
+}): Promise<AudioBuffer> {
+	const numChannels = Math.max(1, Math.min(2, sourceBuffer.numberOfChannels));
+	const outputLength = Math.max(1, Math.ceil(clipDuration * targetSampleRate));
+	const output = audioContext.createBuffer(numChannels, outputLength, targetSampleRate);
+	const fade = Math.round(CURVE_FADE_SECONDS * targetSampleRate);
+	const blocks = Math.max(1, Math.ceil(clipDuration / CURVE_BLOCK_SECONDS));
+	const sourceAt = (clipTime: number) =>
+		getSourceTimeAtClipTime({ clipTime, retime, duration: clipDuration });
+	for (let b = 0; b < blocks; b++) {
+		const start = b * CURVE_BLOCK_SECONDS;
+		const end = Math.min(clipDuration, start + CURVE_BLOCK_SECONDS);
+		// Render a little extra so neighbouring blocks overlap for the fade.
+		const renderEnd = Math.min(clipDuration, end + CURVE_FADE_SECONDS);
+		const length = renderEnd - start;
+		if (length <= 0) continue;
+		const sourceStart = sourceAt(start);
+		const blockRate = clampRetimeRate({ rate: (sourceAt(renderEnd) - sourceStart) / length });
+		const rendered = await buildPitchPreservedBuffer({
+			sourceBuffer,
+			trimStart: trimStart + sourceStart,
+			clipDuration: length,
+			rate: blockRate,
+			targetSampleRate,
+			pitchSemitones,
+		});
+		const offset = Math.round(start * targetSampleRate);
+		for (let ch = 0; ch < numChannels; ch++) {
+			const out = output.getChannelData(ch);
+			const data = rendered.getChannelData(Math.min(ch, rendered.numberOfChannels - 1));
+			for (let i = 0; i < data.length && offset + i < outputLength; i++) {
+				// Fade in over the previous block's tail; the tail fades out below.
+				const fadeIn = b > 0 && i < fade ? i / fade : 1;
+				const tailStart = Math.round((end - start) * targetSampleRate);
+				const fadeOut = i >= tailStart ? Math.max(0, 1 - (i - tailStart) / fade) : 1;
+				out[offset + i] += data[i] * fadeIn * fadeOut;
+			}
+		}
+	}
+	return output;
 }

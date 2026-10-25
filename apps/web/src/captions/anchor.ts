@@ -53,6 +53,7 @@ function sourceSpan(element: MediaClip): [number, number] {
 	const length = getSourceTimeAtClipTime({
 		clipTime: element.duration,
 		retime: retimeOf(element),
+		duration: element.duration,
 	});
 	return [element.trimStart, element.trimStart + length];
 }
@@ -86,6 +87,7 @@ export function sourceAt({
 					getSourceTimeAtClipTime({
 						clipTime: time - element.startTime,
 						retime: retimeOf(element),
+						duration: element.duration,
 					}),
 			};
 		}
@@ -121,6 +123,7 @@ export function anchorFor({
 		getSourceTimeAtClipTime({
 			clipTime: Math.min(Math.max(t - clip.startTime, 0), clip.duration),
 			retime: retimeOf(clip),
+			duration: clip.duration,
 		});
 	return {
 		mediaId: at.mediaId,
@@ -150,10 +153,10 @@ export function placeAnchor({
 			const retime = retimeOf(element);
 			const startTime =
 				element.startTime +
-				getClipTimeAtSourceTime({ sourceTime: s - element.trimStart, retime });
+				getClipTimeAtSourceTime({ sourceTime: s - element.trimStart, retime, duration: element.duration });
 			const endTime =
 				element.startTime +
-				getClipTimeAtSourceTime({ sourceTime: e - element.trimStart, retime });
+				getClipTimeAtSourceTime({ sourceTime: e - element.trimStart, retime, duration: element.duration });
 			const hinted = track.id === anchor.trackId;
 			const candidate = {
 				startTime: Math.round(startTime),

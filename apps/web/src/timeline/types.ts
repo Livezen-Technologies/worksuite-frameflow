@@ -1,3 +1,4 @@
+import type { SpeedKeyframe } from "@/retime/curve";
 import type { ScreenStyle } from "@/screen-style/types";
 import type { CaptionAnchor } from "@/captions/anchor";
 import type { TimedWord } from "@/captions/words";
@@ -103,8 +104,13 @@ export interface SceneTracks {
 }
 
 export interface RetimeConfig {
+	/** Constant speed; with a curve, the curve's average speed. */
 	rate: number;
 	maintainPitch?: boolean;
+	/** Speed curve keyframes (non-destructive time remapping, see retime/curve.ts). */
+	curve?: SpeedKeyframe[];
+	/** Preset the curve came from ("custom" once edited). */
+	curvePreset?: string;
 }
 
 interface BaseAudioElement extends BaseTimelineElement {

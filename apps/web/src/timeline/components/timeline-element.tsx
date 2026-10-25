@@ -1,6 +1,7 @@
 "use client";
 
 import { ZoomLane } from "@/screen-zoom/components/zoom-lane";
+import { SpeedLane } from "@/speed/components/speed-lane";
 import { useMotionEditor } from "@/lottie/motion-editor/store";
 import { TimelineClipMenuExtras } from "@/clip-actions/components/clip-menus";
 import { TransitionBar, TransitionDropMarker, useTransitionDrop } from "@/transitions/components/timeline-transition";
@@ -636,6 +637,16 @@ function ElementInner({
 						</div>
 						{expandedContent}
 					</button>
+					{(element.type === "video" || element.type === "audio") && (
+						<SpeedLane
+							element={element}
+							visibleDuration={visibleElement.duration}
+							trackId={track.id}
+							pixelsPerSecond={pixelsPerSecond}
+							height={baseTrackHeight}
+							isSelected={isSelected}
+						/>
+					)}
 					{visibleElement.type === "video" &&
 						!!visibleElement.screenZoom?.segments.length && (
 							<ZoomLane

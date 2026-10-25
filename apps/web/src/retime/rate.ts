@@ -1,6 +1,6 @@
 export const DEFAULT_RETIME_RATE = 1;
 export const MIN_RETIME_RATE = 0.01;
-export const MAX_RETIME_RATE = 5;
+export const MAX_RETIME_RATE = 10;
 
 export function clampRetimeRate({ rate }: { rate: number }): number {
 	if (!Number.isFinite(rate) || rate <= 0) {

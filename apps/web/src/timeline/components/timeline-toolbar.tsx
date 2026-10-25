@@ -47,7 +47,7 @@ import {
 	Unlink02Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { CircleMinus, CirclePlus, Pause, Play } from "lucide-react";
+import { CircleMinus, CirclePlus, Pause, Play, Gauge } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { formatTimecode } from "opencut-wasm";
 import type { MediaTime } from "@/wasm";
@@ -354,6 +354,8 @@ function ToolbarRightSection({
 	const rippleEditingEnabled = useTimelineStore((s) => s.rippleEditingEnabled);
 	const toggleSnapping = useTimelineStore((s) => s.toggleSnapping);
 	const toggleRippleEditing = useTimelineStore((s) => s.toggleRippleEditing);
+	const speedCurvesVisible = useTimelineStore((s) => s.speedCurvesVisible);
+	const toggleSpeedCurves = useTimelineStore((s) => s.toggleSpeedCurves);
 
 	return (
 		<div className="flex items-center justify-end gap-1">
@@ -370,6 +372,13 @@ function ToolbarRightSection({
 					isActive={rippleEditingEnabled}
 					tooltip="Ripple editing"
 					onClick={() => toggleRippleEditing()}
+				/>
+
+				<ToolbarButton
+					icon={<Gauge className="size-[18px]" strokeWidth={1.75} />}
+					isActive={speedCurvesVisible}
+					tooltip="Speed curves on clips"
+					onClick={() => toggleSpeedCurves()}
 				/>
 			</TooltipProvider>
 

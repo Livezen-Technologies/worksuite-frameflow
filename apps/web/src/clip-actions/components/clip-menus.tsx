@@ -1,5 +1,6 @@
 "use client";
 
+import { useTimelineStore } from "@/timeline/timeline-store";
 import type { ReactNode } from "react";
 import {
 	ClipboardPaste,
@@ -13,8 +14,7 @@ import {
 	Replace,
 	Scissors,
 	ScrollText,
-	SplitSquareHorizontal,
-} from "lucide-react";
+	SplitSquareHorizontal, Gauge } from "lucide-react";
 import { toast } from "sonner";
 import { invokeAction } from "@/actions";
 import {
@@ -152,6 +152,16 @@ export function TimelineClipMenuExtras({
 	return (
 		<>
 			<ContextMenuSeparator />
+			<ContextMenuItem
+				icon={<Gauge />}
+				onClick={() => {
+					const store = useTimelineStore.getState();
+					if (!store.speedCurvesVisible) store.toggleSpeedCurves();
+				}}
+				data-clip-speed-curve
+			>
+				Speed curve
+			</ContextMenuItem>
 			{a.canReplace && (
 				<ContextMenuItem
 					icon={<Replace />}

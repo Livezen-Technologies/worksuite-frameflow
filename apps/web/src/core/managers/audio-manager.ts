@@ -299,6 +299,7 @@ export class AudioManager {
 			getSourceTimeAtClipTime({
 				clipTime: iteratorStartTime - clip.startTime,
 				retime: clip.retime,
+				duration: clip.duration,
 			});
 
 		const iterator = sink.buffers(sourceStartTime);
@@ -314,6 +315,7 @@ export class AudioManager {
 				getClipTimeAtSourceTime({
 					sourceTime: timestamp - clip.trimStart,
 					retime: clip.retime,
+					duration: clip.duration,
 				});
 			if (timelineTime >= clipEnd) break;
 
@@ -508,8 +510,7 @@ export class AudioManager {
 	}
 
 	private hasCurveRetime({ clip }: { clip: AudioClipSource }): boolean {
-		const mode = (clip.retime as { mode?: unknown } | undefined)?.mode;
-		return mode === "curve";
+		return Boolean(clip.retime?.curve?.length);
 	}
 
 	private scheduleClipGainAutomation({

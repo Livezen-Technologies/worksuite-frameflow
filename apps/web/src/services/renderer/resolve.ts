@@ -520,6 +520,7 @@ async function resolveVideoNode({
 		getSourceTimeAtClipTime({
 			clipTime,
 			retime: node.params.retime,
+			duration: node.params.duration,
 		});
 	const source = previewSource({
 		mediaId: node.params.mediaId,
@@ -573,7 +574,7 @@ async function resolveImageNode({
 		if (sampleTime === null) return null;
 		const sourceTicks =
 			node.params.trimStart +
-			getSourceTimeAtClipTime({ clipTime: sampleTime - node.params.timeOffset, retime: node.params.retime });
+			getSourceTimeAtClipTime({ clipTime: sampleTime - node.params.timeOffset, retime: node.params.retime, duration: node.params.duration });
 		const visualState = resolveVisualState({
 			params: node.params,
 			context,
@@ -954,6 +955,7 @@ async function resolveBackdropSource({
 			getSourceTimeAtClipTime({
 				clipTime,
 				retime: node.params.retime,
+				duration: node.params.duration,
 			});
 		const frame = await videoCache.getFrameAt({
 			mediaId: node.params.mediaId,

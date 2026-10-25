@@ -1,5 +1,6 @@
 import { clampAnimationsToDuration } from "@/animation";
 import {
+	averageCurveSpeed,
 	clampRetimeRate,
 	getSourceSpanAtClipTime,
 	getTimelineDurationForSourceSpan,
@@ -43,7 +44,12 @@ const deriveRules: ElementUpdateRule[] = [
 			const nextRetime = patch.retime
 				? {
 						...patch.retime,
-						rate: clampRetimeRate({ rate: patch.retime.rate }),
+						// A curve sets the rate to its average speed, so durations follow it.
+						rate: clampRetimeRate({
+							rate: patch.retime.curve?.length
+								? averageCurveSpeed(patch.retime.curve)
+								: patch.retime.rate,
+						}),
 					}
 				: undefined;
 

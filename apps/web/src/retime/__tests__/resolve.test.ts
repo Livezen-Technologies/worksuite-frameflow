@@ -50,12 +50,12 @@ describe("retime resolve", () => {
 		).toBe(5);
 	});
 
-	test("caps retime rates above 5x", () => {
+	test("caps retime rates above 10x", () => {
 		expect(getSourceTimeAtClipTime({ clipTime: 5, retime: { rate: 100 } })).toBe(
-			25,
+			50,
 		);
 		expect(
 			getTimelineDurationForSourceSpan({ sourceSpan: 10, retime: { rate: 100 } }),
-		).toBe(2);
+		).toBe(1);
 	});
 });

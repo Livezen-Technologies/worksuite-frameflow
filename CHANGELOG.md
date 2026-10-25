@@ -9,6 +9,9 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
+- Speed ramping without splitting: a speed curve now keeps the clip in one piece. Draw it in Speed › Curve or right on the timeline (toolbar › Speed curves, or right-click a clip › Speed curve). Drag points up/down for speed (0.1–10×) and sideways for timing. Double-click adds a point or edits one exactly. Right-click switches between smooth, linear and hold, or deletes a point. Shift-drag gives fine control, points snap to the playhead, K adds a point and Delete removes one.
+- New speed presets (Smooth Accel, Smooth Decel, Slow–Fast–Slow, Fast–Slow–Fast, Cinematic) and your own saved presets, plus copy and paste of curves between clips.
+- Speed curves play the same in preview and export, audio stays in sync, and "keep pitch" works through a ramp. Splitting a curved clip keeps each part's speeds. Clips made with the old split-up curve can be converted to one clip.
 - Transcripts fill in line by line while transcribing, with a Cancel button. Lines found before cancelling are kept.
 - Transcription settings: piece length (5–15 s), model choice, and a mixed Sinhala/English mode that re-checks unsure pieces in English.
 - Each transcript line shows a confidence score, and low ones are flagged "Check". You can also add a speaker name, which goes into SRT and VTT exports, or transcribe a single line again with Regenerate.
