@@ -33,7 +33,10 @@ jobs:
           python-version: "3.11"
 
       - name: Install the converter
-        run: pip install -r tjs/scripts/requirements.txt
+        # A PyTorch the converter's optimum supports (newer ones need onnxscript and a different exporter).
+        run: |
+          pip install torch==2.5.1 --index-url https://download.pytorch.org/whl/cpu
+          pip install -r tjs/scripts/requirements.txt
 
       - name: Convert and quantize
         working-directory: tjs
