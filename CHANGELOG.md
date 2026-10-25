@@ -7,6 +7,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+## [1.7.8] - 2026-10-25
+
 ### Changed
 - Text, Animate and Packs panels fill wide or detached windows with as many columns as fit instead of two large tiles, category chips have one consistent style, and search and "preview with your text" share a row.
 
