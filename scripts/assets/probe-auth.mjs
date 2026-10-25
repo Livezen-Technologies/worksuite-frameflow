@@ -56,3 +56,13 @@ feedUrls.push("https://worksuitecloud.com/download/frameflow");
 		}
 	}
 }
+
+// On-device AI models the app downloads from Settings → Local models.
+for (const url of ["https://huggingface.co/Xenova/modnet/resolve/main/onnx/model.onnx", "https://huggingface.co/Xenova/modnet/resolve/main/onnx/model_quantized.onnx"]) {
+	try {
+		const r = await fetch(url, { method: "HEAD" });
+		console.log(`${r.status} ${r.headers.get("content-length") ?? r.headers.get("x-linked-size") ?? "?"} bytes ${url}`);
+	} catch (error) {
+		console.log(`ERR ${url} ${error.cause?.code ?? error.message}`);
+	}
+}

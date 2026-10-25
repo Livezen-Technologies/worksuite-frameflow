@@ -6,7 +6,7 @@ import { portalModelUrl } from "@/models/portal";
  * installer: each model downloads once from Settings → Local models, or is
  * imported from a file, and is kept in the app's Cache Storage.
  */
-export type AiModelKind = "upscale" | "interpolate";
+export type AiModelKind = "upscale" | "interpolate" | "matting";
 
 export interface AiModelInfo {
 	id: string;
@@ -39,6 +39,15 @@ export const AI_MODELS: AiModelInfo[] = [
 		approxBytes: 21_000_000,
 		about:
 			"Optical flow: makes in-between frames for smoother motion when the export frame rate is double the project's.",
+	},
+	{
+		id: "modnet",
+		kind: "matting",
+		name: "MODNet (background removal)",
+		licence: "Apache-2.0",
+		url: "https://huggingface.co/Xenova/modnet/resolve/main/onnx/model.onnx",
+		approxBytes: 26_000_000,
+		about: "Remove background: cuts people out of photos without a green screen.",
 	},
 ];
 

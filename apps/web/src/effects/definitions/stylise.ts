@@ -467,6 +467,41 @@ const STYLISE_LIST: EffectDefinition[] = [
 	}),
 ];
 
-export const STYLISE_EFFECTS: EffectDefinition[] = STYLISE_LIST.map((effect) =>
+/** "#00ff00" or "#0f0" → [r, g, b] 0–1; green when unreadable. */
+function hexToRgb(value: unknown): [number, number, number] {
+	const hex = typeof value === "string" ? value.trim().replace(/^#/, "") : "";
+	const full = hex.length === 3 ? [...hex].map((c) => c + c).join("") : hex.slice(0, 6);
+	const n = Number.parseInt(full, 16);
+	if (full.length !== 6 || !Number.isFinite(n)) return [0, 1, 0];
+	return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255];
+}
+
+/** Green / blue screen: makes the chosen colour transparent (shaders/chroma_key.wgsl). */
+export const CHROMA_KEY_EFFECT: EffectDefinition = {
+	type: "chroma-key",
+	name: "Green screen",
+	category: "Color",
+	keywords: ["chroma key", "green screen", "blue screen", "key", "remove colour", "background"],
+	params: [
+		{ key: "color", label: "Key colour", type: "color", default: "#00FF00" },
+		slider({ key: "similarity", label: "Strength", min: 0, max: 100, step: 1, value: 40 }),
+		slider({ key: "smoothness", label: "Soft edges", min: 0, max: 100, step: 1, value: 20 }),
+		slider({ key: "spill", label: "Remove green spill", min: 0, max: 100, step: 1, value: 60 }),
+	],
+	renderer: {
+		passes: [
+			{
+				shader: "chroma-key",
+				uniforms: ({ effectParams, time }) => {
+					const read = (key: string) => num({ params: effectParams, key }) / 100;
+					const [r, g, b] = hexToRgb(effectParams.color);
+					return { u_time: time, u_p0: [r, g, b, read("similarity")], u_p1: [read("smoothness"), read("spill"), 0, 0] };
+				},
+			},
+		],
+	},
+};
+
+export const STYLISE_EFFECTS: EffectDefinition[] = [...STYLISE_LIST, CHROMA_KEY_EFFECT].map((effect) =>
 	NOT_SPHERE_SAFE.has(effect.type) ? { ...effect, sphereSafe: false } : effect,
 );

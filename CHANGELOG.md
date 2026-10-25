@@ -8,6 +8,10 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 ## [Unreleased]
 
 ### Added
+- Green screen: Masks › Green screen keys out green, blue or any colour you pick on a video or picture, with strength, soft edges and spill removal. It's also in Effects as "Green screen".
+- Remove background: Masks › Remove background cuts people out of a photo without a green screen, using an AI model that runs on this computer (downloads once, about 25 MB).
+
+### Added
 - 386 more In, Out and Loop animations for clips and text: slides in 8 directions at 3 distances with smooth, overshoot, bounce or elastic easing, zoom and spin combinations, rolls, and 90 loop variations. The Animation panel has search and group filters, and each animation plays when you rest the mouse on it.
 - 300 more text styles (25 colours × 12 looks such as outline, glow, neon, box, pill and pop shadow) and 300 more text templates in English and Sinhala, with search and filters in Text › Presets.
 

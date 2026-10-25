@@ -22,6 +22,7 @@ import {
 	TextFontIcon,
 } from "@hugeicons/core-free-icons";
 import { useMemo, useState } from "react";
+import { CutoutSection } from "./cutout-section";
 import { Button } from "@/components/ui/button";
 import { ColorPicker } from "@/components/ui/color-picker";
 import { FontPicker } from "@/components/ui/font-picker";
@@ -253,6 +254,7 @@ export function MasksTab({ element, trackId }: MasksTabProps) {
 
 	return (
 		<div className="flex flex-col h-full">
+			<CutoutSection element={element} trackId={trackId} />
 			<div className="border-b px-3.5 h-11 shrink-0 flex items-center justify-between gap-2">
 				<SectionTitle>Masks</SectionTitle>
 				<DropdownMenu
