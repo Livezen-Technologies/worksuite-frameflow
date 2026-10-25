@@ -7,6 +7,11 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+### Fixed
+
+- Transcripts and auto captions are now split at pauses into short, timestamped lines instead of one block at 00:00. Repeated phrases and broken characters (such as "�" in Sinhala) are removed, and progress shows lines as they are found.
+- The Auto captions "Fix" list now scrolls.
+
 ## [1.7.13] - 2026-10-25
 
 ### Changed

@@ -26,11 +26,14 @@ class TranscriptionService {
 		language = "auto",
 		modelId = DEFAULT_TRANSCRIPTION_MODEL,
 		onProgress,
+		onSegments,
 	}: {
 		audioData: Float32Array;
 		language?: TranscriptionLanguage;
 		modelId?: TranscriptionModelId;
 		onProgress?: ProgressCallback;
+		/** Lines so far, as each short piece of audio is transcribed. */
+		onSegments?: (segments: TranscriptionResult["segments"]) => void;
 	}): Promise<TranscriptionResult> {
 		// Sinhala goes to the Sinhala fine-tune; it falls back to the chosen model if that can't load.
 		const preferred = language === "auto" ? modelId : modelForLanguage({ language, modelId });
@@ -51,6 +54,15 @@ class TranscriptionService {
 				const response = event.data;
 
 				switch (response.type) {
+					case "transcribe-partial":
+						onSegments?.(response.segments);
+						onProgress?.({
+							status: "transcribing",
+							progress: response.progress,
+							message: `Transcribing… ${response.segments.length} lines so far`,
+						});
+						break;
+
 					case "transcribe-progress":
 						onProgress?.({
 							status: "transcribing",

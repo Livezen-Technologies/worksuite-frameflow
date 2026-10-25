@@ -245,8 +245,8 @@ export function TranscriptEditor() {
 				</Button>
 			</header>
 
-			<div className="flex min-h-0 flex-1 flex-wrap">
-				<aside className="bg-sidebar flex min-w-0 flex-[0_1_280px] flex-col gap-4 overflow-auto border-r p-4">
+			<div className="flex min-h-0 flex-1 overflow-hidden max-md:flex-col">
+				<aside className="bg-sidebar flex min-w-0 shrink-0 basis-[280px] flex-col gap-4 overflow-auto border-r p-4 max-md:max-h-56 max-md:basis-auto max-md:border-r-0 max-md:border-b">
 					<TranscriptAiTools transcript={transcript} onChange={update} />
 					<section className="flex flex-col gap-1.5">
 						<h2 className="m-0 text-sm font-semibold">Transcription</h2>
@@ -311,7 +311,7 @@ export function TranscriptEditor() {
 					</section>
 				</aside>
 
-				<main className="flex min-w-0 flex-[999_1_560px] flex-col">
+				<main className="flex min-h-0 min-w-0 flex-[999_1_560px] flex-col">
 					<div className="flex flex-wrap items-center gap-2 border-b p-3">
 						<label htmlFor="transcript-find" className="sr-only">
 							Find

@@ -6,10 +6,7 @@ import {
 } from "@huggingface/transformers";
 import type { TranscriptionSegment } from "@/transcription/types";
 import { groupWords } from "@/captions/words";
-import {
-	DEFAULT_CHUNK_LENGTH_SECONDS,
-	DEFAULT_STRIDE_SECONDS,
-} from "@/transcription/audio";
+import { SAMPLE_RATE, cleanText, looksHallucinated, planChunks, speechRegions } from "@/transcription/segmenter";
 
 export type WorkerMessage =
 	| { type: "init"; modelId: string; remoteHosts: string[] }
@@ -21,6 +18,8 @@ export type WorkerResponse =
 	| { type: "init-complete" }
 	| { type: "init-error"; error: string }
 	| { type: "transcribe-progress"; progress: number }
+	/** Segments so far, as each short piece finishes. */
+	| { type: "transcribe-partial"; progress: number; segments: TranscriptionSegment[] }
 	| {
 			type: "transcribe-complete";
 			text: string;
@@ -155,54 +154,56 @@ async function handleTranscribe({
 	cancelled = false;
 
 	try {
-		const options = {
-			chunk_length_s: DEFAULT_CHUNK_LENGTH_SECONDS,
-			stride_length_s: DEFAULT_STRIDE_SECONDS,
-			language: language === "auto" ? undefined : language,
-		};
-		// Word timings for word highlighting (AI-46); models without
-		// alignment heads can't give them, so fall back to segments.
-		let words = true;
-		let rawResult: Awaited<ReturnType<AutomaticSpeechRecognitionPipeline>>;
-		try {
-			rawResult = await transcriber(audio, { ...options, return_timestamps: "word" });
-		} catch {
-			words = false;
-			rawResult = await transcriber(audio, { ...options, return_timestamps: true });
-		}
-
-		if (cancelled) return;
-
-		const result: AutomaticSpeechRecognitionOutput = Array.isArray(rawResult)
-			? rawResult[0]
-			: rawResult;
-
+		// Short pieces cut at pauses (see transcription/segmenter.ts), each
+		// transcribed on its own so timestamps come from its place in the audio.
+		const chunks = planChunks({ audio, regions: speechRegions({ audio }) });
+		const lang = language === "auto" ? undefined : language;
+		// Word timings are reliable for English; for Sinhala Whisper's
+		// alignment drifts, so keep honest phrase-level timestamps there.
+		let words = lang === "en";
 		const segments: TranscriptionSegment[] = [];
+		const texts: string[] = [];
+		self.postMessage({ type: "transcribe-progress", progress: 0 } satisfies WorkerResponse);
 
-		if (words && result.chunks) {
-			const timed = result.chunks
-				.filter((chunk) => chunk.timestamp && chunk.timestamp.length >= 2)
-				.map((chunk) => ({
-					text: chunk.text,
-					start: chunk.timestamp[0] ?? 0,
-					end: chunk.timestamp[1] ?? chunk.timestamp[0] ?? 0,
-				}));
-			segments.push(...groupWords({ words: timed }));
-		} else if (result.chunks) {
-			for (const chunk of result.chunks) {
-				if (chunk.timestamp && chunk.timestamp.length >= 2) {
-					segments.push({
-						text: chunk.text,
-						start: chunk.timestamp[0] ?? 0,
-						end: chunk.timestamp[1] ?? chunk.timestamp[0] ?? 0,
-					});
-				}
+		for (let i = 0; i < chunks.length; i++) {
+			if (cancelled) return;
+			const chunk = chunks[i];
+			const slice = audio.subarray(Math.floor(chunk.start * SAMPLE_RATE), Math.ceil(chunk.end * SAMPLE_RATE));
+			const length = chunk.end - chunk.start;
+			let raw: Awaited<ReturnType<AutomaticSpeechRecognitionPipeline>>;
+			try {
+				raw = await transcriber(slice, { language: lang, task: "transcribe", return_timestamps: words ? "word" : true });
+			} catch {
+				words = false;
+				raw = await transcriber(slice, { language: lang, task: "transcribe", return_timestamps: true });
 			}
+			const result: AutomaticSpeechRecognitionOutput = Array.isArray(raw) ? raw[0] : raw;
+			const timed = (result.chunks ?? [])
+				.filter((c) => c.timestamp && c.timestamp.length >= 2)
+				.map((c) => ({
+					text: words ? c.text : cleanText(c.text),
+					start: chunk.start + Math.min(length, Math.max(0, c.timestamp[0] ?? 0)),
+					end: chunk.start + Math.min(length, Math.max(0, c.timestamp[1] ?? length)),
+				}))
+				.filter((c) => c.text.trim());
+			const pieceText = cleanText(result.text ?? "");
+			if (pieceText && !looksHallucinated({ text: pieceText, seconds: length })) {
+				texts.push(pieceText);
+				if (words && timed.length) segments.push(...groupWords({ words: timed }));
+				else if (timed.length > 1) segments.push(...timed.map((t) => ({ ...t, end: Math.max(t.end, t.start + 0.2) })));
+				// One phrase: it spans the speech it came from.
+				else segments.push({ text: pieceText, start: chunk.start, end: chunk.end });
+			}
+			self.postMessage({
+				type: "transcribe-partial",
+				progress: Math.round(((i + 1) / chunks.length) * 100),
+				segments: [...segments],
+			} satisfies WorkerResponse);
 		}
 
 		self.postMessage({
 			type: "transcribe-complete",
-			text: result.text,
+			text: texts.join(" "),
 			segments,
 		} satisfies WorkerResponse);
 	} catch (error) {
