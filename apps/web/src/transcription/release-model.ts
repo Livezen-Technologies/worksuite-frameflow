@@ -14,6 +14,26 @@ function viaApp(url: string): string {
 	return typeof window !== "undefined" && window.worksuite ? `ffnet://get/?u=${encodeURIComponent(url)}` : url;
 }
 
+/**
+ * GET as bytes. XMLHttpRequest, not fetch: in the desktop app the page's
+ * fetch refuses the ffnet:// scheme, while XHR reads it fine.
+ */
+function getBytes({ url, onProgress }: { url: string; onProgress?: (share: number) => void }): Promise<{ status: number; bytes: ArrayBuffer; type: string }> {
+	return new Promise((resolve, reject) => {
+		const xhr = new XMLHttpRequest();
+		xhr.open("GET", url);
+		xhr.responseType = "arraybuffer";
+		xhr.onprogress = (e) => e.lengthComputable && onProgress?.(e.loaded / e.total);
+		xhr.onload = () => {
+			const bytes: unknown = xhr.response;
+			if (!(bytes instanceof ArrayBuffer)) return reject(new Error("The model download came back empty."));
+			resolve({ status: xhr.status, bytes, type: xhr.getResponseHeader("content-type") ?? "application/octet-stream" });
+		};
+		xhr.onerror = () => reject(new Error("Couldn't reach the model download. Check your connection."));
+		xhr.send();
+	});
+}
+
 export async function ensureReleaseModel({
 	model,
 	onProgress,
@@ -23,9 +43,10 @@ export async function ensureReleaseModel({
 }): Promise<void> {
 	if (!model.release || typeof caches === "undefined") return;
 	const base = `https://github.com/${model.release.repo}/releases/download/${model.release.tag}/`;
-	const list = await fetch(viaApp(`${base}files.txt`));
-	if (!list.ok) throw new Error(`The ${model.name} model isn't published yet (${list.status}).`);
-	const files = (await list.text())
+	const list = await getBytes({ url: viaApp(`${base}files.txt`) });
+	if (list.status !== 200) throw new Error(`The ${model.name} model isn't published yet (${list.status}).`);
+	const files = new TextDecoder()
+		.decode(list.bytes)
 		.split("\n")
 		.map((f) => f.trim())
 		.filter((f) => f && f !== "files.txt");
@@ -36,10 +57,9 @@ export async function ensureReleaseModel({
 	for (const file of wanted) {
 		const key = `${HF}${model.huggingFaceId}/resolve/main/${file.split("__").join("/")}`;
 		if (!(await cache.match(key))) {
-			const res = await fetch(viaApp(`${base}${file}`));
-			if (!res.ok) throw new Error(`Couldn't download ${file} (${res.status})`);
-			const bytes = await res.arrayBuffer();
-			await cache.put(key, new Response(bytes, { headers: { "content-length": String(bytes.byteLength), "content-type": res.headers.get("content-type") ?? "application/octet-stream" } }));
+			const res = await getBytes({ url: viaApp(`${base}${file}`), onProgress: (share) => onProgress?.((done + share) / wanted.length) });
+			if (res.status !== 200) throw new Error(`Couldn't download ${file} (${res.status})`);
+			await cache.put(key, new Response(res.bytes, { headers: { "content-length": String(res.bytes.byteLength), "content-type": res.type } }));
 		}
 		onProgress?.(++done / wanted.length);
 	}

@@ -32,7 +32,7 @@ export const TRANSCRIPTION_MODELS: TranscriptionModel[] = [
 		id: "whisper-small-si",
 		name: "Small · Sinhala",
 		huggingFaceId: "SinhaSpeech/whisper-small-sinhala-run11",
-		description: "Whisper Small fine-tuned for Sinhala (WER 16%). Used automatically for Sinhala.",
+		description: "Whisper Small fine-tuned for Sinhala (WER 16%). Used automatically for Sinhala",
 		language: "si",
 		release: { repo: "Livezen-Technologies/worksuite-frameflow", tag: "model-whisper-small-si" },
 	},
