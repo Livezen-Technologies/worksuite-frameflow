@@ -7,6 +7,13 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+### Changed
+- Text, Animate and Packs panels fill wide or detached windows with as many columns as fit instead of two large tiles, category chips have one consistent style, and search and "preview with your text" share a row.
+
+### Fixed
+- Text added from the Text or Animate library fits inside the frame on 4:3, 1:1 and 9:16 projects instead of running off the edges.
+- The Animate panel no longer shows the same category twice (such as "3D & flips").
+
 ## [1.7.7] - 2026-10-25
 
 ### Changed

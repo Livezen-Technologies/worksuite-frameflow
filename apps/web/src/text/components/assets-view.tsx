@@ -1,5 +1,6 @@
 "use client";
 
+import { fitTextToFrame } from "@/text-library/actions";
 import { DownloadedLabel } from "@/asset-library/components/downloaded-label";
 import { PacksView } from "@/packs/components/packs-view";
 import { TextLibraryView } from "@/text-library/components/text-library-view";
@@ -132,11 +133,12 @@ function TextTemplatesView() {
 		if (typeof family === "string") {
 			loadFonts({ families: [family] }).catch(() => {});
 		}
+		const element = buildTextElement({
+			raw: { name: template.name, params: template.params },
+			startTime: editor.playback.getCurrentTime(),
+		});
 		editor.timeline.insertElement({
-			element: buildTextElement({
-				raw: { name: template.name, params: template.params },
-				startTime: editor.playback.getCurrentTime(),
-			}),
+			element: fitTextToFrame(element, editor.project.getActive().settings.canvasSize),
 			placement: { mode: "auto" },
 		});
 	};
@@ -204,7 +206,7 @@ function TextTemplatesView() {
 						</button>
 					))}
 				</div>
-				<div className="grid grid-cols-2 gap-2">
+				<div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-2">
 					{visible.map((template) => (
 						<div key={template.id} className="group relative">
 							<button

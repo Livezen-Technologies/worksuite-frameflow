@@ -257,7 +257,7 @@ export function TemplatesView() {
 					</div>
 				)}
 
-				<div className="grid grid-cols-2 gap-x-2.5 gap-y-3">
+				<div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-x-2.5 gap-y-3">
 					{visible.map((template) => (
 						<TemplateCard
 							key={template.id}

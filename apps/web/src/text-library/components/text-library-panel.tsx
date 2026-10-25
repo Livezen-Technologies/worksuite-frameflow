@@ -41,7 +41,7 @@ export const itemKey = (item: Pick<TextLibraryItem, "kind" | "id">) => `${item.k
 const TILE_W = 148;
 const TILE_H = 84;
 const ROW_H = TILE_H + 30;
-const COLS = 2;
+const GAP = 8;
 
 const PREVIEW_STYLE: Partial<TextAnimationStyle> = { fontSize: 20 };
 
@@ -147,13 +147,19 @@ function VirtualGrid<T>({ items, render, height }: { items: T[]; render: (item: 
 	const ref = useRef<HTMLDivElement>(null);
 	const [scroll, setScroll] = useState(0);
 	const [view, setView] = useState(height ?? 480);
+	const [width, setWidth] = useState(TILE_W * 2 + GAP);
 	useEffect(() => {
 		const el = ref.current;
 		if (!el || typeof ResizeObserver === "undefined") return;
-		const ro = new ResizeObserver(() => setView(el.clientHeight || 480));
+		const ro = new ResizeObserver(() => {
+			setView(el.clientHeight || 480);
+			setWidth(el.clientWidth || TILE_W * 2 + GAP);
+		});
 		ro.observe(el);
 		return () => ro.disconnect();
 	}, []);
+	// As many columns as fit, so a wide or detached panel isn't two lonely tiles.
+	const COLS = Math.max(2, Math.floor((width + GAP) / (TILE_W + GAP)));
 	const rows = Math.ceil(items.length / COLS);
 	const first = Math.max(0, Math.floor(scroll / ROW_H) - 2);
 	const last = Math.min(rows, Math.ceil((scroll + view) / ROW_H) + 2);
@@ -193,19 +199,32 @@ export function TextLibraryPanel(props: TextLibraryPanelProps) {
 		const used = new Set(pool.map((i) => i.category));
 		return (content ? (tab === "animations" ? content.categories.animations : content.categories.templates) : []).filter((c) => used.has(c.id));
 	}, [content, tab, pool]);
+	/** One chip per category name, across collections that each define it. */
+	const categoryIds = useMemo(() => {
+		const map = new Map<string, string[]>();
+		for (const c of categories) {
+			const label = localName(c.name, lang);
+			map.set(label, [...(map.get(label) ?? []), c.id]);
+		}
+		return map;
+	}, [categories, lang]);
 	const shown = useMemo(() => {
 		let list = pool;
 		if (category === "favourites") list = pool.filter((i) => favourites.includes(itemKey(i)));
 		else if (category === "recent") list = recent.map((k) => pool.find((i) => itemKey(i) === k)).filter((i): i is LibraryEntry => !!i);
-		else if (category !== "all") list = pool.filter((i) => i.category === category);
+		else if (category !== "all") {
+			// Collections can name the same category differently ("3D & flips" twice); chips merge them.
+			const ids = new Set(categoryIds.get(category) ?? [category]);
+			list = pool.filter((i) => ids.has(i.category));
+		}
 		return searchItems(list, query);
-	}, [pool, category, query, favourites, recent]);
+	}, [pool, category, query, favourites, recent, categoryIds]);
 
 	const chips: Array<{ id: string; label: string }> = [
 		{ id: "all", label: "All" },
 		{ id: "favourites", label: "★ Favourites" },
 		{ id: "recent", label: "Recent" },
-		...categories.map((c) => ({ id: c.id, label: localName(c.name, lang) })),
+		...[...categoryIds.keys()].map((id) => ({ id, label: id })),
 	];
 
 	return (
@@ -248,25 +267,25 @@ export function TextLibraryPanel(props: TextLibraryPanelProps) {
 					))}
 				</select>
 			)}
-			<input
-				type="search"
-				placeholder="Search (English, සිංහල, தமிழ்)"
-				value={query}
-				onChange={(e) => setQuery(e.target.value)}
-				className="border-input bg-background h-8 rounded-md border px-2 text-sm"
-				aria-label="Search the text library"
-			/>
-			<label className="flex flex-col gap-1 text-[11px]">
-				<span className="text-muted-foreground">Preview with:</span>
+			<div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+				<input
+					type="search"
+					placeholder="Search (English, සිංහල, தமிழ்)"
+					value={query}
+					onChange={(e) => setQuery(e.target.value)}
+					className="border-input bg-background h-8 rounded-md border px-2 text-sm"
+					aria-label="Search the text library"
+				/>
 				<input
 					type="text"
-					placeholder="Your text"
+					placeholder="Preview with your text…"
 					value={previewText}
 					onChange={(e) => props.onPreviewTextChange(e.target.value)}
 					className="border-input bg-background h-8 rounded-md border px-2 text-sm"
+					aria-label="Preview with your text"
 					data-text-library-preview
 				/>
-			</label>
+			</div>
 			<div className="flex flex-wrap gap-1">
 				{chips.map((c) => (
 					<button
@@ -274,7 +293,7 @@ export function TextLibraryPanel(props: TextLibraryPanelProps) {
 						type="button"
 						onClick={() => setCategory(c.id)}
 						aria-pressed={category === c.id}
-						className={`rounded-full border px-2 py-0.5 text-[11px] ${category === c.id ? "bg-primary text-primary-foreground border-primary" : "text-muted-foreground hover:bg-accent border-white/15"}`}
+						className={`h-6 rounded-md border px-2 text-xs transition-colors ${category === c.id ? "bg-primary text-primary-foreground border-primary" : "text-muted-foreground hover:bg-accent hover:text-foreground border-border"}`}
 					>
 						{c.label}
 					</button>

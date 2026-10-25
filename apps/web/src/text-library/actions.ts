@@ -5,7 +5,7 @@ import { lottieDataFromJson, lottieInsertScale } from "@/lottie/element";
 import { backdropLottie, backdropSpec } from "./backdrop";
 import type { TextStyleOverrides } from "@/text-animation/element-style";
 import type { TextAnimation, TextAnimationStyle } from "@/text-animation/types";
-import { FONT_SIZE_SCALE_REFERENCE } from "@/text/typography";
+import { FONT_SIZE_SCALE_REFERENCE, MIN_FONT_SIZE } from "@/text/typography";
 import { buildTextElement } from "@/timeline/element-utils";
 import type { TextDragData } from "@/timeline/drag";
 import { mediaTimeFromSeconds, type MediaTime } from "@/wasm";
@@ -34,14 +34,38 @@ function overridesFromStyle(style: Partial<TextAnimationStyle> | undefined): Tex
 	return { gradient: style.gradient };
 }
 
+/**
+ * Shrinks a new text clip until its widest line fits 90% of the frame, so
+ * a title made for 16:9 still lands inside a 4:3 or 9:16 canvas. Text that
+ * already fits is left at its designed size.
+ */
+export function fitTextToFrame<T extends { params: Record<string, unknown> }>(element: T, frame: { width: number; height: number }): T {
+	const p = element.params;
+	const fontSize = typeof p.fontSize === "number" ? p.fontSize : null;
+	const content = typeof p.content === "string" ? p.content : "";
+	if (!fontSize || !content || typeof OffscreenCanvas === "undefined") return element;
+	const ctx = new OffscreenCanvas(8, 8).getContext("2d");
+	if (!ctx) return element;
+	const px = fontSize * (frame.height / FONT_SIZE_SCALE_REFERENCE);
+	const family = typeof p.fontFamily === "string" ? p.fontFamily : "Inter";
+	ctx.font = `${p.fontWeight === "bold" ? "bold " : ""}${px}px "${family}", "Noto Sans Sinhala", "Noto Sans Tamil", sans-serif`;
+	const stroke = typeof p["stroke.width"] === "number" && p["stroke.enabled"] ? p["stroke.width"] : 0;
+	const widest = Math.max(...content.split("\n").map((line) => ctx.measureText(line).width)) + stroke * 2;
+	const room = frame.width * 0.9;
+	if (widest <= room) return element;
+	const fitted = Math.max(MIN_FONT_SIZE, Math.floor(fontSize * (room / widest) * 10) / 10);
+	return { ...element, params: { ...p, fontSize: fitted } };
+}
+
 /** A new text clip for a library animation. */
-export function textClipForAnimation({ item, text, lang = "en", startTime }: { item: TextLibraryAnimation; text?: string; lang?: string; startTime: MediaTime }) {
+export function textClipForAnimation({ item, text, lang = "en", startTime, frame }: { item: TextLibraryAnimation; text?: string; lang?: string; startTime: MediaTime; frame?: { width: number; height: number } }) {
 	const content = text?.trim() || (item.previewText ? localName(item.previewText, lang) : localName(item.name, lang));
 	const element = buildTextElement({
 		raw: { name: localName(item.name, lang), params: { ...paramsFromStyle(item.style), content }, ...(item.duration ? { duration: mediaTimeFromSeconds({ seconds: item.duration }) } : {}) },
 		startTime,
 	});
-	return { ...element, textAnimation: structuredClone(item.animation), ...(overridesFromStyle(item.style) ? { textStyle: overridesFromStyle(item.style) } : {}) };
+	const fitted = frame ? fitTextToFrame(element, frame) : element;
+	return { ...fitted, textAnimation: structuredClone(item.animation), ...(overridesFromStyle(item.style) ? { textStyle: overridesFromStyle(item.style) } : {}) };
 }
 
 /** Text clips for a template's slots, positioned in a frame. */
@@ -74,13 +98,14 @@ export function textClipsForTemplate({
 			startTime: (start + Number(mediaTimeFromSeconds({ seconds: from }))) as MediaTime,
 		});
 		const overrides = overridesFromStyle(slot.style);
-		return { ...element, ...(slot.animation ? { textAnimation: structuredClone(slot.animation) } : {}), ...(overrides ? { textStyle: overrides } : {}) };
+		return { ...fitTextToFrame(element, frame), ...(slot.animation ? { textAnimation: structuredClone(slot.animation) } : {}), ...(overrides ? { textStyle: overrides } : {}) };
 	});
 }
 
 export function addAnimationAtPlayhead({ editor, item, text, lang }: { editor: EditorCore; item: TextLibraryAnimation; text?: string; lang?: string }) {
 	if (!editor.scenes.getActiveSceneOrNull()) return;
-	editor.timeline.insertElement({ element: textClipForAnimation({ item, text, lang, startTime: editor.playback.getCurrentTime() }), placement: { mode: "auto" } });
+	const frame = editor.project.getActive().settings.canvasSize;
+	editor.timeline.insertElement({ element: textClipForAnimation({ item, text, lang, startTime: editor.playback.getCurrentTime(), frame }), placement: { mode: "auto" } });
 }
 
 export async function addTemplateAtPlayhead({ editor, template, lang }: { editor: EditorCore; template: TextLibraryTemplate; lang?: string }) {

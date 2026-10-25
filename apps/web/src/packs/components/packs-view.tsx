@@ -465,7 +465,7 @@ export function PacksView() {
 				</Button>
 			</div>
 			<ScrollArea className="min-h-0 flex-1">
-				<div className="grid grid-cols-2 gap-2 p-3">
+				<div className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-2 p-3">
 					{templates.map((t) => {
 						const compiled = compilePackTemplate({
 							pack,
