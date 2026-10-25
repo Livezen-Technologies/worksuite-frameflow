@@ -8,6 +8,8 @@ import {
 	packStatus,
 	searchPacks,
 	STATUS_LABELS,
+	cachedImage,
+	resolveCatalogUrl,
 } from "../catalog";
 import {
 	type AssetLibrarySettings,
@@ -68,24 +70,7 @@ const BADGE_CLASS: Partial<Record<PackStatus, string>> = {
 	error: "error",
 };
 
-/** Resolves catalog-relative URLs (thumbnails) against the catalog location. */
-function resolveUrl(url: string | null, base?: string): string | null {
-	if (!url) return null;
-	try {
-		return base ? new URL(url, base).toString() : url;
-	} catch {
-		return url;
-	}
-}
-
-/**
- * In the desktop app, pictures go through the on-disk thumbnail cache
- * (electron/thumb-cache.js): downloaded once, then instant and offline.
- */
-function cachedImage(url: string): string {
-	if (typeof window === "undefined" || !window.worksuite || !/^https?:\/\//i.test(url)) return url;
-	return `ffthumb://img/?u=${encodeURIComponent(url)}`;
-}
+const resolveUrl = resolveCatalogUrl;
 
 /**
  * The full-screen Asset Library: tabs per pack type, search in English,

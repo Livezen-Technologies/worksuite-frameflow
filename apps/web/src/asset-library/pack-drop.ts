@@ -47,7 +47,13 @@ export interface PlaceholderRef {
 	newTrack: boolean;
 }
 
-export type PackDropOutcome = "added" | "cancelled" | "failed";
+/**
+ * "added": the real thing is in; "installed": the pack installed but nothing
+ * was added (no cut, no clip selected, no project: a toast said so);
+ * "cancelled": the user cancelled, or the install stopped without an error
+ * (`onCancelled` tells the user); "failed": `onError` showed why.
+ */
+export type PackDropOutcome = "added" | "installed" | "cancelled" | "failed";
 
 export interface PackDropDeps {
 	/** Inserts the placeholder without touching the undo history. */
@@ -59,9 +65,11 @@ export interface PackDropDeps {
 	cancelInstall: () => void;
 	/** The editor's undo history. */
 	history: { mark: () => number; squash: (args: { mark: number }) => void };
-	/** The real add/apply, through normal commands. */
-	perform: () => Promise<void> | void;
+	/** The real add/apply, through normal commands; false when it only installed. */
+	perform: () => Promise<boolean | void> | boolean | void;
 	onError?: (error: unknown) => void;
+	/** The install ended without installing and without the user cancelling (paused, stopped elsewhere). */
+	onCancelled?: () => void;
 }
 
 export interface PackDropView {
@@ -84,6 +92,23 @@ export const usePackDrops = create<PackDropStore>(() => ({ drops: {}, cancels: {
 
 /** Placeholder clips of drops that already ended (an undo of an unrelated step could bring one back). */
 export const finishedPlaceholders = new Set<string>();
+
+/**
+ * Where a transition goes: the cut it was dropped on, else the cut nearest
+ * the playhead; null when there's no cut (no project, or no two clips side
+ * by side), in which case the pack is only installed.
+ */
+export function cutTarget({
+	target,
+	nearest,
+}: {
+	target: PackDropTarget;
+	nearest: () => { trackId: string; element: { id: string }; maxSeconds: number } | null;
+}): { trackId: string; elementId: string; maxSeconds: number } | null {
+	if (target.kind === "cut") return { trackId: target.trackId, elementId: target.elementId, maxSeconds: target.maxSeconds };
+	const near = nearest();
+	return near ? { trackId: near.trackId, elementId: near.element.id, maxSeconds: near.maxSeconds } : null;
+}
 
 let nextId = 1;
 
@@ -126,17 +151,19 @@ export function runPackDrop({ request, deps }: { request: PackDropRequest; deps:
 			if (!ok) {
 				cancelled = true;
 				clear();
+				deps.onCancelled?.();
 				return "cancelled";
 			}
 			// Out goes the placeholder (no history), in goes the real thing (one step).
 			clear();
 			const mark = deps.history.mark();
+			let added: boolean | void;
 			try {
-				await deps.perform();
+				added = await deps.perform();
 			} finally {
 				deps.history.squash({ mark });
 			}
-			return "added";
+			return added === false ? "installed" : "added";
 		} catch (error) {
 			if (!cancelled) {
 				clear();

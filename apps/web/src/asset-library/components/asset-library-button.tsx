@@ -7,6 +7,7 @@ import { useT } from "@/i18n";
 import { PACK_TRANSITION_DRAG_TYPE } from "@/transitions/components/timeline-transition";
 import { checkProjectPacks, addCatalogAsset, resolveProjectPlaceholders } from "../actions";
 import { addPackItem, CLIP_APPLY_TYPES, stripFinishedPlaceholders } from "../apply-pack";
+import { catalogBaseUrl } from "../catalog";
 import { onPackContentChange } from "../registry";
 import { assetsBridge, useAssetLibrary } from "../store";
 import type { AssetStoreState, CatalogPack, PackType } from "../types";
@@ -130,7 +131,7 @@ function AssetLibraryHost() {
 						state={state ?? OFFLINE_STATE}
 						desktop={!!bridge}
 						initialType={(focusType as PackType | null) ?? null}
-						catalogBase={state ? `${process.env.NEXT_PUBLIC_WSC_ASSET_URL ?? "https://frameflow.worksuitecloud.com/library/feed"}/${state.settings.channel}/` : undefined}
+						catalogBase={state ? catalogBaseUrl(state.settings.channel) : undefined}
 						onClose={() => setOpen(false)}
 						actions={{
 							install: (id) => void install(id),
@@ -143,8 +144,12 @@ function AssetLibraryHost() {
 							configure: (patch) => void run((b) => b.configure(patch)),
 							addAsset: (pack, assetId) => void addCatalogAsset({ editor, packId: pack.id, version: pack.version, assetId }),
 							downloadAndAdd: (pack) => {
-								addPackItem({ editor, request: packRequest({ pack, assetId: null }) });
-								setOpen(false);
+								// The library stays open (with its progress) until the add is done, so a
+								// failure's toast isn't hidden behind a closed dialog with nothing to show.
+								const drop = addPackItem({ editor, request: packRequest({ pack, assetId: null }) });
+								void drop?.done.then((outcome) => {
+									if (outcome === "added" || outcome === "installed") setOpen(false);
+								});
 							},
 							beginDrag: ({ pack, dataTransfer, assetId }) => {
 								const request = packRequest({ pack, assetId: assetId ?? null });

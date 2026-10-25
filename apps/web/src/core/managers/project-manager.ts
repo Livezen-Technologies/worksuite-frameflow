@@ -743,22 +743,30 @@ export class ProjectManager {
 		}, 8000);
 	}
 
+	/**
+	 * A JPEG data URL of the first of a few frames that shows something (the
+	 * first frame is often black: fade-ins, recordings). Project thumbnails
+	 * and saved templates use it.
+	 */
+	async renderRepresentativeFrame({ maxSize = 640, quality = 0.85 }: { maxSize?: number; quality?: number } = {}): Promise<string | null> {
+		if (!this.active) return null;
+		const duration = this.editor.timeline.getTotalDuration();
+		const times = [0.1, 0.3, 0.5, 0.75, 0].map((share) => Math.round(duration * share));
+		let canvas: HTMLCanvasElement | null = null;
+		for (const time of times) {
+			canvas = await this.renderFrame({ time, maxSize });
+			if (!looksBlank(canvas)) break;
+		}
+		return canvas ? canvas.toDataURL("image/jpeg", quality) : null;
+	}
+
 	private async updateThumbnailFromTimeline(): Promise<boolean> {
 		if (!this.active) return false;
 		// A chosen cover is the thumbnail.
 		if (this.active.metadata.cover) return false;
 
-		// The first frame is often black (fade-ins, recordings), so use the
-		// first of a few frames that shows something.
-		const duration = this.editor.timeline.getTotalDuration();
-		const times = [0.1, 0.3, 0.5, 0.75, 0].map((share) => Math.round(duration * share));
-		let canvas: HTMLCanvasElement | null = null;
-		for (const time of times) {
-			canvas = await this.renderFrame({ time, maxSize: 640 });
-			if (!looksBlank(canvas)) break;
-		}
-		if (!canvas) return false;
-		const thumbnailDataUrl = canvas.toDataURL("image/jpeg", 0.85);
+		const thumbnailDataUrl = await this.renderRepresentativeFrame({ maxSize: 640 });
+		if (!thumbnailDataUrl) return false;
 
 		await this.updateThumbnail({ thumbnail: thumbnailDataUrl });
 		return true;

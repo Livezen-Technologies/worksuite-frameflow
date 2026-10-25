@@ -7,6 +7,15 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+### Added
+- Templates panel: **Built-in**, **Downloaded** and **My templates** tabs. Downloaded lists video templates from your installed Asset Library packs (with the pack's name on each card and a live preview); when there are none, a button opens the Asset Library.
+- **Save project as template** (project menu, or "Save current project as template" in Templates): name, category and description; the shape comes from the project; tick which photos and videos become replaceable slots (text stays editable); a still of the project is saved as its picture. Saved templates appear under My templates, where you can rename, delete, add one at the playhead or start a new project from it. They're kept on this computer.
+
+### Fixed
+- **Download & Add** on Asset Library packs did nothing for transitions from the online library: the add read the pack's index entry instead of the transition file, found no transition and quietly stopped. It now adds the transition on the nearest cut. If there's no cut or no open project, it still installs and says "Installed — drop it on a cut". Every other failure (a stopped download, an unreadable item, a missing project) now shows a message. The Asset Library stays open until the add is done, so you can see what happened.
+- Templates › From the online library showed a broken image on every card: thumbnails were loaded from the app instead of the library. Cards now show the library picture, or a live animated drawing of the template (plays on hover, still otherwise, and respects reduced motion), or a placeholder with its shape, length and title. Full titles show on hover, and the list loads as you scroll.
+- Downloaded video template packs from the online library now show up in Templates (their template files weren't recognised before).
+
 ## [1.7.9] - 2026-10-25
 
 ### Added

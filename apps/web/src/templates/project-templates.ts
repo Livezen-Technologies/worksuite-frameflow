@@ -1,4 +1,6 @@
 import type { ParamValues } from "@/params";
+import type { Backdrop } from "@/text-library/backdrop";
+import type { TemplateSlot } from "@/text-library/manifest";
 import type { TransitionType } from "@/transitions/types";
 
 /**
@@ -92,6 +94,15 @@ export interface ProjectTemplate {
 	/** Two colours for the gallery card. */
 	palette: [string, string];
 	layers: TemplateLayer[];
+	/**
+	 * Library templates (.fftemplate): their backdrop and text slots as the
+	 * text library draws them, for live card previews.
+	 */
+	preview?: { bg?: Backdrop; slots: TemplateSlot[]; duration: number };
+	/** Where it came from: built in, a downloaded pack, or saved by the user. */
+	source?: { kind: "pack"; packId: string; packTitle: string } | { kind: "user" };
+	/** Saved templates: a still of the project (data URL). */
+	thumbnail?: string;
 }
 
 export function templateDuration(template: ProjectTemplate): number {

@@ -1,7 +1,8 @@
 "use client";
 
 import { useProjectSettings } from "@/project-settings/store";
-import { Settings } from "lucide-react";
+import { LayoutTemplate, Settings } from "lucide-react";
+import { SaveTemplateDialog, useSaveTemplateDialog } from "@/templates/components/save-template-dialog";
 import { Button } from "../ui/button";
 import { useRef, useState } from "react";
 import {
@@ -165,6 +166,14 @@ function ProjectDropdown() {
 					</DropdownMenuItem>
 
 					<DropdownMenuItem
+						onClick={() => useSaveTemplateDialog.getState().setOpen(true)}
+						icon={<LayoutTemplate className="size-4" />}
+						data-save-project-template
+					>
+						Save as template…
+					</DropdownMenuItem>
+
+					<DropdownMenuItem
 						onClick={() => setOpenDialog("shortcuts")}
 						icon={<HugeiconsIcon icon={CommandIcon} />}
 					>
@@ -196,6 +205,7 @@ function ProjectDropdown() {
 				onConfirm={handleDeleteProject}
 				projectNames={[activeProject?.metadata.name || ""]}
 			/>
+			<SaveTemplateDialog />
 			<ShortcutsDialog
 				isOpen={openDialog === "shortcuts"}
 				onOpenChange={(isOpen) => setOpenDialog(isOpen ? "shortcuts" : null)}
