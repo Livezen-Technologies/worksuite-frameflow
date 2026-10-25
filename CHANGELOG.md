@@ -7,6 +7,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+## [1.7.12] - 2026-10-25
+
 ### Fixed
 - Settings › Local models: downloading "Small · Sinhala" no longer stops with "Failed to fetch", and its download shows progress per file.
 
