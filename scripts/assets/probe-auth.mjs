@@ -4,6 +4,9 @@
 //   node scripts/assets/probe-auth.mjs
 const CLIENT_ID = process.env.WSC_CLIENT_ID || "worksuite-frameflow";
 const issuers = [
+	"https://account.worksuitecloud.com",
+	"https://account.worksuitecloud.com/oauth",
+	"https://account.worksuitecloud.com/api/auth",
 	"https://accounts.worksuitecloud.com",
 	"https://auth.worksuitecloud.com",
 	"https://worksuitecloud.com",
@@ -31,7 +34,7 @@ for (const issuer of issuers) {
 		console.log(`ERR ${url} ${error.cause?.code ?? error.message}`);
 	}
 }
-for (const url of ["https://worksuitecloud.com/signup", "https://worksuitecloud.com/register", "https://worksuitecloud.com/login", "https://worksuitecloud.com/account"]) {
+for (const url of ["https://account.worksuitecloud.com/", "https://account.worksuitecloud.com/.well-known/oauth-authorization-server", "https://account.worksuitecloud.com/signup", "https://account.worksuitecloud.com/login", "https://worksuitecloud.com/signup", "https://worksuitecloud.com/register", "https://worksuitecloud.com/login", "https://worksuitecloud.com/account"]) {
 	try {
 		const r = await fetch(url, { redirect: "manual" });
 		console.log(`${r.status} ${url} location ${r.headers.get("location") ?? "-"}`);
