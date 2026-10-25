@@ -1,4 +1,5 @@
 import { WHISPER_HOSTS } from "@/models/portal";
+import { ensureReleaseModel } from "@/transcription/release-model";
 import type {
 	TranscriptionLanguage,
 	TranscriptionResult,
@@ -7,6 +8,7 @@ import type {
 } from "@/transcription/types";
 import {
 	DEFAULT_TRANSCRIPTION_MODEL,
+	modelForLanguage,
 	TRANSCRIPTION_MODELS,
 } from "@/transcription/models";
 import type { WorkerMessage, WorkerResponse } from "./worker";
@@ -30,7 +32,14 @@ class TranscriptionService {
 		modelId?: TranscriptionModelId;
 		onProgress?: ProgressCallback;
 	}): Promise<TranscriptionResult> {
-		await this.ensureWorker({ modelId, onProgress });
+		// Sinhala goes to the Sinhala fine-tune; it falls back to the chosen model if that can't load.
+		const preferred = language === "auto" ? modelId : modelForLanguage({ language, modelId });
+		try {
+			await this.ensureWorker({ modelId: preferred, onProgress });
+		} catch (error) {
+			if (preferred === modelId) throw error;
+			await this.ensureWorker({ modelId, onProgress });
+		}
 
 		return new Promise((resolve, reject) => {
 			if (!this.worker) {
@@ -123,6 +132,19 @@ class TranscriptionService {
 			throw new Error(`Unknown model: ${modelId}`);
 		}
 
+		// Fine-tunes published as release files are put into the model cache first.
+		if (model.release) {
+			try {
+				await ensureReleaseModel({
+					model,
+					onProgress: (p) => onProgress?.({ status: "loading-model", progress: Math.round(p * 100), message: `Downloading ${model.name} model...` }),
+				});
+			} catch (error) {
+				this.isInitializing = false;
+				throw error;
+			}
+		}
+
 		this.worker = new Worker(new URL("./worker.ts", import.meta.url), {
 			type: "module",
 		});
@@ -167,7 +189,8 @@ class TranscriptionService {
 			this.worker.postMessage({
 				type: "init",
 				modelId: model.huggingFaceId,
-				remoteHosts: WHISPER_HOSTS,
+				// Release models are already in the cache under their Hugging Face URLs.
+				remoteHosts: model.release ? ["https://huggingface.co/"] : WHISPER_HOSTS,
 			} satisfies WorkerMessage);
 		});
 	}

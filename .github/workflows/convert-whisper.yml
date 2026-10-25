@@ -1,0 +1,59 @@
+# Converts a Hugging Face Whisper fine-tune (PyTorch / safetensors) to the
+# ONNX layout transformers.js loads (onnx/*_q4.onnx etc.) and attaches the
+# files to a GitHub release, flattened as "onnx__encoder_model_q4.onnx".
+# The app's Local models download puts them back into its model cache.
+name: Convert Whisper model
+
+on:
+  workflow_dispatch:
+    inputs:
+      model:
+        description: Hugging Face model id
+        default: SinhaSpeech/whisper-small-sinhala-run11
+      tag:
+        description: Release tag for the converted files
+        default: model-whisper-small-si
+
+permissions:
+  contents: write
+
+jobs:
+  convert:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: huggingface/transformers.js
+          ref: "3.8.1"
+          path: tjs
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install the converter
+        run: pip install -r tjs/scripts/requirements.txt
+
+      - name: Convert and quantize
+        working-directory: tjs
+        run: python -m scripts.convert --quantize --model_id "${{ inputs.model }}"
+
+      - name: Flatten for release assets
+        run: |
+          src="tjs/models/${{ inputs.model }}"
+          mkdir -p out
+          (cd "$src" && find . -type f) | sed 's#^\./##' | while read -r f; do
+            cp "$src/$f" "out/${f//\//__}"
+          done
+          ls -la out
+          (cd out && ls -1) > out/files.txt
+
+      - name: Publish
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.tag }}
+          name: "Model: ${{ inputs.model }} (ONNX)"
+          body: "ONNX conversion of https://huggingface.co/${{ inputs.model }} for FrameFlow's on-device transcription. Licence as the original model."
+          prerelease: true
+          files: out/*

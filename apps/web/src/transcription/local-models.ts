@@ -16,6 +16,7 @@ export const WHISPER_APPROX_BYTES: Record<TranscriptionModelId, number> = {
 	"whisper-small": 304_000_000,
 	"whisper-medium": 685_000_000,
 	"whisper-large-v3-turbo": 764_000_000,
+	"whisper-small-si": 310_000_000,
 };
 
 export const WHISPER_DEFAULT = DEFAULT_TRANSCRIPTION_MODEL;

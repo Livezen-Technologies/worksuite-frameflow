@@ -16,7 +16,30 @@ const inflight = new Map();
 
 /** Must run before the app is ready. */
 function registerScheme() {
-	protocol.registerSchemesAsPrivileged([{ scheme: SCHEME, privileges: { standard: true, secure: true, supportFetchAPI: true, corsEnabled: true, stream: true } }]);
+	const privileges = { standard: true, secure: true, supportFetchAPI: true, corsEnabled: true, stream: true };
+	protocol.registerSchemesAsPrivileged([
+		{ scheme: SCHEME, privileges },
+		{ scheme: NET_SCHEME, privileges },
+	]);
+}
+
+// ffnet://get/?u=<url>: streams a model file from GitHub releases or Hugging
+// Face for the page, which can't fetch them itself (no CORS on redirects).
+const NET_SCHEME = "ffnet";
+const NET_HOSTS = /^https:\/\/(github\.com\/Livezen-Technologies\/|huggingface\.co\/)/;
+
+async function proxy(request) {
+	const url = new URL(request.url).searchParams.get("u") ?? "";
+	if (!NET_HOSTS.test(url)) return new Response("host not allowed", { status: 403 });
+	try {
+		const res = await net.fetch(url);
+		const headers = { "access-control-allow-origin": "*", "content-type": res.headers.get("content-type") ?? "application/octet-stream" };
+		const length = res.headers.get("content-length");
+		if (length) headers["content-length"] = length;
+		return new Response(res.body, { status: res.status, headers });
+	} catch (error) {
+		return new Response(String(error?.message ?? error), { status: 502, headers: { "access-control-allow-origin": "*" } });
+	}
 }
 
 async function download(url, file) {
@@ -80,6 +103,7 @@ async function prune() {
 
 function setup() {
 	protocol.handle(SCHEME, serve);
+	protocol.handle(NET_SCHEME, proxy);
 	setTimeout(() => void prune(), 30_000);
 }
 

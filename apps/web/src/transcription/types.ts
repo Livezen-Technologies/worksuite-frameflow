@@ -33,13 +33,21 @@ export type TranscriptionModelId =
 	| "whisper-tiny"
 	| "whisper-small"
 	| "whisper-medium"
-	| "whisper-large-v3-turbo";
+	| "whisper-large-v3-turbo"
+	| "whisper-small-si";
 
 export interface TranscriptionModel {
 	id: TranscriptionModelId;
 	name: string;
 	huggingFaceId: string;
 	description: string;
+	/** Only for this language (used automatically for it). */
+	language?: string;
+	/**
+	 * ONNX files published as a GitHub release (flattened "onnx__x.onnx"),
+	 * for fine-tunes that only ship PyTorch weights on Hugging Face.
+	 */
+	release?: { repo: string; tag: string };
 }
 
 export interface CaptionChunk {

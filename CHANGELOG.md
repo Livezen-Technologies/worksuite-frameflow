@@ -7,6 +7,9 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+### Added
+- Sinhala speech model: "Small · Sinhala" (Whisper Small fine-tuned for Sinhala by SinhaSpeech) in Settings › Local models. Transcribing and auto captions in Sinhala use it automatically; it downloads once and then runs on this computer.
+
 ## [1.7.9] - 2026-10-25
 
 ### Added
