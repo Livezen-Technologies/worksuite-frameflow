@@ -105,6 +105,7 @@ class RenderCacheService {
 				startTicks: (segment.startFrame - 1) * ctx.ticksPerFrame,
 				endTicks: (segment.endFrame + 1) * ctx.ticksPerFrame,
 				extra: `${ctx.extra}:${segment.startFrame}-${segment.endFrame}:${grade}`,
+				ticksPerSecond: TICKS_PER_SECOND,
 			});
 			byIndex.set(segment.index, hash);
 		}

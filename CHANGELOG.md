@@ -7,6 +7,10 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+### Fixed
+
+- Transitions now show in the preview on the part that plays before the cut. Before, the preview could replay an older saved render without the transition.
+
 ## [1.7.14] - 2026-10-25
 
 ### Fixed

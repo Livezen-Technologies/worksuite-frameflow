@@ -78,6 +78,7 @@ export function segmentFingerprint({
 	startTicks,
 	endTicks,
 	extra = "",
+	ticksPerSecond = 120_000,
 }: {
 	tracks: SceneTracks;
 	settings: Pick<TProjectSettings, "canvasSize" | "background" | "fps"> &
@@ -86,15 +87,22 @@ export function segmentFingerprint({
 	endTicks: number;
 	/** Anything else that changes the picture (cache size, renderer version). */
 	extra?: string;
+	ticksPerSecond?: number;
 }): string {
 	const ordered = [...tracks.overlay, tracks.main, ...tracks.audio];
 	const parts = ordered.map((track) => {
 		const { elements, ...trackState } = track;
 		// Transitions and animations reach a little past a clip's edges; a
 		// one-frame margin keeps neighbours honest.
-		const hits = elements.filter(
-			(e) => e.startTime < endTicks && e.startTime + e.duration > startTicks,
-		);
+		// A transition into a clip starts before the clip does, so count it
+		// from where its window can begin.
+		const hits = elements.filter((e) => {
+			const lead =
+				"transitionIn" in e && e.transitionIn
+					? e.transitionIn.duration * ticksPerSecond
+					: 0;
+			return e.startTime - lead < endTicks && e.startTime + e.duration > startTicks;
+		});
 		return hits.length ? stable({ trackState, hits }) : "";
 	});
 	return hashString(

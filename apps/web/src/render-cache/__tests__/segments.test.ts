@@ -152,3 +152,25 @@ describe("render cache segments", () => {
 		);
 	});
 });
+
+test("a transition into the next clip changes the segment before the cut", () => {
+	const tps = 120_000;
+	const clip = (id: string, start: number, extra = {}) => ({
+		id, type: "video", startTime: start * tps, duration: 5 * tps, ...extra,
+	});
+	const tracks = (withTransition: boolean) => ({
+		overlay: [],
+		audio: [],
+		main: {
+			id: "main",
+			type: "video",
+			elements: [
+				clip("a", 0),
+				clip("b", 5, withTransition ? { transitionIn: { type: "circle", duration: 1, easing: "linear", direction: "left", alignment: "center" } } : {}),
+			],
+		},
+	}) as unknown as Parameters<typeof segmentFingerprint>[0]["tracks"];
+	const settings = { canvasSize: { width: 1920, height: 1080 }, background: { type: "color", color: "#000" }, fps: 30 } as unknown as Parameters<typeof segmentFingerprint>[0]["settings"];
+	const at = (t: boolean) => segmentFingerprint({ tracks: tracks(t), settings, startTicks: 4 * tps, endTicks: 4.9 * tps });
+	expect(at(true)).not.toBe(at(false));
+});
