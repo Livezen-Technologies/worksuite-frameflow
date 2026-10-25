@@ -7,6 +7,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+## [1.7.9] - 2026-10-25
+
 ### Added
 - Green screen: Masks › Green screen keys out green, blue or any colour you pick on a video or picture, with strength, soft edges and spill removal. It's also in Effects as "Green screen".
 - Remove background: Masks › Remove background cuts people out of a photo without a green screen, using an AI model that runs on this computer (downloads once, about 25 MB).
