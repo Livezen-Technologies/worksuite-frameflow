@@ -6,7 +6,7 @@ import {
 } from "@huggingface/transformers";
 import type { TranscriptionSegment } from "@/transcription/types";
 import { groupWords } from "@/captions/words";
-import { SAMPLE_RATE, cleanText, estimateConfidence, looksHallucinated, planChunks, speechRegions } from "@/transcription/segmenter";
+import { SAMPLE_RATE, cleanText, estimateConfidence, looksHallucinated, planChunks, speechRegions, splitIntoLines } from "@/transcription/segmenter";
 
 export type WorkerMessage =
 	| { type: "init"; modelId: string; remoteHosts: string[] }
@@ -173,9 +173,14 @@ async function handleTranscribe({
 		const texts: string[] = [];
 		self.postMessage({ type: "transcribe-progress", progress: 0 } satisfies WorkerResponse);
 
-		for (let i = 0; i < chunks.length; i++) {
+		// Pieces still to do; an empty or garbled piece comes back as two halves.
+		const queue: { start: number; end: number; retried?: boolean }[] = [...chunks];
+		const totalSeconds = chunks.reduce((n, c) => n + (c.end - c.start), 0) || 1;
+		let doneSeconds = 0;
+		while (queue.length) {
 			if (cancelled) return;
-			const chunk = chunks[i];
+			const chunk = queue.shift();
+			if (!chunk) break;
 			const slice = audio.subarray(Math.floor(chunk.start * SAMPLE_RATE), Math.ceil(chunk.end * SAMPLE_RATE));
 			const length = chunk.end - chunk.start;
 			let raw: Awaited<ReturnType<AutomaticSpeechRecognitionPipeline>>;
@@ -195,15 +200,25 @@ async function handleTranscribe({
 				}))
 				.filter((c) => c.text.trim());
 			const pieceText = cleanText(result.text ?? "");
-			if (pieceText && !looksHallucinated({ text: pieceText, seconds: length })) {
+			const usable = pieceText && !looksHallucinated({ text: pieceText, seconds: length });
+			// Whisper sometimes returns nothing (or a loop) for a longer piece
+			// that does have speech; shorter halves usually come back right.
+			if (!usable && !chunk.retried && length >= 4) {
+				const middle = chunk.start + length / 2;
+				queue.unshift({ start: chunk.start, end: middle, retried: true }, { start: middle, end: chunk.end, retried: true });
+				continue;
+			}
+			doneSeconds += length;
+			if (usable) {
 				texts.push(pieceText);
 				const confidence = estimateConfidence({ raw: result.text ?? "", text: pieceText, seconds: length, language: lang });
 				const piece = { start: chunk.start + offset, end: chunk.end + offset };
 				let lines: TranscriptionSegment[];
 				if (words && timed.length) lines = groupWords({ words: timed });
-				else if (timed.length > 1) lines = timed.map((t) => ({ ...t, end: Math.max(t.end, t.start + 0.2) }));
-				// One phrase: it spans the speech it came from.
-				else lines = [{ text: pieceText, start: chunk.start, end: chunk.end }];
+				else if (timed.length > 1)
+					lines = timed.flatMap((t) => splitIntoLines({ text: t.text, start: t.start, end: Math.max(t.end, t.start + 0.2) }));
+				// One phrase: it spans the speech it came from, cut into caption-sized lines.
+				else lines = splitIntoLines({ text: pieceText, start: chunk.start, end: chunk.end });
 				segments.push(
 					...lines.map((line) => ({
 						...line,
@@ -217,7 +232,7 @@ async function handleTranscribe({
 			}
 			self.postMessage({
 				type: "transcribe-partial",
-				progress: Math.round(((i + 1) / chunks.length) * 100),
+				progress: Math.min(100, Math.round((doneSeconds / totalSeconds) * 100)),
 				segments: [...segments],
 			} satisfies WorkerResponse);
 		}

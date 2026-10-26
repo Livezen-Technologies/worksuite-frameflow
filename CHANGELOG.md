@@ -7,6 +7,11 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+### Fixed
+
+- Captions from transcription are now caption-sized: long recognised phrases are split into short lines at sentence ends and between words, each with its own timing, instead of one long line per 10 seconds.
+- Speech the model missed is now picked up: a piece that comes back empty or garbled is transcribed again in two halves, and quieter speech is detected.
+
 ## [1.7.16] - 2026-10-26
 
 ### Fixed

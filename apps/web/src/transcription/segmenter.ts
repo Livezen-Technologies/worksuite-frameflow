@@ -38,7 +38,7 @@ export function speechRegions({ audio, minGap = 0.35, minSpeech = 0.25 }: { audi
 	const floor = sorted[Math.floor(sorted.length * 0.15)] ?? 0;
 	const peak = sorted[Math.floor(sorted.length * 0.95)] ?? 0;
 	// Between the noise floor and typical speech level; never below a hard minimum.
-	const threshold = Math.max(0.004, floor + (peak - floor) * 0.12);
+	const threshold = Math.max(0.004, floor + (peak - floor) * 0.08);
 	const regions: Region[] = [];
 	let start = -1;
 	let lastVoiced = -1;
@@ -200,4 +200,55 @@ export function estimateConfidence({
 	if (words.length >= 6 && new Set(words).size / words.length < 0.5) score -= 0.25;
 	if (language === "si" && sinhalaShare(text) < 0.3) score -= 0.3;
 	return Math.round(Math.max(0, Math.min(1, score)) * 100) / 100;
+}
+
+/** Caption-sized line: characters (graphemes) and seconds. */
+export const LINE_MAX_CHARS = 42;
+export const LINE_MAX_SECONDS = 6;
+
+/**
+ * Splits one recognised phrase into caption-sized lines: at sentence ends
+ * first, then between words, with time shared out by length. Whisper often
+ * returns a whole 10-second piece as one block of text.
+ */
+export function splitIntoLines({
+	text,
+	start,
+	end,
+}: {
+	text: string;
+	start: number;
+	end: number;
+}): { text: string; start: number; end: number }[] {
+	const length = (s: string) => [...new Intl.Segmenter(undefined, { granularity: "grapheme" }).segment(s)].length;
+	const total = length(text);
+	if (total <= LINE_MAX_CHARS && end - start <= LINE_MAX_SECONDS) return [{ text, start, end }];
+	const sentences = text.split(/(?<=[.!?។।])\s+/).filter(Boolean);
+	const lines: string[] = [];
+	for (const sentence of sentences) {
+		let line = "";
+		for (const word of sentence.split(/\s+/).filter(Boolean)) {
+			const next = line ? `${line} ${word}` : word;
+			if (line && length(next) > LINE_MAX_CHARS) {
+				lines.push(line);
+				line = word;
+			} else line = next;
+		}
+		if (line) lines.push(line);
+	}
+	// Very short tails join the line before, so no one-word captions flash past.
+	const merged: string[] = [];
+	for (const line of lines) {
+		const last = merged.at(-1);
+		if (last && length(line) < 8 && length(`${last} ${line}`) <= LINE_MAX_CHARS + 10) merged[merged.length - 1] = `${last} ${line}`;
+		else merged.push(line);
+	}
+	const sum = merged.reduce((n, l) => n + length(l), 0) || 1;
+	let t = start;
+	return merged.map((line) => {
+		const lineEnd = t + ((end - start) * length(line)) / sum;
+		const out = { text: line, start: t, end: lineEnd };
+		t = lineEnd;
+		return out;
+	});
 }

@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { SAMPLE_RATE, cleanText, looksHallucinated, planChunks, speechRegions, estimateConfidence, sinhalaShare } from "../segmenter";
+import { SAMPLE_RATE, cleanText, looksHallucinated, planChunks, speechRegions, estimateConfidence, sinhalaShare, splitIntoLines } from "../segmenter";
 
 /** Tone bursts (speech) separated by near-silence. */
 function synth(parts: Array<[seconds: number, loud: boolean]>): Float32Array {
@@ -53,4 +53,14 @@ test("confidence drops for repeats, wrong script and odd speaking rate", () => {
 	expect(estimateConfidence({ raw: "hello", text: "hello", seconds: 1, language: "si" })).toBeLessThan(0.8);
 	expect(sinhalaShare("මම ගෙදර යනවා")).toBe(1);
 	expect(sinhalaShare("hello")).toBe(0);
+});
+
+test("long phrases become caption-sized lines that cover the same time", () => {
+	const text = "facebook එකෙන් වැඩි කොරයි නේ. මොකක්ද දිස්සෙත්. මේස් වෙන්නේ කන්නේ නෑ ඇති. හිත අයියා නිදෑ මේස් උනා.";
+	const lines = splitIntoLines({ text, start: 24.8, end: 36.6 });
+	expect(lines.length).toBeGreaterThan(1);
+	expect(lines[0].start).toBe(24.8);
+	expect(lines.at(-1)?.end).toBeCloseTo(36.6, 5);
+	for (const l of lines) expect([...l.text].length).toBeLessThanOrEqual(80);
+	expect(splitIntoLines({ text: "short", start: 0, end: 2 })).toHaveLength(1);
 });
