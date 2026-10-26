@@ -7,6 +7,14 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+### Fixed
+
+- Templates › From the online library: pack previews show again, loaded through the on-disk thumbnail cache. Before, they appeared as broken images.
+
+### Changed
+
+- Home: New project is one split button with a plus icon, a subtle shadow and a divider. Its arrow opens "Start from a template".
+
 ## [1.7.24] - 2026-10-26
 
 ### Changed

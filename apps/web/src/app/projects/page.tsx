@@ -3,6 +3,7 @@
 import {
 	AudioLines,
 	ChevronDown,
+	Plus,
 	Circle,
 	Clock,
 	Cloud as CloudIcon,
@@ -729,29 +730,31 @@ function NewProjectButton() {
 	return (
 		<div className="flex gap-2">
 			<OpenFolderButton />
-			<div className="flex">
+			{/* One split button: create, or pick a template from the arrow. */}
+			<div className="shadow-primary/20 inline-flex overflow-hidden rounded-lg shadow-md" data-new-project>
 				<Button
 					size="lg"
-					className="flex rounded-r-none px-5 md:px-6"
+					className="gap-2 rounded-none px-4 font-semibold transition-colors md:px-5"
 					onClick={() => void handleCreateProject()}
 				>
-					<span className="text-sm font-medium hidden md:block">
-						New project
-					</span>
-					<span className="text-sm font-medium block md:hidden">New</span>
+					<Plus className="size-4" strokeWidth={2.5} />
+					<span className="hidden text-sm md:inline">New project</span>
+					<span className="text-sm md:hidden">New</span>
 				</Button>
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
 						<Button
 							size="lg"
-							className="rounded-l-none border-l border-black/20 px-2"
+							className="rounded-none border-l border-white/25 px-2.5 transition-colors data-[state=open]:brightness-90"
 							aria-label="New project from a template"
+							title="New project from a template"
 							data-new-from-template
 						>
-							<ChevronDown className="size-4" />
+							<ChevronDown className="size-4 transition-transform [[data-state=open]>&]:rotate-180" />
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="end" className="w-64">
+						<div className="text-muted-foreground px-2 py-1.5 text-xs font-medium">Start from a template</div>
 						{[...BUILT_IN_TEMPLATES, ...templates].map((t) => (
 							<DropdownMenuItem
 								key={t.id}

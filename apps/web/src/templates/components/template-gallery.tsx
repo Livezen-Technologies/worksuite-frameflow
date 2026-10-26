@@ -1,5 +1,6 @@
 "use client";
 
+import { cachedImage, resolveUrl } from "@/asset-library/components/asset-library-view";
 import { Check, CloudDownload, Search, Sparkles } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -184,12 +185,7 @@ export function TemplateGallery() {
 									return (
 										<div key={p.id} className="flex flex-col gap-1.5" data-template-pack={p.id}>
 											<div className="relative flex h-36 items-center justify-center overflow-hidden rounded-xl bg-[#0b0d12] ring-1 ring-white/5">
-												{p.thumbnailUrl ? (
-													// eslint-disable-next-line @next/next/no-img-element -- catalog thumbnail
-													<img src={p.thumbnailUrl} alt="" className="size-full object-cover" loading="lazy" />
-												) : (
-													<CloudDownload className="text-muted-foreground size-8" />
-												)}
+												<PackPicture url={p.thumbnailUrl} base={store.settings ? catalogBase(store.settings.channel) : undefined} />
 												{dl && (dl.status === "downloading" || dl.status === "installing") && (
 													<div className="absolute inset-x-0 bottom-0 h-1 bg-white/10">
 														<div className="bg-primary h-full" style={{ width: `${pct}%` }} />
@@ -212,5 +208,21 @@ export function TemplateGallery() {
 				)}
 			</div>
 		</LibraryPageShell>
+	);
+}
+
+/** Where the catalog lives: thumbnails in it are relative to this (same as the Asset Library). */
+function catalogBase(channel: string): string {
+	return `${process.env.NEXT_PUBLIC_WSC_ASSET_URL ?? "https://frameflow.worksuitecloud.com/library/feed"}/${channel}/`;
+}
+
+/** A template pack's thumbnail through the on-disk cache; a plain mark when there is none or it fails. */
+function PackPicture({ url, base }: { url: string | null; base?: string }) {
+	const [failed, setFailed] = useState(false);
+	const src = resolveUrl(url, base);
+	if (!src || failed) return <CloudDownload className="text-muted-foreground size-8" />;
+	return (
+		// eslint-disable-next-line @next/next/no-img-element -- catalog thumbnail from the disk cache
+		<img src={cachedImage(src)} alt="" className="size-full object-cover" loading="lazy" decoding="async" onError={() => setFailed(true)} />
 	);
 }
