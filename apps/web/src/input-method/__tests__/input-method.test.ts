@@ -127,3 +127,8 @@ describe("spell check (TI-13)", () => {
 		expect(languageOf("hello")).toBeNull();
 	});
 });
+
+test("links and email addresses are never taken for legacy Sinhala", () => {
+	expect(looksLikeLegacy({ text: "https://www.adaderana.lk/news.php?nid=123" })).toBe(false);
+	expect(looksLikeLegacy({ text: "someone@example.com" })).toBe(false);
+});

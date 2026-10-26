@@ -28,6 +28,10 @@ type Field = HTMLInputElement | HTMLTextAreaElement | TextFieldLike;
 
 /** An input, textarea or contentEditable element the input method can type into. */
 export function toField(target: EventTarget | null): Field | null {
+	// Fields for links, emails, passwords and numbers, and anything marked
+	// data-no-legacy, are left alone: no Sinhala typing and no paste conversion.
+	if (target instanceof HTMLInputElement && /^(url|email|password|number)$/.test(target.type)) return null;
+	if (target instanceof Element && target.closest("[data-no-legacy]")) return null;
 	return isTextField(target) ? target : editableField(target);
 }
 

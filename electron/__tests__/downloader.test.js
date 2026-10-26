@@ -71,3 +71,8 @@ test("finds subtitles on pages and in HLS, and converts WebVTT to SRT", () => {
 	const srt = _test.vttToSrt("WEBVTT\n\n00:01.000 --> 00:02.500 align:start\n<b>Hello</b>\n\n1\n01:00:03.000 --> 01:00:04.000\nWorld\n");
 	assert.equal(srt, "1\n00:00:01,000 --> 00:00:02,500\nHello\n\n2\n01:00:03,000 --> 01:00:04,000\nWorld\n");
 });
+
+test("names the service an embedded video plays from", () => {
+	assert.equal(_test.embeddedPlayer("https://www.youtube.com/embed/abc"), "YouTube");
+	assert.equal(_test.embeddedPlayer("https://cdn.example.com/a.mp4"), null);
+});

@@ -225,6 +225,25 @@ function parseUrl(url) {
  * Checks a link before downloading (DL-01): what it is, its title, size,
  * quality choices and whether it may be downloaded.
  */
+/** Video services whose players pages embed; their streams are protected and not downloaded. */
+const PLAYERS = [
+	[/(^|\.)(youtube\.com|youtu\.be|youtube-nocookie\.com)$/i, "YouTube"],
+	[/(^|\.)(facebook\.com|fb\.watch)$/i, "Facebook"],
+	[/(^|\.)vimeo\.com$/i, "Vimeo"],
+	[/(^|\.)dailymotion\.com$/i, "Dailymotion"],
+	[/(^|\.)tiktok\.com$/i, "TikTok"],
+	[/(^|\.)instagram\.com$/i, "Instagram"],
+];
+
+function embeddedPlayer(url) {
+	try {
+		const host = new URL(url).hostname;
+		return PLAYERS.find(([re]) => re.test(host))?.[1] ?? null;
+	} catch {
+		return null;
+	}
+}
+
 async function inspect({ url, fetchImpl = fetch }) {
 	const original = parseUrl(url);
 	const shared = resolveShareLink(original.href);
@@ -293,7 +312,17 @@ async function inspect({ url, fetchImpl = fetch }) {
 		return { ok: true, host, kind, url: mediaUrl, title: title ?? fileStem(mediaUrl), duration: duration || undefined, variants, subtitles };
 	}
 	done();
-	if (!isMedia(type, mediaUrl) && !MEDIA_EXT.test(named(res))) return { ok: false, host, title, reason: "The page's video link isn't a file that can be saved." };
+	if (!isMedia(type, mediaUrl) && !MEDIA_EXT.test(named(res))) {
+		const player = embeddedPlayer(mediaUrl);
+		return {
+			ok: false,
+			host,
+			title,
+			reason: player
+				? `This page plays its video from ${player}, which FrameFlow doesn't download. Ask the publisher for the video file.`
+				: "The page's video link isn't a file that can be saved.",
+		};
+	}
 	const range = /\/(\d+)$/.exec(res.headers.get("content-range") ?? "")?.[1];
 	const bytes = Number(range ?? res.headers.get("content-length") ?? 0) || undefined;
 	const name = fileNameFor({ url: mediaUrl, type, disposition: res.headers.get("content-disposition") });
@@ -444,5 +473,5 @@ module.exports = {
 	pause,
 	cancel,
 	discard,
-	_test: { resolveShareLink, pageSubtitles, hlsSubtitles, vttToSrt, findVideoInPage, fileNameFor, isMedia, drmReason, hlsVariants, hlsDuration, pageTitle, streamKind, throttle },
+	_test: { embeddedPlayer, resolveShareLink, pageSubtitles, hlsSubtitles, vttToSrt, findVideoInPage, fileNameFor, isMedia, drmReason, hlsVariants, hlsDuration, pageTitle, streamKind, throttle },
 };

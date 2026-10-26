@@ -235,8 +235,12 @@ export function legacyToUnicode({ text }: { text: string }): string {
  * code points, and most words read as nonsense in English but convert to
  * mostly Sinhala.
  */
+/** Links, email addresses, file paths and similar: never legacy Sinhala. */
+const NOT_PROSE = /([a-z][a-z0-9+.-]*:\/\/|www\.|\S+@\S+\.\S+|^[/~]|[A-Za-z]:\\|\.(com|org|net|io|lk|mp4|mov|webm|m3u8|mpd)\b)/i;
+
 export function looksLikeLegacy({ text }: { text: string }): boolean {
 	if (/[඀-෿]/.test(text)) return false;
+	if (NOT_PROSE.test(text.trim())) return false;
 	const words = text.split(/\s+/).filter((w) => w.length > 1);
 	if (words.length === 0) return false;
 	let odd = 0;

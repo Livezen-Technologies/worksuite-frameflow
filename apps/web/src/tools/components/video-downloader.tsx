@@ -169,6 +169,7 @@ function AddLinks({ onQueued }: { onQueued: () => void }) {
 					placeholder={"https://example.com/video.mp4\nhttps://cdn.example.com/stream/master.m3u8"}
 					className="rounded-md border bg-transparent p-3 font-mono text-sm"
 					data-download-links
+					data-no-legacy
 				/>
 				<div className="flex items-center gap-2">
 					<Button onClick={() => void check(text)} disabled={!text.trim()} data-download-check>
