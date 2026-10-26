@@ -6,10 +6,13 @@ import { Button } from "@/components/ui/button";
 import {
 	Dialog,
 	DialogContent,
+	DialogBody,
+	DialogFooter,
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/utils/ui";
 import { useEditor } from "@/editor/use-editor";
 import { createMulticam, type SyncMethod } from "../service";
 import { useMulticamUi } from "../store";
@@ -101,7 +104,8 @@ export function CreateMulticamDialog() {
 				<DialogHeader>
 					<DialogTitle>New multicam clip</DialogTitle>
 				</DialogHeader>
-				<p className="text-muted-foreground text-xs">
+				<DialogBody className="flex flex-col gap-4 py-4">
+				<p className="text-muted-foreground m-0 text-xs leading-relaxed">
 					Pick {MIN_ANGLES}–{MAX_ANGLES} clips of the same moment: cameras,
 					phones or screen recordings. Angle 1 is the first one you pick.
 				</p>
@@ -118,13 +122,13 @@ export function CreateMulticamDialog() {
 						const index = chosen.indexOf(v.id);
 						return (
 							<li key={v.id}>
-								<label className="hover:bg-accent/40 flex cursor-pointer items-center gap-2 px-3 py-1.5 text-sm">
+								<label className="hover:bg-accent/40 flex cursor-pointer items-center gap-3 px-3 py-2 text-sm">
 									<input
 										type="checkbox"
 										checked={index >= 0}
 										onChange={() => toggle(v.id)}
 									/>
-									<span className="w-12 text-xs text-sky-400">
+									<span className="w-12 shrink-0 text-xs font-medium text-sky-400">
 										{index >= 0 ? `Cam ${index + 1}` : ""}
 									</span>
 									<span className="truncate">{v.name}</span>
@@ -136,8 +140,8 @@ export function CreateMulticamDialog() {
 						);
 					})}
 				</ul>
-				<div className="flex items-center gap-2 text-sm">
-					<span id="multicam-name">Name</span>
+				<div className="flex items-center gap-3 text-sm">
+					<span id="multicam-name" className="w-12 shrink-0 font-medium">Name</span>
 					<Input
 						aria-labelledby="multicam-name"
 						value={name}
@@ -145,15 +149,22 @@ export function CreateMulticamDialog() {
 						className="h-8"
 					/>
 				</div>
-				<fieldset className="flex flex-col gap-1">
-					<legend className="mb-1 text-sm">Sync by</legend>
+				<fieldset className="flex flex-col gap-1.5">
+					<legend className="mb-1.5 text-sm font-medium">Sync by</legend>
 					{SYNC.map((s) => (
-						<label key={s.value} className="flex items-start gap-2 text-sm">
+						<label
+							key={s.value}
+							className={cn(
+								"hover:bg-accent/40 flex cursor-pointer items-start gap-3 rounded-md border px-3 py-2 text-sm",
+								sync === s.value ? "border-primary/60 bg-primary/5" : "border-transparent",
+							)}
+						>
 							<input
 								type="radio"
 								name="multicam-sync"
 								checked={sync === s.value}
 								onChange={() => setSync(s.value)}
+								className="mt-1"
 							/>
 							<span>
 								{s.label}
@@ -164,7 +175,8 @@ export function CreateMulticamDialog() {
 						</label>
 					))}
 				</fieldset>
-				<div className="flex items-center justify-end gap-2">
+				</DialogBody>
+				<DialogFooter className="flex items-center justify-end gap-2">
 					{busy && (
 						<span
 							className="text-muted-foreground mr-auto text-xs"
@@ -187,7 +199,7 @@ export function CreateMulticamDialog() {
 					>
 						Make multicam clip
 					</Button>
-				</div>
+				</DialogFooter>
 			</DialogContent>
 		</Dialog>
 	);
