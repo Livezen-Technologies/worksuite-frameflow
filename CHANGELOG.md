@@ -7,6 +7,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+## [1.7.21] - 2026-10-26
+
 ### Fixed
 
 - Sinhala transcription: the Sinhala model is no longer asked for timestamps it was never trained on. With them it often stopped after a word or two per piece, which left most speech out. Each line's timing now comes from FrameFlow's own speech pieces.
