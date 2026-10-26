@@ -7,6 +7,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+## [1.7.25] - 2026-10-26
+
 ### Fixed
 
 - Templates › From the online library: pack previews show again, loaded through the on-disk thumbnail cache. Before, they appeared as broken images.
