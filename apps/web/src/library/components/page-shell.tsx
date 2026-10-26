@@ -5,13 +5,28 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 /** Header and width for the library pages opened from the home sidebar. */
-export function LibraryPageShell({ title, subtitle, actions, children }: { title: string; subtitle: string; actions?: ReactNode; children: ReactNode }) {
+export function LibraryPageShell({
+	title,
+	subtitle,
+	actions,
+	children,
+	back = true,
+}: {
+	title: string;
+	subtitle: string;
+	actions?: ReactNode;
+	children: ReactNode;
+	/** Off in a window of its own, where there is nowhere to go back to. */
+	back?: boolean;
+}) {
 	return (
 		<div className="bg-background text-foreground min-h-screen">
 			<header className="flex items-center gap-3 border-b px-5 py-3">
-				<Link href="/projects" className="text-muted-foreground hover:text-foreground" aria-label="Back to home">
-					<ArrowLeft className="size-4" />
-				</Link>
+				{back && (
+					<Link href="/projects" className="text-muted-foreground hover:text-foreground" aria-label="Back to home">
+						<ArrowLeft className="size-4" />
+					</Link>
+				)}
 				<div className="min-w-0 flex-1">
 					<h1 className="text-lg font-semibold">{title}</h1>
 					<p className="text-muted-foreground text-xs">{subtitle}</p>

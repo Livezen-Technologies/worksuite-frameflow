@@ -7,6 +7,10 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+### Changed
+
+- Video Downloader window: no back arrow when it has its own window. A link that can't be downloaded shows as an amber note with the page title, the link and the reason, instead of a red error. When nothing can be downloaded, a short tip replaces the "0 of 1 ready" line and the inactive Download button.
+
 ## [1.7.22] - 2026-10-26
 
 ### Fixed

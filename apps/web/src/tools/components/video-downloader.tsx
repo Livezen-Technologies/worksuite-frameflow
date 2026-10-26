@@ -79,6 +79,7 @@ export function VideoDownloader() {
 
 	return (
 		<LibraryPageShell
+			back={!inOwnWindow()}
 			title="Video downloader"
 			subtitle="Save videos and audio from direct links and streams without DRM. Only download what you have the rights to use."
 			actions={
@@ -190,14 +191,20 @@ function AddLinks({ onQueued }: { onQueued: () => void }) {
 							onRemove={() => setChecked((list) => list.filter((x) => x.link !== c.link))}
 						/>
 					))}
-					<div className="flex items-center justify-between">
-						<span className="text-muted-foreground text-sm">
-							{selected.length} of {checked.length} ready
-						</span>
-						<Button disabled={!selected.length} onClick={() => setOptions(true)} data-download-options>
-							<Download /> Download {selected.length || ""}
-						</Button>
-					</div>
+					{checked.some((c) => c.info?.ok) ? (
+						<div className="flex items-center justify-between">
+							<span className="text-muted-foreground text-sm">
+								{selected.length} of {checked.length} ready
+							</span>
+							<Button disabled={!selected.length} onClick={() => setOptions(true)} data-download-options>
+								<Download /> Download {selected.length || ""}
+							</Button>
+						</div>
+					) : checked.every((c) => c.state === "ready") ? (
+						<p className="text-muted-foreground m-0 text-sm" data-download-none>
+							Nothing here can be downloaded. Paste a link that points straight to a video file or stream.
+						</p>
+					) : null}
 				</div>
 			)}
 			<OptionsDialog
@@ -216,17 +223,18 @@ function AddLinks({ onQueued }: { onQueued: () => void }) {
 function LinkCard({ item, onToggle, onRemove }: { item: Checked; onToggle: () => void; onRemove: () => void }) {
 	const info = item.info;
 	return (
-		<div className={cn("bg-card flex items-center gap-3 rounded-lg border p-3", info && !info.ok && "border-red-500/40")} data-link-card={item.state === "checking" ? "checking" : info?.ok ? "ok" : "refused"}>
+		<div className={cn("bg-card flex items-start gap-3 rounded-lg border p-3", info && !info.ok && "border-amber-500/40 bg-amber-500/5")} data-link-card={item.state === "checking" ? "checking" : info?.ok ? "ok" : "refused"}>
 			{item.state === "checking" ? (
 				<span className="border-primary size-4 animate-spin rounded-full border-2 border-t-transparent" />
 			) : info?.ok ? (
 				<input type="checkbox" checked={item.selected} onChange={onToggle} aria-label="Download this" />
 			) : (
-				<Ban className="size-4 text-red-400" />
+				<Ban className="mt-0.5 size-4 shrink-0 text-amber-400" />
 			)}
 			<div className="min-w-0 flex-1">
 				<div className="truncate text-sm font-medium">{info?.title ?? item.link}</div>
-				<div className="text-muted-foreground truncate text-xs">
+				{info?.title && <div className="text-muted-foreground truncate font-mono text-[11px]">{item.link}</div>}
+				<div className={cn("text-xs", info && !info.ok ? "mt-1 text-amber-300" : "text-muted-foreground truncate")}>
 					{item.state === "checking"
 						? `Checking ${item.link}…`
 						: info?.ok
@@ -576,4 +584,9 @@ function Library() {
 			)}
 		</div>
 	);
+}
+
+/** True in the Downloader's own window (opened with ?window=1). */
+function inOwnWindow(): boolean {
+	return typeof window !== "undefined" && new URLSearchParams(window.location.search).get("window") === "1";
 }
