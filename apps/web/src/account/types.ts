@@ -33,6 +33,17 @@ export interface WorksuiteProfile {
 	/** Personal account plus teams/organisations; empty if the server lists none. */
 	workspaces: WorksuiteWorkspace[];
 	workspaceId: string | null;
+	/** FrameFlow licence from WorkSuite Cloud (free, activated on sign-in). */
+	license?: WorksuiteLicense | null;
+}
+
+export interface WorksuiteLicense {
+	plan: string;
+	active: boolean;
+	status: string;
+	features: string[];
+	activatedAt: string | null;
+	expiresAt: string | null;
 }
 
 export interface WorksuiteSignInProgress {

@@ -12,15 +12,60 @@ const path = require("node:path");
 const CONFIG = {
 	issuer: process.env.WSC_ISSUER || "https://account.worksuitecloud.com/oauth",
 	clientId: process.env.WSC_CLIENT_ID || "worksuite-frameflow",
-	apiBase: process.env.WSC_API_BASE || "https://api.worksuitecloud.com",
+	// Where WorkSuite Cloud serves /api/v1 (its discovery document names `${site}/api`).
+	apiBase: process.env.WSC_API_BASE || "https://worksuitecloud.com/api",
 	manageUrl: process.env.WSC_MANAGE_URL || "https://account.worksuitecloud.com/account/",
-	scope: "openid profile email offline_access wve.projects wve.assets",
+	scope: "openid profile email offline_access wsc_orgs",
+	/** Licence product id on WorkSuite Cloud. */
+	product: "frameflow",
 };
 const SIGN_IN_TIMEOUT_MS = 10 * 60 * 1000;
 
 const tokenFile = () => path.join(app.getPath("userData"), "account-token.bin");
 const profileFile = () => path.join(app.getPath("userData"), "account-profile.json");
 const workspaceFile = () => path.join(app.getPath("userData"), "account-workspace.json");
+const deviceFile = () => path.join(app.getPath("userData"), "device-id.json");
+
+/** A random id for this install, so the licence can list the devices it is used on. */
+function deviceId() {
+	const saved = readJson(deviceFile())?.id;
+	if (typeof saved === "string" && /^[A-Za-z0-9_-]{8,64}$/.test(saved)) return saved;
+	const id = crypto.randomBytes(16).toString("hex");
+	fs.writeFileSync(deviceFile(), JSON.stringify({ id }), { mode: 0o600 });
+	return id;
+}
+
+/**
+ * Activates (or re-reads) this person's FrameFlow licence on WorkSuite Cloud.
+ * Licences are free and activate automatically; nothing in the app is locked
+ * behind one, so a failure here only leaves the last known licence shown.
+ */
+async function fetchLicense(previous) {
+	try {
+		const res = await fetch(`${CONFIG.apiBase}/v1/licenses/${CONFIG.product}/activate`, {
+			method: "POST",
+			headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+			body: JSON.stringify({
+				device_id: deviceId(),
+				device_name: require("node:os").hostname().slice(0, 120),
+				platform: process.platform,
+				app_version: app.getVersion(),
+			}),
+		});
+		if (!res.ok) return previous ?? null;
+		const l = await res.json();
+		return {
+			plan: typeof l.plan === "string" ? l.plan : "free",
+			active: l.active !== false,
+			status: typeof l.status === "string" ? l.status : "ACTIVE",
+			features: Array.isArray(l.features) ? l.features : ["all"],
+			activatedAt: l.activated_at ?? null,
+			expiresAt: l.expires_at ?? null,
+		};
+	} catch {
+		return previous ?? null;
+	}
+}
 
 const base64url = (buf) => buf.toString("base64url");
 
@@ -144,6 +189,14 @@ async function fetchProfile(idTokenClaims) {
 			}
 		} catch {}
 	}
+	// WorkSuite Cloud's /v1/me nests the person under `identity` and lists organizations.
+	if (me?.identity) {
+		me = {
+			...me.identity,
+			workspaces: (me.organizations ?? []).map((o) => ({ id: o.id, name: o.name, plan: o.plan, type: o.type === "PERSONAL" ? "personal" : "team" })),
+			active_workspace_id: me.active_organization_id ?? null,
+		};
+	}
 	me = { ...(idTokenClaims || {}), ...(me || {}) };
 	const workspaces = normalizeWorkspaces(me);
 	const saved = readJson(workspaceFile())?.id;
@@ -165,6 +218,7 @@ async function fetchProfile(idTokenClaims) {
 		features: Array.isArray(me.features) ? me.features : [],
 		workspaces,
 		workspaceId,
+		license: await fetchLicense(readJson(profileFile())?.license),
 		cachedAt: Date.now(),
 	});
 	fs.writeFileSync(profileFile(), JSON.stringify(profile), { mode: 0o600 });

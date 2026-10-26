@@ -106,6 +106,16 @@ export function AccountMenu() {
 						</span>
 					)}
 				</DropdownMenuLabel>
+				{profile.license && (
+					<DropdownMenuLabel className="flex items-center gap-1.5 text-xs font-normal" data-account-license>
+						<span
+							className={profile.license.active ? "size-1.5 rounded-full bg-emerald-500" : "size-1.5 rounded-full bg-amber-500"}
+							aria-hidden="true"
+						/>
+						FrameFlow {profile.license.plan === "free" ? "Free" : profile.license.plan} ·{" "}
+						{profile.license.active ? "Activated" : "Not active"}
+					</DropdownMenuLabel>
+				)}
 				{(profile.plan || storage) && (
 					<DropdownMenuLabel className="flex flex-col gap-0.5 text-xs font-normal text-muted-foreground">
 						{profile.plan && <span>Plan: {profile.plan}</span>}

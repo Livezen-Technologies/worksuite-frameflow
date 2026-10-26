@@ -7,6 +7,14 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+### Added
+
+- Signing in with your WorkSuite Cloud account activates a free FrameFlow licence automatically, and the account menu shows "FrameFlow Free · Activated". Every feature stays available.
+
+### Fixed
+
+- Sign-in and account details now use WorkSuite Cloud's real API address and response format, so your workspaces are listed after signing in. It also needs the matching WorkSuite Cloud update that registers FrameFlow.
+
 ## [1.7.17] - 2026-10-26
 
 ### Fixed
