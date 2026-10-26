@@ -7,6 +7,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+## [1.7.17] - 2026-10-26
+
 ### Fixed
 
 - Captions from transcription are now caption-sized: long recognised phrases are split into short lines at sentence ends and between words, each with its own timing, instead of one long line per 10 seconds.
