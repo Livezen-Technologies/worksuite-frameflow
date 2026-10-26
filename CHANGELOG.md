@@ -7,6 +7,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+## [1.7.24] - 2026-10-26
+
 ### Changed
 
 - Video Downloader window: a tighter header (the window's title bar already names it), a narrower layout, a clearer link box and a clearly disabled Check links button. The help text now says which sites aren't supported.
