@@ -513,7 +513,8 @@ export class AudioManager {
 	}
 
 	private hasCurveRetime({ clip }: { clip: AudioClipSource }): boolean {
-		return Boolean(clip.retime?.curve?.length);
+		// Curves and reverse can't use the live playbackRate path.
+		return Boolean(clip.retime?.curve?.length || clip.retime?.reverse);
 	}
 
 	private scheduleClipGainAutomation({

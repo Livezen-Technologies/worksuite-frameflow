@@ -3,6 +3,8 @@
 import { toast } from "sonner";
 import type { EditorCore } from "@/core";
 import { processMediaAssets } from "@/media/processing";
+import { BatchCommand } from "@/commands";
+import { AddTrackCommand, InsertElementCommand } from "@/commands/timeline";
 import { buildElementFromMedia } from "@/timeline/element-utils";
 import { mediaTimeFromSeconds } from "@/wasm";
 
@@ -23,10 +25,13 @@ export async function importDownloadedFile({
 	editor,
 	filePath,
 	mode,
+	track = "auto",
 }: {
 	editor: EditorCore;
 	filePath: string;
 	mode: Exclude<AfterDownload, "none">;
+	/** Timeline only: the first free track ("auto") or a new track on top ("new"). */
+	track?: "auto" | "new";
 }): Promise<void> {
 	const tools = window.worksuite?.tools;
 	if (!tools) throw new Error("Importing downloads needs the desktop app.");
@@ -50,16 +55,22 @@ export async function importDownloadedFile({
 	if (!asset) throw new Error(`Couldn't add ${name} to the project.`);
 
 	if (mode === "timeline") {
-		editor.timeline.insertElement({
-			element: buildElementFromMedia({
-				mediaId: asset.id,
-				mediaType: asset.type,
-				name: asset.name,
-				duration: mediaTimeFromSeconds({ seconds: asset.duration ?? 5 }),
-				startTime: editor.playback.getCurrentTime(),
-			}),
-			placement: { mode: "auto" },
+		const element = buildElementFromMedia({
+			mediaId: asset.id,
+			mediaType: asset.type,
+			name: asset.name,
+			duration: mediaTimeFromSeconds({ seconds: asset.duration ?? 5 }),
+			startTime: editor.playback.getCurrentTime(),
 		});
+		if (track === "new") {
+			// One undo step: the new track and the clip on it.
+			const added = new AddTrackCommand({ type: asset.type === "audio" ? "audio" : "video", index: 0 });
+			editor.command.execute({
+				command: new BatchCommand([added, new InsertElementCommand({ element, placement: { mode: "explicit", trackId: added.getTrackId() } })]),
+			});
+		} else {
+			editor.timeline.insertElement({ element, placement: { mode: "auto" } });
+		}
 	}
 	toast.success(
 		existing

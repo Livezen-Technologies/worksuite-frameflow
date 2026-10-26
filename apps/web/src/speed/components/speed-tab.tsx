@@ -73,8 +73,26 @@ export function SpeedTab({
 	const [mode, setMode] = useState<"normal" | "curve">(
 		hasCurve ? "curve" : "normal",
 	);
+	const editor = useEditor();
+	const reversed = !!element.retime?.reverse;
 	return (
 		<div className="flex flex-col">
+			<div className="flex items-center justify-between px-4 pt-3 text-sm font-semibold" data-speed-reverse>
+				<span title="Play the clip backwards, last frame first">Reverse</span>
+				<Switch
+					aria-label="Reverse"
+					checked={reversed}
+					onCheckedChange={(checked) =>
+						editor.timeline.updateElementRetime({
+							trackId,
+							elementId: element.id,
+							retime: checked
+								? { ...(element.retime ?? { rate: 1 }), reverse: true }
+								: element.retime && { ...element.retime, reverse: undefined },
+						})
+					}
+				/>
+			</div>
 			<div className="grid grid-cols-2 gap-1 px-4 pt-3" data-speed-mode>
 				{(
 					[
@@ -136,10 +154,12 @@ function NormalSpeed({
 		rate: number;
 		maintainPitch: boolean;
 	}) => {
+		const built = buildRetime({ rate: nextRate, maintainPitch: nextMaintainPitch });
+		const reverse = element.retime?.reverse;
 		editor.timeline.updateElementRetime({
 			trackId,
 			elementId: element.id,
-			retime: buildRetime({ rate: nextRate, maintainPitch: nextMaintainPitch }),
+			retime: reverse ? { ...(built ?? { rate: 1 }), reverse } : built,
 		});
 	};
 

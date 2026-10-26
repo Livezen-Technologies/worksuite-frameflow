@@ -21,7 +21,7 @@ import { frameRateToFloat } from "@/fps/utils";
 import { downloadBlob } from "@/utils/browser";
 import { renderCache } from "@/render-cache/service";
 import { videoCache } from "@/services/video-cache/service";
-import { startExportDiagnostics, useExportPerformance } from "@/export/performance";
+import { hardwareAccelerationFor, startExportDiagnostics, useExportPerformance } from "@/export/performance";
 import {
 	audioBufferToWav,
 	masterBridge,
@@ -315,6 +315,7 @@ export class RendererManager {
 				gif,
 				...(master && bridge ? { master: { bridge, codec: master } } : {}),
 				ai: aiStages,
+				hardwareAcceleration: hardwareAccelerationFor(useExportPerformance.getState().encoder),
 			});
 
 			exporter.on("progress", (progress) => {

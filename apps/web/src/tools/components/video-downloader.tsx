@@ -65,7 +65,7 @@ export function VideoDownloader() {
 				const after = item.afterDownload ?? "none";
 				if ((after === "library" || after === "timeline") && item.path) {
 					// The editor window adds it to the open project.
-					void tools?.sendToEditor?.({ path: item.path, mode: after }).then((sent) => {
+					void tools?.sendToEditor?.({ path: item.path, mode: after, track: item.track ?? "auto" }).then((sent) => {
 						if (!sent) toast.info("Open a project in FrameFlow to add the download to it.");
 					});
 				} else if ((item.openWhenDone || item.transcribe) && item.path) {
@@ -264,6 +264,8 @@ function OptionsDialog({ open, links, onOpenChange, onQueued }: { open: boolean;
 	const [to, setTo] = useState("");
 	const [after, setAfter] = useState<"library" | "timeline" | "new-project" | "none">("library");
 	const openWhenDone = after === "new-project";
+	const [track, setTrack] = useState<"auto" | "new">("auto");
+	const [folder, setFolder] = useState<string | null>(null);
 	const [saveSubs, setSaveSubs] = useState(true);
 	const [transcribe, setTranscribe] = useState<string | null>(null);
 	const [rights, setRights] = useState(false);
@@ -301,6 +303,8 @@ function OptionsDialog({ open, links, onOpenChange, onQueued }: { open: boolean;
 					end,
 					openWhenDone,
 					afterDownload: after === "library" || after === "timeline" ? after : "none",
+					track,
+					...(folder ? { folder } : {}),
 					saveSubs,
 					transcribe,
 					status: "queued",
@@ -368,7 +372,25 @@ function OptionsDialog({ open, links, onOpenChange, onQueued }: { open: boolean;
 								<input type="radio" name="download-after" checked={after === value} onChange={() => setAfter(value)} /> {label}
 							</label>
 						))}
+						{after === "timeline" && (
+							<select className="ml-6 rounded border bg-transparent p-1.5" value={track} onChange={(e) => setTrack(e.target.value === "new" ? "new" : "auto")} data-download-track>
+								<option value="auto">On the first free track</option>
+								<option value="new">On a new track at the top</option>
+							</select>
+						)}
 					</fieldset>
+					<div className="flex items-center gap-2" data-download-folder>
+						<span className="min-w-0 flex-1 truncate" title={folder ?? undefined}>
+							Save to: {folder ?? "Downloads › Worksuite"}
+						</span>
+						<Button
+							size="sm"
+							variant="outline"
+							onClick={() => void window.worksuite?.tools?.chooseFolder().then((f) => f && setFolder(f))}
+						>
+							Change…
+						</Button>
+					</div>
 					{hasSubs && (
 						<label className="flex items-center gap-2">
 							<input type="checkbox" checked={saveSubs} onChange={(e) => setSaveSubs(e.target.checked)} data-download-subs /> Save subtitles as .srt next to the video

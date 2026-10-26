@@ -1,4 +1,4 @@
-import { getClipTimeAtSourceTime, getSourceTimeAtClipTime } from "@/retime/resolve";
+import { forwardSourceTime, getClipTimeAtSourceTime, getSourceTimeAtClipTime } from "@/retime/resolve";
 import type { MediaTime } from "@/wasm";
 
 // Same as timeline/cut-range.ts: ticks are plain numbers under the brand.
@@ -50,7 +50,7 @@ function retimeOf(element: MediaClip): RetimeConfig | undefined {
 
 /** Source span a clip shows, in source ticks. */
 function sourceSpan(element: MediaClip): [number, number] {
-	const length = getSourceTimeAtClipTime({
+	const length = forwardSourceTime({
 		clipTime: element.duration,
 		retime: retimeOf(element),
 		duration: element.duration,
@@ -151,12 +151,15 @@ export function placeAnchor({
 			const e = Math.min(to, anchor.sourceEnd);
 			if (e <= s) continue;
 			const retime = retimeOf(element);
-			const startTime =
+			const a =
 				element.startTime +
 				getClipTimeAtSourceTime({ sourceTime: s - element.trimStart, retime, duration: element.duration });
-			const endTime =
+			const b =
 				element.startTime +
 				getClipTimeAtSourceTime({ sourceTime: e - element.trimStart, retime, duration: element.duration });
+			// On a reversed clip the later source plays first.
+			const startTime = Math.min(a, b);
+			const endTime = Math.max(a, b);
 			const hinted = track.id === anchor.trackId;
 			const candidate = {
 				startTime: Math.round(startTime),

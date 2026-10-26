@@ -1,4 +1,5 @@
 import { savedTimelineGrade } from "@/color/grade-target";
+import { useExportPerformance } from "@/export/performance";
 import type { EditorCore } from "@/core";
 import type {
 	TProject,
@@ -235,14 +236,28 @@ export class ProjectManager {
 		// Saved first, so nothing is lost if the export runs the system out of memory.
 		await this.saveCurrentProject();
 
-		const result = await this.editor.renderer.exportProject({
-			options,
-			onProgress: ({ progress }) => {
-				this.exportState = { ...this.exportState, progress };
-				this.notify();
-			},
-			onCancel: () => this.exportCancelRequested,
-		});
+		const run = () =>
+			this.editor.renderer.exportProject({
+				options,
+				onProgress: ({ progress }) => {
+					this.exportState = { ...this.exportState, progress };
+					this.notify();
+				},
+				onCancel: () => this.exportCancelRequested,
+			});
+		let result = await run();
+		// A hardware encoder that fails (unsupported size, driver error) gets one
+		// more try on the software encoder before the export is reported failed.
+		const performance = useExportPerformance.getState();
+		if (!result.success && !result.cancelled && performance.encoder !== "software") {
+			const previous = performance.encoder;
+			performance.set({ encoder: "software" });
+			try {
+				result = await run();
+			} finally {
+				useExportPerformance.getState().set({ encoder: previous });
+			}
+		}
 
 		this.exportState = {
 			isExporting: false,

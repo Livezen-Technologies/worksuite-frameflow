@@ -24,6 +24,10 @@ export interface DownloadItem {
 	openWhenDone: boolean;
 	/** Add to the open project's Media or timeline when done (older items: none). */
 	afterDownload?: "library" | "timeline" | "none";
+	/** Timeline: first free track or a new one on top. */
+	track?: "auto" | "new";
+	/** Save here instead of the default downloads folder. */
+	folder?: string;
 	/** Save the link's subtitles next to the video as .srt (DL-04). */
 	saveSubs: boolean;
 	/** Transcribe with local Whisper after opening it in the editor (DL-07). */
@@ -161,6 +165,7 @@ async function run(item: DownloadItem) {
 			title: item.title,
 			duration: item.info.duration,
 			speedLimit,
+			...(item.folder ? { folder: item.folder } : {}),
 			...(stream ? { start: item.start, end: item.end, audioOnly: item.audioOnly } : {}),
 		});
 		// Files: cut a part, keep only the sound or convert afterwards (DL-04).

@@ -133,6 +133,8 @@ declare global {
 					audioOnly?: boolean;
 					duration?: number;
 					speedLimit?: number;
+					/** A folder picked with chooseFolder; else the default downloads folder. */
+					folder?: string;
 				}) => Promise<{ path: string; name: string; bytes: number }>;
 				pauseDownload: (jobId: string) => Promise<boolean>;
 				/** Saves the link's subtitles next to the video as .srt (DL-04). */
@@ -142,8 +144,8 @@ declare global {
 				onDownloadProgress: (listener: (p: { jobId: string; received: number; total: number }) => void) => () => void;
 				readSaved: (filePath: string) => Promise<ArrayBuffer>;
 				openDownloader?: () => Promise<void>;
-				sendToEditor?: (args: { path: string; mode: "library" | "timeline" }) => Promise<boolean>;
-				onImportDownload?: (listener: (p: { path: string; mode: "library" | "timeline" }) => void) => () => void;
+				sendToEditor?: (args: { path: string; mode: "library" | "timeline"; track?: "auto" | "new" }) => Promise<boolean>;
+				onImportDownload?: (listener: (p: { path: string; mode: "library" | "timeline"; track?: "auto" | "new" }) => void) => () => void;
 			};
 			/** The standalone recorder window. */
 			recorder?: {

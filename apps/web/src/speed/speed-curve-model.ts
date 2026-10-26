@@ -91,8 +91,9 @@ export function retimeWithCurve({
 	preset?: string;
 }): RetimeConfig | undefined {
 	const maintainPitch = element.retime?.maintainPitch ?? false;
+	const reverse = element.retime?.reverse || undefined;
 	if (!keyframes) {
-		return maintainPitch ? { rate: 1, maintainPitch } : undefined;
+		return maintainPitch || reverse ? { rate: 1, maintainPitch, ...(reverse ? { reverse } : {}) } : undefined;
 	}
 	const curve = normalizeCurve(keyframes);
 	return {
@@ -100,6 +101,7 @@ export function retimeWithCurve({
 		maintainPitch,
 		curve,
 		...(preset ? { curvePreset: preset } : {}),
+		...(reverse ? { reverse } : {}),
 	};
 }
 

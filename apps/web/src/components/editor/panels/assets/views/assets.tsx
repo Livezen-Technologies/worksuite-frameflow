@@ -2,6 +2,7 @@
 
 import { HEIF_ACCEPT } from "@/media/heif";
 import { LibraryView } from "@/cloud/components/library-view";
+import { useAssetLibrary } from "@/asset-library/store";
 import { useCloudReady } from "@/cloud/network";
 import { SphereBadge } from "@/vr/components/sphere-badge";
 import { HdrBadge } from "@/hdr/components/hdr-badge";
@@ -233,6 +234,10 @@ export function MediaView() {
 						sortOrder={mediaSortOrder}
 						onSort={handleSort}
 						onImport={openFilePicker}
+						onDrive={() => {
+							if (cloudReady) setSource("library");
+							else toast.info("Sign in to WorkSuite to import from WorkSuite Drive.");
+						}}
 					/>
 				}
 				contentClassName="flex h-full flex-col pb-2"
@@ -602,6 +607,7 @@ function MediaActions({
 	sortOrder,
 	onSort,
 	onImport,
+	onDrive,
 }: {
 	mediaViewMode: MediaViewMode;
 	setMediaViewMode: (mode: MediaViewMode) => void;
@@ -610,6 +616,7 @@ function MediaActions({
 	sortOrder: MediaSortOrder;
 	onSort: ({ key }: { key: MediaSortKey }) => void;
 	onImport: () => void;
+	onDrive: () => void;
 }) {
 	return (
 		<div className="flex gap-1.5">
@@ -710,6 +717,10 @@ function MediaActions({
 					<DropdownMenuItem onClick={onImport}>Import from computer…</DropdownMenuItem>
 					<DropdownMenuItem onClick={openDownloader} data-media-download>
 						Download video / import from URL…
+					</DropdownMenuItem>
+					<DropdownMenuItem onClick={onDrive} data-media-drive>Import from WorkSuite Drive</DropdownMenuItem>
+					<DropdownMenuItem onClick={() => useAssetLibrary.getState().setOpen(true)} data-media-assets>
+						Import from Asset Library
 					</DropdownMenuItem>
 					<DropdownMenuItem onClick={openDownloader}>Download history</DropdownMenuItem>
 				</DropdownMenuContent>

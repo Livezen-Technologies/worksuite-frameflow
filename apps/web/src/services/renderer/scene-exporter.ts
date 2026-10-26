@@ -58,6 +58,8 @@ type ExportParams = {
 	 * and captions are part of the picture by then and only get scaled.
 	 */
 	ai?: { upscaler?: Upscaler; interpolator?: Interpolator };
+	/** Encoder preference (Export › Encoder). */
+	hardwareAcceleration?: "no-preference" | "prefer-hardware" | "prefer-software";
 };
 
 const qualityMap = {
@@ -89,6 +91,7 @@ export class SceneExporter extends EventEmitter<SceneExporterEvents> {
 	private gif: GifOptions;
 	private master?: { bridge: MasterExportBridge; codec: MasterCodec };
 	private ai: { upscaler?: Upscaler; interpolator?: Interpolator };
+	private hardwareAcceleration: "no-preference" | "prefer-hardware" | "prefer-software";
 	/** Set after a production export: the desktop job to save. */
 	masterJobId: string | null = null;
 
@@ -111,6 +114,7 @@ export class SceneExporter extends EventEmitter<SceneExporterEvents> {
 		gif,
 		master,
 		ai,
+		hardwareAcceleration = "no-preference",
 	}: ExportParams) {
 		super();
 		this.renderer = new CanvasRenderer({
@@ -132,6 +136,7 @@ export class SceneExporter extends EventEmitter<SceneExporterEvents> {
 		this.gif = gif ?? DEFAULT_GIF_OPTIONS;
 		this.master = master;
 		this.ai = ai ?? {};
+		this.hardwareAcceleration = hardwareAcceleration;
 		if (hdrOutput) this.renderer.purpose = "export";
 		// Exports always read the original media.
 		this.renderer.useProxies = false;
@@ -442,7 +447,7 @@ export class SceneExporter extends EventEmitter<SceneExporterEvents> {
 					bitrate,
 					fullCodecString: HDR_CODEC_STRINGS[hdr],
 				})
-			: new CanvasSource(surface.canvas, { codec: this.codec, bitrate });
+			: new CanvasSource(surface.canvas, { codec: this.codec, bitrate, hardwareAcceleration: this.hardwareAcceleration });
 		const readback = hdr
 			? surface.canvas.getContext("2d", { willReadFrequently: true })
 			: null;

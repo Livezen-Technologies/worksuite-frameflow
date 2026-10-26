@@ -126,20 +126,28 @@ export class SplitElementsCommand extends Command {
 				});
 				let splitResult: TimelineElement[];
 
-				const leftTrimEnd = addMediaTime({
-					a: element.trimEnd,
-					b: rightSourceSpan,
-				});
-				const rightTrimStart = addMediaTime({
-					a: element.trimStart,
-					b: leftSourceSpan,
-				});
+				// A reversed clip plays its source end first, so the left piece
+				// keeps the end of the source and the right piece the start.
+				const reversed = !!retimeRef?.reverse;
+				const leftTrimEnd = reversed
+					? element.trimEnd
+					: addMediaTime({ a: element.trimEnd, b: rightSourceSpan });
+				const leftTrimStart = reversed
+					? addMediaTime({ a: element.trimStart, b: rightSourceSpan })
+					: element.trimStart;
+				const rightTrimStart = reversed
+					? element.trimStart
+					: addMediaTime({ a: element.trimStart, b: leftSourceSpan });
+				const rightTrimEnd = reversed
+					? addMediaTime({ a: element.trimEnd, b: leftSourceSpan })
+					: element.trimEnd;
 
 				if (this.retainSide === "left") {
 					splitResult = [
 						{
 							...element,
 							duration: leftVisibleDuration,
+							trimStart: leftTrimStart,
 							trimEnd: leftTrimEnd,
 							name: `${element.name} (left)`,
 							animations: leftAnimations,
@@ -159,6 +167,7 @@ export class SplitElementsCommand extends Command {
 							startTime: this.splitTime,
 							duration: rightVisibleDuration,
 							trimStart: rightTrimStart,
+							trimEnd: rightTrimEnd,
 							name: `${element.name} (right)`,
 							animations: rightAnimations,
 							...(rightRetime !== undefined ? { retime: rightRetime } : {}),
@@ -174,6 +183,7 @@ export class SplitElementsCommand extends Command {
 						{
 							...element,
 							duration: leftVisibleDuration,
+							trimStart: leftTrimStart,
 							trimEnd: leftTrimEnd,
 							name: `${element.name} (left)`,
 							animations: leftAnimations,
@@ -185,6 +195,7 @@ export class SplitElementsCommand extends Command {
 							startTime: this.splitTime,
 							duration: rightVisibleDuration,
 							trimStart: rightTrimStart,
+							trimEnd: rightTrimEnd,
 							name: `${element.name} (right)`,
 							animations: rightAnimations,
 							...(rightRetime !== undefined ? { retime: rightRetime } : {}),

@@ -349,6 +349,9 @@ function rememberExport(filePath) {
 	}
 }
 
+/** Folders chosen in a folder dialog this session; downloads may save there. */
+const chosenFolders = new Set();
+
 function registerAccountIpc() {
 	// Only the editor's own origin may drive the account.
 	const fromApp = (event) => event.senderFrame?.url.startsWith(appOrigin);
@@ -383,9 +386,10 @@ function registerAccountIpc() {
 	handle("downloader:send-to-editor", (args = {}) => {
 		if (!savedExports.has(args.path)) throw new Error("Not allowed");
 		const mode = args.mode === "timeline" ? "timeline" : "library";
+		const track = args.track === "new" ? "new" : "auto";
 		const win = mainWindow && !mainWindow.isDestroyed() ? mainWindow : null;
 		if (!win) return false;
-		win.webContents.send("downloader:import", { path: args.path, mode });
+		win.webContents.send("downloader:import", { path: args.path, mode, track });
 		return true;
 	});
 	// Converter (SRS 37.3). Results go next to the original unless a folder is chosen.
@@ -421,16 +425,20 @@ function registerAccountIpc() {
 	handleFrom("tools:choose-folder", async (event) => {
 		const win = BrowserWindow.fromWebContents(event.sender);
 		const result = await dialog.showOpenDialog(win, { properties: ["openDirectory", "createDirectory"] });
-		return result.canceled ? null : result.filePaths[0] ?? null;
+		const folder = result.canceled ? null : result.filePaths[0] ?? null;
+		// Only folders the person picked here may be written to by a download.
+		if (folder) chosenFolders.add(folder);
+		return folder;
 	});
 	handle("tools:cancel-convert", (jobId) => converter.cancel(jobId));
-	const downloadFolder = () => path.join(app.getPath("downloads"), "Worksuite");
+	const defaultDownloadFolder = () => path.join(app.getPath("downloads"), "Worksuite");
+	const downloadFolder = (wanted) => (typeof wanted === "string" && chosenFolders.has(wanted) ? wanted : defaultDownloadFolder());
 	handle("tools:inspect-link", (args = {}) => downloader.inspect({ url: args.url }));
 	handleFrom("tools:download", async (event, args = {}) => {
 		const onProgress = (p) => {
 			if (!event.sender.isDestroyed()) event.sender.send("tools:download-progress", { jobId: args.jobId, ...p });
 		};
-		const common = { jobId: args.jobId, url: args.url, folder: downloadFolder(), onProgress };
+		const common = { jobId: args.jobId, url: args.url, folder: downloadFolder(args.folder), onProgress };
 		const saved =
 			args.kind === "hls" || args.kind === "dash"
 				? await downloader.downloadStream({ ...common, title: args.title, start: args.start, end: args.end, audioOnly: args.audioOnly, duration: args.duration, runFfmpeg: converter.runFfmpeg })

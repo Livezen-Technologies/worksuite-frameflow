@@ -55,3 +55,12 @@ test("slicing keeps the speeds at the cut", () => {
 	expect(right[0].speed).toBeCloseTo(2, 5);
 	expect(right.at(-1)?.speed).toBeCloseTo(3, 5);
 });
+
+test("reverse plays the source from the end and maps back", async () => {
+	const { getSourceTimeAtClipTime, getClipTimeAtSourceTime, forwardSourceTime } = await import("../resolve");
+	const retime = { rate: 2, reverse: true };
+	expect(getSourceTimeAtClipTime({ clipTime: 0, retime, duration: 10 })).toBe(20);
+	expect(getSourceTimeAtClipTime({ clipTime: 10, retime, duration: 10 })).toBe(0);
+	expect(getClipTimeAtSourceTime({ sourceTime: 5, retime, duration: 10 })).toBeCloseTo(7.5, 6);
+	expect(forwardSourceTime({ clipTime: 10, retime, duration: 10 })).toBe(20);
+});

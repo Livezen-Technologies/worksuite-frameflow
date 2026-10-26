@@ -20,7 +20,7 @@ import { doesElementHaveEnabledAudio } from "@/timeline/audio-separation";
 import { canElementHaveAudio, hasMediaId } from "@/timeline/element-utils";
 import { canTrackHaveAudio } from "@/timeline";
 import { mediaSupportsAudio } from "@/media/media-utils";
-import { getSourceTimeAtClipTime, renderRetimedBuffer } from "@/retime";
+import { forwardSourceTime, getSourceTimeAtClipTime, renderRetimedBuffer } from "@/retime";
 import { Input, ALL_FORMATS, BlobSource, AudioBufferSink } from "mediabunny";
 import { TICKS_PER_SECOND } from "@/wasm";
 import {
@@ -1036,7 +1036,8 @@ async function collectExportElement({
 	const retime = element.retime;
 	const durationSec = element.duration / TICKS_PER_SECOND;
 	const trimStartSec = element.trimStart / TICKS_PER_SECOND;
-	const spanSec = getSourceTimeAtClipTime({ clipTime: durationSec, retime, duration: durationSec });
+	// How much source the clip covers (read forwards, even when reversed).
+	const spanSec = forwardSourceTime({ clipTime: durationSec, retime, duration: durationSec });
 	const range = {
 		start: Math.max(0, trimStartSec - RANGE_MARGIN_SECONDS),
 		end: trimStartSec + spanSec + RANGE_MARGIN_SECONDS,

@@ -9,8 +9,8 @@ import { importDownloadedFile } from "../import-download";
 export function DownloadImportHost() {
 	const editor = useEditor();
 	useEffect(() => {
-		const off = window.worksuite?.tools?.onImportDownload?.(({ path, mode }) => {
-			void importDownloadedFile({ editor, filePath: path, mode }).catch((error: unknown) =>
+		const off = window.worksuite?.tools?.onImportDownload?.(({ path, mode, track }) => {
+			void importDownloadedFile({ editor, filePath: path, mode, track }).catch((error: unknown) =>
 				toast.error(error instanceof Error ? error.message : "Couldn't add the download"),
 			);
 		});

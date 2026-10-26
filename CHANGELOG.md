@@ -7,6 +7,14 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+### Added
+
+- Speed › Reverse plays a clip backwards. It works with constant speed and with speed curves, in preview and export. Trimming and splitting keep the right part of the source, and the sound plays backwards too.
+- Export › Encoder: Auto, Hardware (GPU or media engine, such as VideoToolbox on Mac) or Software. If an export fails on the hardware encoder, it tries again on the software encoder.
+- Downloader: choose a save folder per download, and with "Add to the timeline", whether the clip goes on the first free track or a new track at the top.
+- Media › Import menu: Import from WorkSuite Drive (opens the cloud library) and Import from Asset Library.
+- Home sidebar: icons for every item, tooltips, and a compact icon-only sidebar on narrower windows.
+
 ## [1.7.19] - 2026-10-26
 
 ### Fixed

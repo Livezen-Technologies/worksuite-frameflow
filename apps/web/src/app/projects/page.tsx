@@ -1,6 +1,23 @@
 "use client";
 
-import { ChevronDown, Cloud as CloudIcon, Lock as LockIcon, Settings as SettingsIcon } from "lucide-react";
+import {
+	AudioLines,
+	ChevronDown,
+	Circle,
+	Clock,
+	Cloud as CloudIcon,
+	Download,
+	FileOutput,
+	House,
+	Images,
+	LayoutTemplate,
+	Lock as LockIcon,
+	type LucideIcon,
+	MonitorPlay,
+	Repeat,
+	Settings as SettingsIcon,
+	Sparkles,
+} from "lucide-react";
 import { useWorksuiteAccount } from "@/account/use-worksuite-account";
 import { PROJECT_TEMPLATES } from "@/templates/project-templates";
 import { useExportHistory } from "@/export/history";
@@ -219,23 +236,21 @@ function ProjectsSidebar() {
 	};
 	const item =
 		"text-muted-foreground hover:bg-accent hover:text-foreground focus-visible:ring-ring flex h-9 w-full shrink-0 items-center gap-3 px-3 text-left outline-none focus-visible:ring-2";
-	const dot = "size-2 shrink-0 bg-primary/60";
-	const count = (n: number) => <span className="text-muted-foreground ml-auto font-mono text-xs">{n}</span>;
 	return (
 		<aside
-			className="bg-sidebar hidden h-full min-h-0 w-[232px] shrink-0 flex-col overflow-hidden border-r text-sm md:flex"
+			className="bg-sidebar hidden h-full min-h-0 w-14 shrink-0 flex-col overflow-hidden border-r text-sm md:flex lg:w-[232px]"
 			data-start-sidebar
 		>
-			<div className="shrink-0 px-3 pt-3">
+			<div className="hidden shrink-0 px-3 pt-3 lg:block">
 				<WorkspaceSwitcher />
 			</div>
 			<nav
 				aria-label="Projects"
-				className="flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto overscroll-contain px-3 py-3 [scrollbar-width:thin]"
+				className="flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto overscroll-contain px-2 py-3 [scrollbar-width:thin] lg:px-3"
 				data-start-nav
 			>
 			<Link href="/projects" aria-current="page" className="bg-primary/15 text-foreground flex h-9 shrink-0 items-center gap-3 px-3 font-medium">
-				<span className="bg-primary size-2 shrink-0" /> Home
+				<NavLabel icon={House} label="Home" />
 			</Link>
 			<button
 				type="button"
@@ -245,13 +260,13 @@ function ProjectsSidebar() {
 					document.getElementById("recent-projects")?.scrollIntoView({ behavior: "smooth" });
 				}}
 			>
-				<span className={dot} /> Recent projects {count(projects.length)}
+				<NavLabel icon={Clock} label="Recent projects" count={projects.length} />
 			</button>
 			<button type="button" className={item} onClick={() => void newWithTemplates()}>
-				<span className={dot} /> Templates {count(PROJECT_TEMPLATES.length)}
+				<NavLabel icon={LayoutTemplate} label="Templates" count={PROJECT_TEMPLATES.length} />
 			</button>
 			<Link href="/motion" className={item}>
-				<span className={dot} /> Motion graphics {count(motionCount)}
+				<NavLabel icon={Sparkles} label="Motion graphics" count={motionCount} />
 			</Link>
 			<button
 				type="button"
@@ -261,15 +276,16 @@ function ProjectsSidebar() {
 					document.getElementById("recent-projects")?.scrollIntoView({ behavior: "smooth" });
 				}}
 			>
-				<span className={dot} /> Screen recordings {count(recordings)}
+				<NavLabel icon={MonitorPlay} label="Screen recordings" count={recordings} />
 			</button>
 			<Link href="/media" className={item}>
-				<span className={dot} /> Media library
+				<NavLabel icon={Images} label="Media library" />
 			</Link>
 			<Link href="/exports" className={item}>
-				<span className={dot} /> Exports {count(exportCount)}
+				<NavLabel icon={FileOutput} label="Exports" count={exportCount} />
 			</Link>
-			<div className="text-muted-foreground mt-3 shrink-0 px-3 pb-1 text-[11px] font-semibold tracking-wider uppercase">Tools</div>
+			<div className="text-muted-foreground mt-3 shrink-0 px-3 pb-1 text-[11px] font-semibold tracking-wider uppercase max-lg:sr-only">Tools</div>
+			<div className="bg-border mx-2 my-2 h-px shrink-0 lg:hidden" aria-hidden="true" />
 			<button
 				type="button"
 				className={item}
@@ -280,7 +296,7 @@ function ProjectsSidebar() {
 				}}
 				data-tool="recorder"
 			>
-				<span className={dot} /> Screen recorder
+				<NavLabel icon={Circle} label="Screen recorder" />
 			</button>
 			<button
 				type="button"
@@ -292,17 +308,30 @@ function ProjectsSidebar() {
 						.then((id) => router.push(`/editor/${id}?studio=audio`))
 				}
 			>
-				<span className={dot} /> Music &amp; Audio Editor
+				<NavLabel icon={AudioLines} label="Music & Audio Editor" />
 			</button>
 			<Link href="/tools/convert" className={item} data-tool="convert">
-				<span className={dot} /> Video converter
+				<NavLabel icon={Repeat} label="Video converter" />
 			</Link>
 			<Link href="/tools/download" className={item} data-tool="download">
-				<span className={dot} /> Video downloader
+				<NavLabel icon={Download} label="Video downloader" />
 			</Link>
 			</nav>
 			<SidebarFooter />
 		</aside>
+	);
+}
+
+/** One sidebar row: icon, label (hidden in the compact sidebar) and an optional count. */
+function NavLabel({ icon: Icon, label, count }: { icon: LucideIcon; label: string; count?: number }) {
+	return (
+		<span className="flex min-w-0 flex-1 items-center gap-3 max-lg:justify-center" title={label}>
+			<Icon className="size-[18px] shrink-0" aria-hidden="true" />
+			<span className="truncate max-lg:sr-only">{label}</span>
+			{count !== undefined && (
+				<span className="text-muted-foreground ml-auto font-mono text-xs max-lg:hidden">{count}</span>
+			)}
+		</span>
 	);
 }
 
@@ -311,15 +340,17 @@ function SidebarFooter() {
 	const { state } = useWorksuiteAccount();
 	const signedIn = state?.status === "signed-in";
 	return (
-		<footer className="flex shrink-0 flex-col gap-2 border-t px-3 py-3 text-xs" data-start-footer>
-			<StorageCard />
-			<div className="flex items-start gap-2" data-privacy-state={signedIn ? "signed-in" : "local"}>
+		<footer className="flex shrink-0 flex-col gap-2 border-t px-3 py-3 text-xs max-lg:items-center max-lg:px-2" data-start-footer>
+			<div className="max-lg:hidden">
+				<StorageCard />
+			</div>
+			<div className="flex items-start gap-2" title={signedIn ? "Signed in to WorkSuite" : "Private by default: projects stay on this computer"} data-privacy-state={signedIn ? "signed-in" : "local"}>
 				{signedIn ? (
 					<CloudIcon className="text-primary mt-0.5 size-3.5 shrink-0" />
 				) : (
 					<LockIcon className="text-primary mt-0.5 size-3.5 shrink-0" />
 				)}
-				<span className="flex min-w-0 flex-col gap-0.5">
+				<span className="flex min-w-0 flex-col gap-0.5 max-lg:hidden">
 					<span className="text-foreground font-semibold">{signedIn ? "Signed in to WorkSuite" : "Private by default"}</span>
 					<span className="text-muted-foreground leading-snug">
 						{signedIn
@@ -328,8 +359,8 @@ function SidebarFooter() {
 					</span>
 				</span>
 			</div>
-			<Link href="/settings" className="text-muted-foreground hover:bg-accent hover:text-foreground -mx-1 flex h-8 items-center gap-2 px-1">
-				<SettingsIcon className="size-4" /> Settings
+			<Link href="/settings" title="Settings" className="text-muted-foreground hover:bg-accent hover:text-foreground -mx-1 flex h-8 items-center gap-2 px-1">
+				<SettingsIcon className="size-[18px] shrink-0" /> <span className="max-lg:hidden">Settings</span>
 			</Link>
 		</footer>
 	);

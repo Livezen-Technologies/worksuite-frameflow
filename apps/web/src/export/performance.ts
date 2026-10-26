@@ -6,12 +6,19 @@ import { persist } from "zustand/middleware";
 /** Export › Performance: how much memory export may use. */
 export type ExportMemoryMode = "low" | "balanced" | "performance";
 export type BackgroundRenderMode = "pause" | "continue";
+/** Video encoder: the platform's choice, the GPU/media engine (VideoToolbox on Mac), or the CPU. */
+export type EncoderMode = "auto" | "hardware" | "software";
+
+export function hardwareAccelerationFor(mode: EncoderMode): "no-preference" | "prefer-hardware" | "prefer-software" {
+	return mode === "hardware" ? "prefer-hardware" : mode === "software" ? "prefer-software" : "no-preference";
+}
 
 interface ExportPerformanceSettings {
 	memory: ExportMemoryMode;
 	/** Background "render for smooth playback" while exporting. */
 	backgroundRender: BackgroundRenderMode;
-	set: (patch: Partial<Pick<ExportPerformanceSettings, "memory" | "backgroundRender">>) => void;
+	encoder: EncoderMode;
+	set: (patch: Partial<Pick<ExportPerformanceSettings, "memory" | "backgroundRender" | "encoder">>) => void;
 }
 
 export const useExportPerformance = create<ExportPerformanceSettings>()(
@@ -19,9 +26,10 @@ export const useExportPerformance = create<ExportPerformanceSettings>()(
 		(set) => ({
 			memory: "balanced",
 			backgroundRender: "pause",
+			encoder: "auto",
 			set: (patch) => set(patch),
 		}),
-		{ name: "frameflow-export-performance", partialize: ({ memory, backgroundRender }) => ({ memory, backgroundRender }) },
+		{ name: "frameflow-export-performance", partialize: ({ memory, backgroundRender, encoder }) => ({ memory, backgroundRender, encoder }) },
 	),
 );
 

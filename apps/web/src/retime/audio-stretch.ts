@@ -188,6 +188,11 @@ async function renderStretched({
 }): Promise<AudioBuffer> {
 	const targetSampleRate = audioContext.sampleRate;
 	const rate = clampRetimeRate({ rate: retime?.rate ?? 1 });
+	// Backwards sound is read sample by sample from the end; keeping pitch
+	// doesn't apply to it.
+	if (retime?.reverse) {
+		return buildResampledBuffer({ audioContext, sourceBuffer, trimStart, clipDuration, targetSampleRate, retime });
+	}
 	if (retime?.curve?.length && (maintainPitch || pitchSemitones !== 0)) {
 		return buildCurvePitchPreservedBuffer({
 			audioContext,

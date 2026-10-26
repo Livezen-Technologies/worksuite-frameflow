@@ -127,16 +127,19 @@ function buildResizeUpdate({
 		clipDelta: deltaTime,
 	});
 
+	// On a reversed clip the left edge is the end of the source.
+	const trimsStart = (side === "left") !== !!member.retime?.reverse;
 	if (side === "left") {
 		return {
 			trackId: member.trackId,
 			elementId: member.elementId,
 		patch: {
-			trimStart: maxMediaTime({
-				a: ZERO_MEDIA_TIME,
-				b: addMediaTime({ a: member.trimStart, b: sourceDelta }),
-			}),
-			trimEnd: member.trimEnd,
+			trimStart: trimsStart
+				? maxMediaTime({ a: ZERO_MEDIA_TIME, b: addMediaTime({ a: member.trimStart, b: sourceDelta }) })
+				: member.trimStart,
+			trimEnd: trimsStart
+				? member.trimEnd
+				: maxMediaTime({ a: ZERO_MEDIA_TIME, b: addMediaTime({ a: member.trimEnd, b: sourceDelta }) }),
 			startTime: addMediaTime({ a: member.startTime, b: deltaTime }),
 			duration: subMediaTime({ a: member.duration, b: deltaTime }),
 		},
@@ -147,11 +150,12 @@ function buildResizeUpdate({
 		trackId: member.trackId,
 		elementId: member.elementId,
 		patch: {
-			trimStart: member.trimStart,
-			trimEnd: maxMediaTime({
-				a: ZERO_MEDIA_TIME,
-				b: subMediaTime({ a: member.trimEnd, b: sourceDelta }),
-			}),
+			trimStart: trimsStart
+				? maxMediaTime({ a: ZERO_MEDIA_TIME, b: subMediaTime({ a: member.trimStart, b: sourceDelta }) })
+				: member.trimStart,
+			trimEnd: trimsStart
+				? member.trimEnd
+				: maxMediaTime({ a: ZERO_MEDIA_TIME, b: subMediaTime({ a: member.trimEnd, b: sourceDelta }) }),
 			startTime: member.startTime,
 			duration: addMediaTime({ a: member.duration, b: deltaTime }),
 		},
@@ -187,7 +191,9 @@ function getMinimumAllowedDeltaTime({
 					member,
 					duration: member.duration,
 				}),
-				b: member.trimStart,
+				// The source the left edge can grow into: before the start, or
+				// after the end on a reversed clip.
+				b: member.retime?.reverse ? member.trimEnd : member.trimStart,
 			}),
 		}),
 		b: member.duration,
@@ -224,7 +230,7 @@ function getMaximumAllowedDeltaTime({
 
 	const maximumVisibleSourceSpan = subMediaTime({
 		a: getSourceDuration({ member }),
-		b: member.trimStart,
+		b: member.retime?.reverse ? member.trimEnd : member.trimStart,
 	});
 	const maximumDuration = getDurationForVisibleSourceSpan({
 		member,

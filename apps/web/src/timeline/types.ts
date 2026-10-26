@@ -111,6 +111,8 @@ export interface RetimeConfig {
 	curve?: SpeedKeyframe[];
 	/** Preset the curve came from ("custom" once edited). */
 	curvePreset?: string;
+	/** Play the clip backwards: the last source frame shown first. */
+	reverse?: boolean;
 }
 
 interface BaseAudioElement extends BaseTimelineElement {

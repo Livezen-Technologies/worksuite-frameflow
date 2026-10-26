@@ -1364,7 +1364,7 @@ function selectedSpan({ editor }: { editor: EditorCore }): { start: number; leng
 
 /** Export › Performance: memory budget and background rendering. */
 function ExportPerformanceRows() {
-	const { memory, backgroundRender, set } = useExportPerformance();
+	const { memory, backgroundRender, encoder, set } = useExportPerformance();
 	return (
 		<>
 			<Row label="Memory use">
@@ -1376,6 +1376,24 @@ function ExportPerformanceRows() {
 					] as const
 				).map(([value, label]) => (
 					<Pill key={value} active={memory === value} onClick={() => set({ memory: value })}>
+						{label}
+					</Pill>
+				))}
+			</Row>
+			<Row label="Encoder">
+				{(
+					[
+						["auto", "Auto"],
+						["hardware", "Hardware"],
+						["software", "Software"],
+					] as const
+				).map(([value, label]) => (
+					<Pill
+						key={value}
+						active={encoder === value}
+						onClick={() => set({ encoder: value })}
+						title={value === "hardware" ? "GPU / media engine (VideoToolbox on Mac). Falls back to software if it fails." : undefined}
+					>
 						{label}
 					</Pill>
 				))}

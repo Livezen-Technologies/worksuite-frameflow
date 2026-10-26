@@ -20,6 +20,27 @@ export function getSourceTimeAtClipTime({
 	retime?: RetimeConfig;
 	duration?: number;
 }): number {
+	const forward = forwardSourceTime({ clipTime, retime, duration });
+	// Reversed: the same mapping read from the far end of the source.
+	if (retime?.reverse && duration && duration > 0) {
+		return forwardSourceTime({ clipTime: duration, retime, duration }) - forward;
+	}
+	return forward;
+}
+
+/**
+ * Source time played `clipTime` into the clip, ignoring reverse: how much
+ * source the first `clipTime` covers. Spans, splits and trims use this.
+ */
+export function forwardSourceTime({
+	clipTime,
+	retime,
+	duration,
+}: {
+	clipTime: number;
+	retime?: RetimeConfig;
+	duration?: number;
+}): number {
 	if (retime?.curve?.length && duration && duration > 0) {
 		return curveSourceTime({ keyframes: retime.curve, clipTime, duration });
 	}
@@ -35,10 +56,12 @@ export function getClipTimeAtSourceTime({
 	retime?: RetimeConfig;
 	duration?: number;
 }): number {
+	const reversed = retime?.reverse && duration && duration > 0;
+	const forward = reversed ? forwardSourceTime({ clipTime: duration, retime, duration }) - sourceTime : sourceTime;
 	if (retime?.curve?.length && duration && duration > 0) {
-		return curveClipTime({ keyframes: retime.curve, sourceTime, duration });
+		return curveClipTime({ keyframes: retime.curve, sourceTime: forward, duration });
 	}
-	return sourceTime / getSafeRate({ rate: retime?.rate ?? 1 });
+	return forward / getSafeRate({ rate: retime?.rate ?? 1 });
 }
 
 export function getEffectiveRateAt({
