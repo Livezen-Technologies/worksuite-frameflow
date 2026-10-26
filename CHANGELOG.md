@@ -7,6 +7,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+## [1.7.22] - 2026-10-26
+
 ### Fixed
 
 - Pasting a link no longer turns it into Sinhala letters. The legacy-Sinhala paste conversion now skips links, email addresses and file paths. The Downloader's link box, and fields for links, emails, passwords and numbers, are never changed by Sinhala typing.
