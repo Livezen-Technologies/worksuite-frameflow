@@ -80,6 +80,7 @@ export function VideoDownloader() {
 	return (
 		<LibraryPageShell
 			back={!inOwnWindow()}
+			compact={inOwnWindow()}
 			title="Video downloader"
 			subtitle="Save videos and audio from direct links and streams without DRM. Only download what you have the rights to use."
 			actions={
@@ -168,16 +169,23 @@ function AddLinks({ onQueued }: { onQueued: () => void }) {
 					value={text}
 					onChange={(e) => setText(e.target.value)}
 					placeholder={"https://example.com/video.mp4\nhttps://cdn.example.com/stream/master.m3u8"}
-					className="rounded-md border bg-transparent p-3 font-mono text-sm"
+					className="bg-background/40 focus-visible:border-primary focus-visible:ring-primary/30 min-h-24 resize-y rounded-md border p-3 font-mono text-sm outline-none focus-visible:ring-2"
 					data-download-links
 					data-no-legacy
 				/>
-				<div className="flex items-center gap-2">
-					<Button onClick={() => void check(text)} disabled={!text.trim()} data-download-check>
+				<div className="flex flex-wrap items-start gap-3">
+					<Button
+						onClick={() => void check(text)}
+						disabled={!text.trim()}
+						className="shrink-0 disabled:opacity-40"
+						data-download-check
+					>
 						<Link2 /> Check links
 					</Button>
-					<span className="text-muted-foreground text-xs">
-						Works with video and audio files (MP4, MOV, WebM, M4A…), pages that publish their file, and HLS or DASH streams without DRM. Tip: press Ctrl+V anywhere.
+					<span className="text-muted-foreground min-w-0 flex-1 text-xs leading-relaxed">
+						Video and audio files (MP4, MOV, WebM, M4A…), pages that publish their file, and HLS or DASH streams without DRM.
+						<br />
+						Not YouTube, Facebook, TikTok or Instagram. Tip: press Ctrl+V anywhere in this window.
 					</span>
 				</div>
 			</div>
