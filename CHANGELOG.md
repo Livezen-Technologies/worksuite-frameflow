@@ -7,6 +7,10 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+### Fixed
+
+- The update progress bar moves smoothly and shows size, speed and time left, plus "Preparing the update…" while the new version unpacks. A download that stops receiving data now fails with a message and a retry button instead of sitting still.
+
 ## [1.7.15] - 2026-10-25
 
 ### Added

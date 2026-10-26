@@ -47,6 +47,8 @@ const run = (cmd, args) =>
 	new Promise((resolve, reject) => execFile(cmd, args, (error) => (error ? reject(error) : resolve())));
 
 let staged = null;
+/** Abort a download after this long with no data. */
+const STALL_MS = 45_000;
 
 /**
  * Downloads and unpacks the update. `feedBase` is the channel folder the yml
@@ -58,19 +60,54 @@ async function prepare({ feedBase, yml, onProgress }) {
 	const url = /^https?:/.test(file.url) ? file.url : `${feedBase}/${encodeURI(file.url)}`;
 	const dir = await fs.promises.mkdtemp(path.join(os.tmpdir(), "frameflow-update-"));
 	const zip = path.join(dir, "update.zip");
-	const res = await net.fetch(url);
-	if (!res.ok || !res.body) throw new Error(`Download failed (${res.status})`);
+	// A download that stops receiving data fails instead of sitting still.
+	const controller = new AbortController();
+	let watchdog = null;
+	const kick = () => {
+		clearTimeout(watchdog);
+		watchdog = setTimeout(() => controller.abort(), STALL_MS);
+	};
+	kick();
 	const hash = crypto.createHash("sha512");
 	const out = fs.createWriteStream(zip);
 	let got = 0;
-	for await (const chunk of res.body) {
-		hash.update(chunk);
-		got += chunk.length;
-		if (!out.write(chunk)) await new Promise((r) => out.once("drain", r));
-		if (file.size) onProgress?.(Math.min(0.99, got / file.size));
+	let lastSent = 0;
+	let lastPercent = -1;
+	const started = Date.now();
+	const report = (force) => {
+		const now = Date.now();
+		const fraction = file.size ? Math.min(0.99, got / file.size) : 0;
+		const percent = Math.floor(fraction * 100);
+		// A few updates a second at most; every chunk flooded the window.
+		if (!force && percent === lastPercent && now - lastSent < 500) return;
+		lastSent = now;
+		lastPercent = percent;
+		const seconds = Math.max(0.001, (now - started) / 1000);
+		onProgress?.({ progress: fraction, received: got, total: file.size || null, bytesPerSecond: got / seconds, phase: "downloading" });
+	};
+	try {
+		const res = await net.fetch(url, { signal: controller.signal });
+		if (!res.ok || !res.body) throw new Error(`Download failed (${res.status})`);
+		report(true);
+		for await (const chunk of res.body) {
+			kick();
+			hash.update(chunk);
+			got += chunk.length;
+			if (!out.write(chunk)) await new Promise((r) => out.once("drain", r));
+			report(false);
+		}
+	} catch (error) {
+		out.destroy();
+		if (controller.signal.aborted) throw new Error("The download stopped responding. Check your connection and try again.");
+		throw error;
+	} finally {
+		clearTimeout(watchdog);
 	}
 	await new Promise((resolve, reject) => out.end((error) => (error ? reject(error) : resolve())));
+	if (file.size && got !== file.size) throw new Error("The download was incomplete. Try again.");
 	if (hash.digest("base64") !== file.sha512) throw new Error("The update didn't pass its checksum. Try again.");
+	// Unpacking takes a while for a large app; say so instead of sitting at 99%.
+	onProgress?.({ progress: 0.99, received: got, total: file.size || null, bytesPerSecond: 0, phase: "unpacking" });
 	const unpacked = path.join(dir, "app");
 	await run("/usr/bin/ditto", ["-x", "-k", zip, unpacked]);
 	const name = (await fs.promises.readdir(unpacked)).find((n) => n.endsWith(".app"));
@@ -78,7 +115,7 @@ async function prepare({ feedBase, yml, onProgress }) {
 	const next = path.join(unpacked, name);
 	await run("/usr/bin/xattr", ["-cr", next]).catch(() => {});
 	staged = { dir, next };
-	onProgress?.(1);
+	onProgress?.({ progress: 1, received: got, total: file.size || null, bytesPerSecond: 0, phase: "ready" });
 	return staged;
 }
 

@@ -23,7 +23,7 @@ function statusText(
 		case "up-to-date":
 			return "You have the latest version.";
 		case "error":
-			return `Couldn't check for updates: ${state.error}`;
+			return `Update problem: ${state.error}`;
 		case "unsupported":
 			return state.error ?? "Updates aren't available here.";
 		default:
@@ -46,7 +46,8 @@ export function UpdatesSection() {
 						<Button size="sm" onClick={() => void bridge.install()}>
 							<RefreshCw /> Restart to update
 						</Button>
-					) : state.status === "available" ? (
+					) : state.status === "available" ||
+						(state.status === "error" && state.selfInstall && !!state.version) ? (
 						<Button size="sm" onClick={() => void bridge.download()}>
 							<Download />{" "}
 							{state.selfInstall ? "Download update" : "Open download center"}
@@ -72,7 +73,18 @@ export function UpdatesSection() {
 				<p className="text-muted-foreground m-0 text-sm">{statusText(state)}</p>
 			)}
 			{state.status === "downloading" && (
-				<Progress value={state.progress * 100} />
+				<div className="flex flex-col gap-1.5">
+					{/* Eased so a few updates a second still move smoothly. */}
+					<Progress
+						value={state.progress * 100}
+						className="[&>div]:transition-transform [&>div]:duration-500 [&>div]:ease-linear"
+					/>
+					{state.detail && (
+						<span className="text-muted-foreground text-xs tabular-nums" data-update-detail>
+							{state.detail}
+						</span>
+					)}
+				</div>
 			)}
 			<div className="flex flex-wrap items-center gap-4 text-sm">
 				<label className="flex items-center gap-2">

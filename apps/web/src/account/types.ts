@@ -366,6 +366,8 @@ export interface UpdateState {
 	error: string | null;
 	/** False on ad-hoc-signed macOS and .deb: updates come from the download center. */
 	selfInstall: boolean;
+	/** While downloading: size, speed and time left, or the unpacking step. */
+	detail?: string | null;
 	channel: "stable" | "beta";
 	auto: boolean;
 	downloadPage: string;

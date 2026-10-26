@@ -60,6 +60,23 @@ let state = {
 
 let notified = null;
 
+const mb = (bytes) => `${Math.round(bytes / 1048576)} MB`;
+
+/** "120 MB of 370 MB · 4.2 MB/s · about 1 min left", or the unpacking step. */
+function progressDetail({ received, total, bytesPerSecond, phase }) {
+	if (phase === "unpacking") return "Preparing the update…";
+	if (!received) return "Starting download…";
+	const parts = [total ? `${mb(received)} of ${mb(total)}` : mb(received)];
+	if (bytesPerSecond > 0) {
+		parts.push(`${(bytesPerSecond / 1048576).toFixed(1)} MB/s`);
+		if (total) {
+			const left = (total - received) / bytesPerSecond;
+			parts.push(left < 60 ? "less than a minute left" : `about ${Math.ceil(left / 60)} min left`);
+		}
+	}
+	return parts.join(" · ");
+}
+
 function setState(next) {
 	state = { ...state, ...next };
 	for (const win of BrowserWindow.getAllWindows()) win.webContents.send("updates:changed", state);
@@ -111,7 +128,11 @@ function getUpdater() {
 		if (state.selfInstall && state.auto) download();
 	});
 	autoUpdater.on("download-progress", (p) =>
-		setState({ status: "downloading", progress: Math.round(p.percent) / 100 }),
+		setState({
+			status: "downloading",
+			progress: Math.round(p.percent) / 100,
+			detail: progressDetail({ received: p.transferred, total: p.total, bytesPerSecond: p.bytesPerSecond, phase: "downloading" }),
+		}),
 	);
 	autoUpdater.on("update-downloaded", (info) =>
 		setState({ status: "ready", version: info.version, progress: 1 }),
@@ -200,9 +221,13 @@ async function download() {
 	if (macMode()) {
 		if (state.status === "downloading" || state.status === "ready") return state;
 		try {
-			setState({ status: "downloading", progress: 0 });
-			await macUpdater.prepare({ feedBase: feedUrl(), yml: feedYml, onProgress: (progress) => setState({ status: "downloading", progress }) });
-			setState({ status: "ready", progress: 1 });
+			setState({ status: "downloading", progress: 0, detail: null, error: null });
+			await macUpdater.prepare({
+				feedBase: feedUrl(),
+				yml: feedYml,
+				onProgress: (p) => setState({ status: "downloading", progress: p.progress, detail: progressDetail(p) }),
+			});
+			setState({ status: "ready", progress: 1, detail: null });
 		} catch (error) {
 			setState({ status: "error", error: String(error?.message ?? error).split("\n")[0] });
 		}
