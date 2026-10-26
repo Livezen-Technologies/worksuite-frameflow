@@ -7,6 +7,10 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+### Fixed
+
+- Home screen sidebar: it fits the window, and the footer (storage, "Private by default" or your sign-in status, and Settings) is always visible. Only the navigation scrolls when the window is short. Before, the "Reopen the project" banner pushed the sidebar down, and its bottom was cut off.
+
 ## [1.7.18] - 2026-10-26
 
 ### Added

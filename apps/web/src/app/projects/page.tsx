@@ -1,6 +1,7 @@
 "use client";
 
-import { ChevronDown, Lock as LockIcon, Settings as SettingsIcon } from "lucide-react";
+import { ChevronDown, Cloud as CloudIcon, Lock as LockIcon, Settings as SettingsIcon } from "lucide-react";
+import { useWorksuiteAccount } from "@/account/use-worksuite-account";
 import { PROJECT_TEMPLATES } from "@/templates/project-templates";
 import { useExportHistory } from "@/export/history";
 import {
@@ -122,7 +123,9 @@ export default function ProjectsPage() {
 	}, [editor.project]);
 
 	return (
-		<div className="bg-background min-h-screen">
+		// Fixed-height shell: header and banner on top, then the sidebar and the
+		// page, each scrolling on its own, so the sidebar footer is always in view.
+		<div className="bg-background flex h-dvh flex-col overflow-hidden">
 			<MigrationDialog />
 			<StoragePersistenceDialog />
 			<ChangelogNotification />
@@ -131,9 +134,9 @@ export default function ProjectsPage() {
 			<CloudSyncRunner />
 			<ProjectsHeader />
 			<RestoreSessionBanner />
-			<div className="flex">
+			<div className="flex min-h-0 flex-1">
 				<ProjectsSidebar />
-				<div className="min-w-0 flex-1">
+				<div className="min-w-0 flex-1 overflow-y-auto" data-start-content>
 					<main className="mx-auto flex max-w-[1600px] flex-col gap-6 px-5 pt-8 pb-10 md:px-10">
 						<ProjectsTitleBar />
 						<StartPanel />
@@ -214,17 +217,24 @@ function ProjectsSidebar() {
 		useStartIntent.getState().set({ projectId, intent: { kind: "templates" } });
 		router.push(`/editor/${projectId}`);
 	};
-	const item = "text-muted-foreground hover:bg-accent hover:text-foreground flex w-full items-center gap-3 px-3 py-2.5 text-left";
+	const item =
+		"text-muted-foreground hover:bg-accent hover:text-foreground focus-visible:ring-ring flex h-9 w-full shrink-0 items-center gap-3 px-3 text-left outline-none focus-visible:ring-2";
 	const dot = "size-2 shrink-0 bg-primary/60";
 	const count = (n: number) => <span className="text-muted-foreground ml-auto font-mono text-xs">{n}</span>;
 	return (
-		<nav
-			aria-label="Projects"
-			className="bg-sidebar sticky top-[60px] hidden h-[calc(100vh-60px)] w-[240px] shrink-0 flex-col gap-1 border-r px-3 py-5 text-sm md:flex"
-			data-start-nav
+		<aside
+			className="bg-sidebar hidden h-full min-h-0 w-[232px] shrink-0 flex-col overflow-hidden border-r text-sm md:flex"
+			data-start-sidebar
 		>
-			<WorkspaceSwitcher />
-			<Link href="/projects" aria-current="page" className="bg-primary/15 text-foreground flex items-center gap-3 px-3 py-2.5 font-medium">
+			<div className="shrink-0 px-3 pt-3">
+				<WorkspaceSwitcher />
+			</div>
+			<nav
+				aria-label="Projects"
+				className="flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto overscroll-contain px-3 py-3 [scrollbar-width:thin]"
+				data-start-nav
+			>
+			<Link href="/projects" aria-current="page" className="bg-primary/15 text-foreground flex h-9 shrink-0 items-center gap-3 px-3 font-medium">
 				<span className="bg-primary size-2 shrink-0" /> Home
 			</Link>
 			<button
@@ -259,7 +269,7 @@ function ProjectsSidebar() {
 			<Link href="/exports" className={item}>
 				<span className={dot} /> Exports {count(exportCount)}
 			</Link>
-			<div className="text-muted-foreground mt-4 px-3 pb-1 text-[11px] font-semibold tracking-wider uppercase">Tools</div>
+			<div className="text-muted-foreground mt-3 shrink-0 px-3 pb-1 text-[11px] font-semibold tracking-wider uppercase">Tools</div>
 			<button
 				type="button"
 				className={item}
@@ -290,18 +300,38 @@ function ProjectsSidebar() {
 			<Link href="/tools/download" className={item} data-tool="download">
 				<span className={dot} /> Video downloader
 			</Link>
-			<div className="flex-1" />
+			</nav>
+			<SidebarFooter />
+		</aside>
+	);
+}
+
+/** Always visible under the navigation: storage, where projects live, settings. */
+function SidebarFooter() {
+	const { state } = useWorksuiteAccount();
+	const signedIn = state?.status === "signed-in";
+	return (
+		<footer className="flex shrink-0 flex-col gap-2 border-t px-3 py-3 text-xs" data-start-footer>
 			<StorageCard />
-			<div className="bg-card mt-2 flex flex-col gap-1 border p-3 text-xs">
-				<span className="flex items-center gap-2 text-sm font-semibold">
-					<LockIcon className="text-primary size-3.5" /> Private by default
+			<div className="flex items-start gap-2" data-privacy-state={signedIn ? "signed-in" : "local"}>
+				{signedIn ? (
+					<CloudIcon className="text-primary mt-0.5 size-3.5 shrink-0" />
+				) : (
+					<LockIcon className="text-primary mt-0.5 size-3.5 shrink-0" />
+				)}
+				<span className="flex min-w-0 flex-col gap-0.5">
+					<span className="text-foreground font-semibold">{signedIn ? "Signed in to WorkSuite" : "Private by default"}</span>
+					<span className="text-muted-foreground leading-snug">
+						{signedIn
+							? "Projects stay on this computer; back them up to WorkSuite Drive from each project."
+							: "Projects stay on this computer. Sign in to back them up to WorkSuite Drive."}
+					</span>
 				</span>
-				<span className="text-muted-foreground">Projects stay on this computer. Sign in to back them up to WorkSuite Drive.</span>
 			</div>
-			<Link href="/settings" className="text-muted-foreground hover:bg-accent mt-2 flex items-center gap-3 px-3 py-2.5">
+			<Link href="/settings" className="text-muted-foreground hover:bg-accent hover:text-foreground -mx-1 flex h-8 items-center gap-2 px-1">
 				<SettingsIcon className="size-4" /> Settings
 			</Link>
-		</nav>
+		</footer>
 	);
 }
 
