@@ -7,6 +7,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+## [1.7.20] - 2026-10-26
+
 ### Added
 
 - Speed › Reverse plays a clip backwards. It works with constant speed and with speed curves, in preview and export. Trimming and splitting keep the right part of the source, and the sound plays backwards too.
