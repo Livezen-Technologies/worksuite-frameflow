@@ -141,6 +141,9 @@ declare global {
 				cancelDownload: (jobId: string) => Promise<void>;
 				onDownloadProgress: (listener: (p: { jobId: string; received: number; total: number }) => void) => () => void;
 				readSaved: (filePath: string) => Promise<ArrayBuffer>;
+				openDownloader?: () => Promise<void>;
+				sendToEditor?: (args: { path: string; mode: "library" | "timeline" }) => Promise<boolean>;
+				onImportDownload?: (listener: (p: { path: string; mode: "library" | "timeline" }) => void) => () => void;
 			};
 			/** The standalone recorder window. */
 			recorder?: {

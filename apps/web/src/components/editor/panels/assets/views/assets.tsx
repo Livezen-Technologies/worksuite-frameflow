@@ -693,16 +693,27 @@ function MediaActions({
 					</TooltipContent>
 				</Tooltip>
 			</TooltipProvider>
-			<Button
-				variant="outline"
-				onClick={onImport}
-				disabled={isProcessing}
-				size="sm"
-				className="items-center justify-center gap-1.5"
-			>
-				<HugeiconsIcon icon={CloudUploadIcon} />
-				Import
-			</Button>
+			<DropdownMenu>
+				<DropdownMenuTrigger asChild>
+					<Button
+						variant="outline"
+						disabled={isProcessing}
+						size="sm"
+						className="items-center justify-center gap-1.5"
+						data-media-import
+					>
+						<HugeiconsIcon icon={CloudUploadIcon} />
+						Import
+					</Button>
+				</DropdownMenuTrigger>
+				<DropdownMenuContent align="end">
+					<DropdownMenuItem onClick={onImport}>Import from computer…</DropdownMenuItem>
+					<DropdownMenuItem onClick={openDownloader} data-media-download>
+						Download video / import from URL…
+					</DropdownMenuItem>
+					<DropdownMenuItem onClick={openDownloader}>Download history</DropdownMenuItem>
+				</DropdownMenuContent>
+			</DropdownMenu>
 		</div>
 	);
 }
@@ -728,4 +739,11 @@ function SortMenuItem({
 			{label} {arrow}
 		</DropdownMenuItem>
 	);
+}
+
+/** The Video Downloader in its own window (desktop), or the Tools page in a browser. */
+function openDownloader() {
+	const tools = window.worksuite?.tools;
+	if (tools?.openDownloader) void tools.openDownloader();
+	else window.open("/tools/download", "_blank");
 }

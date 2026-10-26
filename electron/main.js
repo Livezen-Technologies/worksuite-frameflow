@@ -244,6 +244,40 @@ function openRecorder() {
 	void recorderWindow.loadURL(`${appOrigin}/recorder`);
 }
 
+// The video downloader in its own window. Its queue runs in that page, so
+// closing the window hides it and downloads carry on; it goes away on quit.
+let downloaderWindow = null;
+let quitting = false;
+app.on("before-quit", () => {
+	quitting = true;
+});
+function openDownloader() {
+	if (downloaderWindow && !downloaderWindow.isDestroyed()) {
+		downloaderWindow.show();
+		downloaderWindow.focus();
+		return;
+	}
+	downloaderWindow = new BrowserWindow({
+		...WINDOW_OPTIONS,
+		width: 980,
+		height: 720,
+		minWidth: 640,
+		minHeight: 480,
+		title: "Worksuite FrameFlow – Video Downloader",
+		backgroundColor: windowBackground(),
+	});
+	guardWindow(downloaderWindow, appOrigin);
+	downloaderWindow.on("close", (event) => {
+		if (quitting) return;
+		event.preventDefault();
+		downloaderWindow.hide();
+	});
+	downloaderWindow.on("closed", () => {
+		downloaderWindow = null;
+	});
+	void downloaderWindow.loadURL(`${appOrigin}/tools/download?window=1`);
+}
+
 function focusMain() {
 	const win = mainWindow && !mainWindow.isDestroyed() ? mainWindow : BrowserWindow.getAllWindows().find((w) => w !== recorderWindow);
 	if (!win) return;
@@ -344,6 +378,16 @@ function registerAccountIpc() {
 		return source;
 	});
 	handle("recorder:open", () => openRecorder());
+	handle("downloader:open", () => openDownloader());
+	// A finished download for the editor: the main window adds it to the open project.
+	handle("downloader:send-to-editor", (args = {}) => {
+		if (!savedExports.has(args.path)) throw new Error("Not allowed");
+		const mode = args.mode === "timeline" ? "timeline" : "library";
+		const win = mainWindow && !mainWindow.isDestroyed() ? mainWindow : null;
+		if (!win) return false;
+		win.webContents.send("downloader:import", { path: args.path, mode });
+		return true;
+	});
 	// Converter (SRS 37.3). Results go next to the original unless a folder is chosen.
 	const convertFolder = (saveTo) =>
 		saveTo === "converted" ? path.join(app.getPath("videos"), "Worksuite", "Converted") : typeof saveTo === "string" && path.isAbsolute(saveTo) ? saveTo : undefined;
@@ -383,7 +427,9 @@ function registerAccountIpc() {
 	const downloadFolder = () => path.join(app.getPath("downloads"), "Worksuite");
 	handle("tools:inspect-link", (args = {}) => downloader.inspect({ url: args.url }));
 	handleFrom("tools:download", async (event, args = {}) => {
-		const onProgress = (p) => event.sender.send("tools:download-progress", { jobId: args.jobId, ...p });
+		const onProgress = (p) => {
+			if (!event.sender.isDestroyed()) event.sender.send("tools:download-progress", { jobId: args.jobId, ...p });
+		};
 		const common = { jobId: args.jobId, url: args.url, folder: downloadFolder(), onProgress };
 		const saved =
 			args.kind === "hls" || args.kind === "dash"

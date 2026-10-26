@@ -163,6 +163,15 @@ contextBridge.exposeInMainWorld("worksuite", {
 			return () => ipcRenderer.removeListener("tools:download-progress", handler);
 		},
 		readSaved: (filePath) => ipcRenderer.invoke("tools:read-saved", filePath),
+		/** The downloader in its own window. */
+		openDownloader: () => ipcRenderer.invoke("downloader:open"),
+		/** Hands a finished download to the editor window (Media Library or timeline). */
+		sendToEditor: (args) => ipcRenderer.invoke("downloader:send-to-editor", args),
+		onImportDownload: (listener) => {
+			const handler = (_event, payload) => listener(payload);
+			ipcRenderer.on("downloader:import", handler);
+			return () => ipcRenderer.removeListener("downloader:import", handler);
+		},
 		onConvertProgress: (listener) => {
 			const handler = (_event, payload) => listener(payload);
 			ipcRenderer.on("tools:convert-progress", handler);

@@ -1,5 +1,6 @@
 "use client";
 
+import { DownloadImportHost } from "@/tools/components/download-import-host";
 import { ProjectSettingsDialog } from "@/project-settings/components/project-settings-dialog";
 import { ProjectDefaultsSync } from "@/project-settings/components/project-defaults-sync";
 import { PasteAttributesDialog } from "@/tabs/components/paste-attributes-dialog";
@@ -80,6 +81,7 @@ export default function Editor() {
 					<PasteAttributesDialog />
 					<StartIntentHost />
 					<AutoTranscribeHost />
+					<DownloadImportHost />
 			<MotionLinkSync />
 				</div>
 			</EditorProvider>

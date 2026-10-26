@@ -22,6 +22,8 @@ export interface DownloadItem {
 	start?: number;
 	end?: number;
 	openWhenDone: boolean;
+	/** Add to the open project's Media or timeline when done (older items: none). */
+	afterDownload?: "library" | "timeline" | "none";
 	/** Save the link's subtitles next to the video as .srt (DL-04). */
 	saveSubs: boolean;
 	/** Transcribe with local Whisper after opening it in the editor (DL-07). */

@@ -62,7 +62,13 @@ export function VideoDownloader() {
 		pumpQueue({
 			onFinished: (item) => {
 				toast.success(`Downloaded ${item.title}`);
-				if ((item.openWhenDone || item.transcribe) && item.path) {
+				const after = item.afterDownload ?? "none";
+				if ((after === "library" || after === "timeline") && item.path) {
+					// The editor window adds it to the open project.
+					void tools?.sendToEditor?.({ path: item.path, mode: after }).then((sent) => {
+						if (!sent) toast.info("Open a project in FrameFlow to add the download to it.");
+					});
+				} else if ((item.openWhenDone || item.transcribe) && item.path) {
 					void openSavedInEditor({ editor, filePath: item.path, push: router.push, transcribe: languageOf(item.transcribe) }).catch((e: unknown) =>
 						toast.error(errorText(e)),
 					);
@@ -256,7 +262,8 @@ function OptionsDialog({ open, links, onOpenChange, onQueued }: { open: boolean;
 	const [convert, setConvert] = useState("keep");
 	const [from, setFrom] = useState("");
 	const [to, setTo] = useState("");
-	const [openWhenDone, setOpenWhenDone] = useState(false);
+	const [after, setAfter] = useState<"library" | "timeline" | "new-project" | "none">("library");
+	const openWhenDone = after === "new-project";
 	const [saveSubs, setSaveSubs] = useState(true);
 	const [transcribe, setTranscribe] = useState<string | null>(null);
 	const [rights, setRights] = useState(false);
@@ -293,6 +300,7 @@ function OptionsDialog({ open, links, onOpenChange, onQueued }: { open: boolean;
 					start,
 					end,
 					openWhenDone,
+					afterDownload: after === "library" || after === "timeline" ? after : "none",
 					saveSubs,
 					transcribe,
 					status: "queued",
@@ -346,9 +354,21 @@ function OptionsDialog({ open, links, onOpenChange, onQueued }: { open: boolean;
 							<input className="rounded border bg-transparent p-1.5" placeholder="end" value={to} onChange={(e) => setTo(e.target.value)} data-download-to />
 						</label>
 					</div>
-					<label className="flex items-center gap-2">
-						<input type="checkbox" checked={openWhenDone} onChange={(e) => setOpenWhenDone(e.target.checked)} /> Open in the editor when done
-					</label>
+					<fieldset className="flex flex-col gap-1.5" data-download-after>
+						<legend className="mb-1">After download</legend>
+						{(
+							[
+								["library", "Add to Media in the open project"],
+								["timeline", "Add to the timeline at the playhead"],
+								["new-project", "Open in a new project"],
+								["none", "Download only"],
+							] as const
+						).map(([value, label]) => (
+							<label key={value} className="flex items-center gap-2">
+								<input type="radio" name="download-after" checked={after === value} onChange={() => setAfter(value)} /> {label}
+							</label>
+						))}
+					</fieldset>
 					{hasSubs && (
 						<label className="flex items-center gap-2">
 							<input type="checkbox" checked={saveSubs} onChange={(e) => setSaveSubs(e.target.checked)} data-download-subs /> Save subtitles as .srt next to the video

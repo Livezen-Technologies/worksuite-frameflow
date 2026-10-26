@@ -9,6 +9,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ### Added
 
+- Media › Import is now a menu: Import from computer, Download video / import from URL, and Download history. The Video Downloader opens in its own window, and closing that window keeps downloads running in the background.
+- Downloads have an "After download" choice: add to Media in the open project, add to the timeline at the playhead, open in a new project, or download only. Files already in the project aren't imported twice.
 - Signing in with your WorkSuite Cloud account activates a free FrameFlow licence automatically, and the account menu shows "FrameFlow Free · Activated". Every feature stays available.
 
 ### Fixed
