@@ -7,6 +7,8 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+## [1.7.18] - 2026-10-26
+
 ### Added
 
 - Media › Import is now a menu: Import from computer, Download video / import from URL, and Download history. The Video Downloader opens in its own window, and closing that window keeps downloads running in the background.
