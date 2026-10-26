@@ -6,6 +6,7 @@ import {
 	BatchCommand,
 	InsertElementCommand,
 } from "@/commands";
+import { RemoveTrackCommand } from "@/commands/timeline/track/remove-track";
 import { buildSubtitleTextElement } from "./build-subtitle-text-element";
 import type { SubtitleCue } from "./types";
 
@@ -13,9 +14,12 @@ export function insertCaptionChunksAsTextTrack({
 	editor,
 	captions,
 	narrationTrackId = null,
+	replaceTrackId = null,
 }: {
 	editor: EditorCore;
 	captions: SubtitleCue[];
+	/** A caption track to remove in the same undo step (a rebuild). */
+	replaceTrackId?: string | null;
 	/** The track the speech is on (AI-44); null searches all audio. */
 	narrationTrackId?: string | null;
 }): string | null {
@@ -53,8 +57,18 @@ export function insertCaptionChunksAsTextTrack({
 		});
 	});
 	editor.command.execute({
-		command: new BatchCommand([addTrackCommand, ...insertCommands]),
+		command: new BatchCommand([
+			...(replaceTrackId && allTracksOf(tracks).some((t) => t.id === replaceTrackId)
+				? [new RemoveTrackCommand(replaceTrackId)]
+				: []),
+			addTrackCommand,
+			...insertCommands,
+		]),
 	});
 
 	return trackId;
+}
+
+function allTracksOf(tracks: { overlay: { id: string }[]; main: { id: string }; audio: { id: string }[] }) {
+	return [...tracks.overlay, tracks.main, ...tracks.audio];
 }

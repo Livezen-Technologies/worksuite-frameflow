@@ -27,6 +27,8 @@ export interface Transcript {
 	engine: string;
 	createdAt: number;
 	segments: TranscriptSegment[];
+	/** Caption track last built from this transcript; rebuilding replaces it. */
+	captionTrackId?: string | null;
 	/** Track the narration was taken from (AI-44); null = all audio. */
 	narrationTrackId?: string | null;
 }

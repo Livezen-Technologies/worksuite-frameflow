@@ -7,6 +7,12 @@ Every change merged into the project adds a line under **Unreleased**. `node scr
 
 ## [Unreleased]
 
+### Fixed
+
+- Sinhala transcription: the Sinhala model is no longer asked for timestamps it was never trained on. With them it often stopped after a word or two per piece, which left most speech out. Each line's timing now comes from FrameFlow's own speech pieces.
+- Stray marks at the start of transcript lines (". ඒ", "'මං", ".ටයිම්") are removed.
+- "Add as captions" run again on the same transcript replaces its earlier caption track instead of stacking a second, duplicate one.
+
 ## [1.7.20] - 2026-10-26
 
 ### Added

@@ -149,7 +149,8 @@ export function cleanText(text: string): string {
 		}
 		t = out.join(" ");
 	}
-	return t.trim();
+	// Stray marks Whisper leaves at the start (". ඒ", "'මං", ".ටයිම්").
+	return t.replace(/^[\s.,;:'"`‘’“”-]+/u, "").trim();
 }
 
 /**

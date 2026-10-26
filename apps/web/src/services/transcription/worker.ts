@@ -185,10 +185,13 @@ async function handleTranscribe({
 			const length = chunk.end - chunk.start;
 			let raw: Awaited<ReturnType<AutomaticSpeechRecognitionPipeline>>;
 			try {
-				raw = await transcriber(slice, { language: lang, task: "transcribe", return_timestamps: words ? "word" : true });
+				// Timestamps only for English words: fine-tuned models (Sinhala) were
+				// trained without them and stop after a few words when asked for them.
+				// Our own pieces already give each line its time.
+				raw = await transcriber(slice, { language: lang, task: "transcribe", ...(words ? { return_timestamps: "word" as const } : {}) });
 			} catch {
 				words = false;
-				raw = await transcriber(slice, { language: lang, task: "transcribe", return_timestamps: true });
+				raw = await transcriber(slice, { language: lang, task: "transcribe" });
 			}
 			const result: AutomaticSpeechRecognitionOutput = Array.isArray(raw) ? raw[0] : raw;
 			const timed = (result.chunks ?? [])

@@ -64,3 +64,9 @@ test("long phrases become caption-sized lines that cover the same time", () => {
 	for (const l of lines) expect([...l.text].length).toBeLessThanOrEqual(80);
 	expect(splitIntoLines({ text: "short", start: 0, end: 2 })).toHaveLength(1);
 });
+
+test("stray marks at the start of a line are removed", () => {
+	expect(cleanText(".ටයිම් බෙස්ටියෝ")).toBe("ටයිම් බෙස්ටියෝ");
+	expect(cleanText("'මං වැඩි social media")).toBe("මං වැඩි social media");
+	expect(cleanText(". ඒ මෙන්ස් රේගෙන්.")).toBe("ඒ මෙන්ස් රේගෙන්.");
+});

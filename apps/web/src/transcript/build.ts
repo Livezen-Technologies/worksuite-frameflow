@@ -4,6 +4,7 @@ import { insertCaptionChunksAsTextTrack } from "@/subtitles/insert";
 import type { SubtitleCue } from "@/subtitles/types";
 import { buildCuesFromTranscript } from "./cues";
 import type { Transcript } from "./types";
+import { useTranscriptStore } from "./store";
 
 export const SINHALA_CAPTION_FONT = "Noto Sans Sinhala";
 
@@ -38,6 +39,15 @@ export async function buildSubtitlesFromTranscript({
 		editor,
 		captions: cues,
 		narrationTrackId: transcript.narrationTrackId ?? null,
+		// Building again replaces the earlier caption track instead of stacking a second one.
+		replaceTrackId: transcript.captionTrackId ?? null,
 	});
+	if (trackId) {
+		// Remember the track so the next build replaces it.
+		const projectId = editor.project.getActive().metadata.id;
+		const store = useTranscriptStore.getState();
+		const latest = store.byProject[projectId];
+		if (latest) store.setTranscript({ projectId, transcript: { ...latest, captionTrackId: trackId } });
+	}
 	return { trackId, cueCount: cues.length };
 }
